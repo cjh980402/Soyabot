@@ -42,14 +42,14 @@ client.on("message", async (message) => { // 각 메시지에 반응
     if (message.author.id == ADMIN_ID) { // 관리자 여부 체크
         try {
             if (message.content.indexOf("[") == 0) { // 노드 코드 실행
-                message.channel.send(String(eval(message.content.substr(1))));
+                return message.channel.send(String(eval(message.content.substr(1))));
             }
             else if (message.content.indexOf("]") == 0) { // 콘솔 명령 실행
-                message.channel.send(cmd(message.content.substr(1)));
+                return message.channel.send(cmd(message.content.substr(1)));
             }
         }
         catch (e) {
-            message.channel.send(`채팅 내용 : ${message.content}\n에러 내용 : ${e}\n${e.stack}`);
+            return message.channel.send(`채팅 내용 : ${message.content}\n에러 내용 : ${e}\n${e.stack}`);
         }
     }
 

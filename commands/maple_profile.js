@@ -1,5 +1,6 @@
-const mapleModule = require("../util/maple_parsing");
+const { MessageAttachment } = require("discord.js");
 const puppeteer = require('puppeteer');
+const mapleModule = require("../util/maple_parsing");
 
 module.exports = {
     name: "프로필",
@@ -25,10 +26,12 @@ module.exports = {
         await page.goto(`https://maple.gg/u/${args[0]}`);
         try {
             await page.click('.btn.btn-grape-fruit');
-            await page.waitFor(1000); // 1초 기다리기
             const box = await (await page.$('.character-card')).boundingBox();
-            await page.screenshot({ path: './pictures/maplegg.png', clip: { x: box.x, y: box.y + 3, width: box.width, height: box.height } });
+            const attachment = new MessageAttachment(await page.screenshot({ clip: { x: box.x, y: box.y + 3, width: box.width, height: box.height } }), 'profile.png');
             // 사진 자체가 아래로 치우쳤기에 3픽셀 보정
+            message.channel.send(`${args[0]}님의 프로필`, {
+                files: [attachment]
+            });
         }
         catch (e) {
             console.log('에러발생');
@@ -37,10 +40,6 @@ module.exports = {
         finally {
             await page.close();
         }
-        message.channel.send(`${args[0]}님의 프로필`, {
-            files: [
-                "./pictures/maplegg.png"
-            ]
-        });
+
     }
 };

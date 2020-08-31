@@ -1,5 +1,6 @@
-const mapleModule = require("../util/maple_parsing");
+const { MessageAttachment } = require("discord.js");
 const puppeteer = require('puppeteer');
+const mapleModule = require("../util/maple_parsing");
 
 module.exports = {
     name: "컬렉션",
@@ -24,9 +25,11 @@ module.exports = {
         page.setViewport({ width: 500, height: 800 }); // 화면이 좁아야 코디 컬렉션이 세로로 길게 나옴
         await page.goto(`https://maple.gg/u/${args[0]}`);
         try {
-            await page.waitFor(1000); // 1초 기다리기
-            await (await page.$('section.box.mt-3')).screenshot({ path: './pictures/collection.png' });
+            const attachment = new MessageAttachment(await (await page.$('section.box.mt-3')).screenshot(), 'collection.png');
             // 콜렉션 영역 캡쳐
+            message.channel.send(`${args[0]}님의 코디 컬렉션`, {
+                files: [attachment]
+            });
         }
         catch (e) {
             console.log('에러발생');
@@ -35,10 +38,6 @@ module.exports = {
         finally {
             await page.close();
         }
-        message.channel.send(`${args[0]}님의 코디 컬렉션`, {
-            files: [
-                "./pictures/collection.png"
-            ]
-        });
+        
     }
 };
