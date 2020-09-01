@@ -6,6 +6,10 @@ const { readdirSync } = require("fs");
 const { join } = require("path");
 const { TOKEN, PREFIX, ADMIN_ID } = require("./config.json");
 const puppeteer = require('puppeteer');
+const sqlite3 = require('sqlite3').verbose();
+const dbhandler = require('./util/db-handler');
+const db = new dbhandler(new sqlite3.Database('./db/soyabot_data.db'));
+const { startNotice, stopNotice, startUpdate, stopUpdate } = require('./admin/maple_auto_notice.js');
 const admin = require("./admin/admin_function");
 const botChatting = require("./util/bot_chatting");
 
@@ -25,6 +29,10 @@ client.on("ready", async () => {
     console.log(`${client.user.username} ready!`);
     client.user.setActivity(`${PREFIX}help`, { type: 'LISTENING' });
     global.browser = await puppeteer.launch();
+    await db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
+    await db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
+    startNotice(db, client); // 기타 자동 공지 기능
+    startUpdate(db, client); // 업데이트 자동 공지 기능
 });
 client.on("warn", (info) => console.log(info));
 client.on("error", console.error);

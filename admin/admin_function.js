@@ -11,7 +11,10 @@ module.exports = function (message) {
             rslt = cmd(message.content.substr(1));
         }
         else if (message.content.indexOf("@") == 0) { // 원격 채팅 전송
-            rslt = replyRoomID(message);
+            const roomID = message.content.substr(1).split(' ')[0];
+            const msg = message.content.substr(1).replace(`${roomID} `, '');
+            message.client.channels.cache.array().filter(v => v.id == roomID)[0].send(msg);
+            rslt = "채팅 전송 완료";
         }
     }
     catch (e) {
@@ -28,18 +31,12 @@ module.exports = function (message) {
 function cmd(_cmd) { // cp949를 쓰는 윈도우 콘솔에 대응
     let cmdResult;
     try {
-        cmdResult = cp.execSync(_cmd, { encoding: 'binary' });
+        cmdResult = Buffer.from(cp.execSync(_cmd, { encoding: 'binary' }));
     }
     catch (e) {
         cmdResult = Buffer.from(e.toString(), 'binary');
     }
     return iconv.decode(cmdResult, 'cp949').replace(/\u001b\[\d\dm/g, ""); // cp949로 바이너리를 디코딩 -> utf-8로 변환해줌
-}
-
-function replyRoomID(message) {
-    const roomID = message.content.substr(1).split(' ')[0];
-    const msg = message.content.substr(1).replace(`${roomID} `, '');
-    message.client.channels.cache.array().filter(v => v.id == roomID)[0].send(msg);
 }
 
 Object.defineProperty(Object.prototype, "prop", {
