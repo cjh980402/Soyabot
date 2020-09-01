@@ -5,8 +5,9 @@ const { Client, Collection } = require("discord.js");
 const { readdirSync } = require("fs");
 const { join } = require("path");
 const { TOKEN, PREFIX, ADMIN_ID } = require("./config.json");
-const cmd = require("./admin/admin_function");
 const puppeteer = require('puppeteer');
+const admin = require("./admin/admin_function");
+const botChatting = require("./util/bot_chatting");
 
 const client = new Client({ disableMentions: "everyone" });
 
@@ -22,7 +23,7 @@ const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사�
  */
 client.on("ready", async () => {
     console.log(`${client.user.username} ready!`);
-    client.user.setActivity(`${PREFIX}help`);
+    client.user.setActivity(`${PREFIX}help`, { type: 'LISTENING' });
     global.browser = await puppeteer.launch();
 });
 client.on("warn", (info) => console.log(info));
@@ -40,18 +41,9 @@ for (const file of commandFiles) {
 client.on("message", async (message) => { // 각 메시지에 반응
     if (message.author.bot) return; // 봇 여부 체크
     if (message.author.id == ADMIN_ID) { // 관리자 여부 체크
-        try {
-            if (message.content.indexOf("[") == 0) { // 노드 코드 실행
-                return message.channel.send(String(eval(message.content.substr(1))));
-            }
-            else if (message.content.indexOf("]") == 0) { // 콘솔 명령 실행
-                return message.channel.send(cmd(message.content.substr(1)));
-            }
-        }
-        catch (e) {
-            return message.channel.send(`채팅 내용 : ${message.content}\n에러 내용 : ${e}\n${e.stack}`);
-        }
+        admin(message);
     }
+    botChatting(message); // 잡담 로직
 
     const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(PREFIX)})\\s*`); // 문자열로 정규식 생성하기 위해 생성자 이용
     // 자기자신한테 하는 멘션 또는 PREFIX로 시작하는 명령어에 대응

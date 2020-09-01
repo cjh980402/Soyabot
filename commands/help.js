@@ -3,8 +3,8 @@ const { MessageEmbed } = require("discord.js");
 module.exports = {
     name: "help",
     aliases: ["h", "도움말", "명령어"],
-    description: "모든 명령어와 설명 보기 (음악,메이플)",
-    type: ["음악", "메이플"],
+    description: "모든 명령어와 설명 보기 (음악,메이플,기타)",
+    type: ["음악", "메이플", "기타"],
     execute(message, args) {
         if(args[0] && !this.type.includes(args[0]))
             return message.channel.send("지원하지 않는 도움말입니다.").catch(console.error);

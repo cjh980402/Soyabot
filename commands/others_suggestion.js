@@ -1,0 +1,14 @@
+const { ADMIN_ID } = require("../config.json");
+
+module.exports = {
+    name: "건의",
+    aliases: ["ㄱㅇ"],
+    description: "개발자에게 건의 사항을 전송합니다.",
+    type: ["기타"],
+    execute(message, args) {
+        const msg = `방 ID : ${message.channel.id}\n건의 내용 : ${args.join(' ')}`;
+        message.client.channels.cache.array().filter(v=>v.recipient == ADMIN_ID)[0].send(msg);
+        // 개발자의 개인 메시지 채널 추출 후 전송
+        message.reply("건의사항이 전송되었습니다.");
+    }
+};
