@@ -4,7 +4,7 @@ const mapleModule = require("../util/maple_parsing");
 
 module.exports = {
     name: "프로필",
-    aliases: ["ㅍㄿ", "ㅍㄹㅍ"],
+    aliases: ["ㅍㄹㅍ", "ㅍㄿ"],
     description: "캐릭터의 메이플 gg 프로필을 출력",
     type: ["메이플"],
     async execute(message, args) {

@@ -11,7 +11,7 @@ module.exports = function (message) {
     else if (message.content.includes('뭐먹지')) {
         message.reply(recommendFood());
     }
-    else if (message.content.includes('킴쏘봇')) {
+    else if (message.content.includes('소야봇')) {
         if (message.content.includes('바보')) {
             return message.channel.send(':frowning2:');
         }
@@ -23,7 +23,7 @@ module.exports = function (message) {
         else if (cmd == 3)
             message.channel.send('헤비...');
         else if (cmd == 4)
-            message.channel.send(`'${message.author.username}'님이 킴쏘봇을 불렀습니다.`);
+            message.channel.send(`'${message.author.username}'님이 소야봇을 불렀습니다.`);
         else if (cmd == 5)
             message.channel.send('이노시스 조아');
     }

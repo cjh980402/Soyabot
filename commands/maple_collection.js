@@ -4,7 +4,7 @@ const mapleModule = require("../util/maple_parsing");
 
 module.exports = {
     name: "컬렉션",
-    aliases: ["ㅋㄽ", "ㅋㄹㅅ"],
+    aliases: ["ㅋㄹㅅ", "ㅋㄽ"],
     description: "캐릭터의 메이플 gg 코디 컬렉션을 출력",
     type: ["메이플"],
     async execute(message, args) {

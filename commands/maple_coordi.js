@@ -27,6 +27,7 @@ module.exports = {
                 .setTitle(`${args[0]}님의 코디`)
                 .setColor("#F8AA2A")
                 .attachFiles(attachment)
+                .setURL(`https://maple.gg/u/${args[0]}`)
                 .setImage('attachment://coordi.png');
 
             coordiEmbed.addField('**헤어**', coordi[1], true);
