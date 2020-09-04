@@ -7,7 +7,7 @@ module.exports = {
     type: ["기타"],
     execute(message, args) {
         if (!args[0])
-            return;
+            return message.channel.send(`**${message.client.prefix}${this.name} ${this.aliases ? `(${this.aliases})` : ""}**\n${this.description}`);
         const msg = `방 ID : ${message.channel.id}\n건의 내용 : ${args.join(' ')}`;
         message.client.channels.cache.array().filter(v=>v.recipient == ADMIN_ID)[0].send(msg);
         // 개발자의 개인 메시지 채널 추출 후 전송

@@ -5,7 +5,7 @@ module.exports = {
     type: ["메이플"],
     execute(message, args) {
         if (!args[0])
-            return;
+            return message.channel.send(`**${message.client.prefix}${this.name} ${this.aliases ? `(${this.aliases})` : ""}**\n${this.description}`);
         if (args[0] == '포이즈닉' || args[0] == '자쿰') {
             message.channel.send(`${args[0]} 무기의 추옵표`, {
                 files: ['./pictures/add_option/poisonic.png']

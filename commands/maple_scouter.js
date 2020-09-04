@@ -8,7 +8,7 @@ module.exports = {
     description: "정해진 조건으로 해당 캐릭터의 점수를 평가",
     async execute(message, args) {
         if (!args[0])
-            return;
+            return message.channel.send(`**${message.client.prefix}${this.name} ${this.aliases ? `(${this.aliases})` : ""}**\n${this.description}`);
         const Maple = new mapleModule(args[0]);
 
         let union = (await Maple.isMain()) ? Maple.homeUnion() : null;

@@ -7,7 +7,7 @@ module.exports = {
     description: "캐릭터의 유니온 정보와 일일 코인 수급량을 출력",
     async execute(message, args) {
         if (!args[0])
-            return;
+            return message.channel.send(`**${message.client.prefix}${this.name} ${this.aliases ? `(${this.aliases})` : ""}**\n${this.description}`);
         const Maple = new mapleModule(args[0]);
 
         const union = (await Maple.isMain()) ? Maple.homeUnion() : null;

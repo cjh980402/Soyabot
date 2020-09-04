@@ -7,6 +7,8 @@ module.exports = {
     description: "이름과 난이도를 입력하면 보스의 보상과 체력, 방어율을 알려줍니다.\n난이도가 1개만 존재하는 보스는 난이도를 생략해도 됩니다.",
     type: ["메이플"],
     execute(message, args) {
+        if (!args[0])
+            return message.channel.send(`**${message.client.prefix}${this.name} ${this.aliases ? `(${this.aliases})` : ""}**\n${this.description}`);
         let [bossName, bossGrade] = args;
         if (!bossData[bossName]) {
             return message.channel.send('데이터가 없는 보스입니다.');
