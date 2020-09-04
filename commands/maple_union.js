@@ -6,6 +6,8 @@ module.exports = {
     type: ["메이플"],
     description: "캐릭터의 유니온 정보와 일일 코인 수급량을 출력",
     async execute(message, args) {
+        if (!args[0])
+            return;
         const Maple = new mapleModule(args[0]);
 
         const union = (await Maple.isMain()) ? Maple.homeUnion() : null;

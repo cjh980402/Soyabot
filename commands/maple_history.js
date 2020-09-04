@@ -6,6 +6,8 @@ module.exports = {
     type: ["메이플"],
     description: "캐릭터의 레벨업 히스토리를 출력",
     async execute(message, args) {
+        if (!args[0])
+            return;
         const Maple = new mapleModule(args[0]);
         if ((await Maple.isExist()) == null || Maple.homeLevel() == null) {
             return message.channel.send(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);

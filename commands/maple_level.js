@@ -7,6 +7,8 @@ module.exports = {
     type: ["메이플"],
     description: "캐릭터의 공식 홈페이지 기준 레벨과 경험치를 통해 250, 275까지 남은 경험치량을 계산",
     async execute(message, args) {
+        if (!args[0])
+            return;
         const Maple = new mapleModule(args[0]);
         const rslt = (await Maple.isExist()) ? Maple.homeLevel() : null;
         if (rslt == null) {

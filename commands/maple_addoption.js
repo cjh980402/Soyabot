@@ -4,6 +4,8 @@ module.exports = {
     description: "포이즈닉, 네크로, 반레온, 쟈이힌, 여제, 우트가르드, 파프, 앱솔, 아케인, 제네시스, 제로, 해카세의 추옵 출력",
     type: ["메이플"],
     execute(message, args) {
+        if (!args[0])
+            return;
         if (args[0] == '포이즈닉' || args[0] == '자쿰') {
             message.channel.send(`${args[0]} 무기의 추옵표`, {
                 files: ['./pictures/add_option/poisonic.png']

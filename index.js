@@ -9,7 +9,7 @@ const puppeteer = require('puppeteer');
 const sqlite3 = require('sqlite3').verbose();
 const dbhandler = require('./util/db-handler');
 const db = new dbhandler(new sqlite3.Database('./db/soyabot_data.db'));
-const { startNotice, stopNotice, startUpdate, stopUpdate } = require('./admin/maple_auto_notice.js');
+const { startNotice, stopNotice, startUpdate, stopUpdate, startFlag, stopFlag } = require('./admin/maple_auto_notice.js');
 const admin = require("./admin/admin_function");
 const botChatting = require("./util/bot_chatting");
 
@@ -33,6 +33,7 @@ client.on("ready", async () => {
     await db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
     startNotice(db, client); // 기타 자동 공지 기능
     startUpdate(db, client); // 업데이트 자동 공지 기능
+    startFlag(client); // 플래그 자동 알림 기능
 });
 client.on("warn", (info) => console.log(info));
 client.on("error", console.error);

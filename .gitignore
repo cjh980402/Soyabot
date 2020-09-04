@@ -1,11 +1,9 @@
 #folder
 node_modules/
 log/
-db/
 .git/
 dice_result/
  
 #file
 *.log
-*.db
 config.json

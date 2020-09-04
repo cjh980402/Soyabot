@@ -1,0 +1,1 @@
+forever start -o ./log/out.log -e ./log/err.log index.js

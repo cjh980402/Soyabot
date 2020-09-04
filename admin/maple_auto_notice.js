@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 let noticeTimer = null;
 let updateTimer = null;
+let flagTimer = [null, null, null];
 
 module.exports.startNotice = function (db, client) {
     if (!noticeTimer) {
@@ -21,7 +22,7 @@ module.exports.startNotice = function (db, client) {
                         .setDescription(`${data.eq(i).find('img').attr('alt')} ${data.eq(i).text().trim()}`)
                         .setURL(`https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`)
                         .setColor("#F8AA2A");
-                        
+
                     const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().filter(v => v.type == 'text')[0]);
                     for (let i in groupChat)
                         setTimeout(() => { groupChat[i].send(noticeEmbed) }, 1000 * i); // 1000*i ms 이후에 주어진 함수 실행
@@ -49,7 +50,7 @@ module.exports.startUpdate = function (db, client) {
                 if (!rslt) {
                     await db.insert('mapleupdate', { title: data.eq(i).text().trim(), url: `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}` });
                     // 중복방지 위해 db에 삽입
-                   
+
                     const noticeEmbed = new MessageEmbed()
                         .setTitle("메이플 업데이트")
                         .setDescription(`[공지] ${data.eq(i).text().trim()}`)
@@ -69,5 +70,40 @@ module.exports.stopUpdate = function () {
     if (updateTimer) {
         clearInterval(updateTimer);
         updateTimer = null;
+    }
+}
+
+module.exports.startFlag = function (client) {
+    const flagtime = [11, 18, 20]; // 12, 19, 21시에 시작 -> 5분전에 알림
+    const flagDate = []; // 플래그 알림 시간 객체 저장
+    const now = new Date();
+    for (let i in flagTimer) {
+        if (!flagTimer[i]) {
+            flagDate[i] = new Date(now.getFullYear(), now.getMonth(), now.getDate(), flagtime[i], 55);
+            if (now > flagDate[i]) {
+                flagDate[i] = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, flagtime[i], 55);
+            }
+            setTimeout(() => {
+                const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().filter(v => v.type == 'text')[0]);
+                for (let j in groupChat)
+                    setTimeout(() => { groupChat[j].send(`${flagtime[i] + 1}시 플래그를 준비하세요!`) }, 1000 * j);
+
+                // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
+                flagTimer[i] = setInterval(() => {
+                    const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().filter(v => v.type == 'text')[0]);
+                    for (let j in groupChat)
+                        setTimeout(() => { groupChat[j].send(`${flagtime[i] + 1}시 플래그를 준비하세요!`) }, 1000 * j);
+                }, 86400000); // 24시간 주기
+            }, flagDate[i] - now);
+        }
+    }
+}
+
+module.exports.stopFlag = function () {
+    for (let i in flagTimer) {
+        if (flagTimer[i]) {
+            clearInterval(flagTimer[i]);
+            flagTimer[i] = null;
+        }
     }
 }
