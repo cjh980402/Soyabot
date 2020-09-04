@@ -26,19 +26,13 @@ module.exports = {
         const page = await browser.newPage();
         page.setViewport({ width: 500, height: 800 }); // 화면이 좁아야 코디 컬렉션이 세로로 길게 나옴
         await page.goto(`https://maple.gg/u/${args[0]}`);
-        try {
-            const attachment = new MessageAttachment(await (await page.$('section.box.mt-3')).screenshot(), 'collection.png');
-            // 콜렉션 영역 캡쳐
-            message.channel.send(`${args[0]}님의 코디 컬렉션`, {
-                files: [attachment]
-            });
-        }
-        catch (e) {
-            console.log('에러발생');
-            message.channel.send(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);
-        }
-        finally {
-            await page.close();
-        }
+        const attachment = new MessageAttachment(await (await page.$('section.box.mt-3')).screenshot(), 'collection.png');
+        // 콜렉션 영역 캡쳐
+        message.channel.send(`${args[0]}님의 코디 컬렉션`, {
+            files: [attachment]
+        });
+
+        await page.close();
+
     }
 };

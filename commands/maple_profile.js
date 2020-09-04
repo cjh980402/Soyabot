@@ -26,22 +26,18 @@ module.exports = {
         const page = await browser.newPage();
         page.setViewport({ width: 1400, height: 1000 }); // 화면이 넓어야 버튼을 눌러도 스크롤 시점이 이동을 안함
         await page.goto(`https://maple.gg/u/${args[0]}`);
-        try {
-            await page.click('.btn.btn-grape-fruit');
-            const box = await (await page.$('.character-card')).boundingBox();
-            const attachment = new MessageAttachment(await page.screenshot({ clip: { x: box.x, y: box.y + 3, width: box.width, height: box.height } }), 'profile.png');
-            // 사진 자체가 아래로 치우쳤기에 3픽셀 보정
-            message.channel.send(`${args[0]}님의 프로필`, {
-                files: [attachment]
-            });
-        }
-        catch (e) {
-            console.log('에러발생');
-            message.channel.send(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);
-        }
-        finally {
-            await page.close();
-        }
+
+        await page.click('.btn.btn-grape-fruit');
+        await page.waitFor(1000); // 1초 기다리기
+        const box = await (await page.$('.character-card')).boundingBox();
+        const attachment = new MessageAttachment(await page.screenshot({ clip: { x: box.x, y: box.y + 3, width: box.width, height: box.height } }), 'profile.png');
+        // 사진 자체가 아래로 치우쳤기에 3픽셀 보정
+        message.channel.send(`${args[0]}님의 프로필`, {
+            files: [attachment]
+        });
+
+        await page.close();
+
 
     }
 };
