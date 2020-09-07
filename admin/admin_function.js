@@ -1,5 +1,4 @@
 const cp = require('child_process');
-const iconv = require('iconv-lite');
 
 module.exports = function (message) {
     let rslt = "";
@@ -28,15 +27,15 @@ module.exports = function (message) {
     }
 }
 
-function cmd(_cmd) { // cp949를 쓰는 윈도우 콘솔에 대응
+function cmd(_cmd) {
     let cmdResult;
     try {
-        cmdResult = Buffer.from(cp.execSync(_cmd, { encoding: 'binary' }));
+        cmdResult = cp.execSync(_cmd).toString();
     }
     catch (e) {
-        cmdResult = Buffer.from(e.toString(), 'binary');
+        cmdResult = e.toString();
     }
-    return iconv.decode(cmdResult, 'cp949').replace(/\u001b\[\d\dm/g, ""); // cp949로 바이너리를 디코딩 -> utf-8로 변환해줌
+    return cmdResult.replace(/\u001b\[\d\dm/g, "");;
 }
 
 Object.defineProperty(Object.prototype, "prop", {
