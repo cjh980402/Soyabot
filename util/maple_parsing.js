@@ -5,16 +5,13 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function linkParse(link, count = 0) {
+async function linkParse(link) {
     try {
         // encodeURI는 한글 주소의 경우 필수
         return cheerio.load(await (await fetch(encodeURI(link))).text());
     }
     catch (e) {
-        if (count > 20)
-            return e;
-        await sleep(1000);
-        return linkParse(link, ++count);
+        return e;
     }
 }
 
@@ -36,6 +33,9 @@ class Maple {
         }
         let temp = `Ranking/World/Total?c=${this.name}`; // 일반섭
         this.homelevel = await linkParse(`https://maplestory.nexon.com/${temp}`);
+        if (typeof this.homeLevel != 'function')
+            throw new Error("네트워크 에러 발생!");
+
         if (this.homelevel("tr[class]").length == 0) {
             temp += "&w=254"; // 리부트
             this.homelevel = await linkParse(`https://maplestory.nexon.com/${temp}`);
@@ -75,6 +75,9 @@ class Maple {
                 len++;
         }
         this.homeunion = await linkParse(`https://maplestory.nexon.com/Ranking/Union?c=${this.name}`);
+        if (typeof this.homeunion != 'function')
+            throw new Error("네트워크 에러 발생!");
+
         if (len < 1 || len > 12 || this.homeunion("tr").length < 12) {
             return 0; // 유니온 기록이 없음
         }
@@ -187,7 +190,7 @@ class Maple {
     }
     Rank() {
         const rank = this.ggdata('.col-lg-2.col-md-4.col-sm-4.col-6.mt-3 > span');
-        
+
         if (rank.length == 0) {
             return null;
         }
