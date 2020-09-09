@@ -1,30 +1,21 @@
+const { Channel } = require("discord.js");
 const cp = require('child_process');
 
 module.exports = function (message) {
     let rslt = "";
-    try {
-        if (message.content.indexOf("[") == 0) { // 노드 코드 실행
-            rslt = String(eval(message.content.substr(1)));
-        }
-        else if (message.content.indexOf("]") == 0) { // 콘솔 명령 실행
-            rslt = cmd(message.content.substr(1));
-        }
-        else if (message.content.indexOf("@") == 0) { // 원격 채팅 전송
-            const roomID = message.content.substr(1).split(' ')[0];
-            const msg = message.content.substr(1).replace(`${roomID} `, '');
-            message.client.channels.cache.array().filter(v => v.id == roomID)[0].send(msg);
-            rslt = "채팅 전송 완료";
-        }
+    if (message.content.indexOf("[") == 0) { // 노드 코드 실행
+        rslt = String(eval(message.content.substr(1)));
     }
-    catch (e) {
-        rslt = `채팅 내용 : ${message.content}\n에러 내용 : ${e}\n${e.stack}`;
+    else if (message.content.indexOf("]") == 0) { // 콘솔 명령 실행
+        rslt = cmd(message.content.substr(1));
     }
-    finally {
-        for (let i = 0; i < rslt.length; i += 1950) { // 디스코드는 최대 2천자 제한이 있기때문에 끊어서 보내는 로직이다.
-            const last = (i + 1950) > rslt.length ? rslt.length : i + 1950;
-            message.channel.send(rslt.substring(i, last));
-        }
+    else if (message.content.indexOf("@") == 0) { // 원격 채팅 전송
+        const roomID = message.content.substr(1).split(' ')[0];
+        const msg = message.content.substr(1).replace(`${roomID} `, '');
+        message.client.channels.cache.array().find(v => v.id == roomID).send(msg);
+        rslt = "채팅 전송 완료";
     }
+    message.channel.sendFullText(rslt);
 }
 
 function cmd(_cmd) {
@@ -63,5 +54,17 @@ Object.defineProperty(Object.prototype, "prop2", {
                 return v + " : error";
             }
         }).join("\n");
+    }
+});
+
+Object.defineProperty(Channel.prototype, "sendFullText", {
+    value: function (str) {
+        if (typeof str != 'string')
+            return;
+
+        for (let i = 0; i < str.length; i += 1950) { // 디스코드는 최대 2천자 제한이 있기때문에 끊어서 보내는 로직이다.
+            const last = (i + 1950) > str.length ? str.length : i + 1950;
+            this.send(str.substring(i, last));
+        }
     }
 });
