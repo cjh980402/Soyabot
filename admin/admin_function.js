@@ -3,7 +3,7 @@ const cp = require('child_process');
 
 module.exports = function (message) {
     if (message.content.indexOf("[") == 0) { // 노드 코드 실행
-        const funcBody = message.content.substr(1).split('\n'); // 긴 코드 테스트를 위해 1천자 이상 경우에도 대응 (FullText 이용)
+        const funcBody = message.content.substr(1).trim().split('\n'); // 긴 코드 테스트를 위해 1천자 이상 경우에도 대응 (FullText 이용)
         funcBody[funcBody.length - 1] = `message.channel.sendFullText(String(${funcBody[funcBody.length - 1]}))`; // 함수의 마지막 줄 내용은 자동으로 출력
         const evalSrc = `(async()=>{${funcBody.join('\n')}})();`;
         eval(evalSrc);
