@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 let noticeTimer = null;
 let updateTimer = null;
+let testTimer = null;
 let flagTimer = [null, null, null];
 
 module.exports.startNotice = function (db, client) {
@@ -81,6 +82,45 @@ module.exports.stopUpdate = function () {
     if (updateTimer) {
         clearInterval(updateTimer);
         updateTimer = null;
+    }
+}
+
+module.exports.startTest = function (db, client) {
+    if (!testTimer) {
+        testTimer = setInterval(async () => {
+            try {
+                const parse = cheerio.load(await (await fetch("https://maplestory.nexon.com/Testworld/Totalnotice")).text());
+                const data = parse('li > p');
+
+                for (let i = 0; i < data.length; i++) {
+                    const rslt = await db.get(`SELECT * FROM mapletest WHERE title = ?`, [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
+                    if (!rslt) {
+                        await db.insert('mapletest', { title: data.eq(i).text().trim(), url: `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}` });
+                        // 중복방지 위해 db에 삽입
+
+                        const noticeEmbed = new MessageEmbed()
+                            .setTitle("메이플 테스트월드 공지")
+                            .setDescription(`${data.eq(i).find('img').attr('alt')} ${data.eq(i).text().trim()}`)
+                            .setURL(`https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`)
+                            .setColor("#F8AA2A");
+
+                        const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().filter(v => v.type == 'text')[0]);
+                        for (let i in groupChat)
+                            setTimeout(() => { groupChat[i].send(noticeEmbed) }, 1000 * i); // 1000*i ms 이후에 주어진 함수 실행
+                    }
+                }
+            }
+            catch (e) {
+                client.channels.cache.array().find(v => v.recipient == ADMIN_ID).sendFullText(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용 : ${e}\n${e.stack}`);
+            }
+        }, 120000);
+    }
+}
+
+module.exports.stopTest = function () {
+    if (testTimer) {
+        clearInterval(testTimer);
+        testTimer = null;
     }
 }
 
