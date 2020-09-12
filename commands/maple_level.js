@@ -22,12 +22,12 @@ module.exports = {
         if (char_lv < 275) {
             const percentage = (char_ex / (levelTable[char_lv] - levelTable[char_lv - 1]) * 100).toFixed(2);
             let req_275 = ((levelTable[274] - levelTable[char_lv - 1] - char_ex) / 1000000000000).toFixed(4);
-            req_275 = `${(req_275 >= 1 ? req_275.replace('.', '조 ') : req_275.substr(2))}억`;
+            req_275 = `${(req_275 >= 1 ? req_275.replace('.', '조 ') : +req_275.substr(2))}억`;
 
             repl += ` (${percentage}%)`;
             if (char_lv < 250) {
                 let req_250 = ((levelTable[249] - levelTable[char_lv - 1] - char_ex) / 1000000000000).toFixed(4);
-                req_250 = `${(req_250 >= 1 ? req_250.replace('.', '조 ') : req_250.substr(2))}억`;
+                req_250 = `${(req_250 >= 1 ? req_250.replace('.', '조 ') : +req_250.substr(2))}억`;
                 repl += `\n잔여량 (~250) : ${req_250}\n잔여량 (~275) : ${req_275}`;
             }
             else {
