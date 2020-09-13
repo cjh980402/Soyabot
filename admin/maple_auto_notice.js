@@ -16,14 +16,15 @@ module.exports.startNotice = function (db, client) {
 
                 for (let i = 0; i < data.length; i++) {
                     const rslt = await db.get(`SELECT * FROM maplenotice WHERE title = ?`, [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
-                    if (!rslt) {
-                        await db.insert('maplenotice', { title: data.eq(i).text().trim(), url: `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}` });
+                    const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
+                    if (!rslt || +rslt.url.substr(48) < +url.substr(48)) { // 제목이 다르거나, 같은 경우는 최신 공지인 경우
+                        await db.replace('maplenotice', { title: data.eq(i).text().trim(), url: url }); // 제목이 겹치는 경우 때문에 replace를 이용
                         // 중복방지 위해 db에 삽입
 
                         const noticeEmbed = new MessageEmbed()
                             .setTitle("메이플 공지사항")
                             .setDescription(`${data.eq(i).find('img').attr('alt')} ${data.eq(i).text().trim()}`)
-                            .setURL(`https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`)
+                            .setURL(url)
                             .setColor("#F8AA2A");
 
                         const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().filter(v => v.type == 'text')[0]);

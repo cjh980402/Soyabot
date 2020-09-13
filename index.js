@@ -54,7 +54,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
     try {
         if (message.author.bot) return; // 봇 여부 체크
         if (message.author.id == ADMIN_ID) { // 관리자 여부 체크
-            admin(message);
+            await admin(message);
         }
 
         const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(PREFIX)})\\s*`); // 문자열로 정규식 생성하기 위해 생성자 이용

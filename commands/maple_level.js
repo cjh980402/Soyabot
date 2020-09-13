@@ -18,7 +18,7 @@ module.exports = {
         const char_lv = rslt[0];
         const char_ex = rslt[1].replace(/,/g, '');
 
-        let repl = `[${args[0]}]\n현재 : Lv.${char_lv}`;
+        let repl = `[${args[0]}]\n직업 : ${rslt[4]}\n현재 : Lv.${char_lv}`;
         if (char_lv < 275) {
             const percentage = (char_ex / (levelTable[char_lv] - levelTable[char_lv - 1]) * 100).toFixed(2);
             let req_275 = ((levelTable[274] - levelTable[char_lv - 1] - char_ex) / 1000000000000).toFixed(4);
