@@ -1,8 +1,9 @@
 const { MessageEmbed } = require("discord.js");
 const { play } = require("../include/play");
-const { YOUTUBE_API_KEY, MAX_PLAYLIST_SIZE } = require("../config.json");
+const { YOUTUBE_API_KEY, MAX_PLAYLIST_SIZE, SOUNDCLOUD_CLIENT_ID } = require("../config.json");
 const YouTubeAPI = require("simple-youtube-api");
 const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
+const scdl = require("soundcloud-downloader")
 
 module.exports = {
     name: "playlist",
@@ -58,7 +59,19 @@ module.exports = {
                 console.error(error);
                 return message.reply("재생목록을 찾지 못했습니다 :(").catch(console.error);
             }
-        } else {
+        }
+        else if (scdl.isValidUrl(args[0])) {
+            if (args[0].includes('/sets/')) {
+                message.channel.send('⌛ fetching the playlist...')
+                playlist = await scdl.getSetInfo(args[0], SOUNDCLOUD_CLIENT_ID)
+                videos = playlist.tracks.map(track => ({
+                    title: track.title,
+                    url: track.permalink_url,
+                    duration: track.duration / 1000
+                }))
+            }
+        }
+        else {
             try {
                 const results = await youtube.searchPlaylists(search, 1, { part: "snippet" });
                 playlist = results[0];

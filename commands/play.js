@@ -42,6 +42,9 @@ module.exports = {
         if (!videoPattern.test(args[0]) && playlistPattern.test(args[0])) {
             return message.client.commands.get("playlist").execute(message, args);
         }
+        else if (scdl.isValidUrl(url) && url.includes("/sets/")) {
+            return message.client.commands.get("playlist").execute(message, args);
+        }
 
         const queueConstruct = {
             textChannel: message.channel,
@@ -74,7 +77,7 @@ module.exports = {
                 song = {
                     title: trackInfo.title,
                     url: trackInfo.permalink_url,
-                    duration: trackInfo.duration / 1000
+                    duration: Math.ceil(trackInfo.duration / 1000)
                 };
             } catch (error) {
                 if (error.statusCode === 404)

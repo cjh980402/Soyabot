@@ -20,14 +20,14 @@ module.exports = {
             bossGrade = Object.keys(bossData[bossName])[0];
 
         let bossEmbed = new MessageEmbed()
-            .setTitle(`${bossName}(${bossGrade}) 보상`)
+            .setTitle(`${bossName}(${bossGrade})의 보상`)
             .setColor("#F8AA2A");
         for (let reward of bossData[bossName][bossGrade][0])
             bossEmbed.addField(reward, '\u200b');
         message.channel.send(bossEmbed);
 
         bossEmbed = new MessageEmbed()
-            .setTitle(`${bossName}(${bossGrade}) 체력, 방어율`)
+            .setTitle(`${bossName}(${bossGrade})의 정보`)
             .setColor("#F8AA2A");
         for (let bossHP of bossData[bossName][bossGrade][1])
             bossEmbed.addField(bossHP, '\u200b');
