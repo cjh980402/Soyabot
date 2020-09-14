@@ -20,18 +20,19 @@ module.exports = {
 
         let repl = `[${args[0]}]\n직업 : ${rslt[4]}\n현재 : Lv.${char_lv}`;
         if (char_lv < 275) {
+            const sumExp = levelTable[char_lv - 1] + char_ex;
             const percentage = (char_ex / (levelTable[char_lv] - levelTable[char_lv - 1]) * 100).toFixed(2);
-            let req_275 = ((levelTable[274] - levelTable[char_lv - 1] - char_ex) / 1000000000000).toFixed(4);
+            let req_275 = ((levelTable[274] - sumExp) / 1000000000000).toFixed(4);
             req_275 = `${(req_275 >= 1 ? req_275.replace('.', '조 ') : +req_275.substr(2))}억`;
 
             repl += ` (${percentage}%)`;
             if (char_lv < 250) {
-                let req_250 = ((levelTable[249] - levelTable[char_lv - 1] - char_ex) / 1000000000000).toFixed(4);
+                let req_250 = ((levelTable[249] - sumExp) / 1000000000000).toFixed(4);
                 req_250 = `${(req_250 >= 1 ? req_250.replace('.', '조 ') : +req_250.substr(2))}억`;
-                repl += `\n잔여량 (~250) : ${req_250}\n진행률 (~250) : ${(levelTable[char_lv - 1] / levelTable[249] * 100).toFixed(2)}%\n잔여량 (~275) : ${req_275}\n진행률 (~275) : ${(levelTable[char_lv - 1] / levelTable[274] * 100).toFixed(2)}%`;
+                repl += `\n잔여량 (~250) : ${req_250}\n진행률 (~250) : ${(sumExp / levelTable[249] * 100).toFixed(2)}%\n잔여량 (~275) : ${req_275}\n진행률 (~275) : ${(sumExp / levelTable[274] * 100).toFixed(2)}%`;
             }
             else {
-                repl += `\n잔여량 (~275) : ${req_275}\n진행률 (~275) : ${(levelTable[char_lv - 1] / levelTable[274] * 100).toFixed(2)}%`;
+                repl += `\n잔여량 (~275) : ${req_275}\n진행률 (~275) : ${(sumExp / levelTable[274] * 100).toFixed(2)}%`;
             }
         }
         message.channel.send(repl);
