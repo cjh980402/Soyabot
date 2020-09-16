@@ -110,7 +110,9 @@ class Maple {
         if (typeof this.ggdata != 'function')
             throw new Error("네트워크 에러 발생!");
         else if (this.ggdata('div.alert.alert-warning.mt-3').text().trim() != '')
-            throw new Error("maple.GG 서버 점검 중");
+            throw new Error("maple.GG 서버가 점검 중입니다.");
+        else if (this.ggdata('div.flex-center.position-ref.full-height').text().trim() != '')
+            throw new Error("maple.GG 서버에 에러가 발생했습니다.");
 
         if (this.ggdata(".d-block.font-weight-light").text().replace(/(\s*)/g, "") != "마지막업데이트:오늘"
             || this.ggdata(".container.mt-5.text-center > h3").text() == "검색결과가 없습니다.")

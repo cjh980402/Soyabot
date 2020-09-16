@@ -102,8 +102,8 @@ client.on("message", async (message) => { // 각 메시지에 반응
         await command.execute(message, args); // 실질적인 명령어 수행 부분, 일부 비동기 모듈때문에 await를 붙인다.
     }
     catch (error) {
-        if (error.message == 'maple.GG 서버 점검 중')
-            message.reply('현재 maple.GG 서버 점검 중입니다.');
+        if (error.message.indexOf('maple.GG') == 0)
+            message.reply(e.message);
         else {
             client.channels.cache.array().find(v => v.recipient == ADMIN_ID).sendFullText(`작성자 : ${message.author.username}\n방 ID : ${message.channel.id}\n채팅 내용 : ${message.content}\n에러 내용 : ${error}\n${error.stack}`);
             message.reply("에러로그가 전송되었습니다.");
