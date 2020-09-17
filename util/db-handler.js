@@ -1,7 +1,9 @@
+const sqlite3 = require('sqlite3').verbose();
 const { inspect } = require('util');
+
 class SQLiteHandler {
     constructor(db) {
-        this.db = db;
+        this.db = new sqlite3.Database(db);
     }
 
     get raw() {

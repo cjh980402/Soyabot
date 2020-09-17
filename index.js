@@ -6,9 +6,8 @@ const { readdirSync } = require("fs");
 const { join } = require("path");
 const { TOKEN, PREFIX, ADMIN_ID } = require("./config.json");
 const puppeteer = require('puppeteer');
-const sqlite3 = require('sqlite3').verbose();
 const dbhandler = require('./util/db-handler');
-const db = new dbhandler(new sqlite3.Database('./db/soyabot_data.db'));
+const db = new dbhandler('./db/soyabot_data.db');
 const { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, startFlag, stopFlag } = require('./admin/maple_auto_notice.js');
 const admin = require("./admin/admin_function");
 const botChatting = require("./util/bot_chatting");
@@ -67,7 +66,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
 
         const [, matchedPrefix] = message.content.match(prefixRegex); // ()로 감싸진 명령어 부분에 대응
 
-        const args = message.content.slice(matchedPrefix.length).trim().split(/ +/); // 공백으로 메시지 텍스트 분할
+        const args = message.content.slice(matchedPrefix.length).trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
         const commandName = args.shift().toLowerCase(); // cmmandName은 args의 첫번째 원소(명령어 부분), shift로 인해 args에는 뒷부분만 남음
 
         const command =
