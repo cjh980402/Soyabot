@@ -64,9 +64,9 @@ client.on("message", async (message) => { // 각 메시지에 반응
             return botChatting(message); // 잡담 로직
         } // 멘션이나 PREFIX로 시작하지 않는 경우
 
-        const [, matchedPrefix] = message.content.match(prefixRegex); // ()로 감싸진 명령어 접두어 부분에 대응
+        const [matchedPrefix] = message.content.match(prefixRegex); // 정규식에 대응되는 명령어 접두어 부분에 대응
 
-        const args = message.content.trim().slice(matchedPrefix.length).split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
+        const args = message.content.slice(matchedPrefix.length).trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
         const commandName = args.shift().toLowerCase(); // cmmandName은 args의 첫번째 원소(명령어 부분), shift로 인해 args에는 뒷부분만 남음
 
         const command =
