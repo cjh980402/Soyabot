@@ -56,7 +56,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
             await admin(message);
         }
 
-        const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(PREFIX)})\\s*`); // 문자열로 정규식 생성하기 위해 생성자 이용
+        const prefixRegex = new RegExp(`^\\s*(<@!?${client.user.id}>|${escapeRegex(PREFIX)})\\s*`); // 문자열로 정규식 생성하기 위해 생성자 이용
         // 자기자신한테 하는 멘션 또는 PREFIX로 시작하는 명령어에 대응
         // message.content : 메시지 내용 텍스트
         // 멘션의 형태 : <@${message.author.id}>, 인용의 형태 : > ${내용}
@@ -64,9 +64,9 @@ client.on("message", async (message) => { // 각 메시지에 반응
             return botChatting(message); // 잡담 로직
         } // 멘션이나 PREFIX로 시작하지 않는 경우
 
-        const [, matchedPrefix] = message.content.match(prefixRegex); // ()로 감싸진 명령어 부분에 대응
+        const [, matchedPrefix] = message.content.match(prefixRegex); // ()로 감싸진 명령어 접두어 부분에 대응
 
-        const args = message.content.slice(matchedPrefix.length).trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
+        const args = message.content.trim().slice(matchedPrefix.length).split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
         const commandName = args.shift().toLowerCase(); // cmmandName은 args의 첫번째 원소(명령어 부분), shift로 인해 args에는 뒷부분만 남음
 
         const command =
