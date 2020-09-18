@@ -7,7 +7,7 @@ let updateTimer = null;
 let testTimer = null;
 let flagTimer = [null, null, null];
 
-module.exports.startNotice = function (db, client) {
+module.exports.startNotice = function () {
     if (!noticeTimer) {
         noticeTimer = setInterval(async () => {
             try {
@@ -27,7 +27,8 @@ module.exports.startNotice = function (db, client) {
                             .setURL(url)
                             .setColor("#F8AA2A");
 
-                        const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().filter(v => v.type == 'text')[0]);
+                        const skiplist = await db.all(`select channelid from noticeskip`).map(v => v.channelid);
+                        const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().filter(v => !skiplist.includes(v.id) && v.type == 'text')[0]);
                         for (let i in groupChat)
                             setTimeout(() => { groupChat[i].send(noticeEmbed) }, 1000 * i); // 1000*i ms 이후에 주어진 함수 실행
                     }
@@ -47,7 +48,7 @@ module.exports.stopNotice = function () {
     }
 }
 
-module.exports.startUpdate = function (db, client) {
+module.exports.startUpdate = function () {
     if (!updateTimer) {
         updateTimer = setInterval(async () => {
             try {
@@ -67,7 +68,8 @@ module.exports.startUpdate = function (db, client) {
                             .setURL(url)
                             .setColor("#F8AA2A");
 
-                        const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().filter(v => v.type == 'text')[0]);
+                        const skiplist = await db.all(`select channelid from updateskip`).map(v => v.channelid);
+                        const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().filter(v => !skiplist.includes(v.id) && v.type == 'text')[0]);
                         for (let i in groupChat)
                             setTimeout(() => { groupChat[i].send(noticeEmbed) }, 1000 * i); // 1000*i ms 이후에 주어진 함수 실행
                     }
@@ -87,7 +89,7 @@ module.exports.stopUpdate = function () {
     }
 }
 
-module.exports.startTest = function (db, client) {
+module.exports.startTest = function () {
     if (!testTimer) {
         testTimer = setInterval(async () => {
             try {
@@ -107,7 +109,8 @@ module.exports.startTest = function (db, client) {
                             .setURL(url)
                             .setColor("#F8AA2A");
 
-                        const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().filter(v => v.type == 'text')[0]);
+                        const skiplist = await db.all(`select channelid from testskip`).map(v => v.channelid);
+                        const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().filter(v => !skiplist.includes(v.id) && v.type == 'text')[0]);
                         for (let i in groupChat)
                             setTimeout(() => { groupChat[i].send(noticeEmbed) }, 1000 * i); // 1000*i ms 이후에 주어진 함수 실행
                     }
@@ -127,7 +130,7 @@ module.exports.stopTest = function () {
     }
 }
 
-module.exports.startFlag = function (client) {
+module.exports.startFlag = function () {
     const flagtime = [11, 18, 20]; // 12, 19, 21시에 시작 -> 5분전에 알림
     const flagDate = []; // 플래그 알림 시간 객체 저장
     const now = new Date();
@@ -137,14 +140,16 @@ module.exports.startFlag = function (client) {
             if (now > flagDate[i]) {
                 flagDate[i] = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, flagtime[i], 55);
             }
-            setTimeout(() => {
-                const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().filter(v => v.type == 'text')[0]);
+            setTimeout(async() => {
+                const skiplist = await db.all(`select channelid from flagskip`).map(v => v.channelid);
+                const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().filter(v => !skiplist.includes(v.id) && v.type == 'text')[0]);
                 for (let j in groupChat)
                     setTimeout(() => { groupChat[j].send(`${flagtime[i] + 1}시 플래그를 준비하세요!`) }, 1000 * j);
 
                 // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
-                flagTimer[i] = setInterval(() => {
-                    const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().filter(v => v.type == 'text')[0]);
+                flagTimer[i] = setInterval(async() => {
+                    const skiplist = await db.all(`select channelid from flagskip`).map(v => v.channelid);
+                    const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().filter(v => !skiplist.includes(v.id) && v.type == 'text')[0]);
                     for (let j in groupChat)
                         setTimeout(() => { groupChat[j].send(`${flagtime[i] + 1}시 플래그를 준비하세요!`) }, 1000 * j);
                 }, 86400000); // 24시간 주기

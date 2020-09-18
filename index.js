@@ -28,14 +28,19 @@ client.on("ready", async () => {
     console.log(`${client.user.username} ready!`);
     client.user.setActivity(`${PREFIX}help`, { type: 'LISTENING' });
     global.client = client;
+    global.db = db;
     global.browser = await puppeteer.launch();
     await db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');
-    startNotice(db, client); // 공지 자동 알림 기능
-    startUpdate(db, client); // 업데이트 자동 알림 기능
-    startTest(db, client); // 테섭 자동 알림 기능
-    startFlag(client); // 플래그 자동 알림 기능
+    await db.run('CREATE TABLE IF NOT EXISTS noticeskip(channelid text primary key, name text not null)');
+    await db.run('CREATE TABLE IF NOT EXISTS updateskip(channelid text primary key, name text not null)');
+    await db.run('CREATE TABLE IF NOT EXISTS flagskip(channelid text primary key, name text not null)');
+    await db.run('CREATE TABLE IF NOT EXISTS testskip(channelid text primary key, name text not null)');
+    startNotice(); // 공지 자동 알림 기능
+    startUpdate(); // 업데이트 자동 알림 기능
+    startTest(); // 테섭 자동 알림 기능
+    startFlag(); // 플래그 자동 알림 기능
 });
 client.on("warn", (info) => console.log(info));
 client.on("error", console.error);
