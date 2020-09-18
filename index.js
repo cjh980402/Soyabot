@@ -6,10 +6,10 @@ const { readdirSync } = require("fs");
 const { join } = require("path");
 const { TOKEN, PREFIX, ADMIN_ID } = require("./config.json");
 const puppeteer = require('puppeteer');
+const admin = require("./admin/admin_function");
 const dbhandler = require('./util/db-handler');
 const db = new dbhandler('./db/soyabot_data.db');
 const { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, startFlag, stopFlag } = require('./admin/maple_auto_notice.js');
-const admin = require("./admin/admin_function");
 const botChatting = require("./util/bot_chatting");
 
 const client = new Client({ disableMentions: "everyone" });
