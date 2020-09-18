@@ -28,7 +28,7 @@ module.exports = {
         await page.goto(`https://maple.gg/u/${args[0]}`);
 
         await page.click('.btn.btn-grape-fruit');
-        await page.waitFor(1000); // 1초 기다리기
+        await page.waitForTimeout(1000); // 1초 기다리기
         const box = await (await page.$('.character-card')).boundingBox();
         const attachment = new MessageAttachment(await page.screenshot({ clip: { x: box.x, y: box.y + 3, width: box.width, height: box.height } }), 'profile.png');
         // 사진 자체가 아래로 치우쳤기에 3픽셀 보정
