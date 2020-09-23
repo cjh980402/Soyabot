@@ -21,8 +21,8 @@ module.exports = {
         
         const rslt = Maple.Rank();
         if (rslt == null)
-            message.channel.send(`[${nickname}]\n기록이 없습니다.`);
+            message.channel.send(`[${args[0]}]\n기록이 없습니다.`);
         else
-            message.channel.send(`[${nickname}]\n종합 랭킹(전체) : ${rslt[0]}\n종합 랭킹(월드) : ${rslt[1]}\n직업 랭킹(전체) : ${rslt[3]}\n직업 랭킹(월드) : ${rslt[2]}`);
+            message.channel.send(`[${args[0]}]\n종합 랭킹(전체) : ${rslt[0]}\n종합 랭킹(월드) : ${rslt[1]}\n직업 랭킹(전체) : ${rslt[3]}\n직업 랭킹(월드) : ${rslt[2]}`);
     }
 };
