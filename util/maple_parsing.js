@@ -33,7 +33,7 @@ class Maple {
         }
         let temp = `Ranking/World/Total?c=${this.name}`; // 일반섭
         this.homelevel = await linkParse(`https://maplestory.nexon.com/${temp}`);
-        if (typeof this.homeLevel != 'function')
+        if (typeof this.homelevel != 'function')
             throw new Error("네트워크 에러 발생!");
 
         if (this.homelevel("tr[class]").length == 0) {
