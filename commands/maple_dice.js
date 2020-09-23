@@ -8,7 +8,7 @@ module.exports = {
     description: "추억의 메이플스토리 주사위 굴리기",
     type: ["메이플"],
     async execute(message) {
-        await exec(`py ./util/maple_stats_drawer.py "${message.author.username.replace(/"/g, '\\"')}" ${message.author.id}`);
+        await exec(`python3 ./util/maple_stats_drawer.py "${message.author.username.replace(/"/g, '\\"')}" ${message.author.id}`);
         const dice = await message.channel.send(`${message.author.username}님의 스탯`, {
             files: [`./pictures/dice_result/${message.author.id}.png`]
         });

@@ -22,7 +22,7 @@ module.exports = {
         }
 
         if (!browser.isConnected())
-            browser = await puppeteer.launch();
+            browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
         const page = await browser.newPage();
         page.setViewport({ width: 500, height: 800 }); // 화면이 좁아야 코디 컬렉션이 세로로 길게 나옴
         await page.goto(`https://maple.gg/u/${args[0]}`);

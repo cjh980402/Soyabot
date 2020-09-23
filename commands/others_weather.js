@@ -28,7 +28,7 @@ module.exports = {
             return message.channel.send("지원하지 않는 지역입니다.");
 
         if (!browser.isConnected())
-            browser = await puppeteer.launch();
+            browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
         const page = await browser.newPage();
         page.setViewport({ width: 1400, height: 1000 }); // 넓은 화면 세팅
         try {
