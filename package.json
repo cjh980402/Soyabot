@@ -18,7 +18,7 @@
     "ffmpeg-static": "^4.2.7",
     "lyrics-finder": "^21.4.0",
     "node-fetch": "^2.6.1",
-    "puppeteer": "^5.3.0",
+    "puppeteer": "^5.3.1",
     "simple-youtube-api": "^5.2.1",
     "soundcloud-downloader": "^0.1.6",
     "sqlite3": "^5.0.0",
