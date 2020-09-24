@@ -1,5 +1,7 @@
 const { Channel } = require("discord.js");
+const util = require('util');
 const cp = require('child_process');
+const exec = util.promisify(cp.exec);
 
 module.exports = async function (message) {
     if (message.content.startsWith("[")) { // 노드 코드 실행
@@ -8,7 +10,7 @@ module.exports = async function (message) {
         await eval(`(async()=>{${funcBody.join('\n')}})();`);
     }
     else if (message.content.startsWith("]")) { // 콘솔 명령 실행
-        message.channel.sendFullText(cmd(message.content.substr(1)));
+        message.channel.sendFullText(await cmd(message.content.substr(1)));
     }
     else if (message.content.startsWith("@")) { // 원격 채팅 전송
         const roomID = message.content.substr(1).split(' ')[0];
@@ -18,15 +20,15 @@ module.exports = async function (message) {
     }
 }
 
-function cmd(_cmd) {
+async function cmd(_cmd) {
     let cmdResult;
     try {
-        cmdResult = cp.execSync(_cmd).toString();
+        cmdResult = (await exec(_cmd)).stdout;
     }
     catch (e) {
         cmdResult = e.toString();
     }
-    return cmdResult.replace(/\u001b\[\d\dm/g, "");;
+    return cmdResult.replace(/\u001b\[\d\dm/g, "").trimEnd();
 }
 
 Object.defineProperty(Object.prototype, "prop", {
