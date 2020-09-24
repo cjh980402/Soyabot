@@ -1,12 +1,11 @@
-const { MessageEmbed, MessageAttachment } = require("discord.js");
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 
 module.exports = {
-    name: "썬데이",
-    aliases: ["ㅆㄷㅇ"],
+    usage: `${client.prefix}썬데이`,
+    command: ["썬데이", "ㅆㄷㅇ"],
+    description: "- 현재 진행 (예정) 중인 썬데이 메이플을 공지",
     type: ["메이플"],
-    description: "현재 진행 (예정) 중인 썬데이 메이플을 공지",
     async execute(message) {
         const parse = cheerio.load(await (await fetch("https://maplestory.nexon.com/News/Event")).text());
         const eventdata = parse('.event_all_banner');

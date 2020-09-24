@@ -2,13 +2,13 @@ const { MessageEmbed, MessageAttachment } = require("discord.js");
 const mapleModule = require("../util/maple_parsing");
 
 module.exports = {
-    name: "스카우터",
-    aliases: ["스카우터", "ㅅㅋㅇㅌ"],
+    usage: `${client.prefix}스카우터 (닉네임)`,
+    command: ["스카우터", "ㅅㅋㅇㅌ"],
+    description: "- 정해진 조건으로 해당 캐릭터의 점수를 평가",
     type: ["메이플"],
-    description: "정해진 조건으로 해당 캐릭터의 점수를 평가",
     async execute(message, args) {
-        if (!args[0])
-            return message.channel.send(`**${message.client.prefix}${this.name} ${this.aliases ? `(${this.aliases})` : ""}**\n${this.description}`);
+        if (args.length != 1)
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
         const Maple = new mapleModule(args[0]);
 
         let union = (await Maple.isMain()) ? Maple.homeUnion() : null;

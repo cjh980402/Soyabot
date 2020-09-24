@@ -2,8 +2,9 @@ const fs = require("fs");
 const config = require("../config.json");
 
 module.exports = {
-    name: "pruning",
-    description: "봇 메시지 자동정리 상태를 전환",
+    usage: `${client.prefix}pruning`,
+    command: ["pruning"],
+    description: "- 봇 메시지 자동정리 상태를 전환",
     type: ["음악"],
     execute(message) {
         config.PRUNING = !config.PRUNING;

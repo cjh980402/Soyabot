@@ -3,19 +3,18 @@
  */
 const { Client, Collection } = require("discord.js");
 const { readdirSync } = require("fs");
-const { join } = require("path");
 const { TOKEN, PREFIX, ADMIN_ID } = require("./config.json");
 const puppeteer = require('puppeteer');
 const admin = require("./admin/admin_function");
 const dbhandler = require('./util/db-handler');
 const db = new dbhandler('./db/soyabot_data.db');
-const { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, startFlag, stopFlag } = require('./admin/maple_auto_notice.js');
+const { startNotice, startUpdate, startTest, startFlag } = require('./admin/maple_auto_notice.js');
 const botChatting = require("./util/bot_chatting");
 
 const client = new Client({ disableMentions: "everyone" });
 
 client.login(TOKEN);
-client.commands = new Collection();
+client.commands = new Array();
 client.prefix = PREFIX;
 client.queue = new Map();
 const cooldowns = new Collection();
@@ -41,18 +40,16 @@ client.on("ready", async () => {
     startUpdate(); // 업데이트 자동 알림 기능
     startTest(); // 테섭 자동 알림 기능
     startFlag(); // 플래그 자동 알림 기능
+    /**
+     * Import all commands
+     */
+    const commandFiles = readdirSync("./commands").filter((file) => file.endsWith(".js")); // commands 폴더속 .js 파일 걸러내기
+    for (const file of commandFiles) {
+        client.commands.push(require(`./commands/${file}`)); // 배열에 이름과 명령 객체를 push
+    }
 });
 client.on("warn", (info) => console.log(info));
 client.on("error", console.error);
-
-/**
- * Import all commands
- */
-const commandFiles = readdirSync(join(__dirname, "commands")).filter((file) => file.endsWith(".js")); // commands 폴더속 .js 파일 걸러내기
-for (const file of commandFiles) {
-    const command = require(join(__dirname, "commands", `${file}`)); // 위에서 걸러낸 파일을 모두 require
-    client.commands.set(command.name, command); // Collection에 이름과 객체를 set
-}
 
 client.on("message", async (message) => { // 각 메시지에 반응
     try {
@@ -74,20 +71,18 @@ client.on("message", async (message) => { // 각 메시지에 반응
         const args = message.content.slice(matchedPrefix.length).trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
         const commandName = args.shift().toLowerCase(); // cmmandName은 args의 첫번째 원소(명령어 부분), shift로 인해 args에는 뒷부분만 남음
 
-        const command =
-            client.commands.get(commandName) ||
-            client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
+        const botModule = client.commands.find((cmd) => cmd.command && cmd.command.includes(commandName));
         // 해당하는 명령어 찾기 (이름으로 또는 추가 명령어로 찾음)
 
-        if (!command) return; // 해당하는 명령어 없으면 종료
+        if (!botModule) return; // 해당하는 명령어 없으면 종료
 
-        if (!cooldowns.has(command.name)) { // 사용된 적이 없는 명령이면 새로 set한다
-            cooldowns.set(command.name, new Collection());
+        if (!cooldowns.has(botModule.command[0])) { // 사용된 적이 없는 명령이면 새로 set한다
+            cooldowns.set(botModule.command[0], new Collection());
         }
 
         const now = Date.now();
-        const timestamps = cooldowns.get(command.name); // Collection 객체
-        const cooldownAmount = (command.cooldown || 1) * 1000; // 명시된 쿨타임이 없다면 1초로 취급
+        const timestamps = cooldowns.get(botModule.command[0]); // Collection 객체
+        const cooldownAmount = (botModule.cooldown || 1) * 1000; // 명시된 쿨타임이 없다면 1초로 취급
 
         if (timestamps.has(message.author.id)) {
             const expirationTime = timestamps.get(message.author.id) + cooldownAmount; // 지난 명령 이후 쿨타임이 다 지난 시간
@@ -95,7 +90,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
             if (now < expirationTime) { // 아직 다 지나지 않은 경우
                 const timeLeft = (expirationTime - now) / 1000;
                 return message.reply(
-                    `\`${command.name}\`명령을 사용하기 위해 ${timeLeft.toFixed(1)}초 이상 기다려야합니다.`
+                    `\`${botModule.command[0]}\`명령을 사용하기 위해 ${timeLeft.toFixed(1)}초 이상 기다려야합니다.`
                 );
             }
         }
@@ -103,10 +98,10 @@ client.on("message", async (message) => { // 각 메시지에 반응
         timestamps.set(message.author.id, now); // id와 현재시간 저장, 객체는 참조형이므로 cooldowns의 value에 추가됨
         setTimeout(() => timestamps.delete(message.author.id), cooldownAmount); // 쿨타임 지나면 삭제
 
-        await command.execute(message, args); // 실질적인 명령어 수행 부분, 일부 비동기 모듈때문에 await를 붙인다.
+        await botModule.execute(message, args); // 실질적인 명령어 수행 부분, 일부 비동기 모듈때문에 await를 붙인다.
     }
     catch (error) {
-        if (error.message.indexOf('maple.GG') == 0)
+        if (error.message.startsWith('maple.GG'))
             message.reply(e.message);
         else {
             client.channels.cache.array().find(v => v.recipient == ADMIN_ID).sendFullText(`작성자 : ${message.author.username}\n방 ID : ${message.channel.id}\n채팅 내용 : ${message.content}\n에러 내용 : ${error}\n${error.stack}`);

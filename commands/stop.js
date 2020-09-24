@@ -2,8 +2,9 @@ const { canModifyQueue } = require("../util/SoyabotUtil");
 
 
 module.exports = {
-    name: "stop",
-    description: "지금 재생 중인 노래를 정지",
+    usage: `${client.prefix}stop`,
+    command: ["stop"],
+    description: "- 지금 재생 중인 노래를 정지",
     type: ["음악"],
     execute(message) {
         if (!message.guild) return message.reply("사용이 불가능한 채널입니다.").catch(console.error); // 그룹톡 여부 체크

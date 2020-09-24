@@ -3,9 +3,9 @@ const cp = require('child_process');
 const exec = util.promisify(cp.exec);
 
 module.exports = {
-    name: "데굴데굴",
-    aliases: ["ㄷㄱㄷㄱ"],
-    description: "추억의 메이플스토리 주사위 굴리기",
+    usage: `${client.prefix}데굴데굴`,
+    command: ["데굴데굴", "ㄷㄱㄷㄱ"],
+    description: "- 추억의 메이플스토리 주사위 굴리기",
     type: ["메이플"],
     async execute(message) {
         await exec(`python3 ./util/maple_stats_drawer.py "${message.author.username.replace(/"/g, '\\"')}" ${message.author.id}`);

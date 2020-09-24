@@ -1,13 +1,13 @@
 const mapleModule = require("../util/maple_parsing");
 
 module.exports = {
-    name: "히스토리",
-    aliases: ["ㅎㅅㅌㄹ"],
+    usage: `${client.prefix}히스토리 (닉네임)`,
+    command: ["히스토리", "ㅎㅅㅌㄹ"],
     type: ["메이플"],
-    description: "캐릭터의 레벨업 히스토리를 출력",
+    description: "- 캐릭터의 레벨업 히스토리를 출력",
     async execute(message, args) {
-        if (!args[0])
-            return message.channel.send(`**${message.client.prefix}${this.name} ${this.aliases ? `(${this.aliases})` : ""}**\n${this.description}`);
+        if (args.length != 1)
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
         const Maple = new mapleModule(args[0]);
         if ((await Maple.isExist()) == null || Maple.homeLevel() == null) {
             return message.channel.send(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);

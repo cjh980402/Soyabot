@@ -2,13 +2,13 @@ const mapleModule = require("../util/maple_parsing");
 const { levelTable } = require("../util/soyabot_const.json");
 
 module.exports = {
-    name: "레벨",
-    aliases: ["ㄹㅂ", "ㄼ"],
+    usage: `${client.prefix}레벨 (닉네임)`,
+    command: ["레벨", "ㄹㅂ", "ㄼ"],
     type: ["메이플"],
-    description: "캐릭터의 공식 홈페이지 기준 레벨과 경험치를 통해 250, 275까지 남은 경험치량을 계산",
+    description: "- 캐릭터의 공식 홈페이지 기준 레벨과 경험치를 통해 250, 275까지 남은 경험치량을 계산",
     async execute(message, args) {
-        if (!args[0])
-            return message.channel.send(`**${message.client.prefix}${this.name} ${this.aliases ? `(${this.aliases})` : ""}**\n${this.description}`);
+        if (args.length != 1)
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
         const Maple = new mapleModule(args[0]);
         const rslt = (await Maple.isExist()) ? Maple.homeLevel() : null;
         if (rslt == null) {

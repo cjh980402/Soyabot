@@ -1,9 +1,9 @@
 const { canModifyQueue } = require("../util/SoyabotUtil");
 
 module.exports = {
-    name: "loop",
-    aliases: ['l'],
-    description: "반복 재생 상태를 전환",
+    usage: `${client.prefix}loop`,
+    command: ["loop", 'l'],
+    description: "- 반복 재생 상태를 전환",
     type: ["음악"],
     execute(message) {
         if (!message.guild) return message.reply("사용이 불가능한 채널입니다.").catch(console.error); // 그룹톡 여부 체크

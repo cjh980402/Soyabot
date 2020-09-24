@@ -1,9 +1,9 @@
 const { canModifyQueue } = require("../util/SoyabotUtil");
 
 module.exports = {
-    name: "volume",
-    aliases: ["v"],
-    description: "지금 재생 중인 노래의 음량 변경",
+    usage: `${client.prefix}volume (변경할 음량)`,
+    command: ["volume", "v"],
+    description: "- 지금 재생 중인 노래의 음량 변경(0 ~ 100 범위)",
     type: ["음악"],
     execute(message, args) {
         if (!message.guild) return message.reply("사용이 불가능한 채널입니다.").catch(console.error); // 그룹톡 여부 체크

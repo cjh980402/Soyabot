@@ -4,14 +4,15 @@ const YouTubeAPI = require("simple-youtube-api");
 const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
 
 module.exports = {
-    name: "search",
-    description: "재생할 노래를 검색하고 선택",
+    usage: `${client.prefix}search <Video Name>`,
+    command: ["search"],
+    description: "- 재생할 노래를 검색하고 선택",
     type: ["음악"],
     async execute(message, args) {
         if (!message.guild)
             return message.reply("사용이 불가능한 채널입니다.").catch(console.error); // 그룹톡 여부 체크
         if (!args.length)
-            return message.reply(`사용법 : ${message.client.prefix}${module.exports.name} <Video Name>`).catch(console.error);
+        return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
         if (message.channel.activeCollector)
             return message.reply("메시지 수집기가 이 채널에서 이미 활성화됐습니다.");
         if (!message.member.voice.channel)

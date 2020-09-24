@@ -3,13 +3,13 @@ const puppeteer = require('puppeteer');
 const mapleModule = require("../util/maple_parsing");
 
 module.exports = {
-    name: "컬렉션",
-    aliases: ["ㅋㄹㅅ", "ㅋㄽ"],
-    description: "캐릭터의 메이플 gg 코디 컬렉션을 출력",
+    usage: `${client.prefix}컬렉션 (닉네임)`,
+    command: ["컬렉션", "ㅋㄹㅅ", "ㅋㄽ"],
+    description: "- 캐릭터의 메이플 gg 코디 컬렉션을 출력",
     type: ["메이플"],
     async execute(message, args) {
-        if (!args[0])
-            return message.channel.send(`**${message.client.prefix}${this.name} ${this.aliases ? `(${this.aliases})` : ""}**\n${this.description}`);
+        if (args.length != 1)
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
         const Maple = new mapleModule(args[0]);
         if ((await Maple.isExist()) == null || Maple.homeLevel() == null) {
             return message.channel.send(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);

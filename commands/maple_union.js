@@ -1,13 +1,13 @@
 const mapleModule = require("../util/maple_parsing");
 
 module.exports = {
-    name: "유니온",
-    aliases: ["ㅇㄴㅇ"],
+    usage: `${client.prefix}유니온 (닉네임)`,
+    command: ["유니온", "ㅇㄴㅇ"],
+    description: "- 캐릭터의 유니온 정보와 일일 코인 수급량을 출력",
     type: ["메이플"],
-    description: "캐릭터의 유니온 정보와 일일 코인 수급량을 출력",
     async execute(message, args) {
-        if (!args[0])
-            return message.channel.send(`**${message.client.prefix}${this.name} ${this.aliases ? `(${this.aliases})` : ""}**\n${this.description}`);
+        if (args.length != 1)
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
         const Maple = new mapleModule(args[0]);
 
         const union = (await Maple.isMain()) ? Maple.homeUnion() : null;

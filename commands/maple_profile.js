@@ -3,13 +3,13 @@ const puppeteer = require('puppeteer');
 const mapleModule = require("../util/maple_parsing");
 
 module.exports = {
-    name: "프로필",
-    aliases: ["ㅍㄹㅍ", "ㅍㄿ"],
-    description: "캐릭터의 메이플 gg 프로필을 출력",
+    usage: `${client.prefix}프로필 (닉네임)`,
+    command: ["프로필", "ㅍㄹㅍ", "ㅍㄿ"],
+    description: "- 캐릭터의 메이플 gg 프로필을 출력",
     type: ["메이플"],
     async execute(message, args) {
-        if (!args[0])
-            return message.channel.send(`**${message.client.prefix}${this.name} ${this.aliases ? `(${this.aliases})` : ""}**\n${this.description}`);
+        if (args.length != 1)
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
         const Maple = new mapleModule(args[0]);
         if ((await Maple.isExist()) == null || Maple.homeLevel() == null) {
             return message.channel.send(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);
@@ -37,7 +37,5 @@ module.exports = {
         });
 
         await page.close();
-
-
     }
 };

@@ -2,8 +2,9 @@ const createBar = require("string-progressbar");
 const { MessageEmbed } = require("discord.js");
 
 module.exports = {
-    name: "np",
-    description: "지금 재생 중인 노래 출력",
+    usage: `${client.prefix}nowplaying`,
+    command: ["nowplaying", "np"],
+    description: "- 지금 재생 중인 노래 출력",
     type: ["음악"],
     execute(message) {
         if (!message.guild) return message.reply("사용이 불가능한 채널입니다.").catch(console.error); // 그룹톡 여부 체크

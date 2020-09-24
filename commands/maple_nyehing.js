@@ -1,7 +1,7 @@
 module.exports = {
-    name: "녜힁",
-    aliases: ["ㄴㅎ", "ㄶ"],
-    description: "메이플스토리 닉네임을 추천 (2 ~ 6글자)",
+    usage: `${client.prefix}녜힁 (글자 수)`,
+    command: ["녜힁", "ㄴㅎ", "ㄶ"],
+    description: "- 메이플스토리 닉네임을 추천 (2 ~ 6글자)",
     type: ["메이플"],
     execute(message, args) {
         const cnt = (!args[0] ? 2 : +args[0]);

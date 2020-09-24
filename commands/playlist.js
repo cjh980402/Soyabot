@@ -6,10 +6,10 @@ const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
 const scdl = require("soundcloud-downloader")
 
 module.exports = {
-    name: "playlist",
+    usage: `${client.prefix}playlist <YouTube Playlist URL | Playlist Name>`,
+    command: ["playlist", "pl"],
     cooldown: 3,
-    aliases: ["pl"],
-    description: "유튜브의 재생목록을 재생",
+    description: "- 유튜브의 재생목록을 재생",
     type: ["음악"],
     async execute(message, args) {
         if (!message.guild) return message.reply("사용이 불가능한 채널입니다.").catch(console.error); // 그룹톡 여부 체크
@@ -21,9 +21,8 @@ module.exports = {
             return message.reply(`같은 채널에 있어야합니다. (${message.client.user})`).catch(console.error);
 
         if (!args.length)
-            return message
-                .reply(`사용법 : ${message.client.prefix}playlist <YouTube Playlist URL | Playlist Name>`)
-                .catch(console.error);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
+
         if (!channel) return message.reply("음성 채널에 먼저 참가해주세요!").catch(console.error);
 
         const permissions = channel.permissionsFor(message.client.user);
