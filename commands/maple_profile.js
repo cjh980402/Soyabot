@@ -21,12 +21,11 @@ module.exports = {
             }
         }
 
-        if (!browser.isConnected())
-            browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+        const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+
         const page = await browser.newPage();
         page.setViewport({ width: 1400, height: 1000 }); // 화면이 넓어야 버튼을 눌러도 스크롤 시점이 이동을 안함
         await page.goto(`https://maple.gg/u/${args[0]}`);
-
         await page.click('.btn.btn-grape-fruit');
         await page.waitForTimeout(1000); // 1초 기다리기
         const box = await (await page.$('.character-card')).boundingBox();
@@ -35,7 +34,6 @@ module.exports = {
         message.channel.send(`${args[0]}님의 프로필`, {
             files: [attachment]
         });
-
-        await page.close();
+        await browser.close();
     }
 };

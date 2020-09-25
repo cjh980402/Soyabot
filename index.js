@@ -28,7 +28,6 @@ client.on("ready", async () => {
     client.user.setActivity(`${PREFIX}help`, { type: 'LISTENING' });
     global.client = client;
     global.db = db;
-    global.browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     await db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');
