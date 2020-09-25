@@ -147,7 +147,7 @@ module.exports.startFlag = function () {
                 const skiplist = (await db.all(`select channelid from flagskip`)).map(v => v.channelid);
                 const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().find(v => v.type == 'text' && !skiplist.includes(v.id)));
                 for (let j in groupChat)
-                    if (groupChat[i])
+                    if (groupChat[j])
                         setTimeout(() => { groupChat[j].send(`${flagtime[i] + 1}시 플래그를 준비하세요!`) }, 1000 * j);
 
                 // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
@@ -155,7 +155,7 @@ module.exports.startFlag = function () {
                     const skiplist = (await db.all(`select channelid from flagskip`)).map(v => v.channelid);
                     const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().find(v => v.type == 'text' && !skiplist.includes(v.id)));
                     for (let j in groupChat)
-                        if (groupChat[i])
+                        if (groupChat[j])
                             setTimeout(() => { groupChat[j].send(`${flagtime[i] + 1}시 플래그를 준비하세요!`) }, 1000 * j);
                 }, 86400000); // 24시간 주기
             }, flagDate[i] - now);

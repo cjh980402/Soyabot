@@ -103,7 +103,9 @@ client.on("message", async (message) => { // 각 메시지에 반응
         if (error.message.startsWith('maple.GG'))
             message.reply(e.message);
         else {
-            client.channels.cache.array().find(v => v.recipient == ADMIN_ID).sendFullText(`작성자 : ${message.author.username}\n방 ID : ${message.channel.id}\n채팅 내용 : ${message.content}\n에러 내용 : ${error}\n${error.stack}`);
+            const adminchat = client.channels.cache.array().find(v => v.recipient == ADMIN_ID);
+            if (adminchat)
+                adminchat.sendFullText(`작성자 : ${message.author.username}\n방 ID : ${message.channel.id}\n채팅 내용 : ${message.content}\n에러 내용 : ${error}\n${error.stack}`);
             message.reply("에러로그가 전송되었습니다.");
         }
     }
