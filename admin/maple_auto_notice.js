@@ -5,6 +5,7 @@ const cheerio = require('cheerio');
 let noticeTimer = null;
 let updateTimer = null;
 let testTimer = null;
+let testPatchTimer = null;
 let flagTimer = [null, null, null];
 
 module.exports.startNotice = function () {
@@ -36,7 +37,9 @@ module.exports.startNotice = function () {
                 }
             }
             catch (e) {
-                client.channels.cache.array().find(v => v.recipient == ADMIN_ID).sendFullText(`자동알림(공지) 파싱 중 에러 발생\n에러 내용 : ${e}\n${e.stack}`);
+                const adminchat = client.channels.cache.array().find(v => v.recipient == ADMIN_ID);
+                if (adminchat)
+                    adminchat.sendFullText(`자동알림(공지) 파싱 중 에러 발생\n에러 내용 : ${e}\n${e.stack}`);
             }
         }, 120000);
     }
@@ -78,7 +81,9 @@ module.exports.startUpdate = function () {
                 }
             }
             catch (e) {
-                client.channels.cache.array().find(v => v.recipient == ADMIN_ID).sendFullText(`자동알림(업데이트) 파싱 중 에러 발생\n에러 내용 : ${e}\n${e.stack}`);
+                const adminchat = client.channels.cache.array().find(v => v.recipient == ADMIN_ID);
+                if (adminchat)
+                    adminchat.sendFullText(`자동알림(업데이트) 파싱 중 에러 발생\n에러 내용 : ${e}\n${e.stack}`);
             }
         }, 120000);
     }
@@ -120,7 +125,9 @@ module.exports.startTest = function () {
                 }
             }
             catch (e) {
-                client.channels.cache.array().find(v => v.recipient == ADMIN_ID).sendFullText(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용 : ${e}\n${e.stack}`);
+                const adminchat = client.channels.cache.array().find(v => v.recipient == ADMIN_ID);
+                if (adminchat)
+                    adminchat.sendFullText(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용 : ${e}\n${e.stack}`);
             }
         }, 120000);
     }
@@ -130,6 +137,39 @@ module.exports.stopTest = function () {
     if (testTimer) {
         clearInterval(testTimer);
         testTimer = null;
+    }
+}
+
+module.exports.startTestPatch = function () {
+    if (!testPatchTimer) {
+        testPatchTimer = setInterval(async () => {
+            try {
+                const dball = await db.all("SELECT * FROM testpatch");
+                const version = dball[dball.length - 1].version + 1;
+                const patchURL = `http://maplestory.dn.nexoncdn.co.kr/PatchT/01${version}/01${version - 1}to01${version}.patch`;
+                const file = (await (await fetch(patchURL)).buffer()).length / 1024 / 1024;
+                if (file > 1) { // 파일이 감지된 경우
+                    await db.insert('testpatch', { version: version, url: patchURL });
+                    const skiplist = (await db.all(`select channelid from testpatchskip`)).map(v => v.channelid);
+                    const groupChat = client.guilds.cache.array().map(v => v.channels.cache.array().find(v => v.type == 'text' && !skiplist.includes(v.id)));
+                    for (let i in groupChat)
+                        if (groupChat[i])
+                            setTimeout(() => { groupChat[i].send(`[Tver 1.2.${version}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기 : ${file.toFixed(2)}MB\n패치파일 주소 : ${patchURL}`) }, 1000 * j);
+                }
+            }
+            catch (e) {
+                const adminchat = client.channels.cache.array().find(v => v.recipient == ADMIN_ID);
+                if (adminchat)
+                    adminchat.sendFullText(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용 : ${e}\n${e.stack}`);
+            }
+        }, 600000); // 10분마다 동작 수행
+    }
+}
+
+module.exports.stopTestPatch = function () {
+    if (testPatchTimer) {
+        clearInterval(testPatchTimer);
+        testPatchTimer = null;
     }
 }
 

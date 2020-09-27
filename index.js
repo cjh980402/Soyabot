@@ -4,11 +4,10 @@
 const { Client, Collection } = require("discord.js");
 const { readdirSync } = require("fs");
 const { TOKEN, PREFIX, ADMIN_ID } = require("./config.json");
-const puppeteer = require('puppeteer');
 const admin = require("./admin/admin_function");
 const dbhandler = require('./util/db-handler');
 const db = new dbhandler('./db/soyabot_data.db');
-const { startNotice, startUpdate, startTest, startFlag } = require('./admin/maple_auto_notice.js');
+const { startNotice, startUpdate, startTest, startTestPatch, startFlag } = require('./admin/maple_auto_notice.js');
 const botChatting = require("./util/bot_chatting");
 
 const client = new Client({ disableMentions: "everyone" });
@@ -35,10 +34,12 @@ client.on("ready", async () => {
     await db.run('CREATE TABLE IF NOT EXISTS updateskip(channelid text primary key, name text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS flagskip(channelid text primary key, name text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS testskip(channelid text primary key, name text not null)');
+    await db.run('CREATE TABLE IF NOT EXISTS testpatchskip(channelid text primary key, name text not null)');
     startNotice(); // 공지 자동 알림 기능
     startUpdate(); // 업데이트 자동 알림 기능
     startTest(); // 테섭 자동 알림 기능
-    startFlag(); // 플래그 자동 알림 기능
+    startTestPatch(); // 테섭 패치 감지 기능
+    startFlag(); // 플래그 5분 전 알림
     /**
      * Import all commands
      */
