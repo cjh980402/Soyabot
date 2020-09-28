@@ -16,7 +16,7 @@ client.login(TOKEN);
 client.commands = new Array();
 client.prefix = PREFIX;
 client.queue = new Map();
-const cooldowns = new Collection();
+const cooldowns = new Array();
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사용자 입력을 이스케이프해서 정규식 내부에서 문자 그대로 취급하기 위해 치환하는 함수
 
 /**
@@ -69,36 +69,26 @@ client.on("message", async (message) => { // 각 메시지에 반응
         const [matchedPrefix] = message.content.match(prefixRegex); // 정규식에 대응되는 명령어 접두어 부분에 대응
 
         const args = message.content.slice(matchedPrefix.length).trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
-        const commandName = args.shift().toLowerCase(); // cmmandName은 args의 첫번째 원소(명령어 부분), shift로 인해 args에는 뒷부분만 남음
+        let commandName = args.shift().toLowerCase(); // cmmandName은 args의 첫번째 원소(명령어 부분), shift로 인해 args에는 뒷부분만 남음
 
         const botModule = client.commands.find((cmd) => cmd.command && cmd.command.includes(commandName));
         // 해당하는 명령어 찾기 (이름으로 또는 추가 명령어로 찾음)
 
         if (!botModule) return; // 해당하는 명령어 없으면 종료
 
-        if (!cooldowns.has(botModule.command[0])) { // 사용된 적이 없는 명령이면 새로 set한다
-            cooldowns.set(botModule.command[0], new Collection());
+        const browserModule = ["프로필", "컬렉션", "날씨"];
+        commandName = browserModule.includes(botModule.command[0]) ? "브라우저" : botModule.command[0];
+        const cmdIndex = cooldowns.indexOf(commandName);
+
+        if (cmdIndex > -1) { // 명령이 수행 중인 경우
+            return message.reply(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
-
-        const now = Date.now();
-        const timestamps = cooldowns.get(botModule.command[0]); // Collection 객체
-        const cooldownAmount = (botModule.cooldown || 1) * 1000; // 명시된 쿨타임이 없다면 1초로 취급
-
-        if (timestamps.has(message.author.id)) {
-            const expirationTime = timestamps.get(message.author.id) + cooldownAmount; // 지난 명령 이후 쿨타임이 다 지난 시간
-
-            if (now < expirationTime) { // 아직 다 지나지 않은 경우
-                const timeLeft = (expirationTime - now) / 1000;
-                return message.reply(
-                    `\`${botModule.command[0]}\`명령을 사용하기 위해 ${timeLeft.toFixed(1)}초 이상 기다려야합니다.`
-                );
-            }
+        else { // 수행 중이지 않은 명령이면 새로 push한다
+            cooldowns.push(commandName);
         }
-
-        timestamps.set(message.author.id, now); // id와 현재시간 저장, 객체는 참조형이므로 cooldowns의 value에 추가됨
-        setTimeout(() => timestamps.delete(message.author.id), cooldownAmount); // 쿨타임 지나면 삭제
 
         await botModule.execute(message, args); // 실질적인 명령어 수행 부분, 일부 비동기 모듈때문에 await를 붙인다.
+        cooldowns.splice(cmdIndex, 1); // 명령어 수행 끝나면 쿨타임 삭제
     }
     catch (error) {
         if (error.message.startsWith('maple.GG'))
