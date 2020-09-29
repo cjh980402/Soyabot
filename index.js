@@ -13,12 +13,11 @@ const botChatting = require("./util/bot_chatting");
 const client = new Client({ disableMentions: "everyone" });
 
 client.login(TOKEN);
-client.commands = new Array();
+client.commands = new Array(); // 명령어 객체 저장할 배열
 client.prefix = PREFIX;
 client.queue = new Map();
-const cooldowns = new Array();
+const cooldowns = new Set(); // 중복 명령 방지할 set
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사용자 입력을 이스케이프해서 정규식 내부에서 문자 그대로 취급하기 위해 치환하는 함수
-let commandName, cmdIndex;
 
 /**
  * Client Events
@@ -53,6 +52,7 @@ client.on("warn", (info) => console.log(info));
 client.on("error", console.error);
 
 client.on("message", async (message) => { // 각 메시지에 반응
+    let commandName;
     try {
         if (message.author.bot) return; // 봇 여부 체크
         if (message.author.id == ADMIN_ID) { // 관리자 여부 체크
@@ -70,7 +70,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
         const [matchedPrefix] = message.content.match(prefixRegex); // 정규식에 대응되는 명령어 접두어 부분에 대응
 
         const args = message.content.slice(matchedPrefix.length).trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
-        commandName = args.shift().toLowerCase(); // cmmandName은 args의 첫번째 원소(명령어 부분), shift로 인해 args에는 뒷부분만 남음
+        commandName = args.shift().toLowerCase(); // commandName은 args의 첫번째 원소(명령어 부분), shift로 인해 args에는 뒷부분만 남음
 
         const botModule = client.commands.find((cmd) => cmd.command && cmd.command.includes(commandName));
         // 해당하는 명령어 찾기 (이름으로 또는 추가 명령어로 찾음)
@@ -79,17 +79,13 @@ client.on("message", async (message) => { // 각 메시지에 반응
 
         const browserModule = ["프로필", "컬렉션", "날씨"];
         commandName = browserModule.includes(botModule.command[0]) ? "브라우저" : botModule.command[0];
-        cmdIndex = cooldowns.indexOf(commandName);
 
-        if (cmdIndex > -1) { // 명령이 수행 중인 경우
+        if (cooldowns.has(commandName)) { // 명령이 수행 중인 경우
             return message.reply(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
-        else { // 수행 중이지 않은 명령이면 새로 push한다
-            cooldowns.push(commandName);
-        }
 
+        cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
         await botModule.execute(message, args); // 실질적인 명령어 수행 부분, 일부 비동기 모듈때문에 await를 붙인다.
-        cooldowns.splice(cmdIndex, 1); // 명령어 수행 끝나면 쿨타임 삭제
     }
     catch (error) {
         if (error.message.startsWith('maple.GG'))
@@ -102,9 +98,6 @@ client.on("message", async (message) => { // 각 메시지에 반응
         }
     }
     finally {
-        if (cmdIndex) {
-            cooldowns.splice(cmdIndex, 1); // 명령어 수행 끝나거나 에러 발생 시 쿨타임 삭제
-            cmdIndex = null;
-        }
+        cooldowns.delete(commandName); // 명령어 수행 끝나거나 에러 발생 시 쿨타임 삭제
     }
 });
