@@ -86,8 +86,10 @@ client.on("message", async (message) => { // 각 메시지에 반응
 
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
         await botModule.execute(message, args); // 실질적인 명령어 수행 부분, 일부 비동기 모듈때문에 await를 붙인다.
+        cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
     }
     catch (error) {
+        cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
         if (error.message.startsWith('maple.GG'))
             message.reply(e.message);
         else {
@@ -96,8 +98,5 @@ client.on("message", async (message) => { // 각 메시지에 반응
                 adminchat.sendFullText(`작성자 : ${message.author.username}\n방 ID : ${message.channel.id}\n채팅 내용 : ${message.content}\n에러 내용 : ${error}\n${error.stack}`);
             message.reply("에러로그가 전송되었습니다.");
         }
-    }
-    finally {
-        cooldowns.delete(commandName); // 명령어 수행 끝나거나 에러 발생 시 쿨타임 삭제
     }
 });
