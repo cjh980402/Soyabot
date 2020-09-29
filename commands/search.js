@@ -41,7 +41,7 @@ module.exports = {
             const choice = resultsEmbed.fields[parseInt(response.first()) - 1].name;
 
             message.channel.activeCollector = false;
-            message.client.commands.find((cmd) => cmd.command && cmd.command.includes("play")).execute(message, [choice]);
+            message.client.commands.find((cmd) => cmd.command.includes("play")).execute(message, [choice]);
             resultsMessage.delete().catch(console.error);
         } catch (error) {
             console.error(error);

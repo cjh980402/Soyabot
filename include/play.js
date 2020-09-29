@@ -123,11 +123,11 @@ module.exports = {
                     if (queue.volume <= 0) {
                         queue.volume = 100;
                         queue.connection.dispatcher.setVolumeLogarithmic(100 / 100);
-                        queue.textChannel.send(`${user} 🔊 unmuted the music!`).catch(console.error);
+                        queue.textChannel.send(`${user} 🔊 음소거를 해제했습니다.`).catch(console.error);
                     } else {
                         queue.volume = 0;
                         queue.connection.dispatcher.setVolumeLogarithmic(0);
-                        queue.textChannel.send(`${user} 🔇 muted the music!`).catch(console.error);
+                        queue.textChannel.send(`${user} 🔇 노래를 음소거 했습니다.`).catch(console.error);
                     }
                     break;
 
@@ -138,7 +138,7 @@ module.exports = {
                     else queue.volume = queue.volume - 10;
                     queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
                     queue.textChannel
-                        .send(`${user} 🔉 decreased the volume, the volume is now ${queue.volume}%`)
+                        .send(`${user} 🔉 음량을 낮췄습니다. 현재 음량 : ${queue.volume}%`)
                         .catch(console.error);
                     break;
 
@@ -149,7 +149,7 @@ module.exports = {
                     else queue.volume = queue.volume + 10;
                     queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
                     queue.textChannel
-                        .send(`${user} 🔊 increased the volume, the volume is now ${queue.volume}%`)
+                        .send(`${user} 🔊 음량을 높였습니다. 현재 음량 : ${queue.volume}%`)
                         .catch(console.error);
                     break;
 
