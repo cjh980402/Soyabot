@@ -1,6 +1,6 @@
 {
   "name": "soyabot",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "MapleStory, Music Discord Bot built with discord.js",
   "main": "index.js",
   "author": "9804cjh@naver.com",
@@ -23,8 +23,8 @@
     "soundcloud-downloader": "^0.1.6",
     "sqlite3": "^5.0.0",
     "string-progressbar": "^1.0.1",
-    "ytdl-core": "^3.2.2",
-    "ytdl-core-discord": "^1.2.1"
+    "ytdl-core": "^3.3.0",
+    "ytdl-core-discord": "^1.2.3"
   },
   "scripts": {
     "start": "node index.js"
