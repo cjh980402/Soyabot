@@ -40,7 +40,7 @@ module.exports = {
         }
         catch (e) {
             console.log('에러발생');
-            message.channel.send(`${target} 지역 정보를 가져오지 못하였습니다.`);
+            message.channel.send(`${args[0]} 지역 정보를 가져오지 못하였습니다.`);
         }
         finally {
             await browser.close();
