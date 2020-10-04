@@ -88,6 +88,7 @@ module.exports = {
         var collector = playingMessage.createReactionCollector(filter, {
             time: song.duration > 0 ? song.duration * 1000 : 600000
         });
+        queue.collector = collector;
 
         collector.on("collect", (reaction, user) => {
             if (!queue) return;

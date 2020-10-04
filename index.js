@@ -25,7 +25,7 @@ const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사�
 client.on("ready", async () => {
     console.log(`${client.user.username} ready!`);
     client.user.setActivity(`${PREFIX}help`, { type: 'LISTENING' });
-    global.client = client;
+    global.client = client; // 여러 기능들에 의해 필수
     global.db = db;
     await db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
@@ -97,6 +97,28 @@ client.on("message", async (message) => { // 각 메시지에 반응
             if (adminchat)
                 adminchat.sendFullText(`작성자 : ${message.author.username}\n방 ID : ${message.channel.id}\n채팅 내용 : ${message.content}\n에러 내용 : ${error}\n${error.stack}`);
             message.reply("에러로그가 전송되었습니다.");
+        }
+    }
+});
+
+client.on("voiceStateUpdate", (oldState, newState) => {
+    const oldVoice = oldState.channel;
+    const newVoice = newState.channel;
+    if (oldVoice != newVoice) {
+        if (oldVoice == null) {
+            console.log("User joined!");
+        }
+        else if (newVoice == null) {
+            console.log("User left!");
+            if (client.channels.cache.get(oldState.channelID) && oldVoice.members.size == 1) { // 봇만 음성 채널에 있는 경우
+                const queue = client.queue.get(oldVoice.guild.id);
+                queue.textChannel.send("모든 사용자가 음성채널을 떠나서 노래가 끝났습니다.");
+                queue.collector.stop();
+                oldVoice.leave();
+            }
+        }
+        else {
+            console.log("User switched channels!");
         }
     }
 });
