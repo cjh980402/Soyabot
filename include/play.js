@@ -73,8 +73,8 @@ module.exports = {
 
         try {
             var playingMessage = await queue.textChannel.send(`🎶 노래 재생 시작 : **${song.title}** ${song.url}`);
-            await playingMessage.react("⏭");
             await playingMessage.react("⏯");
+            await playingMessage.react("⏭");
             await playingMessage.react("🔇");
             await playingMessage.react("🔉");
             await playingMessage.react("🔊");
@@ -95,15 +95,6 @@ module.exports = {
             const member = message.guild.member(user);
 
             switch (reaction.emoji.name) {
-                case "⏭":
-                    queue.playing = true;
-                    reaction.users.remove(user).catch(console.error);
-                    if (!canModifyQueue(member)) return;
-                    queue.connection.dispatcher.end();
-                    queue.textChannel.send(`${user} ⏭ 노래를 건너뛰었습니다.`).catch(console.error);
-                    collector.stop();
-                    break;
-
                 case "⏯":
                     reaction.users.remove(user).catch(console.error);
                     if (!canModifyQueue(member)) return;
@@ -116,6 +107,15 @@ module.exports = {
                         queue.connection.dispatcher.resume();
                         queue.textChannel.send(`${user} ▶ 노래를 다시 틀었습니다.`).catch(console.error);
                     }
+                    break;
+
+                case "⏭":
+                    queue.playing = true;
+                    reaction.users.remove(user).catch(console.error);
+                    if (!canModifyQueue(member)) return;
+                    queue.connection.dispatcher.end();
+                    queue.textChannel.send(`${user} ⏭ 노래를 건너뛰었습니다.`).catch(console.error);
+                    collector.stop();
                     break;
 
                 case "🔇":
