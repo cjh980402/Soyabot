@@ -46,7 +46,7 @@ module.exports = {
 
         const queueConstruct = {
             textChannel: message.channel,
-            channel,
+            channel, // channel이란 property를 설정함과 동시에 값은 channel 변수의 값
             connection: null,
             songs: [],
             loop: false,

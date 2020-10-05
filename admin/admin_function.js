@@ -59,9 +59,8 @@ Object.defineProperty(Object.prototype, "prop2", {
 
 Object.defineProperty(Channel.prototype, "sendFullText", {
     value: function (str) {
-        if (typeof str != 'string')
+        if (typeof str != 'string' || (this.type != 'dm' && this.type != 'text'))
             return;
-
         for (let i = 0; i < str.length; i += 1950) { // 디스코드는 최대 2천자 제한이 있기때문에 끊어서 보내는 로직이다.
             const last = (i + 1950) > str.length ? str.length : i + 1950;
             this.send(str.substring(i, last));
