@@ -1,7 +1,7 @@
 /**
  * Module Imports
  */
-const { Client, Collection } = require("discord.js");
+const { Client } = require("discord.js");
 const { readdirSync } = require("fs");
 const { TOKEN, PREFIX, ADMIN_ID } = require("./config.json");
 const admin = require("./admin/admin_function");
