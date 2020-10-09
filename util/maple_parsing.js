@@ -245,6 +245,20 @@ class Maple {
 
         return [date, level];
     }
+    MurungHistory() {
+        const data = this.ggdata('.text-center.px-2.font-size-14.align-middle');
+
+        if (data.length == 0) {
+            return null;
+        }
+
+        const date = [], murung = [];
+        for (let i = 0; i < data.length; i += 6) {
+            date.push(data.eq(i).find('span').text() + data.eq(i).find('b').text()); // 날짜
+            murung.push(`${data.eq(i + 1).find('h5').text()} (${data.eq(i + 1).find('span').text()})`); // 무릉 기록
+        }
+        return [date, murung];
+    }
 }
 
 module.exports = Maple;
