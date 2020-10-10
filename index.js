@@ -5,12 +5,11 @@ const { Client } = require("discord.js");
 const { readdirSync } = require("fs");
 const { TOKEN, PREFIX, ADMIN_ID } = require("./config.json");
 const admin = require("./admin/admin_function");
-const dbhandler = require('./util/db-handler');
-const db = new dbhandler('./db/soyabot_data.db');
 const { startNotice, startUpdate, startTest, startTestPatch, startFlag } = require('./admin/maple_auto_notice.js');
 const botChatting = require("./util/bot_chatting");
-
-const client = new Client({ disableMentions: "everyone" });
+const dbhandler = require('./util/db-handler');
+global.db = new dbhandler('./db/soyabot_data.db');
+global.client = new Client({ disableMentions: "everyone" }); // 여러 기능들에 의해 필수로 최상위 전역
 
 client.login(TOKEN);
 client.commands = new Array(); // 명령어 객체 저장할 배열
@@ -25,8 +24,6 @@ const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사�
 client.on("ready", async () => {
     console.log(`${client.user.username} ready!`);
     client.user.setActivity(`${PREFIX}help`, { type: 'LISTENING' });
-    global.client = client; // 여러 기능들에 의해 필수
-    global.db = db;
     await db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');
