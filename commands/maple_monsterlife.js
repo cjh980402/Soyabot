@@ -87,7 +87,7 @@ async function farm_read(name) { // 농장 목록
     if (data.error != "false") // 오류 발생
         return data.error;
     else {
-        let rslt = `${name} 보유 농장 목록${"\u200b".repeat(500)}\n\n`;
+        let rslt = `${name} 보유 농장 목록\n\n`;
         data.farm_list.forEach(v => {
             if (v[0] != "" && v[1] != "")
                 rslt += `${v[0]} : ${v[1]}\n`
