@@ -10,13 +10,13 @@ module.exports = {
     type: ["음악"],
     async execute(message, args) {
         if (!message.guild)
-            return message.reply("사용이 불가능한 채널입니다.").catch(console.error); // 그룹톡 여부 체크
+            return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         if (!args.length)
         return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
         if (message.channel.activeCollector)
             return message.reply("메시지 수집기가 이 채널에서 이미 활성화됐습니다.");
         if (!message.member.voice.channel)
-            return message.reply("음성 채널에 먼저 참가해주세요!").catch(console.error);
+            return message.reply("음성 채널에 먼저 참가해주세요!");
 
         const search = args.join(" ");
 
@@ -42,7 +42,7 @@ module.exports = {
 
             message.channel.activeCollector = false;
             message.client.commands.find((cmd) => cmd.command.includes("play")).execute(message, [choice]);
-            resultsMessage.delete().catch(console.error);
+            resultsMessage.delete();
         } catch (error) {
             console.error(error);
             message.channel.activeCollector = false;

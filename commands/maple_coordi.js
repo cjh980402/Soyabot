@@ -41,7 +41,7 @@ module.exports = {
             coordiEmbed.addField('**무기**', coordi[6], true);
 
             coordiEmbed.setTimestamp();
-            return message.channel.send(coordiEmbed).catch(console.error);
+            return message.channel.send(coordiEmbed);
         }
     }
 };

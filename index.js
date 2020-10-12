@@ -109,11 +109,9 @@ client.on("voiceStateUpdate", (oldState, newState) => {
             console.log("User left!");
             const queue = client.queue.get(oldVoice.guild.id);
             if (queue && oldVoice == queue.channel && oldVoice.members.size == 1) { // 봇만 음성 채널에 있는 경우
-                queue.textChannel.send("모든 사용자가 음성채널을 떠나서 노래가 끝났습니다.");
-                if (queue.collector)
-                    queue.collector.stop();
-                queue.channel.leave();
-                client.queue.delete(oldVoice.guild.id);
+                queue.songs = [];
+                queue.connection.dispatcher.end();
+                queue.textChannel.send("모든 사용자가 음성채널을 떠나서");
             }
         }
         else {

@@ -22,14 +22,14 @@ module.exports = {
             switch (reaction.emoji.name) {
                 case "🔁":
                     if (message.guild)
-                        reaction.users.remove(user).catch(console.error);
+                        reaction.users.remove(user);
                     await this.execute(message);
                     collector.stop();
                     break;
 
                 default:
                     if (message.guild)
-                        reaction.users.remove(user).catch(console.error);
+                        reaction.users.remove(user);
                     break;
             }
         });

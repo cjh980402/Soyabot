@@ -7,7 +7,7 @@ module.exports = {
     type: ["음악", "메이플", "기타"],
     execute(message, args) {
         if(args[0] && !this.type.includes(args[0]))
-            return message.channel.send("지원하지 않는 도움말입니다.").catch(console.error);
+            return message.channel.send("지원하지 않는 도움말입니다.");
 
         let helpEmbed = new MessageEmbed()
             .setTitle("소야봇 도움말")
@@ -26,6 +26,6 @@ module.exports = {
 
         helpEmbed.setTimestamp();
 
-        return message.channel.send(helpEmbed).catch(console.error);
+        return message.channel.send(helpEmbed);
     }
 };

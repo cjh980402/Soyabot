@@ -7,9 +7,9 @@ module.exports = {
     description: "- 지금 재생 중인 노래 출력",
     type: ["음악"],
     execute(message) {
-        if (!message.guild) return message.reply("사용이 불가능한 채널입니다.").catch(console.error); // 그룹톡 여부 체크
+        if (!message.guild) return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         const queue = message.client.queue.get(message.guild.id);
-        if (!queue) return message.reply("재생 중인 노래가 없습니다.").catch(console.error);
+        if (!queue) return message.reply("재생 중인 노래가 없습니다.");
         const song = queue.songs[0];
         const seek = (queue.connection.dispatcher.streamTime - queue.connection.dispatcher.pausedTime) / 1000;
         const left = song.duration - seek;

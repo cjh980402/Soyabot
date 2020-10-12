@@ -12,13 +12,13 @@ module.exports = {
     description: "- YouTube나 Soundcloud를 통해 노래를 재생",
     type: ["음악"],
     async execute(message, args) {
-        if (!message.guild) return message.reply("사용이 불가능한 채널입니다.").catch(console.error); // 그룹톡 여부 체크
+        if (!message.guild) return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         const { channel } = message.member.voice;
 
         const serverQueue = message.client.queue.get(message.guild.id);
-        if (!channel) return message.reply("음성 채널에 먼저 참가해주세요!").catch(console.error);
+        if (!channel) return message.reply("음성 채널에 먼저 참가해주세요!");
         if (serverQueue && channel !== message.guild.me.voice.channel)
-            return message.reply(`같은 채널에 있어야합니다. (${message.client.user})`).catch(console.error);
+            return message.reply(`같은 채널에 있어야합니다. (${message.client.user})`);
 
         if (!args.length)
             return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
@@ -50,7 +50,7 @@ module.exports = {
             connection: null,
             songs: [],
             loop: false,
-            volume: 70,
+            volume: 100,
             playing: true
         };
 
@@ -67,7 +67,7 @@ module.exports = {
                 };
             } catch (error) {
                 console.error(error);
-                return message.reply(error.message).catch(console.error);
+                return message.reply(error.message);
             }
         } else if (scRegex.test(url)) {
             try {
@@ -79,8 +79,8 @@ module.exports = {
                 };
             } catch (error) {
                 if (error.statusCode === 404)
-                    return message.reply("해당하는 Soundcloud 트랙을 찾지 못했습니다.").catch(console.error);
-                return message.reply("Soundcloud 트랙을 재생하는 중 에러가 발생하였습니다.").catch(console.error);
+                    return message.reply("해당하는 Soundcloud 트랙을 찾지 못했습니다.");
+                return message.reply("Soundcloud 트랙을 재생하는 중 에러가 발생하였습니다.");
             }
         } else {
             try {
@@ -93,15 +93,13 @@ module.exports = {
                 };
             } catch (error) {
                 console.error(error);
-                return message.reply("해당 제목에 맞는 비디오를 찾지 못했습니다.").catch(console.error);
+                return message.reply("해당 제목에 맞는 비디오를 찾지 못했습니다.");
             }
         }
 
         if (serverQueue) {
             serverQueue.songs.push(song);
-            return serverQueue.textChannel
-                .send(`✅ ${message.author}가 **${song.title}**를 대기열에 추가하였습니다.`)
-                .catch(console.error);
+            return serverQueue.textChannel.send(`✅ ${message.author}가 **${song.title}**를 대기열에 추가하였습니다.`);
         }
 
         queueConstruct.songs.push(song);
@@ -115,7 +113,7 @@ module.exports = {
             console.error(error);
             message.client.queue.delete(message.guild.id);
             await channel.leave();
-            return message.channel.send(`채널에 참가할 수 없습니다 : ${error}`).catch(console.error);
+            return message.channel.send(`채널에 참가할 수 없습니다 : ${error}`);
         }
     }
 };

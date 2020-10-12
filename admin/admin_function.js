@@ -16,7 +16,9 @@ module.exports = async function (message) {
     else if (message.content.startsWith("@")) { // 원격 채팅 전송
         const roomID = message.content.substr(1).split(' ')[0];
         const msg = message.content.substr(1).replace(`${roomID} `, '');
-        message.client.channels.cache.array().find(v => v.id == roomID).send(msg);
+        const target = message.client.channels.cache.array().find(v => v.id == roomID);
+        if (target)
+            target.send(msg);
         message.channel.sendFullText("채팅 전송 완료");
     }
 }
@@ -60,10 +62,11 @@ Object.defineProperty(Object.prototype, "prop2", {
 
 Object.defineProperty(Channel.prototype, "sendFullText", {
     value: function (str) {
-        if (typeof str != 'string' || (this.type != 'dm' && this.type != 'text'))
+        if (this.type != 'dm' && this.type != 'text')
             return;
-        for (let i = 0; i < str.length; i += 1950) { // 디스코드는 최대 2천자 제한이 있기때문에 끊어서 보내는 로직이다.
-            const last = (i + 1950) > str.length ? str.length : i + 1950;
+        str = String(str);
+        for (let i = 0; i < str.length; i += 1999) { // 디스코드는 최대 2천자 제한이 있기때문에 끊어서 보내는 로직이다.
+            const last = (i + 1999) > str.length ? str.length : i + 1999;
             this.send(str.substring(i, last));
         }
     }

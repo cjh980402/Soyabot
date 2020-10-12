@@ -12,18 +12,18 @@ module.exports = {
     description: "- 유튜브의 재생목록을 재생",
     type: ["음악"],
     async execute(message, args) {
-        if (!message.guild) return message.reply("사용이 불가능한 채널입니다.").catch(console.error); // 그룹톡 여부 체크
+        if (!message.guild) return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         const { PRUNING } = require("../config.json");
         const { channel } = message.member.voice;
 
         const serverQueue = message.client.queue.get(message.guild.id);
         if (serverQueue && channel !== message.guild.me.voice.channel)
-            return message.reply(`같은 채널에 있어야합니다. (${message.client.user})`).catch(console.error);
+            return message.reply(`같은 채널에 있어야합니다. (${message.client.user})`);
 
         if (!args.length)
             return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
 
-        if (!channel) return message.reply("음성 채널에 먼저 참가해주세요!").catch(console.error);
+        if (!channel) return message.reply("음성 채널에 먼저 참가해주세요!");
 
         const permissions = channel.permissionsFor(message.client.user);
         if (!permissions.has("CONNECT"))
@@ -42,7 +42,7 @@ module.exports = {
             connection: null,
             songs: [],
             loop: false,
-            volume: 70,
+            volume: 100,
             playing: true
         };
 
@@ -56,7 +56,7 @@ module.exports = {
                 videos = await playlist.getVideos(MAX_PLAYLIST_SIZE || 10, { part: "snippet" });
             } catch (error) {
                 console.error(error);
-                return message.reply("재생목록을 찾지 못했습니다 :(").catch(console.error);
+                return message.reply("재생목록을 찾지 못했습니다 :(");
             }
         }
         else if (scdl.isValidUrl(args[0])) {
@@ -77,7 +77,7 @@ module.exports = {
                 videos = await playlist.getVideos(MAX_PLAYLIST_SIZE || 10, { part: "snippet" });
             } catch (error) {
                 console.error(error);
-                return message.reply("재생목록을 찾지 못했습니다 :(").catch(console.error);
+                return message.reply("재생목록을 찾지 못했습니다 :(");
             }
         }
 
@@ -91,9 +91,7 @@ module.exports = {
             if (serverQueue) {
                 serverQueue.songs.push(song);
                 if (!PRUNING)
-                    message.channel
-                        .send(`${message.author} ✅ **${song.title}**를 대기열에 추가하였습니다.`)
-                        .catch(console.error);
+                    message.channel.send(`${message.author} ✅ **${song.title}**를 대기열에 추가하였습니다.`);
             } else {
                 queueConstruct.songs.push(song);
             }
@@ -125,7 +123,7 @@ module.exports = {
                 console.error(error);
                 message.client.queue.delete(message.guild.id);
                 await channel.leave();
-                return message.channel.send(`채널에 참가할 수 없습니다 : ${error}`).catch(console.error);
+                return message.channel.send(`채널에 참가할 수 없습니다 : ${error}`);
             }
         }
     }

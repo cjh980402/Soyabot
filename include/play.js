@@ -10,7 +10,7 @@ module.exports = {
         if (!song) {
             queue.channel.leave();
             message.client.queue.delete(message.guild.id);
-            return queue.textChannel.send("🚫 음악 대기열이 끝났습니다.").catch(console.error);
+            return queue.textChannel.send("🚫 음악 대기열이 끝났습니다.");
         }
 
         let stream = null;
@@ -88,84 +88,84 @@ module.exports = {
         var collector = playingMessage.createReactionCollector(filter, {
             time: song.duration > 0 ? song.duration * 1000 : 600000
         });
-        queue.collector = collector;
 
         collector.on("collect", (reaction, user) => {
             if (!queue) return;
+            if (!queue.connection.dispatcher) {
+                return collector.stop();
+            }
+
             const member = message.guild.member(user);
 
             switch (reaction.emoji.name) {
                 case "⏯":
-                    reaction.users.remove(user).catch(console.error);
+                    reaction.users.remove(user);
                     if (!canModifyQueue(member)) return;
                     if (queue.playing) {
                         queue.playing = !queue.playing;
                         queue.connection.dispatcher.pause(true);
-                        queue.textChannel.send(`${user} ⏸ 노래를 일시정지했습니다.`).catch(console.error);
+                        queue.textChannel.send(`${user} ⏸ 노래를 일시정지했습니다.`);
                     } else {
                         queue.playing = !queue.playing;
-                        queue.connection.dispatcher.resume();
-                        queue.textChannel.send(`${user} ▶ 노래를 다시 틀었습니다.`).catch(console.error);
+                        if (queue.connection.dispatcher)
+                            queue.connection.dispatcher.resume();
+                        queue.textChannel.send(`${user} ▶ 노래를 다시 틀었습니다.`);
                     }
                     break;
 
                 case "⏭":
                     queue.playing = true;
-                    reaction.users.remove(user).catch(console.error);
+                    reaction.users.remove(user);
                     if (!canModifyQueue(member)) return;
                     queue.connection.dispatcher.end();
-                    queue.textChannel.send(`${user} ⏭ 노래를 건너뛰었습니다.`).catch(console.error);
+                    queue.textChannel.send(`${user} ⏭ 노래를 건너뛰었습니다.`);
                     collector.stop();
                     break;
 
                 case "🔇":
-                    reaction.users.remove(user).catch(console.error);
+                    reaction.users.remove(user);
                     if (!canModifyQueue(member)) return;
                     if (queue.volume <= 0) {
                         queue.volume = 100;
                         queue.connection.dispatcher.setVolumeLogarithmic(100 / 100);
-                        queue.textChannel.send(`${user} 🔊 음소거를 해제했습니다.`).catch(console.error);
+                        queue.textChannel.send(`${user} 🔊 음소거를 해제했습니다.`);
                     } else {
                         queue.volume = 0;
                         queue.connection.dispatcher.setVolumeLogarithmic(0);
-                        queue.textChannel.send(`${user} 🔇 노래를 음소거 했습니다.`).catch(console.error);
+                        queue.textChannel.send(`${user} 🔇 노래를 음소거 했습니다.`);
                     }
                     break;
 
                 case "🔉":
-                    reaction.users.remove(user).catch(console.error);
+                    reaction.users.remove(user);
                     if (!canModifyQueue(member)) return;
                     if (queue.volume - 10 <= 0) queue.volume = 0;
                     else queue.volume = queue.volume - 10;
                     queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
-                    queue.textChannel
-                        .send(`${user} 🔉 음량을 낮췄습니다. 현재 음량 : ${queue.volume}%`)
-                        .catch(console.error);
+                    queue.textChannel.send(`${user} 🔉 음량을 낮췄습니다. 현재 음량 : ${queue.volume}%`);
                     break;
 
                 case "🔊":
-                    reaction.users.remove(user).catch(console.error);
+                    reaction.users.remove(user);
                     if (!canModifyQueue(member)) return;
                     if (queue.volume + 10 >= 100) queue.volume = 100;
                     else queue.volume = queue.volume + 10;
                     queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
-                    queue.textChannel
-                        .send(`${user} 🔊 음량을 높였습니다. 현재 음량 : ${queue.volume}%`)
-                        .catch(console.error);
+                    queue.textChannel.send(`${user} 🔊 음량을 높였습니다. 현재 음량 : ${queue.volume}%`);
                     break;
 
                 case "🔁":
-                    reaction.users.remove(user).catch(console.error);
+                    reaction.users.remove(user);
                     if (!canModifyQueue(member)) return;
                     queue.loop = !queue.loop;
-                    queue.textChannel.send(`현재 반복 재생 상태 : ${queue.loop ? "**켜짐**" : "**꺼짐**"}`).catch(console.error);
+                    queue.textChannel.send(`현재 반복 재생 상태 : ${queue.loop ? "**켜짐**" : "**꺼짐**"}`);
                     break;
 
                 case "⏹":
-                    reaction.users.remove(user).catch(console.error);
+                    reaction.users.remove(user);
                     if (!canModifyQueue(member)) return;
                     queue.songs = [];
-                    queue.textChannel.send(`${user} ⏹ 노래를 정지했습니다.`).catch(console.error);
+                    queue.textChannel.send(`${user} ⏹ 노래를 정지했습니다.`);
                     try {
                         queue.connection.dispatcher.end();
                     } catch (error) {
@@ -176,15 +176,15 @@ module.exports = {
                     break;
 
                 default:
-                    reaction.users.remove(user).catch(console.error);
+                    reaction.users.remove(user);
                     break;
             }
         });
 
         collector.on("end", () => {
-            playingMessage.reactions.removeAll().catch(console.error);
+            playingMessage.reactions.removeAll();
             if (PRUNING && playingMessage && !playingMessage.deleted) {
-                playingMessage.delete({ timeout: 3000 }).catch(console.error);
+                playingMessage.delete({ timeout: 3000 });
             }
         });
     }
