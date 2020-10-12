@@ -10,13 +10,13 @@ const botChatting = require("./util/bot_chatting");
 const dbhandler = require('./util/db-handler');
 global.db = new dbhandler('./db/soyabot_data.db');
 global.client = new Client({ disableMentions: "everyone" }); // 여러 기능들에 의해 필수로 최상위 전역
-
 client.login(TOKEN);
 client.commands = new Array(); // 명령어 객체 저장할 배열
 client.prefix = PREFIX;
 client.queue = new Map();
 const cooldowns = new Set(); // 중복 명령 방지할 set
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사용자 입력을 이스케이프해서 정규식 내부에서 문자 그대로 취급하기 위해 치환하는 함수
+const formatDate = (date) => `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${date.getHours()}시 ${date.getMinutes()}분`;
 
 /**
  * Client Events
@@ -73,6 +73,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
         // 해당하는 명령어 찾기 (이름으로 또는 추가 명령어로 찾음)
 
         if (!botModule) return; // 해당하는 명령어 없으면 종료
+        console.log(`${formatDate(new Date())} ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username} : ${message.content}\n`);
 
         const browserModule = ["프로필", "컬렉션", "날씨"];
         commandName = browserModule.includes(botModule.command[0]) ? "브라우저" : botModule.command[0];
