@@ -3,7 +3,7 @@ const { canModifyQueue } = require("../util/SoyabotUtil");
 module.exports = {
     usage: `${client.prefix}skipto <Queue Number>`,
     command: ["skipto", "st"],
-    description: "- 대기열에서 번호로 선택한 노래 건너뛰기",
+    description: "- 번호로 선택한 대기열의 노래로 건너뜀",
     type: ["음악"],
     execute(message, args) {
         if (!message.guild) return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
