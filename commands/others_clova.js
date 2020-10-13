@@ -67,7 +67,7 @@ module.exports = {
         }
         else {
             for (let i in this.command) {
-                if (chat.Text.includes(this.command[i]))
+                if (message.content.includes(this.command[i]))
                     return message.channel.send(await clova(i, message.attachments.array()[0].url));
             }
         }
