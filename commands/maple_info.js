@@ -1,5 +1,6 @@
 const { MessageEmbed, MessageAttachment } = require("discord.js");
 const mapleModule = require("../util/maple_parsing");
+const { levelTable } = require("../util/soyabot_const.json");
 
 module.exports = {
     usage: `${client.prefix}정보 (닉네임)`,
