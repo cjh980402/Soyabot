@@ -39,7 +39,7 @@ module.exports = {
             .setColor("#F8AA2A")
             .attachFiles(attachment)
             .setURL(`https://maple.gg/u/${args[0]}`)
-            .setImage('attachment://coordi.png');
+            .setImage('attachment://info.png');
 
         infoEmbed.addField('**레벨**', char_lv < 275 ? `${char_lv} (${char_percent}%)` : char_lv, true);
         infoEmbed.addField('**직업**', char_job, true);
