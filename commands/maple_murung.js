@@ -3,8 +3,8 @@ const mapleModule = require("../util/maple_parsing");
 module.exports = {
     usage: `${client.prefix}무릉 (닉네임)`,
     command: ["무릉", "ㅁㄹ"],
-    type: ["메이플"],
     description: "- 캐릭터의 직업, 무릉 최고기록, 시간을 출력",
+    type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1)
             return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);

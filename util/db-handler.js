@@ -14,7 +14,7 @@ class SQLiteHandler {
         return new Promise((resolve, reject) => {
             const k = Object.keys(obj);
             const v = Object.values(obj);
-            const stmt = `insert into ${table} (${k.join(",")}) values (${"?" + ",?".repeat(k.length - 1)})`;
+            const stmt = `INSERT INTO ${table} (${k.join(",")}) VALUES (${"?" + ",?".repeat(k.length - 1)})`;
             console.log(stmt);
             this.db.run(stmt, v, function (err) {
                 if (err) {
@@ -31,7 +31,7 @@ class SQLiteHandler {
         return new Promise((resolve, reject) => {
             const k = Object.keys(obj);
             const v = Object.values(obj);
-            const stmt = `replace into ${table} (${k.join(",")}) values (${"?" + ",?".repeat(k.length - 1)})`
+            const stmt = `REPLACE INTO ${table} (${k.join(",")}) VALUES (${"?" + ",?".repeat(k.length - 1)})`
             console.log(stmt);
             this.db.run(stmt, v, function (err) {
                 if (err) {
@@ -89,7 +89,7 @@ class SQLiteHandler {
 
     get tableList() {
         return new Promise((resolve, reject) => {
-            this.db.all("select name, sql from sqlite_master where type='table'", (err, rows) => {
+            this.db.all("SELECT name, sql FROM sqlite_master WHERE type='table'", (err, rows) => {
                 if (err) {
                     reject(err);
                 }

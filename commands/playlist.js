@@ -8,7 +8,6 @@ const scdl = require("soundcloud-downloader")
 module.exports = {
     usage: `${client.prefix}playlist <YouTube Playlist URL | Playlist Name>`,
     command: ["playlist", "pl"],
-    cooldown: 3,
     description: "- 유튜브의 재생목록을 재생",
     type: ["음악"],
     async execute(message, args) {

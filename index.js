@@ -40,10 +40,9 @@ client.on("ready", async () => {
     /**
      * Import all commands
      */
-    const commandFiles = readdirSync("./commands").filter((file) => file.endsWith(".js")); // commands 폴더속 .js 파일 걸러내기
-    for (const file of commandFiles) {
+    readdirSync("./commands").filter((file) => file.endsWith(".js")).forEach(file => { // commands 폴더속 .js 파일 걸러내기
         client.commands.push(require(`./commands/${file}`)); // 배열에 이름과 명령 객체를 push
-    }
+    });
 });
 client.on("warn", (info) => console.log(info));
 client.on("error", console.error);
@@ -73,7 +72,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
         // 해당하는 명령어 찾기 (이름으로 또는 추가 명령어로 찾음)
 
         if (!botModule) return; // 해당하는 명령어 없으면 종료
-        console.log(`${formatDate(new Date())} ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username} : ${message.content}\n`);
+        console.log(`(${formatDate(new Date())}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username} : ${message.content}\n`);
 
         const browserModule = ["프로필", "컬렉션", "날씨"];
         commandName = browserModule.includes(botModule.command[0]) ? "브라우저" : botModule.command[0];
@@ -89,7 +88,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
     catch (error) {
         cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
         if (error.message.startsWith('maple.GG'))
-            message.reply(e.message);
+            message.reply(error.message);
         else {
             const adminchat = client.channels.cache.array().find(v => v.recipient == ADMIN_ID);
             if (adminchat)

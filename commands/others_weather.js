@@ -33,7 +33,7 @@ module.exports = {
         page.setViewport({ width: 1400, height: 1000 }); // 넓은 화면 세팅
         try {
             await page.goto(targetURL);
-            const attachment = new MessageAttachment(await (await page.$('body > table:nth-child(4) > tbody > tr:nth-child(3) > td:nth-child(2) > table > tbody > tr:nth-child(3)')).screenshot());
+            const attachment = new MessageAttachment(await (await page.$('body > table:nth-child(4) > tbody > tr:nth-child(3) > td:nth-child(2) > table > tbody > tr:nth-child(3)')).screenshot(), 'weather.png');
             message.channel.send(`${args[0]}의 날씨`, {
                 files: [attachment]
             });

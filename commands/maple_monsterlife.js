@@ -106,7 +106,7 @@ module.exports = {
 - 참고 1. 몬스터 이름은 띄어쓰기 없이 입력해야합니다.
 - 참고 2. 농장 추가의 경우 무한유지를 하는 몬스터는 끝나는 날짜를 비워야합니다.
 - 참고 3. 끝나는 날짜의 형식은 YYMMDD 형식입니다.`,
-    type: ["기타"],
+    type: ["메이플"],
     async execute(message, args) {
         if (args.length < 2)
             return message.channel.send(`${this.usage}\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);

@@ -3,8 +3,8 @@ const mapleModule = require("../util/maple_parsing");
 module.exports = {
     usage: `${client.prefix}랭킹 (닉네임)`,
     command: ["랭킹", "ㄹㅋ"],
-    type: ["메이플"],
     description: "- 캐릭터의 랭킹을 출력",
+    type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1)
             return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);

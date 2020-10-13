@@ -4,8 +4,8 @@ const mapleModule = require("../util/maple_parsing");
 module.exports = {
     usage: `${client.prefix}코디 (닉네임)`,
     command: ["코디", "ㅋㄷ"],
-    type: ["메이플"],
     description: "- 해당 캐릭터가 착용한 코디템과 헤어, 성형 출력",
+    type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1)
             return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
