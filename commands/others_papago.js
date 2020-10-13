@@ -1,6 +1,5 @@
 const fetch = require('node-fetch');
-const clientId = "2WscWNJGmlBV7YmrwJfY"; //클라이언트 아이디
-const clientSecret = "OPDDzF7FzD"; //클라이언트 시크릿
+const { clientId, clientSecret } = require("../config.json");
 
 async function tran(source, target, text) {
     try {
