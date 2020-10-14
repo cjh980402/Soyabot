@@ -82,18 +82,16 @@ module.exports = {
                 return message.reply("Soundcloud 트랙을 재생하는 중 에러가 발생하였습니다.");
             }
         } else {
-            try {
-                const results = await youtube.searchVideos(search, 1);
-                songInfo = await ytdl.getInfo(results[0].url);
-                song = {
-                    title: songInfo.videoDetails.title,
-                    url: songInfo.videoDetails.video_url,
-                    duration: songInfo.videoDetails.lengthSeconds
-                };
-            } catch (error) {
-                console.error(error);
+            const results = await youtube.searchVideos(search, 1);
+            if (results.length == 0)
                 return message.reply("해당 제목에 맞는 비디오를 찾지 못했습니다.");
-            }
+
+            songInfo = await ytdl.getInfo(results[0].url);
+            song = {
+                title: songInfo.videoDetails.title,
+                url: songInfo.videoDetails.video_url,
+                duration: songInfo.videoDetails.lengthSeconds
+            };
         }
 
         if (serverQueue) {

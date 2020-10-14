@@ -70,14 +70,12 @@ module.exports = {
             }
         }
         else {
-            try {
-                const results = await youtube.searchPlaylists(search, 1, { part: "snippet" });
-                playlist = results[0];
-                videos = await playlist.getVideos(MAX_PLAYLIST_SIZE || 10, { part: "snippet" });
-            } catch (error) {
-                console.error(error);
+            const results = await youtube.searchPlaylists(search, 1, { part: "snippet" });
+            if (results.length == 0)
                 return message.reply("재생목록을 찾지 못했습니다 :(");
-            }
+
+            playlist = results[0];
+            videos = await playlist.getVideos(MAX_PLAYLIST_SIZE || 10, { part: "snippet" });
         }
 
         videos.forEach((video) => {
