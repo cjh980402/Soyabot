@@ -33,8 +33,8 @@ class Maple {
         }
         let temp = `Ranking/World/Total?c=${this.name}`; // 일반섭
         this.homelevel = await linkParse(`https://maplestory.nexon.com/${temp}`);
-        if (typeof this.homelevel != 'function')
-            throw new Error("네트워크 에러 발생!");
+        if (this.homelevel("img[alt='메이플스토리 서비스 점검중!']").length != 0)
+            throw new Error("메이플 공식 홈페이지가 서비스 점검 중입니다.");
 
         if (this.homelevel("tr[class]").length == 0) {
             temp += "&w=254"; // 리부트
@@ -75,8 +75,8 @@ class Maple {
                 len++;
         }
         this.homeunion = await linkParse(`https://maplestory.nexon.com/Ranking/Union?c=${this.name}`);
-        if (typeof this.homeunion != 'function')
-            throw new Error("네트워크 에러 발생!");
+        if (this.homeunion("img[alt='메이플스토리 서비스 점검중!']").length != 0)
+            throw new Error("메이플 공식 홈페이지가 서비스 점검 중입니다.");
 
         if (len < 1 || len > 12 || this.homeunion("tr").length < 12) {
             return 0; // 유니온 기록이 없음
@@ -107,12 +107,10 @@ class Maple {
     }
     async isLatest() {
         this.ggdata = await linkParse(this.ggurl); // this.ggdata는 함수
-        if (typeof this.ggdata != 'function')
-            throw new Error("네트워크 에러 발생!");
-        else if (this.ggdata('div.alert.alert-warning.mt-3').text().trim() != '')
-            throw new Error("maple.GG 서버가 점검 중입니다.");
-        else if (this.ggdata('div.flex-center.position-ref.full-height').text().trim() != '')
-            throw new Error("maple.GG 서버에 에러가 발생했습니다.");
+        if (this.ggdata('div.alert.alert-warning.mt-3').length != 0)
+            throw new Error("메이플 GG 서버가 점검 중입니다.");
+        else if (this.ggdata('div.flex-center.position-ref.full-height').length != 0)
+            throw new Error("메이플 GG 서버에 에러가 발생했습니다.");
 
         if (this.ggdata(".d-block.font-weight-light").text().replace(/(\s*)/g, "") != "마지막업데이트:오늘"
             || this.ggdata(".container.mt-5.text-center > h3").text() == "검색결과가 없습니다.")

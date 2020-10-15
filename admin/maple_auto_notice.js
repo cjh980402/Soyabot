@@ -171,13 +171,12 @@ module.exports.stopTestPatch = function () {
 
 module.exports.startFlag = function () {
     const flagtime = [11, 18, 20]; // 12, 19, 21시에 시작 -> 5분전에 알림
-    const flagDate = []; // 플래그 알림 시간 객체 저장
     const now = new Date();
-    flagTimer.forEach((timer, i) => {
-        if (!timer) {
-            flagDate[i] = new Date(now.getFullYear(), now.getMonth(), now.getDate(), flagtime[i], 55);
-            if (now > flagDate[i]) {
-                flagDate[i] = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, flagtime[i], 55);
+    for (let i in flagTimer) {
+        if (!flagTimer[i]) {
+            let flagDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), flagtime[i], 55); // 플래그 알림 시간 객체 저장
+            if (now > flagDate) {
+                flagDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, flagtime[i], 55);
             }
             setTimeout(async () => {
                 const skiplist = (await db.all(`select channelid from flagskip`)).map(v => v.channelid);
@@ -186,22 +185,22 @@ module.exports.startFlag = function () {
                 });
 
                 // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
-                timer = setInterval(async () => {
+                flagTimer[i] = setInterval(async () => {
                     const skiplist = (await db.all(`select channelid from flagskip`)).map(v => v.channelid);
                     client.guilds.cache.array().map(v => v.channels.cache.array().find(v => v.type == 'text' && !skiplist.includes(v.id))).forEach((v, j) => {
                         if (v) setTimeout(() => { v.send(`${flagtime[i] + 1}시 플래그를 준비하세요!`) }, 1000 * j); // 1000*j ms 이후에 주어진 함수 실행
                     });
                 }, 86400000); // 24시간 주기
-            }, flagDate[i] - now);
+            }, flagDate - now);
         }
-    });
+    }
 }
 
 module.exports.stopFlag = function () {
-    flagTimer.forEach(v => {
-        if (v) {
-            clearInterval(v);
-            v = null;
+    for (let i in flagTimer) {
+        if (flagTimer[i]) {
+            clearInterval(flagTimer[i]);
+            flagTimer[i] = null;
         }
-    });
+    }
 }
