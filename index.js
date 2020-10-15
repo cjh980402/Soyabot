@@ -69,7 +69,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
         commandName = args.shift().toLowerCase(); // commandName은 args의 첫번째 원소(명령어 부분), shift로 인해 args에는 뒷부분만 남음
 
         const botModule = client.commands.find((cmd) => cmd.command.includes(commandName));
-        // 해당하는 명령어 찾기 (이름으로 또는 추가 명령어로 찾음)
+        // 해당하는 명령어 찾기
 
         if (!botModule) return; // 해당하는 명령어 없으면 종료
         console.log(`(${formatDate(new Date())}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username} : ${message.content}\n`);
