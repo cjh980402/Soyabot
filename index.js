@@ -87,7 +87,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
     }
     catch (error) {
         cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
-        if (error.message.startsWith('maple.GG'))
+        if (error.message.startsWith('메이플'))
             message.reply(error.message);
         else {
             const adminchat = client.channels.cache.array().find(v => v.recipient == ADMIN_ID);
