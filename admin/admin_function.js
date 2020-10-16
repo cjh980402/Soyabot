@@ -1,4 +1,5 @@
 const { Channel } = require("discord.js");
+const { botNotice, replyRoomID } = require('./bot_control.js');
 const util = require('util');
 const cp = require('child_process');
 const exec = util.promisify(cp.exec);
@@ -14,12 +15,11 @@ module.exports = async function (message) {
         message.channel.sendFullText(await cmd(message.content.substr(1)));
     }
     else if (message.content.startsWith("@")) { // 원격 채팅 전송
-        const roomID = message.content.substr(1).split(' ')[0];
-        const msg = message.content.substr(1).replace(`${roomID} `, '');
-        const target = message.client.channels.cache.array().find(v => v.id == roomID);
-        if (target)
-            target.send(msg);
-        message.channel.sendFullText("채팅 전송 완료");
+        const room = message.content.substr(1).split(' ')[0];
+        if (room && message.content.startsWith(`@${room} `)) {
+            replyRoomID(room, message.content.substr(1).replace(`${room} `, ''));
+            message.channel.send("채팅 전송 완료");
+        }
     }
 }
 

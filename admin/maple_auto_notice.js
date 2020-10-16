@@ -1,5 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const { ADMIN_ID } = require("../config.json");
+const { botNotice, replyRoomID } = require('./bot_control.js');
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 let noticeTimer = null;
@@ -28,10 +29,7 @@ module.exports.startNotice = function () {
                             .setURL(url)
                             .setColor("#F8AA2A");
 
-                        const skiplist = (await db.all(`select channelid from noticeskip`)).map(v => v.channelid);
-                        client.guilds.cache.array().map(v => v.channels.cache.array().find(v => v.type == 'text' && !skiplist.includes(v.id))).forEach((v, i) => {
-                            if (v) setTimeout(() => { v.send(noticeEmbed) }, 1000 * i); // 1000*i ms 이후에 주어진 함수 실행
-                        });
+                        botNotice(noticeEmbed, "notice");
                     }
                 }
             }
@@ -71,10 +69,7 @@ module.exports.startUpdate = function () {
                             .setURL(url)
                             .setColor("#F8AA2A");
 
-                        const skiplist = (await db.all(`select channelid from updateskip`)).map(v => v.channelid);
-                        client.guilds.cache.array().map(v => v.channels.cache.array().find(v => v.type == 'text' && !skiplist.includes(v.id))).forEach((v, i) => {
-                            if (v) setTimeout(() => { v.send(noticeEmbed) }, 1000 * i); // 1000*i ms 이후에 주어진 함수 실행
-                        });
+                        botNotice(noticeEmbed, "update");
                     }
                 }
             }
@@ -114,10 +109,7 @@ module.exports.startTest = function () {
                             .setURL(url)
                             .setColor("#F8AA2A");
 
-                        const skiplist = (await db.all(`select channelid from testskip`)).map(v => v.channelid);
-                        client.guilds.cache.array().map(v => v.channels.cache.array().find(v => v.type == 'text' && !skiplist.includes(v.id))).forEach((v, i) => {
-                            if (v) setTimeout(() => { v.send(noticeEmbed) }, 1000 * i); // 1000*i ms 이후에 주어진 함수 실행
-                        });
+                        botNotice(noticeEmbed, "test");
                     }
                 }
             }
@@ -147,10 +139,7 @@ module.exports.startTestPatch = function () {
                 const file = (await (await fetch(patchURL)).buffer()).length / 1024 / 1024;
                 if (file > 1) { // 파일이 감지된 경우
                     await db.insert('testpatch', { version: version, url: patchURL });
-                    const skiplist = (await db.all(`select channelid from testpatchskip`)).map(v => v.channelid);
-                    client.guilds.cache.array().map(v => v.channels.cache.array().find(v => v.type == 'text' && !skiplist.includes(v.id))).forEach((v, i) => {
-                        if (v) setTimeout(() => { v.send(`[Tver 1.2.${version}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기 : ${file.toFixed(2)}MB\n패치파일 주소 : ${patchURL}`) }, 1000 * i); // 1000*i ms 이후에 주어진 함수 실행
-                    });
+                    botNotice(`[Tver 1.2.${version}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기 : ${file.toFixed(2)}MB\n패치파일 주소 : ${patchURL}`, "testpatch");
                 }
             }
             catch (e) {
@@ -179,18 +168,9 @@ module.exports.startFlag = function () {
                 flagDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, flagtime[i], 55);
             }
             setTimeout(async () => {
-                const skiplist = (await db.all(`select channelid from flagskip`)).map(v => v.channelid);
-                client.guilds.cache.array().map(v => v.channels.cache.array().find(v => v.type == 'text' && !skiplist.includes(v.id))).forEach((v, j) => {
-                    if (v) setTimeout(() => { v.send(`${flagtime[i] + 1}시 플래그를 준비하세요!`) }, 1000 * j); // 1000*j ms 이후에 주어진 함수 실행
-                });
-
+                botNotice(`${flagtime[i] + 1}시 플래그를 준비하세요!`, "flag");
                 // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
-                flagTimer[i] = setInterval(async () => {
-                    const skiplist = (await db.all(`select channelid from flagskip`)).map(v => v.channelid);
-                    client.guilds.cache.array().map(v => v.channels.cache.array().find(v => v.type == 'text' && !skiplist.includes(v.id))).forEach((v, j) => {
-                        if (v) setTimeout(() => { v.send(`${flagtime[i] + 1}시 플래그를 준비하세요!`) }, 1000 * j); // 1000*j ms 이후에 주어진 함수 실행
-                    });
-                }, 86400000); // 24시간 주기
+                flagTimer[i] = setInterval(botNotice, 86400000, `${flagtime[i] + 1}시 플래그를 준비하세요!`, "flag"); // 24시간 주기
             }, flagDate - now);
         }
     }

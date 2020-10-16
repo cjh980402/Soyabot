@@ -16,20 +16,20 @@ module.exports = {
         if (!typematch[args[0]]) {
             let rslt = '';
             for (let i in typematch) {
-                if (await db.get(`select * from ${typematch[i]}skip where channelid = ?`, [message.channel.id])) // 현재 꺼짐
+                if (await db.get(`select * from ${typematch[i]}skip where channelid = ?`, [message.guild.id])) // 현재 꺼짐
                     rslt += `${i} 자동알림 : 꺼짐\n`;
                 else
                     rslt += `${i} 자동알림 : 켜짐\n`;
             }
             return message.channel.send(rslt.trim());
         }
-        const find = await db.get(`select * from ${typematch[args[0]]}skip where channelid = ?`, [message.channel.id]);
+        const find = await db.get(`select * from ${typematch[args[0]]}skip where channelid = ?`, [message.guild.id]);
         if (find) { // 현재 꺼짐
-            await db.run(`delete from ${typematch[args[0]]}skip where channelid = ?`, [message.channel.id]);
+            await db.run(`delete from ${typematch[args[0]]}skip where channelid = ?`, [message.guild.id]);
             message.channel.send(`${args[0]} 자동알림 기능을 켰습니다.`);
         }
         else { // 현재 켜짐
-            await db.insert(`${typematch[args[0]]}skip`, { channelid: message.channel.id, name: message.channel.name });
+            await db.insert(`${typematch[args[0]]}skip`, { channelid: message.guild.id, name: message.guild.name });
             message.channel.send(`${args[0]} 자동알림 기능을 껐습니다.`);
         }
     }
