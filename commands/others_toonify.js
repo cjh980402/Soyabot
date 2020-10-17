@@ -12,12 +12,20 @@ module.exports = {
             message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
         }
         else {
-            const resp = await deepai.callStandardApi("toonify", {
-                image: message.attachments.array()[0].url,
-            });
-            message.channel.send({
-                files: [resp.output_url]
-            });
+            try {
+                const resp = await deepai.callStandardApi("toonify", {
+                    image: message.attachments.array()[0].url,
+                });
+                message.channel.send({
+                    files: [resp.output_url]
+                });
+            }
+            catch (e) {
+                if (e.response.status == 400)
+                    message.channel.send('사진에서 적절한 대상 인물을 찾지 못했습니다.');
+                else
+                    throw e;
+            }
         }
     }
 };
