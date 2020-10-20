@@ -1,12 +1,11 @@
 module.exports = {
     canModifyQueue(member) {
-        const { channel } = member.voice;
-        const botChannel = member.guild.me.voice.channel;
+        const { channelID } = member.voice;
+        const botChannelID = member.guild.voice.channelID;
 
-        if (botChannel && channel !== botChannel) {
+        if (botChannelID && channelID !== botChannelID) {
             return false;
         }
-
         return true;
     }
 };
