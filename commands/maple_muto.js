@@ -23,14 +23,14 @@ module.exports = {
     description: `- 해당하는 요리의 레시피를 출력합니다.
 - (요리 이름) : ${Object.keys(picmatch).join(", ")} 입력가능`,
     type: ["메이플"],
-    execute(message, args) {
+    async execute(message, args) {
         if (picmatch[args[0]]) {
-            message.channel.send(`${args[0]} 요리의 레시피`, {
+            return message.channel.send(`${args[0]} 요리의 레시피`, {
                 files: [`./pictures/muto/${picmatch[args[0]]}.png`]
             });
         }
         else {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
         }
     }
 };

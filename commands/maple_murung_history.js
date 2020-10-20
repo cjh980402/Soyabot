@@ -6,8 +6,9 @@ module.exports = {
     description: '- 캐릭터의 무릉도장 클리어 내역을 보여줍니다.',
     type: ["메이플"],
     async execute(message, args) {
-        if (args.length != 1)
+        if (args.length != 1) {
             return message.channel.send(`${this.usage}\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+        }
 
         const Maple = new mapleModule(args[0]);
         if ((await Maple.isExist()) == null || Maple.homeLevel() == null) {
@@ -20,14 +21,15 @@ module.exports = {
             }
         }
         const data = Maple.MurungHistory();
-        if (data == null)
-            message.channel.send(`[${args[0]}]\n기록이 없습니다.`);
+        if (data == null) {
+            return message.channel.send(`[${args[0]}]\n기록이 없습니다.`);
+        }
         else {
             let rslt = `[${args[0]}]\n`;
             for (let i = data[0].length - 1; i >= 0; i--) {
                 rslt += `${data[0][i]} : ${data[1][i]}\n`;
             }
-            message.channel.send(rslt.trimEnd());
+            return message.channel.send(rslt.trimEnd());
         }
     }
 };

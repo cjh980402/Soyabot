@@ -38,10 +38,10 @@ Object.defineProperty(Object.prototype, "prop", {
     get: function () {
         return Object.getOwnPropertyNames(this).map(v => {
             try {
-                return v + " : " + this[v]
+                return `${v} : ${this[v]}`;
             }
             catch (e) {
-                return v + " : error";
+                return `${v} : error`;
             }
         }).join("\n");
     }
@@ -51,10 +51,10 @@ Object.defineProperty(Object.prototype, "prop2", {
     get: function () {
         return Object.getOwnPropertyNames(this.__proto__).map(v => {
             try {
-                return v + " : " + this[v];
+                return `${v} : ${this[v]}`;
             }
             catch (e) {
-                return v + " : error";
+                return `${v} : error`;
             }
         }).join("\n");
     }

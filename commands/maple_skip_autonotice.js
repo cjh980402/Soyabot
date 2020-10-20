@@ -13,6 +13,9 @@ module.exports = {
 카테고리 생략시 현재 알림상태를 알려줍니다.`,
     type: ["메이플"],
     async execute(message, args) {
+        if (!message.guild) {
+            return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
+        }
         if (!typematch[args[0]]) {
             let rslt = '';
             for (let i in typematch) {
@@ -26,11 +29,11 @@ module.exports = {
         const find = await db.get(`select * from ${typematch[args[0]]}skip where channelid = ?`, [message.guild.id]);
         if (find) { // 현재 꺼짐
             await db.run(`delete from ${typematch[args[0]]}skip where channelid = ?`, [message.guild.id]);
-            message.channel.send(`${args[0]} 자동알림 기능을 켰습니다.`);
+            return message.channel.send(`${args[0]} 자동알림 기능을 켰습니다.`);
         }
         else { // 현재 켜짐
             await db.insert(`${typematch[args[0]]}skip`, { channelid: message.guild.id, name: message.guild.name });
-            message.channel.send(`${args[0]} 자동알림 기능을 껐습니다.`);
+            return message.channel.send(`${args[0]} 자동알림 기능을 껐습니다.`);
         }
     }
 };

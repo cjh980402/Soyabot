@@ -6,8 +6,9 @@ module.exports = {
     description: "- 캐릭터의 레벨업 히스토리를 출력",
     type: ["메이플"],
     async execute(message, args) {
-        if (args.length != 1)
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
+        if (args.length != 1) {
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+        }
         const Maple = new mapleModule(args[0]);
         if ((await Maple.isExist()) == null || Maple.homeLevel() == null) {
             return message.channel.send(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);
@@ -25,6 +26,6 @@ module.exports = {
         for (let i = 0; i < len; i++) {
             rslt += `Lv.${data[1][i]} 달성일 : ${data[0][i]}\n`;
         }
-        message.channel.send(rslt.trimEnd());
+        return message.channel.send(rslt.trimEnd());
     }
 };

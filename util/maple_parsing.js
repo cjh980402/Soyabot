@@ -7,8 +7,7 @@ function sleep(ms) {
 
 async function linkParse(link) {
     try {
-        // encodeURI는 한글 주소의 경우 필수
-        return cheerio.load(await (await fetch(encodeURI(link))).text());
+        return cheerio.load(await (await fetch(encodeURI(link))).text()); // encodeURI는 한글 주소의 경우 필수
     }
     catch (e) {
         return e;
@@ -28,13 +27,15 @@ class Maple {
     async isExist() {
         let len = this.name.length;
         for (let c of this.name) {
-            if (/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(c))
+            if (/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(c)) {
                 len++;
+            }
         }
         let temp = `Ranking/World/Total?c=${this.name}`; // 일반섭
         this.homelevel = await linkParse(`https://maplestory.nexon.com/${temp}`);
-        if (this.homelevel("img[alt='메이플스토리 서비스 점검중!']").length != 0)
+        if (this.homelevel("img[alt='메이플스토리 서비스 점검중!']").length != 0) {
             throw new Error("메이플 공식 홈페이지가 서비스 점검 중입니다.");
+        }
 
         if (this.homelevel("tr[class]").length == 0) {
             temp += "&w=254"; // 리부트
@@ -71,12 +72,14 @@ class Maple {
     async isMain() {
         let len = this.name.length;
         for (let c of this.name) {
-            if (/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(c))
+            if (/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(c)) {
                 len++;
+            }
         }
         this.homeunion = await linkParse(`https://maplestory.nexon.com/Ranking/Union?c=${this.name}`);
-        if (this.homeunion("img[alt='메이플스토리 서비스 점검중!']").length != 0)
+        if (this.homeunion("img[alt='메이플스토리 서비스 점검중!']").length != 0) {
             throw new Error("메이플 공식 홈페이지가 서비스 점검 중입니다.");
+        }
 
         if (len < 1 || len > 12 || this.homeunion("tr").length < 12) {
             return 0; // 유니온 기록이 없음
@@ -107,16 +110,20 @@ class Maple {
     }
     async isLatest() {
         this.ggdata = await linkParse(this.ggurl); // this.ggdata는 함수
-        if (this.ggdata('div.alert.alert-warning.mt-3').length != 0)
+        if (this.ggdata('div.alert.alert-warning.mt-3').length != 0) {
             throw new Error("메이플 GG 서버가 점검 중입니다.");
-        else if (this.ggdata('div.flex-center.position-ref.full-height').length != 0)
+        }
+        else if (this.ggdata('div.flex-center.position-ref.full-height').length != 0) {
             throw new Error("메이플 GG 서버에 에러가 발생했습니다.");
+        }
 
         if (this.ggdata(".d-block.font-weight-light").text().replace(/(\s*)/g, "") != "마지막업데이트:오늘"
-            || this.ggdata(".container.mt-5.text-center > h3").text() == "검색결과가 없습니다.")
+            || this.ggdata(".container.mt-5.text-center > h3").text() == "검색결과가 없습니다.") {
             return 0;
-        else
+        }
+        else {
             return 1;
+        }
     }
     async updateGG() {
         const start = Date.now();
@@ -201,8 +208,9 @@ class Maple {
         }
 
         let rslt = new Array(4);
-        for (let i = 0; i < 4; i++)
+        for (let i = 0; i < 4; i++) {
             rslt[i] = rank.eq(i).text().replace(/(\s*)/g, "");
+        }
         return rslt;
     }
     Coordi() {
@@ -213,8 +221,9 @@ class Maple {
         }
 
         let rslt = new Array(7);
-        for (let i = 0; i < 7; i++)
+        for (let i = 0; i < 7; i++) {
             rslt[i] = coordi.eq(i).text();
+        }
         return rslt;
     }
     Level() {

@@ -21,17 +21,20 @@ module.exports = {
         collector.on("collect", async (reaction, user) => {
             switch (reaction.emoji.name) {
                 case "🔁":
-                    if (message.guild)
+                    if (message.guild) {
                         reaction.users.remove(user);
+                    }
                     await this.execute(message);
                     collector.stop();
                     break;
 
                 default:
-                    if (message.guild)
+                    if (message.guild) {
                         reaction.users.remove(user);
+                    }
                     break;
             }
         });
+        return dice;
     }
 };

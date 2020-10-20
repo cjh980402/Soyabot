@@ -23,7 +23,7 @@ module.exports = {
         }
         else {
             const imgLink = cheerio.load(await (await fetch(`https://maplestory.nexon.com${links[index]}`)).text())("img[alt='썬데이 메이플!']").attr("src");
-            message.channel.send({
+            return message.channel.send({
                 files: [imgLink]
             });
         }

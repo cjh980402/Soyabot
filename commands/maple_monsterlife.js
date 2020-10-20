@@ -12,8 +12,9 @@ async function farm_monster(name) { // 몬스터 이름
 
 async function farm_sex(name) { // 몬스터 조합식
     name = await farm_monster(name);
-    if (name == "false")
+    if (name == "false") {
         return '데이터에 없는 몬스터거나 올바르지 않은 몬스터입니다.';
+    }
     const params = new URLSearchParams();
     params.append("monster", name);
     const response = await fetch("http://wachan.me/farm_sex.php", {
@@ -21,8 +22,9 @@ async function farm_sex(name) { // 몬스터 조합식
         body: params
     });
     const data = await response.json();
-    if (data.error) // 오류 발생
+    if (data.error) {// 오류 발생
         return data.error;
+    }
     else {
         let rslt = "";
         data.forEach(v => {
@@ -52,11 +54,13 @@ async function farm_add(name, user, end_date) { // 농장 추가
             return '수명이 지난 몬스터는 추가할 수 없습니다.';
         end_date = `20${date[1]}-${date[2]}-${date[3]}`; // YYYY-MM-DD 형태로 변환
     }
-    else // 무한 유지
+    else {// 무한 유지
         end_date = "";
+    }
     name = await farm_monster(name);
-    if (name == "false")
+    if (name == "false") {
         return '데이터에 없는 몬스터거나 올바르지 않은 몬스터입니다.';
+    }
     const params = new URLSearchParams();
     params.append("monster", name);
     params.append("user", user);
@@ -66,8 +70,9 @@ async function farm_add(name, user, end_date) { // 농장 추가
         body: params
     });
     const data = await response.json();
-    if (data.error != "false") // 오류 발생
+    if (data.error != "false") { // 오류 발생
         return data.error;
+    }
     else {
         return `${data.monster} 보유 농장 목록에 ${data.user} 농장을 추가하였습니다.\n기간은 ${data.end_date == "" ? "무한" : `${data.end_date}까지`}입니다.`;
     }
@@ -75,8 +80,9 @@ async function farm_add(name, user, end_date) { // 농장 추가
 
 async function farm_read(name) { // 농장 목록
     name = await farm_monster(name);
-    if (name == "false")
+    if (name == "false") {
         return '데이터에 없는 몬스터거나 올바르지 않은 몬스터입니다.';
+    }
     const params = new URLSearchParams();
     params.append("monster", name);
     const response = await fetch("http://wachan.me/farm_read.php", {
@@ -84,8 +90,9 @@ async function farm_read(name) { // 농장 목록
         body: params
     });
     const data = await response.json();
-    if (data.error != "false") // 오류 발생
+    if (data.error != "false") {// 오류 발생
         return data.error;
+    }
     else {
         let rslt = `${name} 보유 농장 목록\n\n`;
         data.farm_list.forEach(v => {
@@ -108,11 +115,12 @@ module.exports = {
 - 참고 3. 끝나는 날짜의 형식은 YYMMDD 형식입니다.`,
     type: ["메이플"],
     async execute(message, args) {
-        if (args.length < 2)
+        if (args.length < 2) {
             return message.channel.send(`${this.usage}\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+        }
 
         if (args[0] == "목록" || args[0] == "ㅁㄹ") {
-            message.channel.sendFullText(await farm_read(args[1]));
+            return message.channel.sendFullText(await farm_read(args[1]));
         }
         else if (args[0] == "조합식" || args[0] == "ㅈㅎㅅ") {
             message.channel.send(await farm_sex(args[1]));
@@ -120,7 +128,10 @@ module.exports = {
         else if (args[0] == "추가" || args[0] == "ㅊㄱ") {
             if (args.length < 3)
                 return message.channel.send(`${this.usage}\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
-            message.channel.send(await farm_add(args[1], args[2], args[3]));
+            return message.channel.send(await farm_add(args[1], args[2], args[3]));
+        }
+        else {
+            return message.channel.send(`${this.usage}\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
         }
     }
 };

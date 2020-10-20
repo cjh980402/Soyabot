@@ -8,8 +8,9 @@ module.exports = {
     description: "- 캐릭터의 메이플 gg 코디 컬렉션을 출력",
     type: ["메이플"],
     async execute(message, args) {
-        if (args.length != 1)
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
+        if (args.length != 1) {
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+        }
         const Maple = new mapleModule(args[0]);
         if ((await Maple.isExist()) == null || Maple.homeLevel() == null) {
             return message.channel.send(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);
@@ -28,9 +29,9 @@ module.exports = {
         await page.goto(`https://maple.gg/u/${args[0]}`);
         const attachment = new MessageAttachment(await (await page.$('section.box.mt-3')).screenshot(), 'collection.png');
         // 콜렉션 영역 캡쳐
-        message.channel.send(`${args[0]}님의 코디 컬렉션`, {
+        await browser.close();
+        return message.channel.send(`${args[0]}님의 코디 컬렉션`, {
             files: [attachment]
         });
-        await browser.close();
     }
 };

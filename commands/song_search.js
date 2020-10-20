@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Collection } = require("discord.js");
 const { YOUTUBE_API_KEY } = require("../config.json");
 const YouTubeAPI = require("simple-youtube-api");
 const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
@@ -9,14 +9,18 @@ module.exports = {
     description: "- 재생할 노래를 검색하고 선택",
     type: ["음악"],
     async execute(message, args) {
-        if (!message.guild)
+        if (!message.guild) {
             return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
-        if (!args.length)
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
-        if (message.channel.activeCollector)
+        }
+        if (!args.length) {
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+        }
+        if (message.channel.activeCollector) {
             return message.reply("메시지 수집기가 이 채널에서 이미 활성화됐습니다.");
-        if (!message.member.voice.channel)
+        }
+        if (!message.member.voice.channel) {
             return message.reply("음성 채널에 먼저 참가해주세요!");
+        }
 
         const search = args.join(" ");
 
@@ -27,8 +31,9 @@ module.exports = {
 
         try {
             const results = await youtube.searchVideos(search, 10);
-            if (results.length == 0)
+            if (results.length == 0) {
                 return message.reply("해당 제목에 맞는 비디오를 찾지 못했습니다.");
+            }
 
             results.map((video, index) => resultsEmbed.addField(video.shortURL, `${index + 1}. ${video.title}`));
 
@@ -46,9 +51,11 @@ module.exports = {
             message.channel.activeCollector = false;
             message.client.commands.find((cmd) => cmd.command.includes("play")).execute(message, [choice]);
             resultsMessage.delete();
-        } catch (error) {
-            console.error(error);
-            // 에러가 awaitMessages의 시간초과 때문이라면, 에러는 Collection<Snowflake, Message>
+        }
+        catch (error) {
+            if (!(error instanceof Collection)) {
+                console.error(error); // 에러가 awaitMessages의 시간초과 때문이라면, 에러는 Collection<Snowflake, Message>
+            }
             message.channel.activeCollector = false;
             resultsMessage.delete();
         }

@@ -7,8 +7,9 @@ module.exports = {
     description: "- 정해진 조건으로 해당 캐릭터의 점수를 평가",
     type: ["메이플"],
     async execute(message, args) {
-        if (args.length != 1)
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
+        if (args.length != 1) {
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+        }
         const Maple = new mapleModule(args[0]);
 
         let union = (await Maple.isMain()) ? Maple.homeUnion() : null;
@@ -49,24 +50,33 @@ module.exports = {
         score += (unitemp >= 8000 ? 250 : unitemp / 40);
         score = Math.floor(score);
 
-        if (score <= 300)
+        if (score <= 300) {
             grade = '메린이';
-        else if (score <= 350)
+        }
+        else if (score <= 350) {
             grade = '무자본 평균';
-        else if (score <= 400)
+        }
+        else if (score <= 400) {
             grade = '메른이';
-        else if (score <= 450)
+        }
+        else if (score <= 450) {
             grade = '메벤 평균';
-        else if (score <= 500)
+        }
+        else if (score <= 500) {
             grade = '경손실 따질 스펙';
-        else if (score <= 550)
+        }
+        else if (score <= 550) {
             grade = '메덕';
-        else if (score <= 600)
+        }
+        else if (score <= 600) {
             grade = '현생보다도 메이플';
-        else if (score <= 650)
+        }
+        else if (score <= 650) {
             grade = '메생살이';
-        else
+        }
+        else {
             grade = '초월자';
+        }
 
         const attachment = new MessageAttachment(Maple.userImg(), 'coordi.png');
         const coordiEmbed = new MessageEmbed()

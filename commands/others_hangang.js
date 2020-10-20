@@ -16,11 +16,11 @@ module.exports = {
 
         const temper = data('tr.site_S01004 > td').eq(0).text().trim();
         if (isNaN(temper)) {
-            message.channel.send(`측정소가 "${temper}" 상태입니다.`);
+            return message.channel.send(`측정소가 "${temper}" 상태입니다.`);
         }
         else {
             const search_time = data("span.data > script").html().trim().split('\n')[0].replace(/\D/g, '');
-            message.channel.send(`지금 한강온도 : ${temper}°C\n업데이트 시간 : ${search_time.substr(0, 4)}년 ${search_time.substr(4, 2)}월 ${search_time.substr(6, 2)}일 ${search_time.substr(8, 2)}시`);
+            return message.channel.send(`지금 한강온도 : ${temper}°C\n업데이트 시간 : ${search_time.substr(0, 4)}년 ${search_time.substr(4, 2)}월 ${search_time.substr(6, 2)}일 ${search_time.substr(8, 2)}시`);
         }
     }
 };

@@ -50,7 +50,9 @@ client.on("error", console.error);
 client.on("message", async (message) => { // 각 메시지에 반응
     let commandName;
     try {
-        if (message.author.bot) return; // 봇 여부 체크
+        if (message.author.bot) {
+            return; // 봇 여부 체크
+        }
         if (message.author.id == ADMIN_ID) { // 관리자 여부 체크
             await admin(message);
         }
@@ -71,7 +73,9 @@ client.on("message", async (message) => { // 각 메시지에 반응
         const botModule = client.commands.find((cmd) => cmd.command.includes(commandName));
         // 해당하는 명령어 찾기
 
-        if (!botModule) return; // 해당하는 명령어 없으면 종료
+        if (!botModule) {
+            return; // 해당하는 명령어 없으면 종료
+        }
         console.log(`(${formatDate(new Date())}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username} : ${message.content}\n`);
 
         const browserModule = ["프로필", "컬렉션", "날씨"];
@@ -82,17 +86,19 @@ client.on("message", async (message) => { // 각 메시지에 반응
         }
 
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
-        await botModule.execute(message, args); // 실질적인 명령어 수행 부분, 일부 비동기 모듈때문에 await를 붙인다.
+        await botModule.execute(message, args); // 실질적인 명령어 수행 부분, 후에 봇의 message객체 캐싱을 대비해 await를 붙인다.
         cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
     }
     catch (error) {
         cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
-        if (error.message.startsWith('메이플'))
+        if (error.message.startsWith('메이플')) {
             message.reply(error.message);
+        }
         else {
             const adminchat = client.channels.cache.array().find(v => v.recipient == ADMIN_ID);
-            if (adminchat)
+            if (adminchat) {
                 adminchat.sendFullText(`작성자 : ${message.author.username}\n방 ID : ${message.channel.id}\n채팅 내용 : ${message.content}\n에러 내용 : ${error}\n${error.stack}`);
+            }
             message.reply("에러로그가 전송되었습니다.");
         }
     }

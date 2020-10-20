@@ -44,10 +44,10 @@ module.exports = {
     type: ["기타"],
     async execute(message) {
         if (message.attachments.array().length == 0 || !message.attachments.array()[0].height) {
-            message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
+            return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
         }
         else {
-            message.channel.send(await clova_celebrity(message.attachments.array()[0].url));
+            return message.channel.send(await clova_celebrity(message.attachments.array()[0].url));
         }
     }
 };

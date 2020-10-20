@@ -5,10 +5,11 @@ module.exports = {
 - 현재심볼의 성장치는 고려하지 않습니다.
  예) !심볼 5 20`,
     type: ["메이플"],
-    execute(message, args) {
-        if (args.length != 2)
-            return message.channel.send(`${this.usage}\n- 대체 명령어 : ${this.command}\n${this.description}`);
-            
+    async execute(message, args) {
+        if (args.length != 2) {
+            return message.channel.send(`${this.usage}\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+        }
+
         args = args.map(v => +v);
         let total_req = 0, total_meso = 0, total_meso2 = 0;
 
@@ -28,6 +29,6 @@ module.exports = {
             total_meso2 += 2370000 + 7130000 * i; // 여로
         }
 
-        message.channel.send(`${args[0]}에서 ${args[1]}레벨까지\n요구량 : ${total_req}\n여로 제외 : ${total_meso.toLocaleString()}메소\n여로 : ${total_meso2.toLocaleString()}메소`);
+        return message.channel.send(`${args[0]}에서 ${args[1]}레벨까지\n요구량 : ${total_req}\n여로 제외 : ${total_meso.toLocaleString()}메소\n여로 : ${total_meso2.toLocaleString()}메소`);
     }
 };

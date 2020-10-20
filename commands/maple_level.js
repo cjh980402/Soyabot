@@ -7,8 +7,9 @@ module.exports = {
     description: "- 캐릭터의 공식 홈페이지 기준 레벨과 경험치를 통해 250, 275까지 남은 경험치량을 계산",
     type: ["메이플"],
     async execute(message, args) {
-        if (args.length != 1)
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
+        if (args.length != 1) {
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+        }
         const Maple = new mapleModule(args[0]);
         const rslt = (await Maple.isExist()) ? Maple.homeLevel() : null;
         if (rslt == null) {
@@ -35,6 +36,6 @@ module.exports = {
                 repl += `\n잔여량 (~275) : ${req_275}\n진행률 (~275) : ${(sumExp / levelTable[274] * 100).toFixed(2)}%`;
             }
         }
-        message.channel.send(repl);
+        return message.channel.send(repl);
     }
 };

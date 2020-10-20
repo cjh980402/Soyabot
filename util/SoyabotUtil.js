@@ -4,7 +4,6 @@ module.exports = {
         const botChannel = member.guild.me.voice.channel;
 
         if (botChannel && channel !== botChannel) {
-            client.queue.get(member.guild.id).textChannel.send("음성 채널에 먼저 참가해주세요!");
             return false;
         }
 

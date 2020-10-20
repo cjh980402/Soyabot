@@ -4,9 +4,10 @@ module.exports = {
     description: `- 실방무와 딜량을 계산합니다.
 예) 방어율 250% 몬스터에게 현재 방무 90%이고 추가되는 방무가 20이면 !방무 250 90 20`,
     type: ["메이플"],
-    execute(message, args) {
-        if (args.length < 2)
-            return message.channel.send(`${this.usage}\n- 대체 명령어 : ${this.command}\n${this.description}`);
+    async execute(message, args) {
+        if (args.length < 2) {
+            return message.channel.send(`${this.usage}\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+        }
 
         args = args.map(v => +v);
         const monster = args[0];
@@ -23,6 +24,6 @@ module.exports = {
         if (boss_damage < 0) {
             boss_damage = 0;
         }
-        message.channel.send(`총 합 방무 : ${((1 - sum) * 100).toFixed(2)}%\n방어율 ${monster}%인 대상에게 딜량 : ${boss_damage}%`);
+        return message.channel.send(`총 합 방무 : ${((1 - sum) * 100).toFixed(2)}%\n방어율 ${monster}%인 대상에게 딜량 : ${boss_damage}%`);
     }
 };

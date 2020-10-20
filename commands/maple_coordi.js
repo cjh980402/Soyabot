@@ -7,8 +7,9 @@ module.exports = {
     description: "- 해당 캐릭터가 착용한 코디템과 헤어, 성형 출력",
     type: ["메이플"],
     async execute(message, args) {
-        if (args.length != 1)
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command}\n${this.description}`);
+        if (args.length != 1) {
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+        }
         const Maple = new mapleModule(args[0]);
         if ((await Maple.isExist()) == null || Maple.homeLevel() == null) {
             return message.channel.send(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);
@@ -21,8 +22,9 @@ module.exports = {
         }
 
         const coordi = Maple.Coordi();
-        if (coordi == null)
-            message.channel.send(`[${args[0]}]\n코디 정보가 없습니다.`);
+        if (coordi == null) {
+            return message.channel.send(`[${args[0]}]\n코디 정보가 없습니다.`);
+        }
         else {
             const attachment = new MessageAttachment(Maple.userImg(), 'coordi.png');
             const coordiEmbed = new MessageEmbed()
@@ -41,7 +43,7 @@ module.exports = {
             coordiEmbed.addField('**무기**', coordi[6], true);
 
             coordiEmbed.setTimestamp();
-            message.channel.send(coordiEmbed);
+            return message.channel.send(coordiEmbed);
         }
     }
 };

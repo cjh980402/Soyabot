@@ -19,14 +19,16 @@ module.exports = {
         try {
             if (song.url.includes("youtube.com")) {
                 stream = await ytdlDiscord(song.url, { highWaterMark: 1 << 25 });
-            } else if (song.url.includes("soundcloud.com")) {
+            }
+            else if (song.url.includes("soundcloud.com")) {
                 try {
                     stream = await scdl.downloadFormat(
                         song.url,
                         scdl.FORMATS.OPUS,
                         SOUNDCLOUD_CLIENT_ID ? SOUNDCLOUD_CLIENT_ID : undefined
                     );
-                } catch (error) {
+                }
+                catch (error) {
                     stream = await scdl.downloadFormat(
                         song.url,
                         scdl.FORMATS.MP3,
@@ -35,7 +37,8 @@ module.exports = {
                     streamType = "unknown";
                 }
             }
-        } catch (error) {
+        }
+        catch (error) {
             if (queue) {
                 queue.songs.shift();
                 module.exports.play(queue.songs[0], message);
@@ -50,7 +53,9 @@ module.exports = {
         const dispatcher = queue.connection
             .play(stream, { type: streamType })
             .on("finish", () => {
-                if (collector && !collector.ended) collector.stop();
+                if (collector && !collector.ended) {
+                    collector.stop();
+                }
 
                 if (queue.loop) {
                     // if loop is on, push the song back at the end of the queue
@@ -58,7 +63,8 @@ module.exports = {
                     let lastSong = queue.songs.shift();
                     queue.songs.push(lastSong);
                     module.exports.play(queue.songs[0], message);
-                } else {
+                }
+                else {
                     // Recursively play the next song
                     queue.songs.shift();
                     module.exports.play(queue.songs[0], message);
@@ -80,7 +86,8 @@ module.exports = {
             await playingMessage.react("🔊");
             await playingMessage.react("🔁");
             await playingMessage.react("⏹");
-        } catch (error) {
+        }
+        catch (error) {
             console.error(error);
         }
 
@@ -90,7 +97,9 @@ module.exports = {
         });
 
         collector.on("collect", (reaction, user) => {
-            if (!queue) return;
+            if (!queue) {
+                return;
+            }
             if (!queue.connection.dispatcher) {
                 return collector.stop();
             }
@@ -100,15 +109,19 @@ module.exports = {
             switch (reaction.emoji.name) {
                 case "⏯":
                     reaction.users.remove(user);
-                    if (!canModifyQueue(member)) return;
+                    if (!canModifyQueue(member)) {
+                        return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
+                    }
                     if (queue.playing) {
                         queue.playing = !queue.playing;
                         queue.connection.dispatcher.pause(true);
                         queue.textChannel.send(`${user} ⏸ 노래를 일시정지했습니다.`);
-                    } else {
+                    }
+                    else {
                         queue.playing = !queue.playing;
-                        if (queue.connection.dispatcher)
+                        if (queue.connection.dispatcher) {
                             queue.connection.dispatcher.resume();
+                        }
                         queue.textChannel.send(`${user} ▶ 노래를 다시 틀었습니다.`);
                     }
                     break;
@@ -116,7 +129,9 @@ module.exports = {
                 case "⏭":
                     queue.playing = true;
                     reaction.users.remove(user);
-                    if (!canModifyQueue(member)) return;
+                    if (!canModifyQueue(member)) {
+                        return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
+                    }
                     queue.connection.dispatcher.end();
                     queue.textChannel.send(`${user} ⏭ 노래를 건너뛰었습니다.`);
                     collector.stop();
@@ -124,12 +139,15 @@ module.exports = {
 
                 case "🔇":
                     reaction.users.remove(user);
-                    if (!canModifyQueue(member)) return;
+                    if (!canModifyQueue(member)) {
+                        return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
+                    }
                     if (queue.volume <= 0) {
                         queue.volume = 100;
                         queue.connection.dispatcher.setVolumeLogarithmic(100 / 100);
                         queue.textChannel.send(`${user} 🔊 음소거를 해제했습니다.`);
-                    } else {
+                    }
+                    else {
                         queue.volume = 0;
                         queue.connection.dispatcher.setVolumeLogarithmic(0);
                         queue.textChannel.send(`${user} 🔇 노래를 음소거 했습니다.`);
@@ -138,37 +156,54 @@ module.exports = {
 
                 case "🔉":
                     reaction.users.remove(user);
-                    if (!canModifyQueue(member)) return;
-                    if (queue.volume - 10 <= 0) queue.volume = 0;
-                    else queue.volume = queue.volume - 10;
+                    if (!canModifyQueue(member)) {
+                        return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
+                    }
+                    if (queue.volume - 10 <= 0) {
+                        queue.volume = 0;
+                    }
+                    else {
+                        queue.volume = queue.volume - 10;
+                    }
                     queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
                     queue.textChannel.send(`${user} 🔉 음량을 낮췄습니다. 현재 음량 : ${queue.volume}%`);
                     break;
 
                 case "🔊":
                     reaction.users.remove(user);
-                    if (!canModifyQueue(member)) return;
-                    if (queue.volume + 10 >= 100) queue.volume = 100;
-                    else queue.volume = queue.volume + 10;
+                    if (!canModifyQueue(member)) {
+                        return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
+                    }
+                    if (queue.volume + 10 >= 100) {
+                        queue.volume = 100;
+                    }
+                    else {
+                        queue.volume = queue.volume + 10;
+                    }
                     queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
                     queue.textChannel.send(`${user} 🔊 음량을 높였습니다. 현재 음량 : ${queue.volume}%`);
                     break;
 
                 case "🔁":
                     reaction.users.remove(user);
-                    if (!canModifyQueue(member)) return;
+                    if (!canModifyQueue(member)) {
+                        return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
+                    }
                     queue.loop = !queue.loop;
                     queue.textChannel.send(`현재 반복 재생 상태 : ${queue.loop ? "**켜짐**" : "**꺼짐**"}`);
                     break;
 
                 case "⏹":
                     reaction.users.remove(user);
-                    if (!canModifyQueue(member)) return;
+                    if (!canModifyQueue(member)) {
+                        return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
+                    }
                     queue.songs = [];
                     queue.textChannel.send(`${user} ⏹ 노래를 정지했습니다.`);
                     try {
                         queue.connection.dispatcher.end();
-                    } catch (error) {
+                    }
+                    catch (error) {
                         console.error(error);
                         queue.connection.disconnect();
                     }
