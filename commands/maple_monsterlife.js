@@ -90,7 +90,7 @@ async function farm_read(name) { // 농장 목록
         body: params
     });
     const data = await response.json();
-    if (data.error != "false") {// 오류 발생
+    if (data.error != false) {// 오류 발생
         return data.error;
     }
     else {
