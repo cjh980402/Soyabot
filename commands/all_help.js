@@ -10,24 +10,25 @@ module.exports = {
             return message.channel.send("지원하지 않는 도움말입니다.");
         }
 
-        let helpEmbed = new MessageEmbed()
+        const helpEmbed = new MessageEmbed()
             .setTitle("소야봇 도움말")
             .setDescription("모든 명령어 목록")
             .setColor("#F8AA2A");
 
-        message.client.commands.forEach((cmd) => {
-            if (cmd.description && (cmd.type.includes(args[0]) || !args[0])) {
-                helpEmbed.addField(
-                    `**${cmd.usage}**`,
-                    `- 대체 명령어 : ${cmd.command.join(', ')}\n${cmd.description}`,
-                    true
-                );
-                // description이 없는 명령어는 히든 명령어
-            }
+        const description = message.client.commands.filter((cmd) => (cmd.description && (cmd.type.includes(args[0]) || !args[0])))
+            .map((cmd) => `**${cmd.usage}**\n- 대체 명령어 : ${cmd.command.join(', ')}\n${cmd.description}`);
+        // description이 없는 명령어는 히든 명령어
+
+        const splitDescription = splitMessage(description, {
+            maxLength: 2048,
+            char: "\n",
+            prepend: "",
+            append: ""
         });
 
-        helpEmbed.setTimestamp();
-
-        return message.channel.send(helpEmbed);
+        splitDescription.forEach(async (m) => {
+            helpEmbed.setDescription(m);
+            message.channel.send(helpEmbed);
+        });
     }
 };
