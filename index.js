@@ -7,7 +7,7 @@ const { TOKEN, PREFIX, ADMIN_ID } = require("./config.json");
 const admin = require("./admin/admin_function");
 const { startNotice, startUpdate, startTest, startTestPatch, startFlag } = require('./admin/maple_auto_notice.js');
 const botChatting = require("./util/bot_chatting");
-const dbhandler = require('./util/db-handler');
+const dbhandler = require('./util/sqlite-handler');
 global.db = new dbhandler('./db/soyabot_data.db');
 global.client = new Client({ disableMentions: "everyone" }); // 여러 기능들에 의해 필수로 최상위 전역
 client.login(TOKEN);
@@ -24,6 +24,12 @@ const formatDate = (date) => `${date.getFullYear()}년 ${date.getMonth() + 1}월
 client.on("ready", async () => {
     console.log(`${client.user.username} ready!`);
     client.user.setActivity(`${PREFIX}help`, { type: 'LISTENING' });
+    /**
+     * Import all commands
+     */
+    readdirSync("./commands").filter((file) => file.endsWith(".js")).forEach(file => { // commands 폴더속 .js 파일 걸러내기
+        client.commands.push(require(`./commands/${file}`)); // 배열에 이름과 명령 객체를 push
+    });
     await db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');
@@ -37,12 +43,6 @@ client.on("ready", async () => {
     startTest(); // 테섭 자동 알림 기능
     startTestPatch(); // 테섭 패치 감지 기능
     startFlag(); // 플래그 5분 전 알림
-    /**
-     * Import all commands
-     */
-    readdirSync("./commands").filter((file) => file.endsWith(".js")).forEach(file => { // commands 폴더속 .js 파일 걸러내기
-        client.commands.push(require(`./commands/${file}`)); // 배열에 이름과 명령 객체를 push
-    });
 });
 client.on("warn", (info) => console.log(info));
 client.on("error", console.error);
