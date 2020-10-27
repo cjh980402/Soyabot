@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, splitMessage } = require("discord.js");
 
 module.exports = {
     usage: `${client.prefix}help (카테고리)`,
