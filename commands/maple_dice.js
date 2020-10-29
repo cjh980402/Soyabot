@@ -19,20 +19,10 @@ module.exports = {
             time: 60000 // 1분
         });
         collector.on("collect", async (reaction, user) => {
-            switch (reaction.emoji.name) {
-                case "🔁":
-                    if (message.guild) {
-                        reaction.users.remove(user);
-                    }
-                    await this.execute(message);
-                    collector.stop();
-                    break;
-
-                default:
-                    if (message.guild) {
-                        reaction.users.remove(user);
-                    }
-                    break;
+            if (reaction.emoji.name === "🔁") {
+                collector.stop();
+                dice.delete();
+                await this.execute(message);
             }
         });
         return dice;

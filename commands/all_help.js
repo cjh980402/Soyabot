@@ -10,25 +10,70 @@ module.exports = {
             return message.channel.send("지원하지 않는 도움말입니다.");
         }
 
-        const helpEmbed = new MessageEmbed()
-            .setTitle("소야봇 도움말")
-            .setDescription("모든 명령어 목록")
-            .setColor("#F8AA2A");
-
         const description = message.client.commands.filter((cmd) => (cmd.description && (cmd.type.includes(args[0]) || !args[0])))
             .map((cmd) => `**${cmd.usage}**\n- 대체 명령어 : ${cmd.command.join(', ')}\n${cmd.description}`);
         // description이 없는 명령어는 히든 명령어
 
-        const splitDescription = splitMessage(description, {
-            maxLength: 2048,
-            char: "\n",
-            prepend: "",
-            append: ""
-        });
+        try {
+            let currentPage = 0;
+            const embeds = generateHelpEmbed(description);
+            const queueEmbed = await message.channel.send(
+                `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                embeds[currentPage]
+            );
+            await queueEmbed.react("⬅️");
+            await queueEmbed.react("⏹");
+            await queueEmbed.react("➡️");
 
-        splitDescription.forEach(async (m) => {
-            helpEmbed.setDescription(m);
-            message.channel.send(helpEmbed);
-        });
+            const filter = (reaction, user) =>
+                ["⬅️", "⏹", "➡️"].includes(reaction.emoji.name) && message.author.id === user.id;
+            const collector = queueEmbed.createReactionCollector(filter, { time: 60000 });
+
+            collector.on("collect", async (reaction, user) => {
+                try {
+                    if (reaction.emoji.name === "➡️") {
+                        if (currentPage < embeds.length - 1) {
+                            currentPage++;
+                            queueEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                        }
+                    }
+                    else if (reaction.emoji.name === "⬅️") {
+                        if (currentPage !== 0) {
+                            --currentPage;
+                            queueEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                        }
+                    }
+                    else {
+                        collector.stop();
+                        if (message.guild) {
+                            reaction.message.reactions.removeAll();
+                        }
+                    }
+                    if (message.guild) {
+                        await reaction.users.remove(message.author.id);
+                    }
+                }
+                catch {
+                    return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]!**");
+                }
+            });
+        }
+        catch {
+            return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]!**");
+        }
     }
 };
+
+function generateHelpEmbed(help) {
+    const embeds = [];
+    for (let i = 0; i < help.length; i += 10) {
+        const info = help.slice(i, i + 10).join("\n");
+        const embed = new MessageEmbed()
+            .setTitle("소야봇 도움말")
+            .setColor("#F8AA2A")
+            .setDescription(`모든 명령어 목록\n\n${info}`)
+            .setTimestamp();
+        embeds.push(embed);
+    }
+    return embeds;
+}

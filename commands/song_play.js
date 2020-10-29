@@ -36,14 +36,14 @@ module.exports = {
         }
 
         const search = args.join(" ");
-        const videoPattern = /^(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.?be)\/.+$/gi;
+        const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([_0-9a-z-]+)(\?t=[0-9]+)*/i;
         const playlistPattern = /^.*(list=)([^#\&\?]*).*/gi;
         const scRegex = /^https?:\/\/(soundcloud\.com)\/(.*)$/;
         const url = args[0];
         const urlValid = videoPattern.test(args[0]);
 
         // Start the playlist if playlist url was provided
-        if (!videoPattern.test(args[0]) && playlistPattern.test(args[0])) {
+        if (!urlValid && playlistPattern.test(args[0])) {
             return message.client.commands.find((cmd) => cmd.command.includes("playlist")).execute(message, args);
         }
         else if (scdl.isValidUrl(url) && url.includes("/sets/")) {

@@ -26,7 +26,9 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
         }
 
-        if (!channel) return message.reply("음성 채널에 먼저 참가해주세요!");
+        if (!channel) {
+            return message.reply("음성 채널에 먼저 참가해주세요!");
+        }
 
         const permissions = channel.permissionsFor(message.client.user);
         if (!permissions.has("CONNECT")) {

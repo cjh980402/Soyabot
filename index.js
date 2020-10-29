@@ -1,7 +1,7 @@
 /**
  * Module Imports
  */
-const { Client } = require("discord.js");
+const { Client, Collection } = require("discord.js");
 const { readdirSync } = require("fs");
 const { TOKEN, PREFIX, ADMIN_ID } = require("./config.json");
 const admin = require("./admin/admin_function");
@@ -23,7 +23,7 @@ const formatDate = (date) => `${date.getFullYear()}년 ${date.getMonth() + 1}월
  */
 client.on("ready", async () => {
     console.log(`${client.user.username} ready!`);
-    client.user.setActivity(`${PREFIX}help`, { type: 'LISTENING' });
+    client.user.setActivity(`${PREFIX}help and ${PREFIX}play`, { type : "LISTENING" });
     /**
      * Import all commands
      */
@@ -80,18 +80,23 @@ client.on("message", async (message) => { // 각 메시지에 반응
 
         const browserModule = ["프로필", "컬렉션", "날씨"];
         commandName = browserModule.includes(botModule.command[0]) ? "브라우저" : botModule.command[0];
+        if (botModule.channelCool) {
+            commandName += `_${message.channel.id}`; // 전체가 아닌 채널당 쿨타임 기능인 경우
+        }
 
         if (cooldowns.has(commandName)) { // 명령이 수행 중인 경우
             return message.reply(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
-
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
         await botModule.execute(message, args); // 실질적인 명령어 수행 부분, 후에 봇의 message객체 캐싱을 대비해 await를 붙인다.
         cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
     }
     catch (error) {
         cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
-        if (error.message.startsWith('메이플')) {
+        if (error instanceof Collection) { // awaitMessages에서 시간초과한 경우
+            message.channel.send("입력 대기 시간이 초과되었습니다.");
+        }
+        else if (error.message.startsWith('메이플')) {
             message.reply(error.message);
         }
         else {
