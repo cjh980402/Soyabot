@@ -51,8 +51,8 @@ Object.defineProperty(String.prototype, "htmlDecode", {
         return this.replace(/<br>/g, "\n")
             .replace(/&#x[\da-fA-F]+;/g, (str) => String.fromCharCode(parseInt(str.substr(3), 16)))
             .replace(/&#[\d]+;/g, (str) => String.fromCharCode(parseInt(str.substr(2))))
-            .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&")
-            .replace(/&nbsp;/g, " ").replace(/&quot;/g, '"');
+            .replace(/&nbsp;/g, " ").replace(/&quot;/g, '"').replace(/&apos;/g, "`")
+            .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
     }
 });
 
