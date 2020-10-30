@@ -66,13 +66,12 @@ module.exports = {
 
 function generateHelpEmbed(help) {
     const embeds = [];
-    for (let i = 0; i < help.length; i += 10) {
-        const info = help.slice(i, i + 10).join("\n");
+    for (let i = 0; i < help.length; i += 7) {
+        const info = help.slice(i, i + 7).join("\n");
         const embed = new MessageEmbed()
             .setTitle("소야봇 도움말")
             .setColor("#F8AA2A")
-            .setDescription(`모든 명령어 목록\n\n${info}`)
-            .setTimestamp();
+            .setDescription(`모든 명령어 목록\n\n${info}`);
         embeds.push(embed);
     }
     return embeds;

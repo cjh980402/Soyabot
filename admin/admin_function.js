@@ -8,7 +8,7 @@ const startDate = new Date();
 module.exports = async function (message) {
     if (message.content.startsWith("[")) { // 노드 코드 실행
         const funcBody = message.content.substr(1).trim().split('\n');
-        funcBody[funcBody.length - 1] = `message.channel.sendFullText(String(${funcBody[funcBody.length - 1]}))`; // 함수의 마지막 줄 내용은 자동으로 출력
+        funcBody[funcBody.length - 1] = `message.channel.sendFullText(${funcBody[funcBody.length - 1]})`; // 함수의 마지막 줄 내용은 자동으로 출력
         await eval(`(async()=>{${funcBody.join('\n')}})();`);
     }
     else if (message.content.startsWith("]")) { // 콘솔 명령 실행
@@ -34,6 +34,28 @@ async function cmd(_cmd) {
     return cmdResult.replace(/\u001b\[\d\dm/g, "").trimEnd();
 }
 
+Object.defineProperty(Channel.prototype, "sendFullText", {
+    value: function (str) {
+        if (this.type == 'dm' || this.type == 'text') {
+            str = String(str);
+            for (let i = 0; i < str.length; i += 1999) { // 디스코드는 최대 2천자 제한이 있기때문에 끊어서 보내는 로직이다.
+                const last = (i + 1999) > str.length ? str.length : i + 1999;
+                this.send(str.substring(i, last));
+            }
+        }
+    }
+});
+
+Object.defineProperty(String.prototype, "htmlDecode", {
+    value: function () {
+        return this.replace(/<br>/g, "\n")
+            .replace(/&#x[\da-fA-F]+;/g, (str) => String.fromCharCode(parseInt(str.substr(3), 16)))
+            .replace(/&#[\d]+;/g, (str) => String.fromCharCode(parseInt(str.substr(2))))
+            .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&")
+            .replace(/&nbsp;/g, " ").replace(/&quot;/g, '"');
+    }
+});
+
 Object.defineProperty(Object.prototype, "prop", {
     get: function () {
         return Object.getOwnPropertyNames(this).map(v => {
@@ -47,7 +69,7 @@ Object.defineProperty(Object.prototype, "prop", {
     }
 });
 
-Object.defineProperty(Object.prototype, "prop2", {
+Object.defineProperty(Object.prototype, "pprop", {
     get: function () {
         return Object.getOwnPropertyNames(this.__proto__).map(v => {
             try {
@@ -57,17 +79,5 @@ Object.defineProperty(Object.prototype, "prop2", {
                 return `${v} : error`;
             }
         }).join("\n");
-    }
-});
-
-Object.defineProperty(Channel.prototype, "sendFullText", {
-    value: function (str) {
-        if (this.type != 'dm' && this.type != 'text')
-            return;
-        str = String(str);
-        for (let i = 0; i < str.length; i += 1999) { // 디스코드는 최대 2천자 제한이 있기때문에 끊어서 보내는 로직이다.
-            const last = (i + 1999) > str.length ? str.length : i + 1999;
-            this.send(str.substring(i, last));
-        }
     }
 });

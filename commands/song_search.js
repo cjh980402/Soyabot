@@ -35,7 +35,7 @@ module.exports = {
                 return message.reply("해당 제목에 맞는 비디오를 찾지 못했습니다.");
             }
 
-            results.map((video, index) => resultsEmbed.addField(video.shortURL, `${index + 1}. ${video.title}`));
+            results.map((video, index) => resultsEmbed.addField(video.shortURL, `${index + 1}. ${video.title.htmlDecode()}`));
 
             var resultsMessage = await message.channel.send(resultsEmbed);
 

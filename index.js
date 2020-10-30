@@ -14,6 +14,7 @@ client.login(TOKEN);
 client.commands = new Array(); // 명령어 객체 저장할 배열
 client.prefix = PREFIX;
 client.queue = new Map();
+client.setMaxListeners(30);
 const cooldowns = new Set(); // 중복 명령 방지할 set
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사용자 입력을 이스케이프해서 정규식 내부에서 문자 그대로 취급하기 위해 치환하는 함수
 const formatDate = (date) => `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${date.getHours()}시 ${date.getMinutes()}분`;
@@ -122,7 +123,7 @@ client.on("voiceStateUpdate", (oldState, newState) => {
             if (queue && oldVoice == queue.channel && oldVoice.members.size == 1) { // 봇만 음성 채널에 있는 경우
                 queue.songs = [];
                 queue.connection.dispatcher.end();
-                queue.textChannel.send("모든 사용자가 음성채널을 떠나서");
+                queue.textChannel.send("모든 사용자가 음성채널을 떠났습니다.");
             }
         }
         else {
