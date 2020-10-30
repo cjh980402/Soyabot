@@ -31,16 +31,12 @@ module.exports = {
             collector.on("collect", async (reaction, user) => {
                 try {
                     if (reaction.emoji.name === "➡️") {
-                        if (currentPage < embeds.length - 1) {
-                            currentPage++;
-                            queueEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                        }
+                        currentPage = (currentPage + 1) % embeds.length;
+                        queueEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
                     }
                     else if (reaction.emoji.name === "⬅️") {
-                        if (currentPage !== 0) {
-                            --currentPage;
-                            queueEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                        }
+                        currentPage = (currentPage - 1 + embeds.length) % embeds.length;
+                        queueEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
                     }
                     else {
                         collector.stop();

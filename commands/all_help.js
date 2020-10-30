@@ -1,4 +1,4 @@
-const { MessageEmbed, splitMessage } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 
 module.exports = {
     usage: `${client.prefix}help (카테고리)`,
@@ -17,31 +17,27 @@ module.exports = {
         try {
             let currentPage = 0;
             const embeds = generateHelpEmbed(description);
-            const queueEmbed = await message.channel.send(
+            const helpEmbed = await message.channel.send(
                 `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
                 embeds[currentPage]
             );
-            await queueEmbed.react("⬅️");
-            await queueEmbed.react("⏹");
-            await queueEmbed.react("➡️");
+            await helpEmbed.react("⬅️");
+            await helpEmbed.react("⏹");
+            await helpEmbed.react("➡️");
 
             const filter = (reaction, user) =>
                 ["⬅️", "⏹", "➡️"].includes(reaction.emoji.name) && message.author.id === user.id;
-            const collector = queueEmbed.createReactionCollector(filter, { time: 60000 });
+            const collector = helpEmbed.createReactionCollector(filter, { time: 60000 });
 
             collector.on("collect", async (reaction, user) => {
                 try {
                     if (reaction.emoji.name === "➡️") {
-                        if (currentPage < embeds.length - 1) {
-                            currentPage++;
-                            queueEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                        }
+                        currentPage = (currentPage + 1) % embeds.length;
+                        helpEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
                     }
                     else if (reaction.emoji.name === "⬅️") {
-                        if (currentPage !== 0) {
-                            --currentPage;
-                            queueEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                        }
+                        currentPage = (currentPage - 1 + embeds.length) % embeds.length;
+                        helpEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
                     }
                     else {
                         collector.stop();
