@@ -168,10 +168,10 @@ module.exports.startFlag = function () {
             if (now > flagDate) {
                 flagDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, flagtime[i], 55);
             }
-            setTimeout(() => {
-                botNotice(`${flagtime[i] + 1}시 플래그를 준비하세요!`, "flag"); // 그룹챗에만 공지
+            setTimeout(async () => {
+                botNotice(`${flagtime[i] + 1}시 플래그를 준비하세요!`, "flag");
                 // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
-                flagTimer[i] = setInterval(botNotice, 86400000, `${flagtime[i] + 1}시 플래그를 준비하세요!`, false, "flag"); // 24시간 주기
+                flagTimer[i] = setInterval(botNotice, 86400000, `${flagtime[i] + 1}시 플래그를 준비하세요!`, "flag"); // 24시간 주기
             }, flagDate - now);
         }
     }
