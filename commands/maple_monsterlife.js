@@ -22,7 +22,7 @@ async function farm_sex(name) { // 몬스터 조합식
         body: params
     });
     const data = await response.json();
-    if (data.error) {// 오류 발생
+    if (data.error) { // 오류 발생
         return data.error;
     }
     else {
@@ -70,7 +70,7 @@ async function farm_add(name, user, end_date) { // 농장 추가
         body: params
     });
     const data = await response.json();
-    if (data.error != "false") { // 오류 발생
+    if (data.error != false) { // 오류 발생
         return data.error;
     }
     else {
