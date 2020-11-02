@@ -160,25 +160,28 @@ module.exports.stopTestPatch = function () {
 }
 
 module.exports.startFlag = function () {
-    if (!flagTimer) {
-        const flagNotice = () => {
-            const flagtime = [[12, 0], [19, 0], [21, 0], [12, 1]]; // 당일 플래그, 다음 날 플래그
-            const now = new Date();
-            const next = flagtime.find(v => v[0] > now.getHours() || v[1] == 1);
-            const flagDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + next[1], next[0] - 1, 55); // 5분 전 알림
-
-            flagTimer = setTimeout(() => {
-                botNotice(`${flagDate.getHours() + 1}시 플래그를 준비하세요!`, "flag");
-                flagNotice();
-            }, Math.max(flagDate - now, 0));
-        };
-        flagNotice();
+    const flagtime = [11, 18, 20]; // 12, 19, 21시에 시작 -> 5분전에 알림
+    const now = new Date();
+    for (let i in flagTimer) {
+        if (!flagTimer[i]) {
+            let flagDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), flagtime[i], 55); // 플래그 알림 시간 객체 저장
+            if (now > flagDate) {
+                flagDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, flagtime[i], 55);
+            }
+            setTimeout(() => {
+                botNotice(`${flagtime[i] + 1}시 플래그를 준비하세요!`, "flag"); // 그룹챗에만 공지
+                // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
+                flagTimer[i] = setInterval(botNotice, 86400000, `${flagtime[i] + 1}시 플래그를 준비하세요!`, false, "flag"); // 24시간 주기
+            }, flagDate - now);
+        }
     }
 }
 
 module.exports.stopFlag = function () {
-    if (flagTimer) {
-        clearTimeout(flagTimer);
-        flagTimer = null;
+    for (let i in flagTimer) {
+        if (flagTimer[i]) {
+            clearInterval(flagTimer[i]);
+            flagTimer[i] = null;
+        }
     }
 }

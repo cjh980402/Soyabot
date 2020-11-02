@@ -20,12 +20,12 @@
     "iconv-lite": "^0.6.2",
     "lyrics-finder": "^21.4.0",
     "node-fetch": "^2.6.1",
-    "puppeteer": "^5.4.0",
+    "puppeteer": "^5.4.1",
     "simple-youtube-api": "^5.2.1",
     "soundcloud-downloader": "^0.1.8",
     "sqlite3": "^5.0.0",
     "string-progressbar": "^1.0.1",
-    "ytdl-core": "^4.0.0",
+    "ytdl-core": "^4.0.2",
     "ytdl-core-discord": "^1.2.4"
   },
   "scripts": {
