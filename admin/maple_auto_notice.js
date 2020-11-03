@@ -7,7 +7,7 @@ let noticeTimer = null;
 let updateTimer = null;
 let testTimer = null;
 let testPatchTimer = null;
-let flagTimer = null;
+let flagTimer = [null, null, null];
 
 module.exports.startNotice = function () {
     if (!noticeTimer) {
