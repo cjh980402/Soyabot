@@ -3,7 +3,7 @@ const mapleModule = require("../util/maple_parsing");
 module.exports = {
     usage: `${client.prefix}히스토리 (닉네임)`,
     command: ["히스토리", "ㅎㅅㅌㄹ"],
-    description: "- 캐릭터의 레벨업 히스토리를 출력",
+    description: "- 캐릭터의 레벨업 히스토리를 출력합니다.",
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {

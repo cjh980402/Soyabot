@@ -3,7 +3,7 @@ const { canModifyQueue } = require("../util/SoyabotUtil");
 module.exports = {
     usage: `${client.prefix}skipto <Queue Number>`,
     command: ["skipto", "st"],
-    description: "- 번호로 선택한 대기열의 노래로 건너뜀",
+    description: "- 번호로 선택한 대기열의 노래로 건너뜁니다.",
     type: ["음악"],
     async execute(message, args) {
         if (!message.guild) {

@@ -4,7 +4,7 @@ const { MessageEmbed } = require("discord.js");
 module.exports = {
     usage: `${client.prefix}nowplaying`,
     command: ["nowplaying", "np"],
-    description: "- 지금 재생 중인 노래 출력",
+    description: "- 지금 재생 중인 노래를 보여줍니다.",
     type: ["음악"],
     async execute(message) {
         if (!message.guild) {

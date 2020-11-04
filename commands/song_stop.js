@@ -4,7 +4,7 @@ const { canModifyQueue } = require("../util/SoyabotUtil");
 module.exports = {
     usage: `${client.prefix}stop`,
     command: ["stop"],
-    description: "- 지금 재생 중인 노래를 정지",
+    description: "- 지금 재생 중인 노래를 정지합니다.",
     type: ["음악"],
     async execute(message) {
         if (!message.guild) {

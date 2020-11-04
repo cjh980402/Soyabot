@@ -3,7 +3,7 @@ const mapleModule = require("../util/maple_parsing");
 module.exports = {
     usage: `${client.prefix}유니온 (닉네임)`,
     command: ["유니온", "ㅇㄴㅇ"],
-    description: "- 캐릭터의 유니온 정보와 일일 코인 수급량을 출력",
+    description: "- 캐릭터의 유니온 정보와 일일 코인 수급량을 출력합니다.",
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {

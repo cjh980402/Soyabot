@@ -3,7 +3,7 @@ const mapleModule = require("../util/maple_parsing");
 module.exports = {
     usage: `${client.prefix}업적 (닉네임)`,
     command: ["업적", "ㅇㅈ"],
-    description: "- 캐릭터의 업적 등급, 점수, 랭킹을 출력",
+    description: "- 캐릭터의 업적 등급, 점수, 랭킹을 출력합니다.",
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {

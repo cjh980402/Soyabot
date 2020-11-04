@@ -3,7 +3,7 @@ const { canModifyQueue } = require("../util/SoyabotUtil");
 module.exports = {
     usage: `${client.prefix}volume (변경할 음량)`,
     command: ["volume", "v"],
-    description: "- 지금 재생 중인 노래의 음량 변경(0 ~ 100 범위)",
+    description: "- 지금 재생 중인 노래의 음량을 변경합니다. (0 ~ 100 범위)",
     type: ["음악"],
     execute(message, args) {
         if (!message.guild) {

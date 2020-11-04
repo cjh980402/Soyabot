@@ -6,7 +6,7 @@ const writeFile = util.promisify(fs.writeFile);
 module.exports = {
     usage: `${client.prefix}pruning`,
     command: ["pruning"],
-    description: "- 봇 메시지 자동정리 상태를 전환",
+    description: "- 봇 메시지 자동정리 상태를 전환합니다.",
     type: ["음악"],
     async execute(message) {
         config.PRUNING = !config.PRUNING;

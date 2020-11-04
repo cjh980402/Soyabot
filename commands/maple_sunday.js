@@ -4,7 +4,7 @@ const cheerio = require('cheerio');
 module.exports = {
     usage: `${client.prefix}썬데이`,
     command: ["썬데이", "ㅆㄷㅇ"],
-    description: "- 현재 진행 (예정) 중인 썬데이 메이플을 공지",
+    description: "- 현재 진행 (예정) 중인 썬데이 메이플을 공지합니다.",
     type: ["메이플"],
     async execute(message) {
         const parse = cheerio.load(await (await fetch("https://maplestory.nexon.com/News/Event")).text());

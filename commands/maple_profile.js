@@ -5,7 +5,7 @@ const mapleModule = require("../util/maple_parsing");
 module.exports = {
     usage: `${client.prefix}프로필 (닉네임)`,
     command: ["프로필", "ㅍㄹㅍ", "ㅍㄿ"],
-    description: "- 캐릭터의 메이플 gg 프로필을 출력",
+    description: "- 캐릭터의 메이플 gg 프로필을 출력합니다.",
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {

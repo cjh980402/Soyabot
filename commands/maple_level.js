@@ -4,7 +4,7 @@ const { levelTable } = require("../util/soyabot_const.json");
 module.exports = {
     usage: `${client.prefix}레벨 (닉네임)`,
     command: ["레벨", "ㄹㅂ", "ㄼ"],
-    description: "- 캐릭터의 공식 홈페이지 기준 레벨과 경험치를 통해 250, 275까지 남은 경험치량을 계산",
+    description: "- 캐릭터의 공식 홈페이지 기준 레벨과 경험치를 통해 250, 275까지 남은 경험치량을 계산합니다.",
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {

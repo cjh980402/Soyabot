@@ -4,7 +4,7 @@ const mapleModule = require("../util/maple_parsing");
 module.exports = {
     usage: `${client.prefix}스카우터 (닉네임)`,
     command: ["스카우터", "ㅅㅋㅇㅌ"],
-    description: "- 정해진 조건으로 해당 캐릭터의 점수를 평가",
+    description: "- 정해진 조건으로 해당 캐릭터의 점수를 평가합니다.",
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {

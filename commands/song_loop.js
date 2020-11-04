@@ -3,7 +3,7 @@ const { canModifyQueue } = require("../util/SoyabotUtil");
 module.exports = {
     usage: `${client.prefix}loop`,
     command: ["loop", 'l'],
-    description: "- 반복 재생 상태를 전환",
+    description: "- 반복 재생 상태를 전환합니다.",
     type: ["음악"],
     async execute(message) {
         if (!message.guild) {

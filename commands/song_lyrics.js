@@ -4,7 +4,7 @@ const lyricsFinder = require("lyrics-finder");
 module.exports = {
     usage: `${client.prefix}lyrics`,
     command: ["lyrics", "ly"],
-    description: "- 현재 재생 중인 노래의 가사 출력",
+    description: "- 현재 재생 중인 노래의 가사를 출력합니다.",
     type: ["음악"],
     async execute(message) {
         if (!message.guild) {

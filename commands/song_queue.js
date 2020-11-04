@@ -3,7 +3,7 @@ const { MessageEmbed } = require("discord.js");
 module.exports = {
     usage: `${client.prefix}queue`,
     command: ["queue", "q"],
-    description: "- 대기열과 지금 재생 중인 노래 출력",
+    description: "- 대기열과 지금 재생 중인 노래 출력합니다.",
     type: ["음악"],
     async execute(message) {
         if (!message.guild) {

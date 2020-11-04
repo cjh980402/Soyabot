@@ -5,7 +5,7 @@ const { levelTable } = require("../util/soyabot_const.json");
 module.exports = {
     usage: `${client.prefix}정보 (닉네임)`,
     command: ["정보", "ㅈㅂ"],
-    description: "- 해당 캐릭터의 전체적인 정보를 출력",
+    description: "- 해당 캐릭터의 전체적인 정보를 출력합니다.",
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {

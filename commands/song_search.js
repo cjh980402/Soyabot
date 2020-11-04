@@ -6,7 +6,7 @@ const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
 module.exports = {
     usage: `${client.prefix}search <Video Name>`,
     command: ["search"],
-    description: "- 재생할 노래를 검색하고 선택",
+    description: "- 재생할 노래를 검색하고 선택합니다.",
     type: ["음악"],
     async execute(message, args) {
         if (!message.guild) {

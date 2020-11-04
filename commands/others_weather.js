@@ -6,7 +6,8 @@ const cheerio = require('cheerio');
 module.exports = {
     usage: `${client.prefix}날씨 (지역)`,
     command: ["날씨", "ㄴㅆ"],
-    description: "- 입력한 지역의 날씨를 출력 (목록을 입력시 지원하는 전체 지역 출력)",
+    description: `- 입력한 지역의 날씨를 알려줍니다.
+- 참고. ${client.prefix}날씨 목록`,
     type: ["기타"],
     async execute(message, args) {
         if (!args[0]) {

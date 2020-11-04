@@ -3,7 +3,7 @@ const { canModifyQueue } = require("../util/SoyabotUtil");
 module.exports = {
     usage: `${client.prefix}pause`,
     command: ["pause"],
-    description: "- 지금 재생 중인 노래 일시정지",
+    description: "- 지금 재생 중인 노래를 일시정지합니다.",
     type: ["음악"],
     execute(message) {
         if (!message.guild) {

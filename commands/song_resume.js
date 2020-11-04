@@ -3,7 +3,7 @@ const { canModifyQueue } = require("../util/SoyabotUtil");
 module.exports = {
     usage: `${client.prefix}resume`,
     command: ["resume", "r"],
-    description: "- 가장 최근 노래를 다시 재생",
+    description: "- 가장 최근 노래를 다시 재생합니다.",
     type: ["음악"],
     execute(message) {
         if (!message.guild) {

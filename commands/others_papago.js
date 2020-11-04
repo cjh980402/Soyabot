@@ -40,7 +40,8 @@ function checklan(src, tar) {
 module.exports = {
     usage: `${client.prefix}번역 (번역 대상 언어) (번역 결과 언어) (내용)`,
     command: ["번역", "ㅂㅇ"],
-    description: "- 입력한 언어 설정에 따른 번역결과 출력",
+    description: `- 파파고를 이용한 언어 번역을 수행합니다.
+- 참고. ${client.prefix}번역 목록`,
     type: ["기타"],
     async execute(message, args) {
         if (args.length < 3) {

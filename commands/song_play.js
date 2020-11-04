@@ -8,7 +8,7 @@ const scdl = require("soundcloud-downloader");
 module.exports = {
     usage: `${client.prefix}play <YouTube URL | Video Name | Soundcloud URL>`,
     command: ["play", "p"],
-    description: "- YouTube나 Soundcloud를 통해 노래를 재생",
+    description: "- YouTube나 Soundcloud를 통해 노래를 재생합니다.",
     type: ["음악"],
     async execute(message, args) {
         if (!message.guild) {

@@ -3,7 +3,7 @@ const { canModifyQueue } = require("../util/SoyabotUtil");
 module.exports = {
     usage: `${client.prefix}shuffle`,
     command: ["shuffle"],
-    description: "- 대기열 순서를 랜덤하게 섞음",
+    description: "- 대기열 순서를 랜덤하게 섞어줍니다.",
     type: ["음악"],
     async execute(message) {
         if (!message.guild) {
