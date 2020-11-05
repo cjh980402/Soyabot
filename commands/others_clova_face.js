@@ -37,10 +37,10 @@ async function clova_face(url) {
         rslt += `나이 : ${person.age.value} (신뢰도 : ${(person.age.confidence * 100).toFixed(2)}%)\n`;
         rslt += `감정 : ${person.emotion.value} (신뢰도 : ${(person.emotion.confidence * 100).toFixed(2)}%)\n`;
         rslt += `포즈 : ${person.pose.value} (신뢰도 : ${(person.pose.confidence * 100).toFixed(2)}%)\n\n`;
-        if (i == data.faces.length - 1)
-            rslt += "위치 기준점(X = 0, Y = 0) : 좌측상단";
     });
-    return rslt;
+    if (data.faces.length > 0)
+        rslt += "위치 기준점(X = 0, Y = 0) : 좌측상단";
+    return rslt.trimEnd();
 }
 
 module.exports = {
@@ -56,4 +56,4 @@ module.exports = {
             return message.channel.send(await clova_face(message.attachments.array()[0].url));
         }
     }
-};
+};  
