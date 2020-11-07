@@ -102,7 +102,7 @@ const stringList = [
     "산중 농사 지어 고라니 좋은 일 했다.",
     "동의 일 하라면 서의 일 한다.",
     "될성부른 나무는 떡잎부터 알아본다.",
-    "두 손뼉이 맞아야 소리가 난다.",
+    "두 손벽이 맞아야 소리가 난다.",
     "둘이 먹다가 하나가 죽어도 모르겠다.",
     "뒷간과 사돈집은 멀어야 한다.",
     "구멍에 든 뱀 길이를 모른다.",
@@ -1007,6 +1007,10 @@ const stringList = [
     "흉년에 어미는 굶어 죽고 아이는 배 터져 죽는다."
 ];
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms)); // 비동기 sleep 함수
+}
+
 module.exports = {
     usage: `${client.prefix}타자대결`,
     command: ["타자대결", "ㅌㅈㄷㄱ"],
@@ -1015,6 +1019,10 @@ module.exports = {
     type: ["기타"],
     async execute(message) {
         const choice = stringList[Math.floor(Math.random() * stringList.length)];
+        for (let i = 3; i > 0; i--) {
+            message.channel.send(i);
+            await sleep(1000); // 3초 카운트 다운 로직
+        }
         message.channel.send(`대결할 문장 : ${choice.split("").join("\u200b")}\n\n위 문장으로 대결을 수행합니다.`);
         
         const start = Date.now()
