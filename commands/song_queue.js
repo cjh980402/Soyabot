@@ -9,13 +9,13 @@ module.exports = {
         if (!message.guild) {
             return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         }
-        const serverQueue = message.client.queue.get(message.guild.id);
-        if (!serverQueue) {
+        const queue = message.client.queue.get(message.guild.id);
+        if (!queue) {
             return message.channel.send("❌ **재생 중인 노래가 없습니다.**");
         }
         try {
             let currentPage = 0;
-            const embeds = generateQueueEmbed(message, serverQueue.songs);
+            const embeds = generateQueueEmbed(message, queue.songs);
             const queueEmbed = await message.channel.send(
                 `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
                 embeds[currentPage]

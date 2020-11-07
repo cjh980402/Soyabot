@@ -39,18 +39,27 @@ module.exports = {
 
             var resultsMessage = await message.channel.send(resultsEmbed);
 
-            function filter(msg) {
-                const pattern = /(^[1-9][0-9]{0,1}$)/g;
-                return pattern.test(msg.content) && parseInt(msg.content.match(pattern)[0]) <= 10;
+            message.channel.activeCollector = true;
+            const response = await message.channel.awaitMessages((msg) => /^[0-9]{1,2}(\s*,\s*[0-9]{1,2})*$/g.test(msg.content), { max: 1, time: 30000, errors: ["time"] });
+            const reply = response.first().content;
+
+            if (reply.includes(",")) {
+                const songs = reply.split(",").map((str) => str.trim());
+
+                for (let song of songs) {
+                    await message.client.commands
+                        .find((cmd) => cmd.command.includes("play"))
+                        .execute(message, [resultsEmbed.fields[parseInt(song) - 1].name]);
+                }
+            }
+            else {
+                const choice = resultsEmbed.fields[parseInt(response.first()) - 1].name;
+                message.client.commands.find((cmd) => cmd.command.includes("play")).execute(message, [choice]);
             }
 
-            message.channel.activeCollector = true;
-            const response = await message.channel.awaitMessages(filter, { max: 1, time: 30000, errors: ["time"] });
-            const choice = resultsEmbed.fields[parseInt(response.first()) - 1].name;
-
             message.channel.activeCollector = false;
-            message.client.commands.find((cmd) => cmd.command.includes("play")).execute(message, [choice]);
             resultsMessage.delete();
+            response.first().delete();
         }
         catch (error) {
             if (!(error instanceof Collection)) {
