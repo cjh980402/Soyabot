@@ -1031,6 +1031,6 @@ module.exports = {
         const response = await message.channel.awaitMessages((message) => (message.content == choice), { max: 1, time: 20000, errors: ["time"] });
         const time = (Date.now() - start) / 1000;
         return message.channel.send(`<@${response.first().author.id}>님이 승리하였습니다!
-소요시간 : ${time.toFixed(2)}초\n분당타수 : ${choiceLength * 60 / time}타`);
+소요시간 : ${time.toFixed(2)}초\n분당타수 : ${(choiceLength * 60 / time).toFixed(2)}타`);
     }
 };
