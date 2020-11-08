@@ -21,6 +21,7 @@
     "lyrics-finder": "^21.4.0",
     "node-fetch": "^2.6.1",
     "puppeteer": "^5.4.1",
+    "sejong": "^0.2.3",
     "simple-youtube-api": "^5.2.1",
     "soundcloud-downloader": "^0.1.8",
     "sqlite3": "^5.0.0",

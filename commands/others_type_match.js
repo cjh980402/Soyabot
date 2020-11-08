@@ -1,3 +1,4 @@
+const Sejong = require('sejong');
 const stringList = [
     "계집 바뀐 건 모르고 젓가락 짝 바뀐 건 안다.",
     "고기는 씹어야 맛이요 말은 해야 맛이라",
@@ -1019,6 +1020,7 @@ module.exports = {
     type: ["기타"],
     async execute(message) {
         const choice = stringList[Math.floor(Math.random() * stringList.length)];
+        const choiceLength = Sejong.decompose(choice, { decomposeAssembledVowel: true }).length;
         for (let i = 3; i > 0; i--) {
             message.channel.send(i);
             await sleep(1000); // 3초 카운트 다운 로직
@@ -1027,7 +1029,8 @@ module.exports = {
         
         const start = Date.now()
         const response = await message.channel.awaitMessages((message) => (message.content == choice), { max: 1, time: 20000, errors: ["time"] });
-        return message.channel.send(`${response.first().author.username}님이 승리하였습니다!
-소요시간 : ${((Date.now() - start) / 1000).toFixed(2)}초`);
+        const time = (Date.now() - start) / 1000;
+        return message.channel.send(`<@${response.first().author.id}>님이 승리하였습니다!
+소요시간 : ${time.toFixed(2)}초\n분당타수 : ${choiceLength * 60 / time}타`);
     }
 };
