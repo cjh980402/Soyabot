@@ -1,5 +1,3 @@
-const { ChatMention } = require('../util/node-kakao-extend');
-
 module.exports = {
     usage: `${client.prefix}러시안룰렛 (탄환 수)`,
     command: ["러시안룰렛", "ㄹㅅㅇㄹㄹ", "ㄽㅇㄹㄹ"],
