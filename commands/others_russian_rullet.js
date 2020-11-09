@@ -59,7 +59,7 @@ module.exports = {
                 else { // 러시안룰렛과 관련이 없는 채팅인 경우
                     return false;
                 }
-            }, { max: 1, timeout: 300000, errors: ["time"] }); // 5분 대기
+            }, { max: 1, time: 300000, errors: ["time"] }); // 5분 대기
             if (gameUser.length == bullet) {
                 message.channel.send("인원이 가득 차 게임이 자동으로 시작됩니다.");
                 break; // 게임 시작
@@ -76,7 +76,7 @@ module.exports = {
         const die = Math.floor(Math.random() * bullet); // 0번째 ~ (bullet - 1)번째 탄환 중에서 선택
         for (let i = 0; i < bullet; i++) {
             try {
-                await message.channel.awaitMessages((message) => (message.author == gameUser[i % gameUser.length] && (message.content == `${client.prefix}빵` || message.content == `${client.prefix}ㅃ`)), { max: 1, timeout: 60000, errors: ["time"] });
+                await message.channel.awaitMessages((message) => (message.author == gameUser[i % gameUser.length] && (message.content == `${client.prefix}빵` || message.content == `${client.prefix}ㅃ`)), { max: 1, time: 60000, errors: ["time"] });
             }
             catch (e) { } // 시간 초과돼도 에러 throw 안하게 catch를 해줌
             if (i == die) {
