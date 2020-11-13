@@ -10,7 +10,8 @@ module.exports.botNotice = async function (data, type) {
 module.exports.replyRoomID = function (roomID, str) {
     const target = client.channels.cache.get(roomID); // 메세지를 보내고 싶은 방 객체 획득
     if (!target) {
-        return '존재하지 않는 방입니다.';
+        return false;
     }
     target.sendFullText(str);
+    return true;
 }

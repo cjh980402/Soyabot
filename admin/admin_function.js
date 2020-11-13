@@ -6,19 +6,19 @@ const exec = util.promisify(cp.exec);
 const startDate = new Date();
 
 module.exports = async function (message) {
-    if (message.content.startsWith("[")) { // 노드 코드 실행
+    if (message.content.startsWith("[")) { // 노드 코드 실행 후 출력
         const funcBody = message.content.substr(1).trim().split('\n');
-        funcBody[funcBody.length - 1] = `message.channel.sendFullText(${funcBody[funcBody.length - 1]})`; // 함수의 마지막 줄 내용은 자동으로 출력
+        funcBody.push(`message.channel.sendFullText(${funcBody.pop()});`); // 함수의 마지막 줄 내용은 자동으로 출력
         await eval(`(async()=>{${funcBody.join('\n')}})();`);
     }
-    else if (message.content.startsWith("]")) { // 콘솔 명령 실행
+    else if (message.content.startsWith("]")) { // 콘솔 명령 실행 후 출력
         message.channel.sendFullText(await cmd(message.content.substr(1)));
     }
-    else if (message.content.startsWith("@")) { // 원격 채팅 전송
-        const room = message.content.substr(1).split(' ')[0];
-        if (room && message.content.startsWith(`@${room} `)) {
-            replyRoomID(room, message.content.substr(1).replace(`${room} `, ''));
-            message.channel.send("채팅 전송 완료");
+    else if (message.content.startsWith("*")) { // 원격 채팅 전송
+        const room = message.content.split('*')[1];
+        if (room && message.content.startsWith(`*${room}* `)) {
+            const rslt = replyRoomID(room, message.content.replace(`*${room}* `, ''));
+            message.channel.send(rslt ? '채팅이 전송되었습니다.' : '존재하지 않는 방입니다.');
         }
     }
 }
