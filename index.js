@@ -17,7 +17,6 @@ client.queue = new Map();
 client.setMaxListeners(30);
 const cooldowns = new Set(); // 중복 명령 방지할 set
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사용자 입력을 이스케이프해서 정규식 내부에서 문자 그대로 취급하기 위해 치환하는 함수
-const formatDate = (date) => `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${date.getHours()}시 ${date.getMinutes()}분`;
 
 /**
  * Client Events
@@ -77,7 +76,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
         if (!botModule) {
             return; // 해당하는 명령어 없으면 종료
         }
-        console.log(`(${formatDate(new Date())}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username} : ${message.content}\n`);
+        console.log(`(${new Date().toKorean()}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username} : ${message.content}\n`);
 
         const browserModule = ["프로필", "컬렉션", "날씨"];
         commandName = browserModule.includes(botModule.command[0]) ? "브라우저" : botModule.command[0];
