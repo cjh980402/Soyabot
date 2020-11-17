@@ -19,7 +19,7 @@ module.exports = {
             return message.channel.send(`측정소가 "${temper}" 상태입니다.`);
         }
         else {
-            const search_time = data("span.data > script").html().trim().split('\n')[0].replace(/\D/g, '');
+            const search_time = data("span.data > script").html().trim().split('\n')[0].replace(/\D+/g, '');
             return message.channel.send(`지금 한강온도 : ${temper}°C\n업데이트 시간 : ${search_time.substr(0, 4)}년 ${search_time.substr(4, 2)}월 ${search_time.substr(6, 2)}일 ${search_time.substr(8, 2)}시`);
         }
     }
