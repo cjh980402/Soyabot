@@ -61,7 +61,7 @@ function generateQueueEmbed(message, queue) {
         const current = queue.slice(i, i + 10);
         const info = current.map((track, j) => `${i + j + 1} - [${track.title}](${track.url})`).join("\n");
         const embed = new MessageEmbed()
-            .setTitle("소야봇 음악 대기열")
+            .setTitle(`${message.client.user.username} 음악 대기열`)
             .setThumbnail(message.guild.iconURL())
             .setColor("#F8AA2A")
             .setDescription(`**현재 재생 중인 노래 - [${queue[0].title}](${queue[0].url})**\n\n${info}`)

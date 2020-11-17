@@ -24,9 +24,9 @@ module.exports = {
             return message.reply(`같은 채널에 있어야합니다. (${message.client.user})`);
         }
 
-        if (!args.length)
+        if (!args.length) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
-
+        }
         const permissions = channel.permissionsFor(message.client.user);
         if (!permissions.has("CONNECT")) {
             return message.reply("권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.");
@@ -124,7 +124,7 @@ module.exports = {
             console.error(error);
             message.client.queue.delete(message.guild.id);
             await channel.leave();
-            return message.channel.send(`채널에 참가할 수 없습니다 : ${error}`);
+            return message.channel.send(`채널에 참가할 수 없습니다 : ${error.message}`);
         }
     }
 };

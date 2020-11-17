@@ -10,7 +10,7 @@ module.exports = {
         if (!song) {
             queue.channel.leave();
             message.client.queue.delete(message.guild.id);
-            return queue.textChannel.send("🚫 음악 대기열이 끝났습니다.");
+            return queue.textChannel.send("❌ 음악 대기열이 끝났습니다.");
         }
 
         let stream = null;

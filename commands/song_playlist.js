@@ -3,7 +3,7 @@ const { play } = require("../include/play");
 const { YOUTUBE_API_KEY, MAX_PLAYLIST_SIZE, SOUNDCLOUD_CLIENT_ID } = require("../config.json");
 const YouTubeAPI = require("simple-youtube-api");
 const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
-const scdl = require("soundcloud-downloader")
+const scdl = require("soundcloud-downloader");
 
 module.exports = {
     usage: `${client.prefix}playlist <YouTube Playlist URL | Playlist Name>`,
@@ -69,7 +69,7 @@ module.exports = {
         }
         else if (scdl.isValidUrl(args[0])) {
             if (args[0].includes('/sets/')) {
-                message.channel.send('⌛ fetching the playlist...')
+                message.channel.send('⌛ 재생 목록을 가져오는 중...')
                 playlist = await scdl.getSetInfo(args[0], SOUNDCLOUD_CLIENT_ID)
                 videos = playlist.tracks.map(track => ({
                     title: track.title,
@@ -88,26 +88,21 @@ module.exports = {
             videos = await playlist.getVideos(MAX_PLAYLIST_SIZE || 10, { part: "snippet" });
         }
 
-        videos.forEach((video) => {
-            song = {
+        const newSongs = videos.map((video) => {
+            return (song = {
                 title: video.title,
                 url: video.url,
                 duration: video.durationSeconds
-            };
-
-            if (serverQueue) {
-                serverQueue.songs.push(song);
-                if (!PRUNING) {
-                    message.channel.send(`${message.author} ✅ **${song.title}**를 대기열에 추가하였습니다.`);
-                }
-            }
-            else {
-                queueConstruct.songs.push(song);
-            }
+            });
         });
+
+        serverQueue ? serverQueue.songs.push(...newSongs) : queueConstruct.songs.push(...newSongs);
+
+        const songs = serverQueue ? serverQueue.songs : queueConstruct.songs;
 
         let playlistEmbed = new MessageEmbed()
             .setTitle(`${playlist.title}`)
+            .setDescription(songs.map((song, index) => `${index + 1}. ${song.title}`))
             .setURL(playlist.url)
             .setColor("#F8AA2A")
             .setTimestamp();
@@ -132,7 +127,7 @@ module.exports = {
                 console.error(error);
                 message.client.queue.delete(message.guild.id);
                 await channel.leave();
-                return message.channel.send(`채널에 참가할 수 없습니다 : ${error}`);
+                return message.channel.send(`채널에 참가할 수 없습니다 : ${error.message}`);
             }
         }
     }
