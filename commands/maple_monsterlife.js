@@ -120,9 +120,14 @@ async function farm_info(name) { // 농장 정보
     }
     else {
         let rslt = `${name} 농장의 정보\n\n`;
-        data.monster_list.forEach(v => {
-            rslt += `${v[1] || "무한유지"} : ${v[0]} (👍 : ${+v[3]}, 👎 : ${+v[4]})\n`
-        });
+        if (data.monster_list.length) {
+            data.monster_list.forEach(v => {
+                rslt += `${v[1] || "무한유지"} : ${v[0]} (👍 : ${+v[3]}, 👎 : ${+v[4]})\n`
+            });
+        }
+        else {
+            rslt += "등록된 몬스터 정보가 없습니다.";
+        }
         return rslt.trimEnd();
     }
 }
