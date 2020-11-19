@@ -7,7 +7,7 @@ module.exports = {
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const Maple = new mapleModule(args[0]);
         if ((await Maple.isExist()) == null || Maple.homeLevel() == null) {
@@ -25,7 +25,7 @@ module.exports = {
             return message.channel.send(`[${args[0]}]\n기록이 없습니다.`);
         }
         else {
-            return message.channel.send(`[${args[0]}]\n${rslt[0]}\n기록 : ${rslt[1]}\n시간 : ${rslt[2]}\n날짜 : ${rslt[3]}`);
+            return message.channel.send(`[${args[0]}]\n${rslt[0]}\n기록: ${rslt[1]}\n시간: ${rslt[2]}\n날짜: ${rslt[3]}`);
         }
     }
 };

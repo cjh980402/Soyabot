@@ -29,14 +29,14 @@ async function farm_sex(name) { // 몬스터 조합식
         let rslt = "";
         data.forEach(v => {
             if (v.type == "child") { // 결과가 name인 경우
-                rslt += `${v.child}(${v.c_grade}) : ${v.c_effect}${v.c_effect_value == "+0" ? "" : ` ${v.c_effect_value}`}\n`;
+                rslt += `${v.child}(${v.c_grade}): ${v.c_effect}${v.c_effect_value == "+0" ? "" : ` ${v.c_effect_value}`}\n`;
                 rslt += `↳${v.mom} (${v.m_species} ${v.m_grade})\n`;
                 rslt += `↳${v.dad} (${v.d_species} ${v.d_grade})\n\n`;
             }
             else if (v.type == "parents") { // name이 재료인 경우
                 rslt += `↱${v.mom} (${v.m_species} ${v.m_grade})\n`;
                 rslt += `↱${v.dad} (${v.d_species} ${v.d_grade})\n`;
-                rslt += `${v.child}(${v.c_grade}) : ${v.c_effect}${v.c_effect_value == "+0" ? "" : ` ${v.c_effect_value}`}\n\n`;
+                rslt += `${v.child}(${v.c_grade}): ${v.c_effect}${v.c_effect_value == "+0" ? "" : ` ${v.c_effect_value}`}\n\n`;
             }
         });
         return rslt.trimEnd();
@@ -97,7 +97,7 @@ async function farm_read(name) { // 농장 목록
         let rslt = `${name} 보유 농장 목록\n\n`;
         data.farm_list.forEach(v => {
             if (/^[가-힣]{2,6}$/.test(v[0])) {
-                rslt += `${v[1] || "무한유지"} : ${v[0]} (👍 : ${+v[3]}, 👎 : ${+v[4]})\n`
+                rslt += `${v[1] || "무한유지"}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})\n`
             }
         });
         return rslt.trimEnd();
@@ -122,7 +122,7 @@ async function farm_info(name) { // 농장 정보
         let rslt = `${name} 농장의 정보\n\n`;
         if (data.monster_list.length) {
             data.monster_list.forEach(v => {
-                rslt += `${v[1] || "무한유지"} : ${v[0]} (👍 : ${+v[3]}, 👎 : ${+v[4]})\n`
+                rslt += `${v[1] || "무한유지"}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})\n`
             });
         }
         else {
@@ -146,7 +146,7 @@ module.exports = {
     type: ["메이플"],
     async execute(message, args) {
         if (args.length < 2) {
-            return message.channel.send(`${this.usage}\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
         if (args[0] == "목록" || args[0] == "ㅁㄹ") {
@@ -160,12 +160,12 @@ module.exports = {
         }
         else if (args[0] == "추가" || args[0] == "ㅊㄱ") {
             if (args.length < 3) {
-                return message.channel.send(`${this.usage}\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+                return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
             }
             return message.channel.send(await farm_add(args[1], args[2], args[3]));
         }
         else {
-            return message.channel.send(`${this.usage}\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
     }
 };

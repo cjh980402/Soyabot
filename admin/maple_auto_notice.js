@@ -35,7 +35,7 @@ module.exports.startNotice = function () {
             catch (e) {
                 const adminchat = client.channels.cache.find(v => v.recipient == ADMIN_ID);
                 if (adminchat) {
-                    adminchat.sendFullText(`자동알림(공지) 파싱 중 에러 발생\n에러 내용 : ${e}\n${e.stack}`);
+                    adminchat.sendFullText(`자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack}`);
                 }
             }
         }, 120000);
@@ -75,7 +75,7 @@ module.exports.startUpdate = function () {
             catch (e) {
                 const adminchat = client.channels.cache.find(v => v.recipient == ADMIN_ID);
                 if (adminchat) {
-                    adminchat.sendFullText(`자동알림(업데이트) 파싱 중 에러 발생\n에러 내용 : ${e}\n${e.stack}`);
+                    adminchat.sendFullText(`자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack}`);
                 }
             }
         }, 120000);
@@ -115,7 +115,7 @@ module.exports.startTest = function () {
             catch (e) {
                 const adminchat = client.channels.cache.find(v => v.recipient == ADMIN_ID);
                 if (adminchat) {
-                    adminchat.sendFullText(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용 : ${e}\n${e.stack}`);
+                    adminchat.sendFullText(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack}`);
                 }
             }
         }, 120000);
@@ -139,13 +139,13 @@ module.exports.startTestPatch = function () {
                 const file = (await (await fetch(patchURL)).buffer()).length / 1024 / 1024;
                 if (file > 1) { // 파일이 감지된 경우
                     await db.insert('testpatch', { version: version, url: patchURL });
-                    botNotice(`[Tver 1.2.${version}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기 : ${file.toFixed(2)}MB\n패치파일 주소 : ${patchURL}`, "testpatch");
+                    botNotice(`[Tver 1.2.${version}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기: ${file.toFixed(2)}MB\n패치파일 주소: ${patchURL}`, "testpatch");
                 }
             }
             catch (e) {
                 const adminchat = client.channels.cache.find(v => v.recipient == ADMIN_ID);
                 if (adminchat) {
-                    adminchat.sendFullText(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용 : ${e}\n${e.stack}`);
+                    adminchat.sendFullText(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack}`);
                 }
             }
         }, 600000); // 10분마다 동작 수행

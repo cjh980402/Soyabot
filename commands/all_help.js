@@ -10,8 +10,8 @@ module.exports = {
             return message.channel.send("지원하지 않는 도움말입니다.");
         }
 
-        const description = message.client.commands.filter((cmd) => (cmd.description && (cmd.type.includes(args[0]) || !args[0])))
-            .map((cmd) => `**${cmd.usage}**\n- 대체 명령어 : ${cmd.command.join(', ')}\n${cmd.description}`);
+        const description = client.commands.filter((cmd) => (cmd.description && (cmd.type.includes(args[0]) || !args[0])))
+            .map((cmd) => `**${cmd.usage}**\n- 대체 명령어: ${cmd.command.join(', ')}\n${cmd.description}`);
         // description이 없는 명령어는 히든 명령어
 
         try {

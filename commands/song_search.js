@@ -13,7 +13,7 @@ module.exports = {
             return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         }
         if (!args.length) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         if (message.channel.activeCollector) {
             return message.reply("메시지 수집기가 이 채널에서 이미 활성화됐습니다.");
@@ -47,14 +47,13 @@ module.exports = {
                 const songs = reply.split(",").map((str) => str.trim());
 
                 for (let song of songs) {
-                    await message.client.commands
-                        .find((cmd) => cmd.command.includes("play"))
+                    await client.commands.find((cmd) => cmd.command.includes("play"))
                         .execute(message, [resultsEmbed.fields[parseInt(song) - 1].name]);
                 }
             }
             else {
                 const choice = resultsEmbed.fields[parseInt(response.first()) - 1].name;
-                message.client.commands.find((cmd) => cmd.command.includes("play")).execute(message, [choice]);
+                client.commands.find((cmd) => cmd.command.includes("play")).execute(message, [choice]);
             }
 
             message.channel.activeCollector = false;

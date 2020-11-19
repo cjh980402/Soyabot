@@ -45,7 +45,7 @@ module.exports = {
     type: ["기타"],
     async execute(message, args) {
         if (args.length < 3) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         if (args[0] == '목록' || args[0] == 'ㅁㄹ') {
             const allsee = "\u200b".repeat(500); //강제 장문 전환 목적의 투명문자
@@ -54,12 +54,12 @@ module.exports = {
         }
 
         if ((!checklan(args[0], args[1]) && !checklan(args[1], args[0])) || args[2] == undefined) {
-            return message.channel.send('형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 "!번역 (대상언어) (결과언어) (번역할 내용)"입니다.');
+            return message.channel.send(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 "${client.prefix}번역 (대상언어) (결과언어) (번역할 내용)"입니다.\n언어의 형식은 번역 목록을 확인해주세요.`);
         }
 
         const msg = args.slice(2).join(' ');
-        if (msg.length > 500) {
-            return message.channel.send('500자를 초과하는 내용은 번역하지 않습니다.');
+        if (msg.length > 600) {
+            return message.channel.send('600자를 초과하는 내용은 번역하지 않습니다.');
         }
         else {
             return message.channel.send(await tran(args[0], args[1], msg));

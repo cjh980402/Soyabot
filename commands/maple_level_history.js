@@ -7,7 +7,7 @@ module.exports = {
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const Maple = new mapleModule(args[0]);
         if ((await Maple.isExist()) == null || Maple.homeLevel() == null) {
@@ -24,7 +24,7 @@ module.exports = {
         const len = data[0].length;
         let rslt = `[${args[0]}]\n`;
         for (let i = 0; i < len; i++) {
-            rslt += `Lv.${data[1][i]} 달성일 : ${data[0][i]}\n`;
+            rslt += `Lv.${data[1][i]} 달성일: ${data[0][i]}\n`;
         }
         return message.channel.send(rslt.trimEnd());
     }

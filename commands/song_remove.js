@@ -9,7 +9,7 @@ module.exports = {
         if (!message.guild) {
             return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         }
-        const queue = message.client.queue.get(message.guild.id);
+        const queue = client.queue.get(message.guild.id);
         if (!queue) {
             return message.channel.send("현재 대기열이 없습니다.");
         }
@@ -18,7 +18,7 @@ module.exports = {
         }
 
         if (!args.length || isNaN(args[0])) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
         const song = queue.songs.splice(args[0] - 1, 1);

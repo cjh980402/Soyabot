@@ -5,11 +5,11 @@ const { canModifyQueue } = require("../util/SoyabotUtil");
 module.exports = {
     async play(song, message) {
         const { PRUNING, SOUNDCLOUD_CLIENT_ID } = require("../config.json");
-        const queue = message.client.queue.get(message.guild.id);
+        const queue = client.queue.get(message.guild.id);
 
         if (!song) {
             queue.channel.leave();
-            message.client.queue.delete(message.guild.id);
+            client.queue.delete(message.guild.id);
             return queue.textChannel.send("❌ 음악 대기열이 끝났습니다.");
         }
 
@@ -45,10 +45,10 @@ module.exports = {
             }
 
             console.error(error);
-            return message.channel.send(`오류 발생 : ${error.message ? error.message : error}`);
+            return message.channel.send(`오류 발생: ${error.message ? error.message : error}`);
         }
 
-        queue.connection.on("disconnect", () => message.client.queue.delete(message.guild.id));
+        queue.connection.on("disconnect", () => client.queue.delete(message.guild.id));
 
         const dispatcher = queue.connection
             .play(stream, { type: streamType })
@@ -78,7 +78,7 @@ module.exports = {
         dispatcher.setVolumeLogarithmic(queue.volume / 100);
 
         try {
-            var playingMessage = await queue.textChannel.send(`🎶 노래 재생 시작 : **${song.title}** ${song.url}`);
+            var playingMessage = await queue.textChannel.send(`🎶 노래 재생 시작: **${song.title}** ${song.url}`);
             await playingMessage.react("⏯");
             await playingMessage.react("⏭");
             await playingMessage.react("🔇");
@@ -91,7 +91,7 @@ module.exports = {
             console.error(error);
         }
 
-        const filter = (reaction, user) => user.id !== message.client.user.id;
+        const filter = (reaction, user) => user.id !== client.user.id;
         var collector = playingMessage.createReactionCollector(filter, {
             time: song.duration > 0 ? song.duration * 1000 : 600000
         });
@@ -166,7 +166,7 @@ module.exports = {
                         queue.volume = queue.volume - 10;
                     }
                     queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
-                    queue.textChannel.send(`${user} 🔉 음량을 낮췄습니다. 현재 음량 : ${queue.volume}%`);
+                    queue.textChannel.send(`${user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
                     break;
 
                 case "🔊":
@@ -181,7 +181,7 @@ module.exports = {
                         queue.volume = queue.volume + 10;
                     }
                     queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
-                    queue.textChannel.send(`${user} 🔊 음량을 높였습니다. 현재 음량 : ${queue.volume}%`);
+                    queue.textChannel.send(`${user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
                     break;
 
                 case "🔁":
@@ -190,7 +190,7 @@ module.exports = {
                         return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
                     }
                     queue.loop = !queue.loop;
-                    queue.textChannel.send(`현재 반복 재생 상태 : ${queue.loop ? "**켜짐**" : "**꺼짐**"}`);
+                    queue.textChannel.send(`현재 반복 재생 상태 : ${queue.loop ? "**ON**" : "**OFF**"}`);
                     break;
 
                 case "⏹":

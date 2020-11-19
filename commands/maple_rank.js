@@ -7,7 +7,7 @@ module.exports = {
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const Maple = new mapleModule(args[0]);
         if ((await Maple.isExist()) == null || Maple.homeLevel() == null) {
@@ -25,7 +25,7 @@ module.exports = {
             return message.channel.send(`[${args[0]}]\n기록이 없습니다.`);
         }
         else {
-            return message.channel.send(`[${args[0]}]\n종합 랭킹(전체) : ${rslt[0]}\n종합 랭킹(월드) : ${rslt[1]}\n직업 랭킹(전체) : ${rslt[3]}\n직업 랭킹(월드) : ${rslt[2]}`);
+            return message.channel.send(`[${args[0]}]\n종합 랭킹(전체): ${rslt[0]}\n종합 랭킹(월드): ${rslt[1]}\n직업 랭킹(전체): ${rslt[3]}\n직업 랭킹(월드): ${rslt[2]}`);
         }
     }
 };

@@ -7,10 +7,10 @@ module.exports = {
     type: ["기타"],
     execute(message, args) {
         if (args.length < 1) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
-        const msg = `작성자 : ${message.author.username}\n방 ID : ${message.channel.id}\n건의 내용 : ${args.join(' ')}`;
-        const adminchat = client.channels.cache.array().find(v => v.recipient == ADMIN_ID);
+        const msg = `작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n건의 내용: ${args.join(' ')}`;
+        const adminchat = client.channels.cache.find(v => v.recipient == ADMIN_ID);
         if (adminchat) {
             adminchat.sendFullText(msg);
         }

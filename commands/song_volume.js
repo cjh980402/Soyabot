@@ -9,7 +9,7 @@ module.exports = {
         if (!message.guild) {
             return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         }
-        const queue = message.client.queue.get(message.guild.id);
+        const queue = client.queue.get(message.guild.id);
 
         if (!queue) return message.reply("재생 중인 노래가 없습니다.");
         if (!canModifyQueue(message.member)) {
@@ -17,7 +17,7 @@ module.exports = {
         }
 
         if (!args[0]) {
-            return message.reply(`🔊 현재 음량 : **${queue.volume}%**`);
+            return message.reply(`🔊 현재 음량: **${queue.volume}%**`);
         }
         if (isNaN(args[0])) {
             return message.reply("음량 변경을 위해 숫자를 사용해주세요.");
@@ -28,6 +28,6 @@ module.exports = {
 
         queue.volume = args[0];
         queue.connection.dispatcher.setVolumeLogarithmic(args[0] / 100);
-        return queue.textChannel.send(`변경된 음량 : **${args[0]}%**`);
+        return queue.textChannel.send(`변경된 음량: **${args[0]}%**`);
     }
 };

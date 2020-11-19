@@ -19,7 +19,7 @@ module.exports = {
             }
         }
         if (index == -1) {
-            return message.channel.send('썬데이메이플 공지가 아직 없습니다.');
+            return message.channel.send('썬데이 메이플 공지가 아직 없습니다.');
         }
         else {
             const imgLink = cheerio.load(await (await fetch(`https://maplestory.nexon.com${links[index]}`)).text())("img[alt='썬데이 메이플!']").attr("src");

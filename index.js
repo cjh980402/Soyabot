@@ -76,7 +76,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
         if (!botModule) {
             return; // 해당하는 명령어 없으면 종료
         }
-        console.log(`(${new Date().toKorean()}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username} : ${message.content}\n`);
+        console.log(`(${new Date().toKorean()}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username}: ${message.content}\n`);
 
         const browserModule = ["프로필", "컬렉션", "날씨"];
         commandName = browserModule.includes(botModule.command[0]) ? "브라우저" : botModule.command[0];
@@ -102,7 +102,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
         else {
             const adminchat = client.channels.cache.find(v => v.recipient == ADMIN_ID);
             if (adminchat) {
-                adminchat.sendFullText(`작성자 : ${message.author.username}\n방 ID : ${message.channel.id}\n채팅 내용 : ${message.content}\n에러 내용 : ${error}\n${error.stack}`);
+                adminchat.sendFullText(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${error}\n${error.stack}`);
             }
             message.reply("에러로그가 전송되었습니다.");
         }

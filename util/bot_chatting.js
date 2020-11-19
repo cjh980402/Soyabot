@@ -1,12 +1,12 @@
 module.exports = function (message) {
     if (message.content == '주사위') {
-        message.channel.send(`주사위 결과 : ${Math.floor(Math.random() * (100) + 1)}`);
+        message.channel.send(`주사위 결과: ${Math.floor(Math.random() * (100) + 1)}`);
     }
     else if (message.content.includes('vs') && !message.content.includes('vsc')) {
         message.reply(choiceVS(message.content));
     }
     else if (message.content.endsWith("확률")) {
-        message.reply(`확률 : ${Math.floor(Math.random() * 101)}%`);
+        message.reply(`확률: ${Math.floor(Math.random() * 101)}%`);
     }
     else if (message.content.includes('뭐하지') || message.content.includes('ㅁㅎㅈ')) {
         message.reply(recommendWork());

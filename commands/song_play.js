@@ -16,18 +16,18 @@ module.exports = {
         }
         const { channel } = message.member.voice;
 
-        const serverQueue = message.client.queue.get(message.guild.id);
+        const serverQueue = client.queue.get(message.guild.id);
         if (!channel) {
             return message.reply("음성 채널에 먼저 참가해주세요!");
         }
         if (serverQueue && channel !== message.guild.me.voice.channel) {
-            return message.reply(`같은 채널에 있어야합니다. (${message.client.user})`);
+            return message.reply(`같은 채널에 있어야합니다. (${client.user})`);
         }
 
         if (!args.length) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
-        const permissions = channel.permissionsFor(message.client.user);
+        const permissions = channel.permissionsFor(client.user);
         if (!permissions.has("CONNECT")) {
             return message.reply("권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.");
         }
@@ -44,10 +44,10 @@ module.exports = {
 
         // Start the playlist if playlist url was provided
         if (!urlValid && playlistPattern.test(args[0])) {
-            return message.client.commands.find((cmd) => cmd.command.includes("playlist")).execute(message, args);
+            return client.commands.find((cmd) => cmd.command.includes("playlist")).execute(message, args);
         }
         else if (scdl.isValidUrl(url) && url.includes("/sets/")) {
-            return message.client.commands.find((cmd) => cmd.command.includes("playlist")).execute(message, args);
+            return client.commands.find((cmd) => cmd.command.includes("playlist")).execute(message, args);
         }
 
         const queueConstruct = {
@@ -113,7 +113,7 @@ module.exports = {
         }
 
         queueConstruct.songs.push(song);
-        message.client.queue.set(message.guild.id, queueConstruct);
+        client.queue.set(message.guild.id, queueConstruct);
 
         try {
             queueConstruct.connection = await channel.join();
@@ -122,9 +122,9 @@ module.exports = {
         }
         catch (error) {
             console.error(error);
-            message.client.queue.delete(message.guild.id);
+            client.queue.delete(message.guild.id);
             await channel.leave();
-            return message.channel.send(`채널에 참가할 수 없습니다 : ${error.message}`);
+            return message.channel.send(`채널에 참가할 수 없습니다: ${error.message}`);
         }
     }
 };

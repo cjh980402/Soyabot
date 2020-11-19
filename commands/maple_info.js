@@ -9,7 +9,7 @@ module.exports = {
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const Maple = new mapleModule(args[0]);
         const temp = await Maple.isExist();
@@ -48,13 +48,13 @@ module.exports = {
             infoEmbed.addField('**길드**', char_guild, true);
         }
         infoEmbed.addField('**인기도**', char_popul, true);
-        infoEmbed.addField('**유니온 정보**', char_union ? `레벨 : ${char_union[0]}\n전투력 : ${char_union[1]}` : '-', true);
+        infoEmbed.addField('**유니온 정보**', char_union ? `레벨: ${char_union[0]}\n전투력: ${char_union[1]}` : '-', true);
         if (char_union) {
             infoEmbed.addField('유니온 코인', `1일 ${char_union[2]}개 획득`, true);
         }
         infoEmbed.addField('**무릉 기록**', char_murung ? `${char_murung[1]} (${char_murung[2]})` : '-', true);
-        infoEmbed.addField('**종합 랭킹**', `전체 : ${char_rank[0]}\n월드 : ${char_rank[1]}`, true);
-        infoEmbed.addField('**직업 랭킹**', `전체 : ${char_rank[3]}\n월드 : ${char_rank[2]}`, true);
+        infoEmbed.addField('**종합 랭킹**', `전체: ${char_rank[0]}\n월드: ${char_rank[1]}`, true);
+        infoEmbed.addField('**직업 랭킹**', `전체: ${char_rank[3]}\n월드: ${char_rank[2]}`, true);
 
         infoEmbed.setTimestamp();
         return message.channel.send(infoEmbed);

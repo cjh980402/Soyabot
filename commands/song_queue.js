@@ -9,7 +9,7 @@ module.exports = {
         if (!message.guild) {
             return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         }
-        const queue = message.client.queue.get(message.guild.id);
+        const queue = client.queue.get(message.guild.id);
         if (!queue) {
             return message.channel.send("❌ **재생 중인 노래가 없습니다.**");
         }
@@ -61,7 +61,7 @@ function generateQueueEmbed(message, queue) {
         const current = queue.slice(i, i + 10);
         const info = current.map((track, j) => `${i + j + 1} - [${track.title}](${track.url})`).join("\n");
         const embed = new MessageEmbed()
-            .setTitle(`${message.client.user.username} 음악 대기열`)
+            .setTitle(`${client.user.username} 음악 대기열`)
             .setThumbnail(message.guild.iconURL())
             .setColor("#F8AA2A")
             .setDescription(`**현재 재생 중인 노래 - [${queue[0].title}](${queue[0].url})**\n\n${info}`)

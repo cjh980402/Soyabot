@@ -7,10 +7,10 @@ module.exports = {
     command: ["러시안룰렛", "ㄹㅅㅇㄹㄹ", "ㄽㅇㄹㄹ"],
     description: `- 러시안룰렛 게임을 수행합니다.
 - 탄환 수가 2 ~ 20 범위가 아니거나 생략된 경우 자동으로 6발이 됩니다.
-- ${client.prefix}참가 : 게임에 참가를 합니다.
-- ${client.prefix}시작 : 참가자가 2명 이상일 때 게임을 시작합니다.
-- ${client.prefix}종료 : 인원을 모집 중인 게임을 종료합니다.
-- ${client.prefix}빵 : 본인의 차례를 수행합니다.`,
+- ${client.prefix}참가: 게임에 참가를 합니다.
+- ${client.prefix}시작: 참가자가 2명 이상일 때 게임을 시작합니다.
+- ${client.prefix}종료: 인원을 모집 중인 게임을 종료합니다.
+- ${client.prefix}빵: 본인의 차례를 수행합니다.`,
     channelCool: true,
     type: ["기타"],
     async execute(message, args) {
@@ -22,7 +22,7 @@ module.exports = {
         }
         const bullet = (isNaN(args[0]) || +args[0] < 2 || +args[0] > 20) ? 6 : +args[0]; // 탄환 수 지정
         const gameUser = [message.author]; // 참가자 객체 배열
-        message.channel.send(`게임을 시작하셨습니다.\n${client.prefix}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명) : ${guildNickname(message.guild, message.author)}`)
+        message.channel.send(`게임을 시작하셨습니다.\n${client.prefix}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${guildNickname(message.guild, message.author)}`)
         while (1) {
             const rslt = await message.channel.awaitMessages((message) => {
                 if (message.content.trim() == `${client.prefix}참가` || message.content.trim() == `${client.prefix}ㅊㄱ`) {
@@ -32,7 +32,7 @@ module.exports = {
                     }
                     else {
                         gameUser.push(message.author); // 참가자 리스트에 추가
-                        message.channel.send(`게임에 참가하셨습니다.\n현재 참가자 (${gameUser.length}명) : ${gameUser.map(v => guildNickname(message.guild, v)).join(", ")}`)
+                        message.channel.send(`게임에 참가하셨습니다.\n현재 참가자 (${gameUser.length}명): ${gameUser.map(v => guildNickname(message.guild, v)).join(", ")}`)
                         return true;
                     }
                 }

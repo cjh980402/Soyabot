@@ -30,9 +30,9 @@ async function clova_celebrity(url) {
     }
 
     let rslt = "";
-    rslt = `닮은 유명인 수 : ${data.info.faceCount}`;
+    rslt = `닮은 유명인 수: ${data.info.faceCount}`;
     data.faces.forEach((person) => {
-        rslt += `\n이름 : ${person.celebrity.value} (신뢰도 : ${(person.celebrity.confidence * 100).toFixed(2)}%)`;
+        rslt += `\n이름: ${person.celebrity.value} (신뢰도: ${(person.celebrity.confidence * 100).toFixed(2)}%)`;
     });
     return rslt;
 }

@@ -17,20 +17,20 @@ module.exports = {
         const { PRUNING } = require("../config.json");
         const { channel } = message.member.voice;
 
-        const serverQueue = message.client.queue.get(message.guild.id);
+        const serverQueue = client.queue.get(message.guild.id);
         if (serverQueue && channel !== message.guild.me.voice.channel) {
-            return message.reply(`같은 채널에 있어야합니다. (${message.client.user})`);
+            return message.reply(`같은 채널에 있어야합니다. (${client.user})`);
         }
 
         if (!args.length) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
         if (!channel) {
             return message.reply("음성 채널에 먼저 참가해주세요!");
         }
 
-        const permissions = channel.permissionsFor(message.client.user);
+        const permissions = channel.permissionsFor(client.user);
         if (!permissions.has("CONNECT")) {
             return message.reply("권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.");
         }
@@ -117,7 +117,7 @@ module.exports = {
         message.channel.send(`${message.author}가 재생목록을 시작했습니다.`, playlistEmbed);
 
         if (!serverQueue) {
-            message.client.queue.set(message.guild.id, queueConstruct);
+            client.queue.set(message.guild.id, queueConstruct);
             try {
                 queueConstruct.connection = await channel.join();
                 await queueConstruct.connection.voice.setSelfDeaf(true);
@@ -125,9 +125,9 @@ module.exports = {
             }
             catch (error) {
                 console.error(error);
-                message.client.queue.delete(message.guild.id);
+                client.queue.delete(message.guild.id);
                 await channel.leave();
-                return message.channel.send(`채널에 참가할 수 없습니다 : ${error.message}`);
+                return message.channel.send(`채널에 참가할 수 없습니다: ${error.message}`);
             }
         }
     }
