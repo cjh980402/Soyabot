@@ -2,7 +2,7 @@ module.exports = function (message) {
     if (message.content == '주사위') {
         message.channel.send(`주사위 결과 : ${Math.floor(Math.random() * (100) + 1)}`);
     }
-    else if (message.content.includes('vs') && !message.content.includes('vscode') && !message.content.includes('vsc')) {
+    else if (/vs(?!c)/.test(message.content)) {
         message.reply(choiceVS(message.content));
     }
     else if (message.content.endsWith("확률")) {

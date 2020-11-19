@@ -85,19 +85,43 @@ async function farm_read(name) { // 농장 목록
     }
     const params = new URLSearchParams();
     params.append("monster", name);
-    const response = await fetch("http://wachan.me/farm_read.php", {
+    const response = await fetch("http://wachan.me/farm_read2.php", {
         method: 'POST',
         body: params
     });
     const data = await response.json();
-    if (data.error != false) {// 오류 발생
+    if (data.error != false) { // 오류 발생
         return data.error;
     }
     else {
-        let rslt = `${name} 보유 농장 목록\n\n`;
+        let rslt = `${name} 보유 농장 목록${"\u200b".repeat(500)}\n\n`;
         data.farm_list.forEach(v => {
-            if (v[0] != "" && v[1] != "")
-                rslt += `${v[0]} : ${v[1]}\n`
+            if (/^[가-힣]{2,6}$/.test(v[0])) {
+                rslt += `${v[1] || "무한유지"} : ${v[0]} (👍 : ${v[3]}, 👎 : ${v[4]})\n`
+            }
+        });
+        return rslt.trimEnd();
+    }
+}
+
+async function farm_info(name) { // 농장 정보
+    if (/^[가-힣]{2,6}$/.test(name)) {
+        return '올바르지 않은 농장 이름입니다. 농장 이름은 2 ~ 6글자의 한글이어야 합니다.';
+    }
+    const params = new URLSearchParams();
+    params.append("farm", name);
+    const response = await fetch("http://wachan.me/farm_read_from_name.php", {
+        method: 'POST',
+        body: params
+    });
+    const data = await response.json();
+    if (data.error != false) { // 오류 발생
+        return data.error;
+    }
+    else {
+        let rslt = `${name} 농장의 정보${"\u200b".repeat(500)}\n\n`;
+        data.monster_list.forEach(v => {
+            rslt += `${v[1] || "무한유지"} : ${v[0]} (👍 : ${v[3]}, 👎 : ${v[4]})\n`
         });
         return rslt.trimEnd();
     }
@@ -109,8 +133,9 @@ module.exports = {
     description: `- 몬스터라이프 관련 기능을 수행합니다.
 - ${client.prefix}농장 목록 (몬스터 이름)
 - ${client.prefix}농장 조합식 (몬스터 이름)
+- ${client.prefix}농장 정보 (농장 이름)
 - ${client.prefix}농장 추가 (몬스터 이름) (농장 이름) (끝나는 날짜)
-- 참고 1. 몬스터 이름은 띄어쓰기 없이 입력해야합니다.
+- 참고 1. 농장 추가의 경우 몬스터 이름은 띄어쓰기 없이 입력해야합니다.
 - 참고 2. 농장 추가의 경우 무한유지를 하는 몬스터는 끝나는 날짜를 비워야합니다.
 - 참고 3. 끝나는 날짜의 형식은 YYMMDD 형식입니다.`,
     type: ["메이플"],
@@ -120,14 +145,18 @@ module.exports = {
         }
 
         if (args[0] == "목록" || args[0] == "ㅁㄹ") {
-            return message.channel.sendFullText(await farm_read(args[1]));
+            return message.channel.sendFullText(await farm_read(args.slice(1).join("")));
         }
         else if (args[0] == "조합식" || args[0] == "ㅈㅎㅅ") {
-            message.channel.send(await farm_sex(args[1]));
+            return message.channel.send(await farm_sex(args.slice(1).join("")));
+        }
+        else if (args[0] == "정보" || args[0] == "ㅈㅂ") {
+            return message.channel.sendFullText(await farm_info(args[1]));
         }
         else if (args[0] == "추가" || args[0] == "ㅊㄱ") {
-            if (args.length < 3)
+            if (args.length < 3) {
                 return message.channel.send(`${this.usage}\n- 대체 명령어 : ${this.command.join(', ')}\n${this.description}`);
+            }
             return message.channel.send(await farm_add(args[1], args[2], args[3]));
         }
         else {

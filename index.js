@@ -100,7 +100,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
             message.reply(error.message);
         }
         else {
-            const adminchat = client.channels.cache.array().find(v => v.recipient == ADMIN_ID);
+            const adminchat = client.channels.cache.find(v => v.recipient == ADMIN_ID);
             if (adminchat) {
                 adminchat.sendFullText(`작성자 : ${message.author.username}\n방 ID : ${message.channel.id}\n채팅 내용 : ${message.content}\n에러 내용 : ${error}\n${error.stack}`);
             }
