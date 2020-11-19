@@ -105,7 +105,7 @@ async function farm_read(name) { // 농장 목록
 }
 
 async function farm_info(name) { // 농장 정보
-    if (/^[가-힣]{2,6}$/.test(name)) {
+    if (!/^[가-힣]{2,6}$/.test(name)) {
         return '올바르지 않은 농장 이름입니다. 농장 이름은 2 ~ 6글자의 한글이어야 합니다.';
     }
     const params = new URLSearchParams();
