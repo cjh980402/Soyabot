@@ -94,7 +94,7 @@ async function farm_read(name) { // 농장 목록
         return data.error;
     }
     else {
-        let rslt = `${name} 보유 농장 목록${"\u200b".repeat(500)}\n\n`;
+        let rslt = `${name} 보유 농장 목록\n\n`;
         data.farm_list.forEach(v => {
             if (/^[가-힣]{2,6}$/.test(v[0])) {
                 rslt += `${v[1] || "무한유지"} : ${v[0]} (👍 : ${+v[3]}, 👎 : ${+v[4]})\n`
@@ -119,7 +119,7 @@ async function farm_info(name) { // 농장 정보
         return data.error;
     }
     else {
-        let rslt = `${name} 농장의 정보${"\u200b".repeat(500)}\n\n`;
+        let rslt = `${name} 농장의 정보\n\n`;
         data.monster_list.forEach(v => {
             rslt += `${v[1] || "무한유지"} : ${v[0]} (👍 : ${+v[3]}, 👎 : ${+v[4]})\n`
         });
