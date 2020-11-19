@@ -2,7 +2,7 @@ module.exports = function (message) {
     if (message.content == '주사위') {
         message.channel.send(`주사위 결과 : ${Math.floor(Math.random() * (100) + 1)}`);
     }
-    else if (/vs(?!c)/.test(message.content)) {
+    else if (message.content.includes('vs') && !message.content.includes('vsc')) {
         message.reply(choiceVS(message.content));
     }
     else if (message.content.endsWith("확률")) {
@@ -78,9 +78,9 @@ function choiceVS(msg) {
             return '빈 항목이 존재합니다.';
         }
     }
-    for (let i = 0, ind, laind; i < choice.length / 2; i++) {
-        ind = nospace.indexOf(nospace[i]), laind = nospace.lastIndexOf(nospace[i]);
-        if (ind != laind && (nospace[i] == '' ? choice[ind] == choice[laind] : true)) {
+    for (let i = choice.length - 1, ind; i >= choice.length / 2; i--) {
+        ind = nospace.indexOf(nospace[i]);
+        if (ind != i && (nospace[i] != '' || choice[ind] == choice[i])) {
             return `"${choice[i]}" 항목이 중복입니다.`;
         }
     }
