@@ -12,7 +12,7 @@ module.exports = {
         const msg = `작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n건의 내용: ${args.join(' ')}`;
         const adminchat = client.channels.cache.find(v => v.recipient == ADMIN_ID);
         if (adminchat) {
-            adminchat.sendFullText(msg);
+            adminchat.send(msg, { split: true });
         }
         // 개발자의 개인 메시지 채널 추출 후 전송
         return message.reply("건의사항이 전송되었습니다.");
