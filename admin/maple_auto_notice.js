@@ -35,7 +35,7 @@ module.exports.startNotice = function () {
             catch (e) {
                 const adminchat = client.channels.cache.find(v => v.recipient == ADMIN_ID);
                 if (adminchat) {
-                    adminchat.sendFullText(`자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack}`);
+                    adminchat.send(`자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack}`, { split: true });
                 }
             }
         }, 120000);
@@ -75,7 +75,7 @@ module.exports.startUpdate = function () {
             catch (e) {
                 const adminchat = client.channels.cache.find(v => v.recipient == ADMIN_ID);
                 if (adminchat) {
-                    adminchat.sendFullText(`자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack}`);
+                    adminchat.send(`자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack}`, { split: true });
                 }
             }
         }, 120000);
@@ -115,7 +115,7 @@ module.exports.startTest = function () {
             catch (e) {
                 const adminchat = client.channels.cache.find(v => v.recipient == ADMIN_ID);
                 if (adminchat) {
-                    adminchat.sendFullText(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack}`);
+                    adminchat.send(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack}`, { split: true });
                 }
             }
         }, 120000);
@@ -145,7 +145,7 @@ module.exports.startTestPatch = function () {
             catch (e) {
                 const adminchat = client.channels.cache.find(v => v.recipient == ADMIN_ID);
                 if (adminchat) {
-                    adminchat.sendFullText(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack}`);
+                    adminchat.send(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack}`, { split: true });
                 }
             }
         }, 600000); // 10분마다 동작 수행

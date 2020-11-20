@@ -140,7 +140,7 @@ module.exports = {
             let rslt = `<골드애플 확률>\n`;
             for (let key in proper)
                 rslt += `${key} : ${proper[key] / 100000}%\n`;
-            return message.channel.sendFullText(rslt.trimEnd());
+            return message.channel.send(rslt.trimEnd(), { split: true });
         }
         if (+args[0] < 1 || +args[0] > 20000 || isNaN(args[0])) {
             return message.channel.send('1 ~ 20000 범위의 숫자만 입력가능합니다.');
@@ -171,6 +171,6 @@ module.exports = {
                 rslt += `${key}: ${list[key]}회\n`;
             }
         }
-        return message.channel.sendFullText(rslt.trimEnd());
+        return message.channel.send(rslt.trimEnd(), { split: true });
     }
 };

@@ -15,7 +15,7 @@ client.login(TOKEN);
 client.commands = new Array(); // 명령어 객체 저장할 배열
 client.prefix = PREFIX;
 client.queue = new Map();
-client.setMaxListeners(30);
+client.setMaxListeners(0); // 개수 제한 해제
 const cooldowns = new Set(); // 중복 명령 방지할 set
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사용자 입력을 이스케이프해서 정규식 내부에서 문자 그대로 취급하기 위해 치환하는 함수
 
@@ -52,6 +52,7 @@ client.on("error", console.error);
 client.on("message", async (message) => { // 각 메시지에 반응
     let commandName;
     try {
+        console.log(`(${new Date().toKorean()}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username}: ${message.content}\n`);
         if (message.author.bot) {
             return; // 봇 여부 체크
         }
@@ -78,8 +79,6 @@ client.on("message", async (message) => { // 각 메시지에 반응
         if (!botModule) {
             return; // 해당하는 명령어 없으면 종료
         }
-        console.log(`(${new Date().toKorean()}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username}: ${message.content}\n`);
-
         const browserModule = ["프로필", "컬렉션", "날씨"];
         commandName = browserModule.includes(botModule.command[0]) ? "브라우저" : botModule.command[0];
         if (botModule.channelCool) {
@@ -104,7 +103,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
         else {
             const adminchat = client.channels.cache.find(v => v.recipient == ADMIN_ID);
             if (adminchat) {
-                adminchat.sendFullText(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${error}\n${error.stack}`);
+                adminchat.send(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${error}\n${error.stack}`, { split: true });
             }
             message.reply("에러로그가 전송되었습니다.");
         }

@@ -8,11 +8,11 @@ const startDate = new Date();
 module.exports = async function (message) {
     if (message.content.startsWith("[")) { // 노드 코드 실행 후 출력
         const funcBody = message.content.substr(1).trim().split('\n');
-        funcBody.push(`message.channel.sendFullText(${funcBody.pop()});`); // 함수의 마지막 줄 내용은 자동으로 출력
+        funcBody.push(`message.channel.send(${funcBody.pop()}, { split: true });`); // 함수의 마지막 줄 내용은 자동으로 출력
         await eval(`(async()=>{${funcBody.join('\n')}})();`);
     }
     else if (message.content.startsWith("]")) { // 콘솔 명령 실행 후 출력
-        message.channel.sendFullText(await cmd(message.content.substr(1).trim()));
+        message.channel.send(await cmd(message.content.substr(1).trim()), { split: true });
     }
     else if (message.content.startsWith("*")) { // 원격 채팅 전송
         const room = message.content.split('*')[1];
@@ -33,18 +33,6 @@ async function cmd(_cmd) {
     }
     return cmdResult.replace(/\u001b\[\d\dm/g, "").trimEnd();
 }
-
-Object.defineProperty(Channel.prototype, "sendFullText", {
-    value: function (str) {
-        if (this.type == 'dm' || this.type == 'text') {
-            str = String(str);
-            for (let i = 0; i < str.length; i += 1999) { // 디스코드는 최대 2천자 제한이 있기때문에 끊어서 보내는 로직이다.
-                const last = (i + 1999) > str.length ? str.length : i + 1999;
-                this.send(str.substring(i, last));
-            }
-        }
-    }
-});
 
 Object.defineProperty(String.prototype, "htmlDecode", {
     value: function () {
