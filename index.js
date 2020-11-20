@@ -2,6 +2,7 @@
  * Module Imports
  */
 const { Client, Collection } = require("discord.js");
+const cachingMessage = require('./util/message_caching');
 const { readdirSync } = require("fs");
 const { TOKEN, PREFIX, ADMIN_ID } = require("./config.json");
 const admin = require("./admin/admin_function");
@@ -23,7 +24,7 @@ const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사�
  */
 client.on("ready", async () => {
     console.log(`${client.user.username} ready!`);
-    client.user.setActivity(`${PREFIX}help and ${PREFIX}play`, { type : "LISTENING" });
+    client.user.setActivity(`${PREFIX}help and ${PREFIX}play`, { type: "LISTENING" });
     /**
      * Import all commands
      */
@@ -38,6 +39,7 @@ client.on("ready", async () => {
     await db.run('CREATE TABLE IF NOT EXISTS flagskip(channelid text primary key, name text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS testskip(channelid text primary key, name text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS testpatchskip(channelid text primary key, name text not null)');
+    await db.run("CREATE TABLE IF NOT EXISTS messagedb(channelsenderid text primary key, messagecnt integer default 0, lettercnt integer default 0, lastmessage text default '', lasttime datetime default (datetime('now', 'localtime')))");
     startNotice(); // 공지 자동 알림 기능
     startUpdate(); // 업데이트 자동 알림 기능
     startTest(); // 테섭 자동 알림 기능
@@ -62,7 +64,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
         // message.content : 메시지 내용 텍스트
         // 멘션의 형태 : <@${message.author.id}>, 인용의 형태 : > ${내용}
         if (!prefixRegex.test(message.content)) {
-            return botChatting(message); // 잡담 로직
+            return await cachingMessage(botChatting(message)); // 잡담 로직
         } // 멘션이나 PREFIX로 시작하지 않는 경우
 
         const [matchedPrefix] = message.content.match(prefixRegex); // 정규식에 대응되는 명령어 접두어 부분에 대응
@@ -88,7 +90,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
             return message.reply(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
-        await botModule.execute(message, args); // 실질적인 명령어 수행 부분, 후에 봇의 message객체 캐싱을 대비해 await를 붙인다.
+        await cachingMessage(await botModule.execute(message, args)); // 실질적인 명령어 수행 부분, 후에 봇의 message객체 캐싱을 대비해 await를 붙인다.
         cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
     }
     catch (error) {
@@ -106,6 +108,9 @@ client.on("message", async (message) => { // 각 메시지에 반응
             }
             message.reply("에러로그가 전송되었습니다.");
         }
+    }
+    finally {
+        await cachingMessage(message);
     }
 });
 

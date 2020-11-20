@@ -1,18 +1,18 @@
 module.exports = function (message) {
     if (message.content == '주사위') {
-        message.channel.send(`주사위 결과: ${Math.floor(Math.random() * (100) + 1)}`);
+        return message.channel.send(`주사위 결과: ${Math.floor(Math.random() * (100) + 1)}`);
     }
     else if (message.content.includes('vs') && !message.content.includes('vsc')) {
-        message.reply(choiceVS(message.content));
+        return message.reply(choiceVS(message.content));
     }
     else if (message.content.endsWith("확률")) {
-        message.reply(`확률: ${Math.floor(Math.random() * 101)}%`);
+        return message.reply(`확률: ${Math.floor(Math.random() * 101)}%`);
     }
     else if (message.content.includes('뭐하지') || message.content.includes('ㅁㅎㅈ')) {
-        message.reply(recommendWork());
+        return message.reply(recommendWork());
     }
     else if (message.content.includes('뭐먹지') || message.content.includes('ㅁㅁㅈ')) {
-        message.reply(recommendFood());
+        return message.reply(recommendFood());
     }
     else if (message.content.includes('소야봇')) {
         if (message.content.includes('바보')) {
@@ -20,31 +20,31 @@ module.exports = function (message) {
         }
         const cmd = Math.floor(Math.random() * 5 + 1);
         if (cmd == 1) {
-            message.channel.send('ㅋㅋㅋ');
+            return message.channel.send('ㅋㅋㅋ');
         }
         else if (cmd == 2) {
-            message.channel.send('제로조아');
+            return message.channel.send('제로조아');
         }
         else if (cmd == 3) {
-            message.channel.send('헤비...');
+            return message.channel.send('헤비...');
         }
         else if (cmd == 4) {
-            message.channel.send(`'${message.author.username}'님이 소야봇을 불렀습니다.`);
+            return message.channel.send(`'${message.author.username}'님이 소야봇을 불렀습니다.`);
         }
         else if (cmd == 5) {
-            message.channel.send('이노시스 조아');
+            return message.channel.send('이노시스 조아');
         }
     }
     else if (message.content.includes('아잉') || message.content.includes('도잉')) {
         const cmd = Math.floor(Math.random() * 9 + 1);
         if (cmd == 1) {
-            message.channel.send('아잉은 짐승의 눈...');
+            return message.channel.send('아잉은 짐승의 눈...');
         }
         else if (cmd == 2) {
-            message.channel.send('짐승은 아잉의 눈...');
+            return message.channel.send('짐승은 아잉의 눈...');
         }
         else if (cmd == 3) {
-            message.channel.send('도잉도 짐승의 눈...');
+            return message.channel.send('도잉도 짐승의 눈...');
         }
     }
 }
