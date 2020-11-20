@@ -12,6 +12,6 @@ module.exports.replyRoomID = function (roomID, str) {
     if (!target) {
         return false;
     }
-    target.sendFullText(str);
+    target.send(str, { split: true });
     return true;
 }
