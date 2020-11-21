@@ -1,4 +1,5 @@
 const Discord = require("discord.js"); // 디버깅용
+const { ADMIN_ID } = require("../config.json");
 const { botNotice, replyRoomID } = require('./bot_control.js');
 const util = require('util');
 const cp = require('child_process');
@@ -18,6 +19,20 @@ module.exports = async function (message) {
         if (room && message.content.startsWith(`*${room}* `)) {
             const rslt = replyRoomID(room, message.content.replace(`*${room}* `, ''));
             message.channel.send(rslt ? '채팅이 전송되었습니다.' : '존재하지 않는 방입니다.');
+        }
+    }
+    else if (message.channel.recipient == ADMIN_ID && message.reference) { // 건의 답변 기능
+        const suggestRefer = message.channel.messages.cache.get(message.reference.messageID);
+        if (!suggestRefer) {
+            return message.channel.send('해당하는 건의의 정보가 존재하지 않습니다.');
+        }
+        const target = client.suggestionChat[suggestRefer.content.split('\n')[0]];
+        if (target) {
+            target.reply(message.content);
+            message.channel.send('건의 답변을 보냈습니다.');
+        }
+        else {
+            message.channel.send('해당하는 건의의 정보가 존재하지 않습니다.');
         }
     }
 }

@@ -31,6 +31,7 @@ client.on("ready", async () => {
     readdirSync("./commands").filter((file) => file.endsWith(".js")).forEach(file => { // commands 폴더속 .js 파일 걸러내기
         client.commands.push(require(`./commands/${file}`)); // 배열에 이름과 명령 객체를 push
     });
+    client.suggestionChat = {};
     await db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');
