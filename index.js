@@ -15,7 +15,7 @@ client.login(TOKEN);
 client.commands = new Array(); // 명령어 객체 저장할 배열
 client.prefix = PREFIX;
 client.queue = new Map();
-client.setMaxListeners(0); // 개수 제한 해제
+client.setMaxListeners(20); // 이벤트 개수 제한 증가
 const cooldowns = new Set(); // 중복 명령 방지할 set
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사용자 입력을 이스케이프해서 정규식 내부에서 문자 그대로 취급하기 위해 치환하는 함수
 

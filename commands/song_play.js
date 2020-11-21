@@ -117,6 +117,7 @@ module.exports = {
 
         try {
             queueConstruct.connection = await channel.join();
+            queueConstruct.connection.setMaxListeners(20); // 이벤트 개수 제한 증가
             await queueConstruct.connection.voice.setSelfDeaf(true);
             play(queueConstruct.songs[0], message);
         }

@@ -8,7 +8,7 @@ const exec = util.promisify(cp.exec);
 module.exports = async function (message) {
     if (message.content.startsWith("[")) { // 노드 코드 실행 후 출력
         const funcBody = message.content.substr(1).trim().split('\n');
-        funcBody.push(`message.channel.send(${funcBody.pop()}, { split: true });`); // 함수의 마지막 줄 내용은 자동으로 출력
+        funcBody.push(`message.channel.send(${funcBody.pop() || "null or undefined or empty string"}, { split: true });`); // 함수의 마지막 줄 내용은 자동으로 출력
         await eval(`(async()=>{${funcBody.join('\n')}})();`);
     }
     else if (message.content.startsWith("]")) { // 콘솔 명령 실행 후 출력
