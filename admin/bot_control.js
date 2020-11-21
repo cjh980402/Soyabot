@@ -1,9 +1,7 @@
 module.exports.botNotice = async function (data, type) {
     const skiplist = (await db.all(`select channelid from ${type}skip`)).map(v => v.channelid);
-    client.guilds.cache.array().map(v => v.channels.cache.array().find(v => v.type == 'text' && !skiplist.includes(v.guild.id))).forEach((v, i) => {
-        if (v) {
-            setTimeout(() => { v.send(data) }, 1000 * i); // 1000*i ms 이후에 주어진 함수 실행
-        }
+    client.guilds.cache.map(v => v.channels.cache.find(v => v.type == 'text' && !v.deleted && !skiplist.includes(v.guild.id))).forEach((v, i) => {
+        setTimeout(() => { v.send(data) }, 1000 * i); // 1000*i ms 이후에 주어진 함수 실행
     });
 }
 

@@ -146,7 +146,7 @@ module.exports = {
     type: ["메이플"],
     async execute(message, args) {
         if (args.length < 2) {
-            return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
         if (args[0] == "목록" || args[0] == "ㅁㄹ") {
@@ -160,12 +160,12 @@ module.exports = {
         }
         else if (args[0] == "추가" || args[0] == "ㅊㄱ") {
             if (args.length < 3) {
-                return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+                return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
             }
             return message.channel.send(await farm_add(args[1], args[2], args[3]));
         }
         else {
-            return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
     }
 };
