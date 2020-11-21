@@ -150,13 +150,13 @@ module.exports = {
         }
 
         if (args[0] == "목록" || args[0] == "ㅁㄹ") {
-            return message.channel.sendFullText(await farm_read(args.slice(1).join("")));
+            return message.channel.send(await farm_read(args.slice(1).join("")), { split: true });
         }
         else if (args[0] == "조합식" || args[0] == "ㅈㅎㅅ") {
             return message.channel.send(await farm_sex(args.slice(1).join("")));
         }
         else if (args[0] == "정보" || args[0] == "ㅈㅂ") {
-            return message.channel.sendFullText(await farm_info(args[1]));
+            return message.channel.send(await farm_info(args[1]), { split: true });
         }
         else if (args[0] == "추가" || args[0] == "ㅊㄱ") {
             if (args.length < 3) {

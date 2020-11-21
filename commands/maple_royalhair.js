@@ -25,7 +25,7 @@ module.exports = {
 - 참고. ${client.prefix}헤어 확률`,
     type: ["메이플"],
     async execute(message, args) {
-        if (args.length == 1 && args[0] == '확률') {
+        if (args.length == 1 && (args[0] == '확률' || args[0] == 'ㅎㄹ')) {
             let rslt = '<로얄 헤어 확률>\n\n- 남자 헤어\n';
             for (let key in proper["남"]) {
                 rslt += `${key}: ${proper["남"][key]}%\n`;
