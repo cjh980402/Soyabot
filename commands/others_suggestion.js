@@ -1,4 +1,4 @@
-const { ADMIN_ID } = require("../config.json");
+const { replyAdmin } = require("../admin/bot_control");
 
 module.exports = {
     usage: `${client.prefix}건의 (건의 사항)`,
@@ -9,12 +9,7 @@ module.exports = {
         if (args.length < 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
-        const msg = `작성자: ${message.author.username}\n건의 내용: ${args.join(' ')}\n방 ID: ${message.channel.id}`;
-        const adminchat = client.channels.cache.find(v => v.recipient == ADMIN_ID);
-        if (adminchat) {
-            adminchat.send(msg, { split: true });
-        }
-        // 개발자의 개인 메시지 채널 추출 후 전송
-        return message.reply("건의사항이 전송되었습니다.");
+        const rslt = replyAdmin(`작성자: ${message.author.username}\n건의 내용: ${args.join(' ')}\n방 ID: ${message.channel.id}`);
+        return message.reply(rslt ? "건의사항이 전송되었습니다." : "건의사항 전송을 실패했습니다.");
     }
 };

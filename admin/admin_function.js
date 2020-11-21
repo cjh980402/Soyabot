@@ -1,3 +1,4 @@
+const Discord = require("discord.js"); // 디버깅용
 const { botNotice, replyRoomID } = require('./bot_control.js');
 const util = require('util');
 const cp = require('child_process');
