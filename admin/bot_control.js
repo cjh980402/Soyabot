@@ -3,7 +3,9 @@ const { ADMIN_ID } = require("../config.json");
 module.exports.botNotice = async function (data, type) {
     const skiplist = (await db.all(`select channelid from ${type}skip`)).map(v => v.channelid);
     client.guilds.cache.map(v => v.channels.cache.find(v => v.type == 'text' && !skiplist.includes(v.guild.id))).forEach((v, i) => {
-        setTimeout(() => { v.send(data) }, 1000 * i); // 1000*i ms 이후에 주어진 함수 실행
+        if (v) { // 해당하는 방이 안 찾아진 경우 대비
+            setTimeout(() => { v.send(data) }, 1000 * i); // 1000*i ms 이후에 주어진 함수 실행
+        }
     });
 }
 
@@ -21,6 +23,6 @@ module.exports.replyAdmin = function (str) {
     if (!admin) {
         return false;
     }
-    admin.send(str, { split: true });
+    admin.send(str, { split: true }); // 관리자에게 DM으로 보냄
     return true;
 }
