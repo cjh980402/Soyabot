@@ -1,4 +1,4 @@
-module.exports.canModifyQueue(member) {
+module.exports.canModifyQueue = function (member) {
     const { channelID } = member.voice;
     const botChannelID = member.guild.voice.channelID;
 
