@@ -12,7 +12,7 @@ module.exports = async function (message) {
         await eval(`(async()=>{${funcBody.join('\n')}})();`);
     }
     else if (message.content.startsWith("]")) { // 콘솔 명령 실행 후 출력
-        message.channel.send(await cmd(message.content.substr(1).trim()), { split: true });
+        message.channel.send(await cmd(message.content.substr(1).trim()) || "empty string", { split: true });
     }
     else if (message.content.startsWith("*")) { // 원격 채팅 전송
         const room = message.content.split('*')[1];
