@@ -8,6 +8,7 @@ const { TOKEN, PREFIX, ADMIN_ID } = require("./config.json");
 const admin = require("./admin/admin_function");
 const { startNotice, startUpdate, startTest, startTestPatch, startFlag } = require('./admin/maple_auto_notice.js');
 const botChatting = require("./util/bot_chatting");
+const { replyAdmin } = require('./admin/bot_control');
 const dbhandler = require('./util/sqlite-handler');
 global.db = new dbhandler('./db/soyabot_data.db');
 global.client = new Client({ disableMentions: "everyone" }); // 여러 기능들에 의해 필수로 최상위 전역
@@ -18,6 +19,7 @@ client.queue = new Map();
 client.setMaxListeners(20); // 이벤트 개수 제한 증가
 const cooldowns = new Set(); // 중복 명령 방지할 set
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사용자 입력을 이스케이프해서 정규식 내부에서 문자 그대로 취급하기 위해 치환하는 함수
+const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((resolve, reject) => setTimeout(reject, ms))]); // ms 동안 promise가 완료되지 않으면 에러 뱉으면서 프로미스 종료
 
 /**
  * Client Events
@@ -90,23 +92,21 @@ client.on("message", async (message) => { // 각 메시지에 반응
             return message.reply(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
-        await cachingMessage(await botModule.execute(message, args)); // 실질적인 명령어 수행 부분, 후에 봇의 message객체 캐싱을 대비해 await를 붙인다.
+        const execute = botModule.channelCool ? botModule.execute(message, args) : promiseTimeout(botModule.execute(message, args), 300000);
+        await cachingMessage(await execute); // 명령어 수행 부분 + 봇 채팅 캐싱
         cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
     }
-    catch (error) {
+    catch (e) {
         cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
-        if (error instanceof Collection) { // awaitMessages에서 시간초과한 경우
-            message.channel.send("입력 대기 시간이 초과되었습니다.");
+        if (e instanceof Collection) { // awaitMessages에서 시간초과한 경우
+            message.channel.send(`"${commandName}"의 입력 대기 시간이 초과되었습니다.`);
         }
-        else if (error.message.startsWith('메이플')) {
-            message.reply(error.message);
+        else if (e.message.startsWith('메이플')) {
+            message.reply(e.message);
         }
         else {
-            const adminchat = client.channels.cache.find(v => v.recipient == ADMIN_ID);
-            if (adminchat) {
-                adminchat.send(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${error}\n${error.stack}`, { split: true });
-            }
             message.reply("에러로그가 전송되었습니다.");
+            replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack}`);
         }
     }
     finally {
