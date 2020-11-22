@@ -19,7 +19,7 @@ client.queue = new Map();
 client.setMaxListeners(20); // 이벤트 개수 제한 증가
 const cooldowns = new Set(); // 중복 명령 방지할 set
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사용자 입력을 이스케이프해서 정규식 내부에서 문자 그대로 취급하기 위해 치환하는 함수
-const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((resolve, reject) => setTimeout(reject, ms))]); // ms 동안 promise가 완료되지 않으면 에러 뱉으면서 프로미스 종료
+const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((resolve, reject) => setTimeout(() => reject(new Error("명령어 시간 초과")), ms))]);
 
 /**
  * Client Events
@@ -92,7 +92,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
             return message.reply(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
-        const execute = botModule.channelCool ? botModule.execute(message, args) : promiseTimeout(botModule.execute(message, args), 300000);
+        const execute = botModule.channelCool ? botModule.execute(message, args) : promiseTimeout(botModule.execute(message, args), 180000);
         await cachingMessage(await execute); // 명령어 수행 부분 + 봇 채팅 캐싱
         cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
     }
