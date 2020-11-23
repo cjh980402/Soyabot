@@ -44,7 +44,7 @@ module.exports = {
             const response = await message.channel.awaitMessages((msg) => /^[0-9]{1,2}(\s*,\s*[0-9]{1,2})*$/g.test(msg.content), { max: 1, time: 30000, errors: ["time"] });
             const reply = response.first().content;
 
-            const songs = reply.split(",").map((str) => (+str.trim()) % results.length + 1); // ,가 없으면 길이가 1인 배열
+            const songs = reply.split(",").map((str) => (str.trim() - 1) % results.length + 1); // ,가 없으면 길이가 1인 배열
 
             for (let song of songs) {
                 await client.commands.find((cmd) => cmd.command.includes("play"))
