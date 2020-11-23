@@ -21,38 +21,40 @@ module.exports = {
                 `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
                 embeds[currentPage]
             );
-            await helpEmbed.react("⬅️");
-            await helpEmbed.react("⏹");
-            await helpEmbed.react("➡️");
+            if (embeds.length > 1) {
+                await helpEmbed.react("⬅️");
+                await helpEmbed.react("⏹");
+                await helpEmbed.react("➡️");
 
-            const filter = (reaction, user) =>
-                ["⬅️", "⏹", "➡️"].includes(reaction.emoji.name) && message.author.id === user.id;
-            const collector = helpEmbed.createReactionCollector(filter, { time: 60000 });
+                const filter = (reaction, user) =>
+                    ["⬅️", "⏹", "➡️"].includes(reaction.emoji.name) && message.author.id === user.id;
+                const collector = helpEmbed.createReactionCollector(filter, { time: 60000 });
 
-            collector.on("collect", async (reaction, user) => {
-                try {
-                    if (reaction.emoji.name === "➡️") {
-                        currentPage = (currentPage + 1) % embeds.length;
-                        helpEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                    }
-                    else if (reaction.emoji.name === "⬅️") {
-                        currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        helpEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                    }
-                    else {
-                        collector.stop();
+                collector.on("collect", async (reaction, user) => {
+                    try {
+                        if (reaction.emoji.name === "➡️") {
+                            currentPage = (currentPage + 1) % embeds.length;
+                            helpEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                        }
+                        else if (reaction.emoji.name === "⬅️") {
+                            currentPage = (currentPage - 1 + embeds.length) % embeds.length;
+                            helpEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                        }
+                        else {
+                            collector.stop();
+                            if (message.guild) {
+                                reaction.message.reactions.removeAll();
+                            }
+                        }
                         if (message.guild) {
-                            reaction.message.reactions.removeAll();
+                            await reaction.users.remove(message.author.id);
                         }
                     }
-                    if (message.guild) {
-                        await reaction.users.remove(message.author.id);
+                    catch {
+                        return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]!**");
                     }
-                }
-                catch {
-                    return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]!**");
-                }
-            });
+                });
+            }
         }
         catch {
             return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]!**");

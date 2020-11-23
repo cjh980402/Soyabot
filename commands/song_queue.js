@@ -20,34 +20,36 @@ module.exports = {
                 `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
                 embeds[currentPage]
             );
-            await queueEmbed.react("⬅️");
-            await queueEmbed.react("⏹");
-            await queueEmbed.react("➡️");
+            if (embeds.length > 1) {
+                await queueEmbed.react("⬅️");
+                await queueEmbed.react("⏹");
+                await queueEmbed.react("➡️");
 
-            const filter = (reaction, user) =>
-                ["⬅️", "⏹", "➡️"].includes(reaction.emoji.name) && message.author.id === user.id;
-            const collector = queueEmbed.createReactionCollector(filter, { time: 60000 });
+                const filter = (reaction, user) =>
+                    ["⬅️", "⏹", "➡️"].includes(reaction.emoji.name) && message.author.id === user.id;
+                const collector = queueEmbed.createReactionCollector(filter, { time: 60000 });
 
-            collector.on("collect", async (reaction, user) => {
-                try {
-                    if (reaction.emoji.name === "➡️") {
-                        currentPage = (currentPage + 1) % embeds.length;
-                        queueEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                collector.on("collect", async (reaction, user) => {
+                    try {
+                        if (reaction.emoji.name === "➡️") {
+                            currentPage = (currentPage + 1) % embeds.length;
+                            queueEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                        }
+                        else if (reaction.emoji.name === "⬅️") {
+                            currentPage = (currentPage - 1 + embeds.length) % embeds.length;
+                            queueEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                        }
+                        else {
+                            collector.stop();
+                            reaction.message.reactions.removeAll();
+                        }
+                        await reaction.users.remove(message.author.id);
                     }
-                    else if (reaction.emoji.name === "⬅️") {
-                        currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        queueEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                    catch {
+                        return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]!**");
                     }
-                    else {
-                        collector.stop();
-                        reaction.message.reactions.removeAll();
-                    }
-                    await reaction.users.remove(message.author.id);
-                }
-                catch {
-                    return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]!**");
-                }
-            });
+                });
+            }
         }
         catch {
             return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]!**");
