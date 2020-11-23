@@ -6,7 +6,7 @@ const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
 const scdl = require("soundcloud-downloader");
 
 module.exports = {
-    usage: `${client.prefix}play <YouTube URL | Video Name | Soundcloud URL>`,
+    usage: `${client.prefix}play (YouTube 주소 | 영상 제목 | Soundcloud 주소)`,
     command: ["play", "p"],
     description: "- YouTube나 Soundcloud를 통해 노래를 재생합니다.",
     type: ["음악"],
@@ -96,7 +96,7 @@ module.exports = {
         else {
             const results = await youtube.searchVideos(search, 1);
             if (results.length == 0) {
-                return message.reply("검색 내용에 해당하는 비디오를 찾지 못했습니다.");
+                return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");
             }
 
             songInfo = await ytdl.getInfo(results[0].url);

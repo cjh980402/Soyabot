@@ -6,7 +6,7 @@ const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
 const scdl = require("soundcloud-downloader");
 
 module.exports = {
-    usage: `${client.prefix}playlist <YouTube Playlist URL | Playlist Name>`,
+    usage: `${client.prefix}playlist (YouTube 재생목록 주소 | 재생목록 제목)`,
     command: ["playlist", "pl"],
     description: "- 유튜브의 재생목록을 재생합니다.",
     type: ["음악"],

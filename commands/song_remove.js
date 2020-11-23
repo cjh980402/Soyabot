@@ -1,7 +1,7 @@
 const { canModifyQueue } = require("../util/SoyabotUtil");
 
 module.exports = {
-    usage: `${client.prefix}remove <Queue Number>`,
+    usage: `${client.prefix}remove (대기열 번호)`,
     command: ["remove", "rm"],
     description: "- 대기열에서 지정한 노래를 삭제합니다.",
     type: ["음악"],

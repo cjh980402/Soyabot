@@ -4,7 +4,7 @@ const YouTubeAPI = require("simple-youtube-api");
 const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
 
 module.exports = {
-    usage: `${client.prefix}search <Video Name>`,
+    usage: `${client.prefix}search (영상 제목)`,
     command: ["search"],
     description: "- 재생할 노래를 검색하고 선택합니다.",
     type: ["음악"],
@@ -33,7 +33,7 @@ module.exports = {
         try {
             const results = await youtube.searchVideos(search, 10);
             if (results.length == 0) {
-                return message.reply("검색 내용에 해당하는 비디오를 찾지 못했습니다.");
+                return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");
             }
 
             results.map((video, index) => resultsEmbed.addField(video.shortURL, `${index + 1}. ${video.title.htmlDecode()}`));
