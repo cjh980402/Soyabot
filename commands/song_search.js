@@ -24,36 +24,31 @@ module.exports = {
 
         const search = args.join(" ");
 
-        let resultsEmbed = new MessageEmbed()
+        const resultsEmbed = new MessageEmbed()
             .setTitle(`**재생할 노래의 번호를 알려주세요.**`)
             .setDescription(`${search}의 검색 결과`)
             .setColor("#F8AA2A");
 
+        let resultsMessage;
         try {
             const results = await youtube.searchVideos(search, 10);
             if (results.length == 0) {
-                return message.reply("해당 제목에 맞는 비디오를 찾지 못했습니다.");
+                return message.reply("검색 내용에 해당하는 비디오를 찾지 못했습니다.");
             }
 
             results.map((video, index) => resultsEmbed.addField(video.shortURL, `${index + 1}. ${video.title.htmlDecode()}`));
 
-            var resultsMessage = await message.channel.send(resultsEmbed);
+            resultsMessage = await message.channel.send(resultsEmbed);
 
             message.channel.activeCollector = true;
             const response = await message.channel.awaitMessages((msg) => /^[0-9]{1,2}(\s*,\s*[0-9]{1,2})*$/g.test(msg.content), { max: 1, time: 30000, errors: ["time"] });
             const reply = response.first().content;
 
-            if (reply.includes(",")) {
-                const songs = reply.split(",").map((str) => str.trim());
+            const songs = reply.split(",").map((str) => (+str.trim()) % results.length + 1); // ,가 없으면 길이가 1인 배열
 
-                for (let song of songs) {
-                    await client.commands.find((cmd) => cmd.command.includes("play"))
-                        .execute(message, [resultsEmbed.fields[parseInt(song) - 1].name]);
-                }
-            }
-            else {
-                const choice = resultsEmbed.fields[parseInt(response.first()) - 1].name;
-                client.commands.find((cmd) => cmd.command.includes("play")).execute(message, [choice]);
+            for (let song of songs) {
+                await client.commands.find((cmd) => cmd.command.includes("play"))
+                    .execute(message, [resultsEmbed.fields[song - 1].name]);
             }
 
             message.channel.activeCollector = false;

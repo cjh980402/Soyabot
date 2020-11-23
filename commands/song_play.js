@@ -96,7 +96,7 @@ module.exports = {
         else {
             const results = await youtube.searchVideos(search, 1);
             if (results.length == 0) {
-                return message.reply("해당 제목에 맞는 비디오를 찾지 못했습니다.");
+                return message.reply("검색 내용에 해당하는 비디오를 찾지 못했습니다.");
             }
 
             songInfo = await ytdl.getInfo(results[0].url);

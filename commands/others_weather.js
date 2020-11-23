@@ -8,6 +8,7 @@ module.exports = {
     command: ["날씨", "ㄴㅆ"],
     description: `- 입력한 지역의 날씨를 알려줍니다.
 - 참고. ${client.prefix}날씨 목록`,
+    browser: true,
     type: ["기타"],
     async execute(message, args) {
         if (!args[0]) {

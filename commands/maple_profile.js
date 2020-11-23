@@ -6,6 +6,7 @@ module.exports = {
     usage: `${client.prefix}프로필 (닉네임)`,
     command: ["프로필", "ㅍㄹㅍ", "ㅍㄿ"],
     description: "- 캐릭터의 메이플 gg 프로필을 출력합니다.",
+    browser: true,
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {

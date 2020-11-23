@@ -58,17 +58,14 @@ module.exports = {
                 }
 
                 if (queue.loop) {
-                    // if loop is on, push the song back at the end of the queue
-                    // so it can repeat endlessly
-                    let lastSong = queue.songs.shift();
+                    // 루프가 켜져있다면 현재 노래를 대기열의 마지막에 다시 넣기때문에 대기열이 끝나지 않고 계속 재생됨
+                    const lastSong = queue.songs.shift();
                     queue.songs.push(lastSong);
-                    module.exports.play(queue.songs[0], message);
                 }
                 else {
-                    // Recursively play the next song
                     queue.songs.shift();
-                    module.exports.play(queue.songs[0], message);
                 }
+                module.exports.play(queue.songs[0], message); // 재귀적으로 다음 곡 재생
             })
             .on("error", (err) => {
                 console.error(err);
@@ -77,8 +74,9 @@ module.exports = {
             });
         dispatcher.setVolumeLogarithmic(queue.volume / 100);
 
+        let playingMessage;
         try {
-            var playingMessage = await queue.textChannel.send(`🎶 노래 재생 시작: **${song.title}** ${song.url}`);
+            playingMessage = await queue.textChannel.send(`🎶 노래 재생 시작: **${song.title}** ${song.url}`);
             await playingMessage.react("⏯");
             await playingMessage.react("⏭");
             await playingMessage.react("🔇");
@@ -92,7 +90,7 @@ module.exports = {
         }
 
         const filter = (reaction, user) => user.id !== client.user.id;
-        var collector = playingMessage.createReactionCollector(filter, {
+        const collector = playingMessage.createReactionCollector(filter, {
             time: song.duration > 0 ? song.duration * 1000 : 600000
         });
 
@@ -159,12 +157,7 @@ module.exports = {
                     if (!canModifyQueue(member)) {
                         return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
                     }
-                    if (queue.volume - 10 <= 0) {
-                        queue.volume = 0;
-                    }
-                    else {
-                        queue.volume = queue.volume - 10;
-                    }
+                    queue.volume = Math.max(queue.volume - 10, 0);
                     queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
                     queue.textChannel.send(`${user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
                     break;
@@ -174,12 +167,7 @@ module.exports = {
                     if (!canModifyQueue(member)) {
                         return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
                     }
-                    if (queue.volume + 10 >= 100) {
-                        queue.volume = 100;
-                    }
-                    else {
-                        queue.volume = queue.volume + 10;
-                    }
+                    queue.volume = Math.min(queue.volume + 10, 100);
                     queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
                     queue.textChannel.send(`${user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
                     break;

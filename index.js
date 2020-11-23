@@ -66,14 +66,13 @@ client.on("message", async (message) => { // 각 메시지에 반응
         const prefixRegex = new RegExp(`^\\s*(<@!?${client.user.id}>|${escapeRegex(PREFIX)})\\s*`); // 문자열로 정규식 생성하기 위해 생성자 이용
         // 자기자신한테 하는 멘션 또는 PREFIX로 시작하는 명령어에 대응
         // message.content : 메시지 내용 텍스트
-        // 멘션의 형태 : <@${message.author.id}>, 인용의 형태 : > ${내용}
-        if (!prefixRegex.test(message.content)) {
+        // 멘션의 형태 : <@${user.id}>, 인용의 형태 : > ${내용}
+        const matchedPrefix = prefixRegex.exec(message.content); // 정규식에 대응되는 명령어 접두어 부분을 탐색
+        if (!matchedPrefix) {
             return await cachingMessage(botChatting(message)); // 잡담 로직
         } // 멘션이나 PREFIX로 시작하지 않는 경우
 
-        const [matchedPrefix] = message.content.match(prefixRegex); // 정규식에 대응되는 명령어 접두어 부분에 대응
-
-        const args = message.content.slice(matchedPrefix.length).trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
+        const args = message.content.slice(matchedPrefix[0].length).trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
         commandName = args.shift().toLowerCase(); // commandName은 args의 첫번째 원소(명령어 부분), shift로 인해 args에는 뒷부분만 남음
 
         const botModule = client.commands.find((cmd) => cmd.command.includes(commandName));
@@ -82,11 +81,8 @@ client.on("message", async (message) => { // 각 메시지에 반응
         if (!botModule) {
             return; // 해당하는 명령어 없으면 종료
         }
-        const browserModule = ["프로필", "컬렉션", "날씨"];
-        commandName = browserModule.includes(botModule.command[0]) ? "브라우저" : botModule.command[0];
-        if (botModule.channelCool) {
-            commandName += `_${message.channel.id}`; // 전체가 아닌 채널당 쿨타임 기능인 경우
-        }
+
+        commandName = botModule.browser ? "브라우저" : (botModule.channelCool ? `${botModule.command[0]}_${message.channel.id}` : botModule.command[0]);
 
         if (cooldowns.has(commandName)) { // 명령이 수행 중인 경우
             return message.reply(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
