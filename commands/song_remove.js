@@ -21,8 +21,8 @@ module.exports = {
             return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
         }
 
-        if (+args[0] < 1 || +args[0] > queue.songs.length) {
-            return message.reply(`현재 대기열에서 1 ~ ${queue.songs.length}번째 노래를 삭제할 수 있습니다.`);
+        if (+args[0] < 2 || +args[0] > queue.songs.length) {
+            return message.reply(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래를 삭제할 수 있습니다.`);
         }
 
         const song = queue.songs.splice(args[0] - 1, 1);
