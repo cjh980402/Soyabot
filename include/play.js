@@ -59,8 +59,7 @@ module.exports = {
 
                 if (queue.loop) {
                     // 루프가 켜져있다면 현재 노래를 대기열의 마지막에 다시 넣기때문에 대기열이 끝나지 않고 계속 재생됨
-                    const lastSong = queue.songs.shift();
-                    queue.songs.push(lastSong);
+                    queue.songs.push(queue.songs.shift());
                 }
                 else {
                     queue.songs.shift();

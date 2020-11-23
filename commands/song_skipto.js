@@ -21,8 +21,8 @@ module.exports = {
             return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
         }
 
-        if (args[0] > queue.songs.length) {
-            return message.reply(`현재 대기열에 ${queue.songs.length}곡만 존재합니다.`);
+        if (+args[0] < 2 || +args[0] > queue.songs.length) {
+            return message.reply(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래로 건너뛸 수 있습니다.`);
         }
 
         queue.playing = true;
@@ -35,6 +35,6 @@ module.exports = {
             queue.songs = queue.songs.slice(args[0] - 2);
         }
         queue.connection.dispatcher.end();
-        return queue.textChannel.send(`${message.author} ⏭ ${args[0] - 1}번째 노래를 건너뛰었습니다.`);
+        return queue.textChannel.send(`${message.author} ⏭ ${args[0] - 1}개의 노래를 건너뛰었습니다.`);
     }
 };
