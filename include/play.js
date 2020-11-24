@@ -24,7 +24,10 @@ module.exports = {
 
         try {
             if (song.url.includes("youtube.com")) {
-                stream = await ytdlDiscord(song.url, { highWaterMark: 1 << 25 });
+                stream = await ytdlDiscord(song.url, {
+                    quality: "highestaudio",
+                    highWaterMark: 1 << 25
+                });
             }
             else if (song.url.includes("soundcloud.com")) {
                 try {
@@ -55,8 +58,7 @@ module.exports = {
 
         queue.connection.on("disconnect", () => client.queue.delete(message.guild.id));
 
-        const dispatcher = queue.connection
-            .play(stream, { type: streamType })
+        queue.connection.play(stream, { type: streamType, volume: queue.volume / 100 })
             .on("finish", () => {
                 if (collector && !collector.ended) {
                     collector.stop();
@@ -76,7 +78,6 @@ module.exports = {
                 queue.songs.shift();
                 module.exports.play(queue.songs[0], message);
             });
-        dispatcher.setVolumeLogarithmic(queue.volume / 100);
 
         let playingMessage;
         try {
@@ -135,16 +136,9 @@ module.exports = {
                 if (!canModifyQueue(member)) {
                     return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
                 }
-                if (queue.volume <= 0) {
-                    queue.volume = 100;
-                    queue.connection.dispatcher.setVolumeLogarithmic(100 / 100);
-                    queue.textChannel.send(`${user} 🔊 음소거를 해제했습니다.`);
-                }
-                else {
-                    queue.volume = 0;
-                    queue.connection.dispatcher.setVolumeLogarithmic(0);
-                    queue.textChannel.send(`${user} 🔇 노래를 음소거 했습니다.`);
-                }
+                queue.volume = queue.volume <= 0 ? 100 : 0;
+                queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
+                queue.textChannel.send(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
             }
             else if (reaction.emoji.name === "🔉") {
                 if (!canModifyQueue(member)) {
