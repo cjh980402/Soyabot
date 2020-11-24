@@ -42,6 +42,7 @@ client.on("ready", async () => {
     await db.run('CREATE TABLE IF NOT EXISTS flagskip(channelid text primary key, name text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS testskip(channelid text primary key, name text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS testpatchskip(channelid text primary key, name text not null)');
+    await db.run('CREATE TABLE IF NOT EXISTS pruningskip(channelid text primary key, name text not null)');
     await db.run("CREATE TABLE IF NOT EXISTS messagedb(channelsenderid text primary key, messagecnt integer default 0, lettercnt integer default 0, lastmessage text default '', lasttime datetime default (datetime('now', 'localtime')))");
     startNotice(); // 공지 자동 알림 기능
     startUpdate(); // 업데이트 자동 알림 기능

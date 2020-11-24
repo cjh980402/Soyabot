@@ -4,13 +4,19 @@ const { canModifyQueue } = require("../util/SoyabotUtil");
 
 module.exports = {
     async play(song, message) {
-        const { PRUNING, SOUNDCLOUD_CLIENT_ID } = require("../config.json");
+        const { PRUNING, SOUNDCLOUD_CLIENT_ID, STAY_TIME } = require("../config.json");
         const queue = client.queue.get(message.guild.id);
 
         if (!song) {
-            queue.channel.leave();
-            client.queue.delete(message.guild.id);
-            return queue.textChannel.send("❌ 음악 대기열이 끝났습니다.");
+            setTimeout(() => {
+                if (queue.connection.dispatcher && message.guild.me.voice.channel) {
+                    return;
+                }
+                queue.channel.leave();
+                queue.textChannel.send(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
+            }, STAY_TIME * 1000);
+            queue.textChannel.send("❌ 음악 대기열이 끝났습니다.");
+            return client.queue.delete(message.guild.id);
         }
 
         let stream = null;
@@ -183,7 +189,8 @@ module.exports = {
 
         collector.on("end", () => {
             playingMessage.reactions.removeAll();
-            if (PRUNING && playingMessage && !playingMessage.deleted) {
+            const find = await db.get("SELECT * FROM pruningskip WHERE channelid = ?", [message.guild.id]);
+            if (!find && playingMessage && !playingMessage.deleted) {
                 playingMessage.delete({ timeout: 3000 });
             }
         });
