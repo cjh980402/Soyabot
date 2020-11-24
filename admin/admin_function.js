@@ -1,9 +1,7 @@
 const Discord = require("discord.js"); // 디버깅용
 const { ADMIN_ID } = require("../config.json");
 const { botNotice, replyRoomID } = require('./bot_control.js');
-const util = require('util');
-const cp = require('child_process');
-const exec = util.promisify(cp.exec);
+const { exec } = require("../util/async_to_promis");
 
 module.exports = async function (message) {
     if (message.content.startsWith("[")) { // 노드 코드 실행 후 출력

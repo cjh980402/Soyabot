@@ -1,4 +1,5 @@
 const OS = require('os');
+const { exec } = require("../util/async_to_promis");
 
 module.exports = {
     usage: `${client.prefix}상태`,
@@ -14,7 +15,14 @@ module.exports = {
         minutes %= 60;
         hours %= 24;
 
-        const memory = 100 - Math.round(OS.freemem() / OS.totalmem() * 100);
+        let memory;
+        if (process.platform == "linux") {
+            const memorycmd = (await exec("free")).stdout.split(/\s+/);
+            memory = 100 - Math.round(memorycmd[12] / memorycmd[8] * 100);
+        }
+        else {
+            memory = 100 - Math.round(OS.freemem() / OS.totalmem() * 100);
+        }
 
         return message.channel.send(`작동 시간: ${days}일 ${hours}시간 ${minutes}분 ${seconds}초\n메모리 사용량: ${memory}%`);
     }
