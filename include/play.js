@@ -187,7 +187,7 @@ module.exports = {
             await reaction.users.remove(user);
         });
 
-        collector.on("end", () => {
+        collector.on("end", async () => {
             playingMessage.reactions.removeAll();
             const find = await db.get("SELECT * FROM pruningskip WHERE channelid = ?", [message.guild.id]);
             if (!find && playingMessage && !playingMessage.deleted) {
