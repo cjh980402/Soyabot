@@ -139,7 +139,7 @@ client.on("voiceStateUpdate", (oldState, newState) => {
                         if (queue.connection.dispatcher && oldVoice.members.size == 1) {
                             queue.songs = [];
                             queue.connection.dispatcher.end(); // 지연시간 후에도 아무도 없으면 대기열 종료
-                            userExit[newVoice.guild.id] = null;
+                            userExit[oldVoice.guild.id] = null;
                         }
                     }, STAY_TIME * 1000);
                     queue.textChannel.send("모든 사용자가 음성채널을 떠났습니다.");
