@@ -18,7 +18,7 @@ module.exports = {
         let memory;
         if (process.platform == "linux") {
             const memorycmd = (await exec("free")).stdout.split(/\s+/);
-            memory = 100 - Math.round(memorycmd[12] / memorycmd[8] * 100);
+            memory = 100 - Math.round(memorycmd[13] / memorycmd[8] * 100);
         }
         else {
             memory = 100 - Math.round(OS.freemem() / OS.totalmem() * 100);
