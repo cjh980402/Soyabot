@@ -16,6 +16,6 @@ module.exports = {
 
         const memory = 100 - Math.round(OS.freemem() / OS.totalmem() * 100);
 
-        return message.reply(`작동 시간: ${days}일 ${hours}시간 ${minutes}분 ${seconds}초\n메모리 사용량: ${memory}%`);
+        return message.channel.send(`작동 시간: ${days}일 ${hours}시간 ${minutes}분 ${seconds}초\n메모리 사용량: ${memory}%`);
     }
 };
