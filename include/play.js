@@ -1,10 +1,10 @@
 const ytdlDiscord = require("ytdl-core-discord");
 const scdl = require("soundcloud-downloader");
+const { SOUNDCLOUD_CLIENT_ID, STAY_TIME } = require("../config.json");
 const { canModifyQueue } = require("../util/SoyabotUtil");
 
 module.exports = {
     async play(song, message) {
-        const { PRUNING, SOUNDCLOUD_CLIENT_ID, STAY_TIME } = require("../config.json");
         const queue = client.queue.get(message.guild.id);
 
         if (!song) {
