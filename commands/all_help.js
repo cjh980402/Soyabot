@@ -47,7 +47,7 @@ module.exports = {
                             }
                         }
                         if (message.guild) {
-                            await reaction.users.remove(message.author.id);
+                            await reaction.users.remove(user);
                         }
                     }
                     catch {

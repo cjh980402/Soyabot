@@ -43,15 +43,15 @@ module.exports = {
                             collector.stop();
                             reaction.message.reactions.removeAll();
                         }
-                        await reaction.users.remove(message.author.id);
+                        await reaction.users.remove(user);
                     }
-                    catch {
+                    catch (e) {
                         return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]!**");
                     }
                 });
             }
         }
-        catch {
+        catch (e) {
             return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]!**");
         }
     }
@@ -59,9 +59,9 @@ module.exports = {
 
 function generateQueueEmbed(message, queue) {
     const embeds = [];
-    for (let i = 0; i < queue.length; i += 10) {
-        const current = queue.slice(i, i + 10);
-        const info = current.map((track, j) => `${i + j + 1} - [${track.title}](${track.url})`).join("\n");
+    for (let i = 0; i < queue.length; i += 8) {
+        const current = queue.slice(i, i + 8);
+        const info = current.map((track, j) => `${i + j + 1}. [${track.title}](${track.url})`).join("\n\n");
         const embed = new MessageEmbed()
             .setTitle(`${client.user.username} 음악 대기열`)
             .setThumbnail(message.guild.iconURL())
