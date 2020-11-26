@@ -2,9 +2,8 @@ const { MessageEmbed } = require("discord.js");
 const Sejong = require('sejong');
 
 module.exports = {
-    usage: `${client.prefix}채팅량 (닉네임)`,
-    command: ["채팅량", "ㅊㅌㄹ"],
-    description: "- 해당하는 닉네임의 채팅 통계를 보여줍니다. 닉네임을 생략시에는 본인의 채팅 통계를 보여줍니다.",
+    usage: `${client.prefix}최근챗 (닉네임)`,
+    command: ["최근챗", "ㅊㄱㅊ"],
     channelCool: true,
     type: ["기타"],
     async execute(message, args) {
@@ -44,13 +43,10 @@ module.exports = {
 
         const messagestat = await db.get(`SELECT * FROM messagedb WHERE channelsenderid = ?`, [`${message.guild.id} ${targetInfo.user.id}`]);
         if (messagestat) {
-            return message.channel.send(`${targetInfo.nickname || targetInfo.user.username}
-채팅 건수: ${messagestat.messagecnt}
-문자 개수: ${messagestat.lettercnt}
-채팅 지수: ${(messagestat.lettercnt / messagestat.messagecnt).toFixed(2)}`);
+            return message.channel.send(`${targetInfo.nickname || targetInfo.user.username}의 최근 채팅\n채팅 내용: ${messagestat.lastmessage}\n${new Date(messagestat.lasttime).toKorean()}`);
         }
         else {
-            return message.channel.send(`${targetInfo.nickname || targetInfo.user.username}\n채팅 건수: 0\n문자 개수: 0\n채팅 지수: 0.00`);
+            return message.channel.send(`${targetInfo.nickname || targetInfo.user.username}의 채팅기록이 없습니다.`);
         }
     }
 };

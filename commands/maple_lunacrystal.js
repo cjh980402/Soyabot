@@ -47,7 +47,7 @@ module.exports = {
             }
             return message.channel.send(rslt.trimEnd());
         }
-        if (+args[1] < 1 || +args[1] > 20000 || isNaN(args[1])) {
+        if (isNaN(args[1]) || +args[1] < 1 || +args[1] > 20000) {
             return message.channel.send('1 ~ 20000 범위의 숫자만 입력가능합니다.');
         }
 

@@ -51,15 +51,15 @@ client.on("ready", async () => {
     startTestPatch(); // 테섭 패치 감지 기능
     startFlag(); // 플래그 5분 전 알림
 });
-client.on("warn", (info) => console.log(info));
+client.on("warn", console.log);
 client.on("error", console.error);
 
-client.on("message", async (message) => { // 각 메시지에 반응
+client.on("message", async (message) => { // 각 메시지에 반응, 디스코드는 봇의 채팅도 이 이벤트에 들어와서 봇 채팅 캐싱도 같이됨
     let commandName;
     try {
         console.log(`(${new Date().toKorean()}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username}: ${message.content}\n`);
-        if (message.author.bot) {
-            return; // 봇 여부 체크
+        if (message.author.bot) { // 봇 여부 체크
+            return;
         }
         if (message.author.id == ADMIN_ID) { // 관리자 여부 체크
             await admin(message);
@@ -71,7 +71,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
         // 멘션의 형태 : <@${user.id}>, 인용의 형태 : > ${내용}
         const matchedPrefix = prefixRegex.exec(message.content); // 정규식에 대응되는 명령어 접두어 부분을 탐색
         if (!matchedPrefix) {
-            return await cachingMessage(botChatting(message)); // 잡담 로직
+            return botChatting(message); // 잡담 로직
         } // 멘션이나 PREFIX로 시작하지 않는 경우
 
         const args = message.content.slice(matchedPrefix[0].length).trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
@@ -90,8 +90,7 @@ client.on("message", async (message) => { // 각 메시지에 반응
             return message.reply(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
-        const execute = botModule.channelCool ? botModule.execute(message, args) : promiseTimeout(botModule.execute(message, args), 180000);
-        await cachingMessage(await execute); // 명령어 수행 부분 + 봇 채팅 캐싱
+        await (botModule.channelCool ? botModule.execute(message, args) : promiseTimeout(botModule.execute(message, args), 180000)); // 명령어 수행 부분
         cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
     }
     catch (e) {

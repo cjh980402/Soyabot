@@ -44,12 +44,7 @@ module.exports = {
             let songs;
             const response = await message.channel.awaitMessages((msg) => {
                 songs = msg.content.split(",").map((str) => +str.trim()); // ,가 없으면 길이가 1인 배열
-                for (let song of songs) {
-                    if (song < 1 || song > results.length) {
-                        return false;
-                    }
-                }
-                return true;
+                return songs.every(v => !isNaN(v) && 1 <= v && v <= results.length);
             }, { max: 1, time: 30000, errors: ["time"] });
 
             for (let song of songs) {

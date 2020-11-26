@@ -142,7 +142,7 @@ module.exports = {
                 rslt += `${key} : ${proper[key] / 100000}%\n`;
             return message.channel.send(rslt.trimEnd(), { split: true });
         }
-        if (+args[0] < 1 || +args[0] > 20000 || isNaN(args[0])) {
+        if (isNaN(args[0]) || +args[0] < 1 || +args[0] > 20000) {
             return message.channel.send('1 ~ 20000 범위의 숫자만 입력가능합니다.');
         }
         // args[0]은 골드애플 횟수

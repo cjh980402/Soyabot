@@ -18,7 +18,7 @@ class item {
 
     doingStarforce(data) {
         const len = data.length;
-        if (len < 3 || len > 6) {
+        if (!data.every(v => !isNaN(v)) || len < 3 || len > 6) {
             return "잘못된 형식입니다.";
         }
         else if (data[2] == 25) {

@@ -100,7 +100,7 @@ module.exports = {
 
         const songs = serverQueue ? serverQueue.songs : queueConstruct.songs;
 
-        let playlistEmbed = new MessageEmbed()
+        const playlistEmbed = new MessageEmbed()
             .setTitle(`${playlist.title}`)
             .setDescription(songs.map((song, index) => `${index + 1}. ${song.title}`))
             .setURL(playlist.url)

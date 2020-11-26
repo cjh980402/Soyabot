@@ -95,7 +95,7 @@ module.exports = {
 
         if (args[0] == '확률' || args[0] == 'ㅎㄹ') {
             let startlev = +args[1], rslt = `<${startlev}레벨 기준 확률>\n`;
-            if (startlev < 141 || startlev > 199 || isNaN(startlev)) {
+            if (isNaN(startlev) || startlev < 141 || startlev > 199) {
                 return message.channel.send('141 ~ 199 범위의 시작 레벨을 입력해주세요.');
             }
             for (i = 0; i < 10; i++) {
@@ -105,10 +105,10 @@ module.exports = {
         }
 
         const startlev = +args[0], endlev = +args[1];
-        if (startlev < 141 || startlev > 199 || isNaN(startlev)) {
+        if (isNaN(startlev) || startlev < 141 || startlev > 199) {
             return message.channel.send('141 ~ 199 범위의 시작 레벨을 입력해주세요.');
         }
-        if (endlev < startlev || endlev > 200 || isNaN(endlev)) {
+        if (isNaN(endlev) || endlev < startlev || endlev > 200) {
             return message.channel.send('시작레벨 ~ 200 범위의 목표 레벨을 입력해주세요.');
         }
         return message.channel.send(Pool(startlev, endlev));
