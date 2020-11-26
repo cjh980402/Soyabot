@@ -1,5 +1,5 @@
-const ytdlDiscord = require("ytdl-core-discord");
-const scdl = require("soundcloud-downloader");
+const ytdlDiscord = require("discord-ytdl-core");
+const scdl = require("soundcloud-downloader").default;
 const { SOUNDCLOUD_CLIENT_ID, STAY_TIME } = require("../config.json");
 const { canModifyQueue } = require("../util/SoyabotUtil");
 
@@ -25,6 +25,9 @@ module.exports = {
         try {
             if (song.url.includes("youtube.com")) {
                 stream = await ytdlDiscord(song.url, {
+                    filter: "audioonly",
+                    opusEncoded: true,
+                    encoderArgs: ['-af', 'bass=g=10,dynaudnorm=f=200'],
                     quality: "highestaudio",
                     highWaterMark: 1 << 25
                 });

@@ -3,7 +3,7 @@ const { YOUTUBE_API_KEY, SOUNDCLOUD_CLIENT_ID } = require("../config.json");
 const ytdl = require("ytdl-core");
 const YouTubeAPI = require("simple-youtube-api");
 const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
-const scdl = require("soundcloud-downloader");
+const scdl = require("soundcloud-downloader").default;
 
 module.exports = {
     usage: `${client.prefix}play (YouTube 주소 | 영상 제목 | Soundcloud 주소)`,
