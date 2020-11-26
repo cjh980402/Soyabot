@@ -6,7 +6,7 @@ const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
 const scdl = require("soundcloud-downloader").default;
 
 module.exports = {
-    usage: `${client.prefix}playlist (YouTube 재생목록 주소 | 재생목록 제목)`,
+    usage: `${client.prefix}playlist (YouTube 재생목록 주소 | Soundcloud 재생목록 주소 | 재생목록 제목)`,
     command: ["playlist", "pl"],
     description: "- 유튜브의 재생목록을 재생합니다.",
     type: ["음악"],
@@ -14,7 +14,6 @@ module.exports = {
         if (!message.guild) {
             return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         }
-        const { PRUNING } = require("../config.json");
         const { channel } = message.member.voice;
 
         const serverQueue = client.queue.get(message.guild.id);
@@ -58,25 +57,22 @@ module.exports = {
         let videos = [];
 
         if (urlValid) {
-            try {
-                playlist = await youtube.getPlaylist(url, { part: "snippet" });
+            playlist = await youtube.getPlaylist(url, { part: "snippet" });
+            if (playlist) {
                 videos = await playlist.getVideos(MAX_PLAYLIST_SIZE || 10, { part: "snippet" });
             }
-            catch (error) {
-                console.error(error);
+            else {
                 return message.reply("재생목록을 찾지 못했습니다 :(");
             }
         }
-        else if (scdl.isValidUrl(args[0])) {
-            if (args[0].includes('/sets/')) {
-                message.channel.send('⌛ 재생 목록을 가져오는 중...')
-                playlist = await scdl.getSetInfo(args[0], SOUNDCLOUD_CLIENT_ID)
-                videos = playlist.tracks.map(track => ({
-                    title: track.title,
-                    url: track.permalink_url,
-                    duration: track.duration / 1000
-                }))
-            }
+        else if (scdl.isValidUrl(args[0]) && args[0].includes('/sets/')) {
+            message.channel.send('⌛ 재생 목록을 가져오는 중...');
+            playlist = await scdl.getSetInfo(args[0], SOUNDCLOUD_CLIENT_ID);
+            videos = playlist.tracks.map(track => ({
+                title: track.title,
+                url: track.permalink_url,
+                duration: track.duration / 1000
+            }));
         }
         else {
             const results = await youtube.searchPlaylists(search, 1, { part: "snippet" });
@@ -98,23 +94,17 @@ module.exports = {
 
         serverQueue ? serverQueue.songs.push(...newSongs) : queueConstruct.songs.push(...newSongs);
 
-        const songs = serverQueue ? serverQueue.songs : queueConstruct.songs;
-
         const playlistEmbed = new MessageEmbed()
             .setTitle(`${playlist.title}`)
-            .setDescription(songs.map((song, index) => `${index + 1}. ${song.title}`))
+            .setDescription(newSongs.map((song, index) => `${index + 1}. ${song.title}`))
             .setURL(playlist.url)
             .setColor("#F8AA2A")
             .setTimestamp();
 
-        if (!PRUNING) {
-            playlistEmbed.setDescription(queueConstruct.songs.map((song, index) => `${index + 1}. ${song.title}`));
-            if (playlistEmbed.description.length >= 2048) {
-                playlistEmbed.description = playlistEmbed.description.substr(0, 2007) + "\n재생목록이 글자수 제한보다 깁니다...";
-            }
+        if (playlistEmbed.description.length > 2000) {
+            playlistEmbed.description = playlistEmbed.description.substr(0, 1900) + "\n\n재생목록이 글자수 제한보다 깁니다...";
         }
-
-        message.channel.send(`${message.author}가 재생목록을 시작했습니다.`, playlistEmbed);
+        message.channel.send(serverQueue ? `${message.author} ℹ️ 재생목록을 추가했습니다.` : `${message.author} ℹ️ 재생목록을 시작했습니다.`, playlistEmbed);
 
         if (!serverQueue) {
             client.queue.set(message.guild.id, queueConstruct);

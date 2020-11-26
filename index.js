@@ -18,7 +18,6 @@ client.prefix = PREFIX;
 client.queue = new Map();
 client.setMaxListeners(20); // 이벤트 개수 제한 증가
 const cooldowns = new Set(); // 중복 명령 방지할 set
-const userExit = {};
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사용자 입력을 이스케이프해서 정규식 내부에서 문자 그대로 취급하기 위해 치환하는 함수
 const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((resolve, reject) => setTimeout(() => reject(new Error("명령어 시간 초과")), ms))]);
 
@@ -114,39 +113,18 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
 client.on("voiceStateUpdate", (oldState, newState) => {
     const oldVoice = oldState.channel;
     const newVoice = newState.channel;
-    try {
-        if (oldVoice != newVoice) {
-            if (oldVoice == null) {
-                console.log("User joined!");
-                if (userExit[newVoice.guild.id] && userExit[newVoice.guild.id][1] > Date.now()) {
-                    const queue = client.queue.get(newVoice.guild.id);
-                    queue.connection.dispatcher.resume(); // 지연시간 내에 다시 들어오면 대기열 재생
-                    queue.playing = true;
-                    userExit[newVoice.guild.id] = null;
-                }
-            }
-            else {
-                console.log(newVoice ? "User switched channels!" : "User left!");
-                const queue = client.queue.get(oldVoice.guild.id);
-                if (queue && queue.connection.dispatcher && oldVoice == queue.channel && oldVoice.members.size == 1) { // 봇만 음성 채널에 있는 경우
-                    if (queue.playing) {
-                        queue.connection.dispatcher.pause(true);
-                        queue.playing = false;
-                    } // 처음엔 일시정지 처리
-                    userExit[oldVoice.guild.id] = [oldVoice, Date.now() + STAY_TIME * 1000];
-                    setTimeout(() => {
-                        if (queue.connection.dispatcher && oldVoice.members.size == 1) {
-                            queue.songs = [];
-                            queue.connection.dispatcher.end(); // 지연시간 후에도 아무도 없으면 대기열 종료
-                            userExit[oldVoice.guild.id] = null;
-                        }
-                    }, STAY_TIME * 1000);
-                    queue.textChannel.send("모든 사용자가 음성채널을 떠났습니다.");
-                }
+    if (oldVoice != newVoice) {
+        if (oldVoice == null) {
+            console.log("User joined!");
+        }
+        else {
+            console.log(newVoice ? "User switched channels!" : "User left!");
+            const queue = client.queue.get(oldVoice.guild.id);
+            if (queue && queue.connection.dispatcher && oldVoice == queue.channel && oldVoice.members.size == 1) { // 봇만 음성 채널에 있는 경우
+                queue.songs = [];
+                queue.connection.dispatcher.end();
+                queue.textChannel.send("모든 사용자가 음성채널을 떠났습니다.");
             }
         }
-    }
-    catch (e) {
-        replyAdmin(`작성자: ${(oldVoice || newVoice).member.user.username}\n방 이름: ${(oldVoice || newVoice).guild.name}\n에러 내용: ${e}\n${e.stack}`);
     }
 });
