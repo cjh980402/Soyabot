@@ -1,7 +1,3 @@
-const { kimsobotPic } = require('../util/kimsobot_config.json');
-const { AttachmentTemplate } = require("../util/node-kakao-extend");
-const { Button, FeedContent, MessageInfo, MessageTemplate, Profile, Thumbnail, MessageType } = require('custom-kaling');
-
 module.exports = {
     usage: `${client.prefix}스타버블`,
     command: ["스타버블", "ㅅㅌㅂㅂ"],
