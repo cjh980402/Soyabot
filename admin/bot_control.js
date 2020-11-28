@@ -1,4 +1,4 @@
-const { ADMIN_ID } = require("../config.json");
+const { ADMIN_ID } = require("../soyabot_config.json");
 
 module.exports.botNotice = async function (data, type) {
     const skiplist = (await db.all(`select channelid from ${type}skip`)).map(v => v.channelid);

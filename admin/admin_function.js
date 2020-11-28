@@ -1,5 +1,5 @@
 const Discord = require("discord.js"); // 디버깅용
-const { ADMIN_ID } = require("../config.json");
+const { ADMIN_ID } = require("../soyabot_config.json");
 const { botNotice, replyRoomID } = require('./bot_control.js');
 const { exec } = require("../util/async_to_promis");
 
