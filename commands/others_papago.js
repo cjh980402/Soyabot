@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const { clientId, clientSecret } = require("../config.json");
+const { clientId, clientSecret } = require("../soyabot_config.json");
 
 async function tran(source, target, text) {
     try {

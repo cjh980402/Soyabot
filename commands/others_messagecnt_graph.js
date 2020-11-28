@@ -1,6 +1,6 @@
 const { MessageAttachment } = require("discord.js");
 const QuickChart = require('quickchart-js');
-const { ADMIN_ID } = require("../config.json");
+const { ADMIN_ID } = require("../soyabot_config.json");
 
 module.exports = {
     usage: `${client.prefix}채팅량그래프 (옵션)`,

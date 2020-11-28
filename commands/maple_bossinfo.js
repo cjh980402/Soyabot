@@ -12,7 +12,7 @@ module.exports = {
         }
         const bossName = args[0];
         if (!bossData[bossName]) {
-            return chat.reply('데이터가 없는 보스입니다.');
+            return message.channel.send('데이터가 없는 보스입니다.');
         }
         const bossGrade = !bossData[bossName][args[1]] ? Object.keys(bossData[bossName])[0] : args[1];
 
@@ -23,7 +23,6 @@ module.exports = {
         message.channel.send(bossEmbed);
 
         bossEmbed.setTitle(`${bossName}(${bossGrade})의 정보`)
-            .setColor("#F8AA2A")
             .setDescription(bossData[bossName][bossGrade][1].map(v => `**${v}**`).join("\n\n"));
 
         return message.channel.send(bossEmbed);

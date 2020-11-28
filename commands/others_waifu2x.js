@@ -1,4 +1,4 @@
-const { DEEP_API_KEY } = require("../config.json");
+const { DEEP_API_KEY } = require("../soyabot_config.json");
 const deepai = require('deepai');
 deepai.setApiKey(DEEP_API_KEY);
 

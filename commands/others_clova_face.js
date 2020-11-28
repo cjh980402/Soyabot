@@ -1,4 +1,4 @@
-const { clientId, clientSecret } = require('../config.json');
+const { clientId, clientSecret } = require('../soyabot_config.json');
 const fetch = require('node-fetch');
 const FormData = require('form-data');
 

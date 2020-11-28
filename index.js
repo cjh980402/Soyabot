@@ -4,7 +4,7 @@
 const { Client, Collection } = require("discord.js");
 const cachingMessage = require('./util/message_caching');
 const { readdirSync } = require("fs");
-const { TOKEN, PREFIX, ADMIN_ID } = require("./config.json");
+const { TOKEN, PREFIX, ADMIN_ID } = require("./soyabot_config.json");
 const admin = require("./admin/admin_function");
 const { startNotice, startUpdate, startTest, startTestPatch, startFlag } = require('./admin/maple_auto_notice.js');
 const botChatting = require("./util/bot_chatting");

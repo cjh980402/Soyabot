@@ -1,5 +1,5 @@
 const { MessageEmbed, Collection } = require("discord.js");
-const { YOUTUBE_API_KEY } = require("../config.json");
+const { YOUTUBE_API_KEY } = require("../soyabot_config.json");
 const YouTubeAPI = require("simple-youtube-api");
 const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
 

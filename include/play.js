@@ -1,6 +1,6 @@
 const ytdlDiscord = require("discord-ytdl-core");
 const scdl = require("soundcloud-downloader").default;
-const { SOUNDCLOUD_CLIENT_ID, STAY_TIME } = require("../config.json");
+const { SOUNDCLOUD_CLIENT_ID, STAY_TIME } = require("../soyabot_config.json");
 const { canModifyQueue } = require("../util/SoyabotUtil");
 
 module.exports = {
