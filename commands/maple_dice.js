@@ -1,6 +1,4 @@
-const util = require('util');
-const cp = require('child_process');
-const exec = util.promisify(cp.exec);
+const { exec } = require("../util/async_to_promis");
 
 module.exports = {
     usage: `${client.prefix}데굴데굴`,
@@ -8,22 +6,20 @@ module.exports = {
     description: "- 추억의 메이플스토리 주사위!",
     type: ["메이플"],
     async execute(message) {
-        await exec(`python3 ./util/maple_stats_drawer.py "${message.author.username.replace(/"/g, '\\"')}" ${message.author.id}`);
-        const dice = await message.channel.send(`${message.author.username}님의 스탯`, {
-            files: [`./pictures/dice_result/${message.author.id}.png`]
+        const nickname = (message.member && message.member.nickname) || message.author.username;
+        await exec(`python3 ./util/maple_stats_drawer.py "${nickname.replace(/"/g, '\\"')}"`);
+        const dice = await message.channel.send(`${nickname}님의 스탯`, {
+            files: ["./pictures/dice_result.png"]
         });
         await dice.react("🔁");
 
-        const filter = (reaction, user) => user.id === message.author.id; // 처음 명령어 쓴 사람과 이모티콘 누른사람이 같은지 체크
-        const collector = dice.createReactionCollector(filter, {
-            time: 60000 // 1분
-        });
+        const filter = (reaction, user) => ["🔁"].includes(reaction.emoji.name) && message.author.id === user.id;
+        const collector = dice.createReactionCollector(filter, { time: 60000 });
+
         collector.on("collect", async (reaction, user) => {
-            if (reaction.emoji.name === "🔁") {
-                collector.stop();
-                dice.delete();
-                await this.execute(message);
-            }
+            collector.stop();
+            dice.delete();
+            await this.execute(message);
         });
         return dice;
     }

@@ -104,7 +104,8 @@ module.exports = {
         if (playlistEmbed.description.length > 2000) {
             playlistEmbed.description = playlistEmbed.description.substr(0, 1900) + "\n\n재생목록이 글자수 제한보다 깁니다...";
         }
-        message.channel.send(serverQueue ? `${message.author} ℹ️ 재생목록을 추가했습니다.` : `${message.author} ℹ️ 재생목록을 시작했습니다.`, playlistEmbed);
+
+        message.channel.send(serverQueue ? `✅ ${message.author}가 재생목록을 추가하였습니다.` : `✅ ${message.author}가 재생목록을 시작했습니다.`, playlistEmbed);
 
         if (!serverQueue) {
             client.queue.set(message.guild.id, queueConstruct);

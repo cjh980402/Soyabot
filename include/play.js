@@ -24,12 +24,12 @@ module.exports = {
 
         try {
             if (song.url.includes("youtube.com")) {
-                stream = await ytdlDiscord(song.url, {
+                stream = ytdlDiscord(song.url, {
                     filter: "audioonly",
-                    opusEncoded: true,
-                    encoderArgs: ['-af', 'bass=g=10,dynaudnorm=f=200'],
                     quality: "highestaudio",
-                    highWaterMark: 1 << 25
+                    highWaterMark: 1 << 25,
+                    opusEncoded: true,
+                    encoderArgs: ['-af', 'bass=g=10,dynaudnorm=f=200']
                 });
             }
             else if (song.url.includes("soundcloud.com")) {
@@ -53,7 +53,7 @@ module.exports = {
         catch (e) {
             if (queue) {
                 queue.songs.shift();
-                module.exports.play(queue.songs[0], message);
+                return module.exports.play(queue.songs[0], message);
             }
             console.error(e);
             return message.channel.send(`오류 발생: ${e.message || e}`);
@@ -61,9 +61,10 @@ module.exports = {
 
         queue.connection.on("disconnect", () => client.queue.delete(message.guild.id));
 
+        let collector_init = false;
         queue.connection.play(stream, { type: streamType, volume: queue.volume / 100 })
             .on("finish", () => {
-                if (collector && !collector.ended) {
+                if (collector_init && collector && !collector.ended) {
                     collector.stop();
                 }
 
@@ -101,6 +102,7 @@ module.exports = {
         const collector = playingMessage.createReactionCollector(filter, {
             time: song.duration > 0 ? song.duration * 1000 : 600000
         });
+        collector_init = true;
 
         collector.on("collect", async (reaction, user) => {
             if (!queue) {
@@ -164,7 +166,7 @@ module.exports = {
                     return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
                 }
                 queue.loop = !queue.loop;
-                queue.textChannel.send(`현재 반복 재생 상태 : ${queue.loop ? "**ON**" : "**OFF**"}`);
+                queue.textChannel.send(`현재 반복 재생 상태: ${queue.loop ? "**ON**" : "**OFF**"}`);
             }
             else if (reaction.emoji.name === "⏹") {
                 if (!canModifyQueue(member)) {

@@ -109,7 +109,7 @@ module.exports = {
 
         if (serverQueue) {
             serverQueue.songs.push(song);
-            return serverQueue.textChannel.send(`✅ ${message.author}가 **${song.title}**를 대기열에 추가하였습니다.`);
+            return serverQueue.textChannel.send(`✅ ${message.author}가 **${song.title}**를 대기열에 추가했습니다.`);
         }
 
         queueConstruct.songs.push(song);

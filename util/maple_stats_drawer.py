@@ -24,4 +24,4 @@ def draw_stats(img: Image, name: str):
 
 
 draw_stats(Image.open('./pictures/character_dice.png'),
-           sys.argv[1]).save(f'./pictures/dice_result/{sys.argv[2]}.png')
+           sys.argv[1]).save('./pictures/dice_result.png')
