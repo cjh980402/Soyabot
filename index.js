@@ -4,7 +4,7 @@
 const { Client, Collection } = require("discord.js");
 const cachingMessage = require('./util/message_caching');
 const { readdirSync } = require("fs");
-const { TOKEN, PREFIX, ADMIN_ID, STAY_TIME } = require("./config.json");
+const { TOKEN, PREFIX, ADMIN_ID } = require("./config.json");
 const admin = require("./admin/admin_function");
 const { startNotice, startUpdate, startTest, startTestPatch, startFlag } = require('./admin/maple_auto_notice.js');
 const botChatting = require("./util/bot_chatting");
@@ -83,7 +83,7 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
             return; // 해당하는 명령어 없으면 종료
         }
 
-        commandName = botModule.browser ? "브라우저" : (botModule.channelCool ? `${botModule.command[0]}_${message.channel.id}` : botModule.command[0]);
+        commandName = botModule.browser ? "browser" : (botModule.channelCool ? `${botModule.command[0]}_${message.channel.id}` : botModule.command[0]);
 
         if (cooldowns.has(commandName)) { // 명령이 수행 중인 경우
             return message.reply(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
@@ -116,7 +116,7 @@ client.on("voiceStateUpdate", (oldState, newState) => {
     if (oldVoice != newVoice) {
         if (oldVoice == null) {
             console.log("User joined!");
-            const queue = client.queue.get(oldVoice.guild.id);
+            const queue = client.queue.get(newVoice.guild.id);
             if (queue && queue.connection && newVoice == queue.channel) {
                 queue.connection.dispatcher.resume();
                 queue.textChannel.send("대기열을 다시 재생합니다.");
