@@ -117,17 +117,21 @@ client.on("voiceStateUpdate", (oldState, newState) => {
         if (oldVoice == null) {
             console.log("User joined!");
             const queue = client.queue.get(newVoice.guild.id);
-            if (queue && queue.connection && newVoice == queue.channel) {
+            if (queue && queue.connection && !queue.playing && newVoice == queue.channel) {
                 queue.connection.dispatcher.resume();
                 queue.textChannel.send("대기열을 다시 재생합니다.");
+                queue.playing = true;
             }
         }
         else {
             console.log(newVoice ? "User switched channels!" : "User left!");
             const queue = client.queue.get(oldVoice.guild.id);
             if (queue && queue.connection && oldVoice == queue.channel && oldVoice.members.size == 1) { // 봇만 음성 채널에 있는 경우
-                queue.connection.dispatcher.pause(true);
-                queue.textChannel.send("모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.");
+                if (queue.playing) {
+                    queue.connection.dispatcher.pause(true);
+                    queue.textChannel.send("모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.");
+                    queue.playing = false;
+                }
                 setTimeout(() => {
                     const queue = client.queue.get(oldVoice.guild.id);
                     if (queue && queue.connection && oldVoice == queue.channel && oldVoice.members.size == 1) { // 5분이 지나도 봇만 음성 채널에 있는 경우
