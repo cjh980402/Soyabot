@@ -5,7 +5,7 @@ const { Client, Collection } = require("discord.js");
 const cachingMessage = require('./util/message_caching');
 const { readdirSync } = require("fs");
 const { TOKEN, PREFIX, ADMIN_ID } = require("./soyabot_config.json");
-const admin = require("./admin/admin_function");
+const { adminChat } = require("./admin/admin_function");
 const { startNotice, startUpdate, startTest, startTestPatch, startFlag } = require('./admin/maple_auto_notice.js');
 const botChatting = require("./util/bot_chatting");
 const { replyAdmin } = require('./admin/bot_control');
@@ -61,7 +61,7 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
             return;
         }
         if (message.author.id == ADMIN_ID) { // 관리자 여부 체크
-            await admin(message);
+            await adminChat(message);
         }
 
         const prefixRegex = new RegExp(`^\\s*(<@!?${client.user.id}>|${escapeRegex(PREFIX)})\\s*`); // 문자열로 정규식 생성하기 위해 생성자 이용

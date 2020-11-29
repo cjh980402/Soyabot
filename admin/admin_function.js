@@ -3,14 +3,14 @@ const { ADMIN_ID } = require("../soyabot_config.json");
 const { botNotice, replyRoomID } = require('./bot_control.js');
 const { exec } = require("../util/async_to_promis");
 
-module.exports = async function (message) {
+module.exports.adminChat = async function (message) {
     if (message.content.startsWith("[")) { // 노드 코드 실행 후 출력
         const funcBody = message.content.substr(1).trim().split('\n');
         funcBody.push(`message.channel.send(String(${funcBody.pop()}) || "empty string", { split: true });`); // 함수의 마지막 줄 내용은 자동으로 출력
         await eval(`(async()=>{${funcBody.join('\n')}})();`);
     }
     else if (message.content.startsWith("]")) { // 콘솔 명령 실행 후 출력
-        message.channel.send(await cmd(message.content.substr(1).trim()) || "empty string", { split: true });
+        message.channel.send(await module.exports.cmd(message.content.substr(1).trim()) || "empty string", { split: true });
     }
     else if (message.content.startsWith("*")) { // 원격 채팅 전송
         const room = message.content.split('*')[1];
@@ -35,7 +35,7 @@ module.exports = async function (message) {
     }
 }
 
-async function cmd(_cmd) {
+module.exports.cmd = async function (_cmd) {
     let cmdResult;
     try {
         cmdResult = (await exec(_cmd)).stdout;

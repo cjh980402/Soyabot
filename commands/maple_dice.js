@@ -18,7 +18,7 @@ module.exports = {
 
         collector.on("collect", async (reaction, user) => {
             collector.stop();
-            dice.delete();
+            dice.delete({ timeout: 3000 });
             await this.execute(message);
         });
         return dice;
