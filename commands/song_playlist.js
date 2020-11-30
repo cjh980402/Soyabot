@@ -72,7 +72,7 @@ module.exports = {
         }
         else {
             if (urlValid) {
-                playlist = await youtube.getPlaylistByID(pattern.exec(url)[2], { part: "snippet" });
+                playlist = await youtube.getPlaylistByID(playlistPattern.exec(url)[2], { part: "snippet" });
             }
             else {
                 const results = await youtube.searchPlaylists(search, 1, { part: "snippet" });
@@ -81,9 +81,9 @@ module.exports = {
                 }
                 playlist = results[0];
             }
-            videos = await playlist.getVideos(MAX_PLAYLIST_SIZE || 10, { part: "snippet" }).map((video) => ({
+            videos = (await playlist.getVideos(MAX_PLAYLIST_SIZE || 10, { part: "snippet" })).map((video) => ({
                 title: video.title,
-                url: video.id,
+                url: video.url,
                 duration: video.durationSeconds
             }));
         }
