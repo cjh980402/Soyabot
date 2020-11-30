@@ -34,18 +34,10 @@ module.exports = {
             }
             else if (song.url.includes("soundcloud.com")) {
                 try {
-                    stream = await scdl.downloadFormat(
-                        song.url,
-                        scdl.FORMATS.OPUS,
-                        SOUNDCLOUD_CLIENT_ID ? SOUNDCLOUD_CLIENT_ID : undefined
-                    );
+                    stream = await scdl.downloadFormat(song.url, scdl.FORMATS.OPUS, SOUNDCLOUD_CLIENT_ID);
                 }
                 catch (e) {
-                    stream = await scdl.downloadFormat(
-                        song.url,
-                        scdl.FORMATS.MP3,
-                        SOUNDCLOUD_CLIENT_ID ? SOUNDCLOUD_CLIENT_ID : undefined
-                    );
+                    stream = await scdl.downloadFormat(song.url, scdl.FORMATS.OPUS, SOUNDCLOUD_CLIENT_ID);
                     streamType = "unknown";
                 }
             }
@@ -53,7 +45,7 @@ module.exports = {
         catch (e) {
             if (queue) {
                 queue.songs.shift();
-                return module.exports.play(queue.songs[0], message);
+                module.exports.play(queue.songs[0], message);
             }
             console.error(e);
             return message.channel.send(`오류 발생: ${e.message || e}`);
@@ -78,7 +70,12 @@ module.exports = {
                 module.exports.play(queue.songs[0], message); // 재귀적으로 다음 곡 재생
             })
             .on("error", (err) => {
-                console.error(err);
+                if (err.message == "input stream: Video unavailable") {
+                    message.channel.send("해당 국가에서 차단됐거나 비공개된 동영상입니다.");
+                }
+                else {
+                    console.error(err);
+                }
                 queue.songs.shift();
                 module.exports.play(queue.songs[0], message);
             });

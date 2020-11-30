@@ -36,17 +36,13 @@ module.exports = {
         }
 
         const search = args.join(" ");
-        const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([_0-9a-z-]+)(\?t=[0-9]+)*/i;
-        const playlistPattern = /^.*(list=)([^#\&\?]*).*/gi;
-        const scRegex = /^https?:\/\/(soundcloud\.com)\/(.*)$/;
+        const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})(.*(t=\d+))?/i;
+        const playlistPattern = /^.*(youtu.be\/|list=)([\w-]*).*/i;
         const url = args[0];
-        const urlValid = videoPattern.test(args[0]);
+        const urlValid = videoPattern.test(url);
 
-        // Start the playlist if playlist url was provided
-        if (!urlValid && playlistPattern.test(args[0])) {
-            return client.commands.find((cmd) => cmd.command.includes("playlist")).execute(message, args);
-        }
-        else if (scdl.isValidUrl(url) && url.includes("/sets/")) {
+        // 재생목록 주소가 주어진 경우는 재생목록을 실행
+        if ((!urlValid && playlistPattern.test(url)) || (scdl.isValidUrl(url) && url.includes("/sets/"))) {
             return client.commands.find((cmd) => cmd.command.includes("playlist")).execute(message, args);
         }
 
@@ -60,24 +56,9 @@ module.exports = {
             playing: true
         };
 
-        let songInfo = null;
         let song = null;
 
-        if (urlValid) {
-            try {
-                songInfo = await ytdl.getInfo(url);
-                song = {
-                    title: songInfo.videoDetails.title,
-                    url: songInfo.videoDetails.video_url,
-                    duration: songInfo.videoDetails.lengthSeconds
-                };
-            }
-            catch (error) {
-                console.error(error);
-                return message.reply(error.message);
-            }
-        }
-        else if (scRegex.test(url)) {
+        if (scdl.isValidUrl(url)) {
             try {
                 const trackInfo = await scdl.getInfo(url, SOUNDCLOUD_CLIENT_ID);
                 song = {
@@ -94,15 +75,18 @@ module.exports = {
             }
         }
         else {
-            const results = await youtube.searchVideos(search, 1);
-            if (results.length == 0) {
-                return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");
+            let resultURL = url;
+            if (!urlValid) {
+                const results = await youtube.searchVideos(search, 1);
+                if (results.length == 0) {
+                    return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");
+                }
+                resultURL = results[0].url;
             }
-
-            songInfo = await ytdl.getInfo(results[0].url);
+            const songInfo = await ytdl.getInfo(resultURL);
             song = {
                 title: songInfo.videoDetails.title,
-                url: songInfo.videoDetails.video_url,
+                url: songInfo.videoDetails.videoId,
                 duration: songInfo.videoDetails.lengthSeconds
             };
         }

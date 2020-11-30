@@ -38,9 +38,15 @@ module.exports = {
         }
 
         const search = args.join(" ");
-        const pattern = /^.*(youtu.be\/|list=)([^#\&\?]*).*/gi;
+        const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})(.*(t=\d+))?/i;
+        const playlistPattern = /^.*(youtu.be\/|list=)([\w-]*).*/i;
         const url = args[0];
-        const urlValid = pattern.test(args[0]);
+        const urlValid = playlistPattern.test(url);
+
+        // 영상 주소가 주어진 경우는 영상을 실행
+        if ((!urlValid && videoPattern.test(url)) || (scdl.isValidUrl(url) && !url.includes("/sets/"))) {
+            return client.commands.find((cmd) => cmd.command.includes("play")).execute(message, args);
+        }
 
         const queueConstruct = {
             textChannel: message.channel,
@@ -52,51 +58,41 @@ module.exports = {
             playing: true
         };
 
-        let song = null;
         let playlist = null;
         let videos = [];
 
-        if (urlValid) {
-            playlist = await youtube.getPlaylist(url, { part: "snippet" });
-            if (playlist) {
-                videos = await playlist.getVideos(MAX_PLAYLIST_SIZE || 10, { part: "snippet" });
-            }
-            else {
-                return message.reply("재생목록을 찾지 못했습니다 :(");
-            }
-        }
-        else if (scdl.isValidUrl(args[0]) && args[0].includes('/sets/')) {
+        if (scdl.isValidUrl(url)) {
             message.channel.send('⌛ 재생 목록을 가져오는 중...');
             playlist = await scdl.getSetInfo(args[0], SOUNDCLOUD_CLIENT_ID);
-            videos = playlist.tracks.map(track => ({
+            videos = playlist.tracks.map((track) => ({
                 title: track.title,
                 url: track.permalink_url,
-                duration: track.duration / 1000
+                duration: Math.ceil(track.duration / 1000)
             }));
         }
         else {
-            const results = await youtube.searchPlaylists(search, 1, { part: "snippet" });
-            if (results.length == 0) {
-                return message.reply("재생목록을 찾지 못했습니다 :(");
+            if (urlValid) {
+                playlist = await youtube.getPlaylistByID(pattern.exec(url)[2], { part: "snippet" });
             }
-
-            playlist = results[0];
-            videos = await playlist.getVideos(MAX_PLAYLIST_SIZE || 10, { part: "snippet" });
+            else {
+                const results = await youtube.searchPlaylists(search, 1, { part: "snippet" });
+                if (results.length == 0) {
+                    return message.reply("재생목록을 찾지 못했습니다 :(");
+                }
+                playlist = results[0];
+            }
+            videos = await playlist.getVideos(MAX_PLAYLIST_SIZE || 10, { part: "snippet" }).map((video) => ({
+                title: video.title,
+                url: video.id,
+                duration: video.durationSeconds
+            }));
         }
 
-        const newSongs = videos.map((video) => {
-            return (song = {
-                title: video.title,
-                url: video.url,
-                duration: video.durationSeconds
-            });
-        });
-
-        serverQueue ? serverQueue.songs.push(...newSongs) : queueConstruct.songs.push(...newSongs);
+        serverQueue ? serverQueue.songs.push(...videos) : queueConstruct.songs.push(...videos);
 
         const playlistEmbed = new MessageEmbed()
             .setTitle(`${playlist.title}`)
-            .setDescription(newSongs.map((song, index) => `${index + 1}. ${song.title}`))
+            .setDescription(videos.map((song, index) => `${index + 1}. ${song.title}`))
             .setURL(playlist.url)
             .setColor("#F8AA2A")
             .setTimestamp();
