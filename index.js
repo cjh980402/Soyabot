@@ -118,7 +118,7 @@ client.on("voiceStateUpdate", (oldState, newState) => {
             console.log("User joined!");
             const queue = client.queue.get(newVoice.guild.id);
             if (queue?.connection && !queue.playing && newVoice == queue.channel && newVoice.members.size == 2) {
-                queue.connection.dispatcher.resume();
+                queue.connection?.dispatcher.resume();
                 queue.textChannel.send("대기열을 다시 재생합니다.");
                 queue.playing = true;
             }

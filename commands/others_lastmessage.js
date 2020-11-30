@@ -20,7 +20,7 @@ module.exports = {
         }
         else {
             const targetNick = message.content.substr(message.content.indexOf(args[0])).trim();
-            targetInfo = message.guild.members.cache.filter(v => (v.nickname || v.user.username).includes(targetNick));
+            targetInfo = message.guild.members.cache.filter(v => (v.nickname ?? v.user.username).includes(targetNick));
             if (targetInfo.size == 0) {
                 return message.channel.send("채팅방에 존재하지 않는 사람입니다.");
             }
@@ -30,7 +30,7 @@ module.exports = {
             else {
                 const userlistEmbed = new MessageEmbed()
                     .setTitle(`${Sejong.addJosa(targetNick, '을')} 포함한 닉네임`)
-                    .setDescription(targetInfo.array().map((v, i) => `${i + 1}. ${v.nickname || v.user.username}`))
+                    .setDescription(targetInfo.array().map((v, i) => `${i + 1}. ${v.nickname ?? v.user.username}`))
                     .setColor("#F8AA2A")
                     .setTimestamp();
                 message.channel.send(userlistEmbed);

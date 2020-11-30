@@ -1,12 +1,17 @@
 {
   "name": "soyabot",
   "version": "4.0.0",
-  "description": "MapleStory, Music Discord Bot built with discord.js",
+  "description": "MapleStory, Music Discord Bot",
   "main": "index.js",
   "author": "9804cjh@naver.com",
-  "private": true,
-  "homepage": "https://github.com/cjh980402/Soyabot",
-  "repository": "github:cjh980402/Soyabot",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cjh980402/Soyabot"
+  },
+  "keywords": [
+    "MapleStory",
+    "Music"
+  ],
   "bugs": "https://github.com/cjh980402/Soyabot/issues",
   "engines": {
     "node": ">=14.0.0"
@@ -31,6 +36,8 @@
     "ytdl-core": "^4.1.1"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "forever start -o ./log/out.log -e ./log/err.log index.js",
+    "stopall": "forever stopall",
+    "cleanlogs": "forever cleanlogs"
   }
 }

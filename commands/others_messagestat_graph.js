@@ -11,7 +11,7 @@ module.exports = {
     type: ["기타"],
     async execute(message, args) {
         const targetChannel = (message.author.id == ADMIN_ID && args.length > 0
-            && client.guilds.cache.find(v => v.name.includes(args.join(" ")))) ?? message.guild;
+            && client.guilds.cache.find(v => v.name.includes(args.join(" ")))) || message.guild;
         if (!targetChannel) {
             return message.channel.send("사용이 불가능한 채널입니다.");
         }

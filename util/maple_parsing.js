@@ -117,7 +117,7 @@ class Maple {
             throw new Error("메이플 GG 서버에 에러가 발생했습니다.");
         }
 
-        if (this.ggdata(".d-block.font-weight-light").text().replace(/(\s*)/g, "") != "마지막업데이트:오늘"
+        if (this.ggdata(".d-block.font-weight-light").text().replace(/\s+/g, "") != "마지막업데이트:오늘"
             || this.ggdata(".container.mt-5.text-center > h3").text() == "검색결과가 없습니다.") {
             return 0;
         }
