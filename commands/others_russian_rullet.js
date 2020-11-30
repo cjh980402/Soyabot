@@ -18,7 +18,7 @@ module.exports = {
         }
         const bullet = (isNaN(args[0]) || +args[0] < 2 || +args[0] > 20) ? 6 : +args[0]; // 탄환 수 지정
         const gameUser = [message.member]; // 참가자 객체 배열
-        message.channel.send(`게임을 시작하셨습니다.\n${client.prefix}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${gameUser[0].nickname || gameUser[0].user.username}`)
+        message.channel.send(`게임을 시작하셨습니다.\n${client.prefix}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${gameUser[0].nickname ?? gameUser[0].user.username}`)
         while (1) {
             const rslt = await message.channel.awaitMessages((message) => {
                 if (message.content.trim() == `${client.prefix}참가` || message.content.trim() == `${client.prefix}ㅊㄱ`) {
@@ -28,7 +28,7 @@ module.exports = {
                     }
                     else {
                         gameUser.push(message.member); // 참가자 리스트에 추가
-                        message.channel.send(`게임에 참가하셨습니다.\n현재 참가자 (${gameUser.length}명): ${gameUser.map(v => v.nickname || v.user.username).join(", ")}`)
+                        message.channel.send(`게임에 참가하셨습니다.\n현재 참가자 (${gameUser.length}명): ${gameUser.map(v => v.nickname ?? v.user.username).join(", ")}`)
                         return true;
                     }
                 }

@@ -21,7 +21,7 @@ module.exports = {
         }
         else {
             const targetNick = message.content.substr(message.content.indexOf(args[0])).trim();
-            targetInfo = message.guild.members.cache.filter(v => (v.nickname || v.user.username).includes(targetNick));
+            targetInfo = message.guild.members.cache.filter(v => (v.nickname ?? v.user.username).includes(targetNick));
             if (targetInfo.size == 0) {
                 return message.channel.send("채팅방에 존재하지 않는 사람입니다.");
             }
@@ -31,7 +31,7 @@ module.exports = {
             else {
                 const userlistEmbed = new MessageEmbed()
                     .setTitle(`${Sejong.addJosa(targetNick, '을')} 포함한 닉네임`)
-                    .setDescription(targetInfo.array().map((v, i) => `${i + 1}. ${v.nickname || v.user.username}`))
+                    .setDescription(targetInfo.array().map((v, i) => `${i + 1}. ${v.nickname ?? v.user.username}`))
                     .setColor("#F8AA2A")
                     .setTimestamp();
                 message.channel.send(userlistEmbed);
@@ -44,13 +44,13 @@ module.exports = {
 
         const messagestat = await db.get(`SELECT * FROM messagedb WHERE channelsenderid = ?`, [`${message.guild.id} ${targetInfo.user.id}`]);
         if (messagestat) {
-            return message.channel.send(`${targetInfo.nickname || targetInfo.user.username}
+            return message.channel.send(`${targetInfo.nickname ?? targetInfo.user.username}
 채팅 건수: ${messagestat.messagecnt}
 문자 개수: ${messagestat.lettercnt}
 채팅 지수: ${(messagestat.lettercnt / messagestat.messagecnt).toFixed(2)}`);
         }
         else {
-            return message.channel.send(`${targetInfo.nickname || targetInfo.user.username}\n채팅 건수: 0\n문자 개수: 0\n채팅 지수: 0.00`);
+            return message.channel.send(`${targetInfo.nickname ?? targetInfo.user.username}\n채팅 건수: 0\n문자 개수: 0\n채팅 지수: 0.00`);
         }
     }
 };

@@ -1,6 +1,6 @@
 {
   "name": "soyabot",
-  "version": "3.5.0",
+  "version": "4.0.0",
   "description": "MapleStory, Music Discord Bot built with discord.js",
   "main": "index.js",
   "author": "9804cjh@naver.com",
@@ -9,7 +9,7 @@
   "repository": "github:cjh980402/Soyabot",
   "bugs": "https://github.com/cjh980402/Soyabot/issues",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=14.0.0"
   },
   "dependencies": {
     "@discordjs/opus": "^0.3.3",

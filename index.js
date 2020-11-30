@@ -97,12 +97,12 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
         if (e instanceof Collection) { // awaitMessages에서 시간초과한 경우
             message.channel.send(`"${commandName.split("_")[0]}"의 입력 대기 시간이 초과되었습니다.`);
         }
-        else if (e.message.startsWith('메이플')) {
+        else if (e?.message.startsWith('메이플')) {
             message.reply(e.message);
         }
         else {
             message.reply("에러로그가 전송되었습니다.");
-            replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack}`);
+            replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e?.stack}`);
         }
     }
     finally {
@@ -117,7 +117,7 @@ client.on("voiceStateUpdate", (oldState, newState) => {
         if (oldVoice == null) {
             console.log("User joined!");
             const queue = client.queue.get(newVoice.guild.id);
-            if (queue && queue.connection && !queue.playing && newVoice == queue.channel && newVoice.members.size == 2) {
+            if (queue?.connection && !queue.playing && newVoice == queue.channel && newVoice.members.size == 2) {
                 queue.connection.dispatcher.resume();
                 queue.textChannel.send("대기열을 다시 재생합니다.");
                 queue.playing = true;
@@ -126,7 +126,7 @@ client.on("voiceStateUpdate", (oldState, newState) => {
         else {
             console.log(newVoice ? "User switched channels!" : "User left!");
             const queue = client.queue.get(oldVoice.guild.id);
-            if (queue && queue.connection && oldVoice == queue.channel && oldVoice.members.size == 1) { // 봇만 음성 채널에 있는 경우
+            if (queue?.connection && oldVoice == queue.channel && oldVoice.members.size == 1) { // 봇만 음성 채널에 있는 경우
                 if (queue.playing) {
                     queue.connection.dispatcher.pause(true);
                     queue.textChannel.send("모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.");
@@ -134,7 +134,7 @@ client.on("voiceStateUpdate", (oldState, newState) => {
                 }
                 setTimeout(() => {
                     const queue = client.queue.get(oldVoice.guild.id);
-                    if (queue && queue.connection && oldVoice == queue.channel && oldVoice.members.size == 1) { // 5분이 지나도 봇만 음성 채널에 있는 경우
+                    if (queue?.connection && oldVoice == queue.channel && oldVoice.members.size == 1) { // 5분이 지나도 봇만 음성 채널에 있는 경우
                         queue.songs = [];
                         queue.connection.dispatcher.end();
                         queue.textChannel.send("5분 동안 소야봇이 비활성화 되어 대기열을 끝냅니다.");
