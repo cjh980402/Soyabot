@@ -38,7 +38,7 @@ module.exports = {
         }
 
         const search = args.join(" ");
-        const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})(.*(t=\d+))?/i;
+        const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
         const playlistPattern = /^.*(youtu.be\/|list=)([\w-]*).*/i;
         const url = args[0];
         const urlValid = playlistPattern.test(url);
