@@ -33,7 +33,7 @@ module.exports = {
             return message.channel.send('해방된 카이세리움\n기본 공격력: 400\n추가옵션: 16 / 36 / 59 / 86 / 118');
         }
         else {
-            return message.channel.send(`**${cmd.usage}**\n- 대체 명령어: ${cmd.command.join(', ')}\n- ${cmd.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
     }
 };
