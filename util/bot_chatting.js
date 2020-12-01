@@ -18,32 +18,32 @@ module.exports = function (message) {
         if (message.content.includes('바보')) {
             return message.channel.send(':frowning2:');
         }
-        const cmd = Math.floor(Math.random() * 5 + 1);
-        if (cmd == 1) {
+        const cmd = Math.floor(Math.random() * 5);
+        if (cmd == 0) {
             return message.channel.send('ㅋㅋㅋ');
         }
-        else if (cmd == 2) {
+        else if (cmd == 1) {
             return message.channel.send('제로조아');
         }
-        else if (cmd == 3) {
+        else if (cmd == 2) {
             return message.channel.send('헤비...');
         }
-        else if (cmd == 4) {
+        else if (cmd == 3) {
             return message.channel.send(`'${message.author.username}'님이 소야봇을 불렀습니다.`);
         }
-        else if (cmd == 5) {
+        else {
             return message.channel.send('이노시스 조아');
         }
     }
     else if (message.content.includes('아잉') || message.content.includes('도잉')) {
-        const cmd = Math.floor(Math.random() * 9 + 1);
-        if (cmd == 1) {
+        const cmd = Math.floor(Math.random() * 9);
+        if (cmd == 0) {
             return message.channel.send('아잉은 짐승의 눈...');
         }
-        else if (cmd == 2) {
+        else if (cmd == 1) {
             return message.channel.send('짐승은 아잉의 눈...');
         }
-        else if (cmd == 3) {
+        else if (cmd == 2) {
             return message.channel.send('도잉도 짐승의 눈...');
         }
     }

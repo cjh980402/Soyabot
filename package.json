@@ -1,14 +1,16 @@
 {
-  "name": "soyabot",
+  "name": "Soyabot",
   "version": "4.0.0",
   "description": "MapleStory, Music Discord Bot",
   "main": "index.js",
   "author": "9804cjh@naver.com",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/cjh980402/Soyabot"
   },
   "keywords": [
+    "Discord",
     "MapleStory",
     "Music"
   ],

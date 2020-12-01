@@ -9,18 +9,12 @@ module.exports.botNotice = async function (data, type) {
 
 module.exports.replyRoomID = function (roomID, str) {
     const target = client.channels.cache.get(roomID); // 메세지를 보내고 싶은 방 객체 획득
-    if (!target) {
-        return false;
-    }
-    target.send(str, { split: true });
-    return true;
+    target?.send(str, { split: true });
+    return Boolean(target);
 }
 
 module.exports.replyAdmin = function (str) {
     const admin = client.users.cache.find(v => v.id == ADMIN_ID);
-    if (!admin) {
-        return false;
-    }
-    admin.send(str, { split: true }); // 관리자에게 DM으로 보냄
-    return true;
+    admin?.send(str, { split: true }); // 관리자에게 DM으로 보냄
+    return Boolean(admin);
 }

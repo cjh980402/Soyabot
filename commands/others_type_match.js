@@ -14,6 +14,7 @@ module.exports = {
     async execute(message) {
         const choice = matchString[Math.floor(Math.random() * matchString.length)];
         const choiceLength = Sejong.decompose(choice, { decomposeAssembledVowel: true }).length;
+        message.channel.send(`이번 문장은 ${/\w/.test(choice) ? "영어" : "한글"} 문장입니다.`);
         for (let i = 3; i > 0; i--) {
             message.channel.send(i);
             await sleep(1000); // 3초 카운트 다운 로직

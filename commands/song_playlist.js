@@ -8,7 +8,7 @@ const scdl = require("soundcloud-downloader").default;
 module.exports = {
     usage: `${client.prefix}playlist (YouTube 재생목록 주소 | Soundcloud 재생목록 주소 | 재생목록 제목)`,
     command: ["playlist", "pl"],
-    description: "- 유튜브의 재생목록을 재생합니다.",
+    description: "- 유튜브나 Soundcloud의 재생목록을 재생합니다.",
     type: ["음악"],
     async execute(message, args) {
         if (!message.guild) {
@@ -17,16 +17,14 @@ module.exports = {
         const { channel } = message.member.voice;
 
         const serverQueue = client.queue.get(message.guild.id);
+        if (!channel) {
+            return message.reply("음성 채널에 먼저 참가해주세요!");
+        }
         if (serverQueue && channel !== message.guild.me.voice.channel) {
             return message.reply(`같은 채널에 있어야합니다. (${client.user})`);
         }
-
         if (!args.length) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
-        }
-
-        if (!channel) {
-            return message.reply("음성 채널에 먼저 참가해주세요!");
         }
 
         const permissions = channel.permissionsFor(client.user);
@@ -50,7 +48,7 @@ module.exports = {
 
         const queueConstruct = {
             textChannel: message.channel,
-            channel,
+            channel, // channel이란 property를 설정함과 동시에 값은 channel 변수의 값
             connection: null,
             songs: [],
             loop: false,

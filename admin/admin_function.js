@@ -21,17 +21,9 @@ module.exports.adminChat = async function (message) {
     }
     else if (message.channel.recipient == ADMIN_ID && message.reference) { // 건의 답변 기능
         const suggestRefer = message.channel.messages.cache.get(message.reference.messageID);
-        if (!suggestRefer) {
-            return message.channel.send('해당하는 건의의 정보가 존재하지 않습니다.');
-        }
-        const target = client.suggestionChat[suggestRefer.content.split('\n')[0]];
-        if (target) {
-            target.reply(message.content);
-            message.channel.send('건의 답변을 보냈습니다.');
-        }
-        else {
-            message.channel.send('해당하는 건의의 정보가 존재하지 않습니다.');
-        }
+        const target = client.suggestionChat[suggestRefer?.content.split('\n')[0]];
+        target?.reply(message.content);
+        message.channel.send(target ? '건의 답변을 보냈습니다.' : '해당하는 건의의 정보가 존재하지 않습니다.');
     }
 }
 

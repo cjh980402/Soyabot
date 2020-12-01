@@ -23,10 +23,10 @@ module.exports = {
         if (serverQueue && channel !== message.guild.me.voice.channel) {
             return message.reply(`같은 채널에 있어야합니다. (${client.user})`);
         }
-
         if (!args.length) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
+
         const permissions = channel.permissionsFor(client.user);
         if (!permissions.has("CONNECT")) {
             return message.reply("권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.");

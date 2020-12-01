@@ -154,8 +154,8 @@ class Maple {
 
         const murungdate = murung.find(".user-summary-date > span").text().replace('기준일: ', ''); // 무릉 최고기록 날짜
         const murungtime = murung.find(".user-summary-duration").text(); // 무릉 클리어 시간
-        const murungfl = murung.find(".user-summary-floor.font-weight-bold").text().replace(/(\s*)/g, ""); // 무릉 최고 층수
-        const murungjob = murung.find(".d-block.mb-1 > span").text().replace(/(\s*)/g, "").replace('/', ' / '); // 유저 레벨, 직업
+        const murungfl = murung.find(".user-summary-floor.font-weight-bold").text().replace(/\s+/g, ""); // 무릉 최고 층수
+        const murungjob = murung.find(".d-block.mb-1 > span").text().replace(/\s+/g, "").replace('/', ' / '); // 유저 레벨, 직업
 
         return [murungjob, murungfl, murungtime, murungdate];
     }
@@ -168,8 +168,8 @@ class Maple {
 
         const seeddate = seed.find(".user-summary-date > span").text().replace('기준일: ', ''); // 시드 최고기록 날짜
         const seedtime = seed.find(".user-summary-duration").text(); // 시드 클리어 시간
-        const seedfl = seed.find(".user-summary-floor.font-weight-bold").text().replace(/(\s*)/g, ""); // 시드 최고 층수
-        const seedjob = seed.find(".d-block.mb-1 > span").text().replace(/(\s*)/g, "").replace('/', ' / '); // 유저 레벨, 직업
+        const seedfl = seed.find(".user-summary-floor.font-weight-bold").text().replace(/\s+/g, ""); // 시드 최고 층수
+        const seedjob = seed.find(".d-block.mb-1 > span").text().replace(/\s+/g, "").replace('/', ' / '); // 유저 레벨, 직업
 
         return [seedjob, seedfl, seedtime, seeddate];
     }
@@ -195,7 +195,7 @@ class Maple {
 
         const grade = achieve.find(".user-summary-tier-string.font-weight-bold").text(); // 업적 등급
         const score = achieve.find(".user-summary-level").text().substr(5); // 업적 점수
-        const worldrank = achieve.find(".mb-2 > span").eq(0).text().replace(' ', '').replace(/(\s*)/g, ""); // 월드랭킹
+        const worldrank = achieve.find(".mb-2 > span").eq(0).text().replace(' ', '').replace(/\s+/g, ""); // 월드랭킹
         const allrank = achieve.find(".mb-2 > span").eq(1).text(); // 전체랭킹
 
         return [grade, score, worldrank, allrank];
@@ -209,7 +209,7 @@ class Maple {
 
         let rslt = new Array(4);
         for (let i = 0; i < 4; i++) {
-            rslt[i] = rank.eq(i).text().replace(/(\s*)/g, "");
+            rslt[i] = rank.eq(i).text().replace(/\s+/g, "");
         }
         return rslt;
     }

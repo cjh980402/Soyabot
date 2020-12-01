@@ -37,7 +37,7 @@ module.exports = {
                     stream = await scdl.downloadFormat(song.url, scdl.FORMATS.OPUS, SOUNDCLOUD_CLIENT_ID);
                 }
                 catch (e) {
-                    stream = await scdl.downloadFormat(song.url, scdl.FORMATS.OPUS, SOUNDCLOUD_CLIENT_ID);
+                    stream = await scdl.downloadFormat(song.url, scdl.FORMATS.MP3, SOUNDCLOUD_CLIENT_ID);
                     streamType = "unknown";
                 }
             }
@@ -48,7 +48,7 @@ module.exports = {
                 module.exports.play(queue.songs[0], message);
             }
             console.error(e);
-            return message.channel.send(`오류 발생: ${e.message || e}`);
+            return message.channel.send(`오류 발생: ${e.message ?? e}`);
         }
 
         queue.connection.on("disconnect", () => client.queue.delete(message.guild.id));
