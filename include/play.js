@@ -53,13 +53,13 @@ module.exports = {
 
         queue.connection.on("disconnect", () => client.queue.delete(message.guild.id));
 
-        let collector_init = false;
+        let collector = null;
         queue.connection.play(stream, { type: streamType, volume: queue.volume / 100 })
-            .on("finish", () => {
-                if (collector_init && collector && !collector.ended) {
-                    collector.stop();
+            .on("finish", async () => {
+                while (!collector) {
+                    await new Promise(r => setTimeout(r, 500));
                 }
-
+                collector.stop();
                 if (queue.loop) {
                     // 루프가 켜져있다면 현재 노래를 대기열의 마지막에 다시 넣기때문에 대기열이 끝나지 않고 계속 재생됨
                     queue.songs.push(queue.songs.shift());
@@ -69,7 +69,11 @@ module.exports = {
                 }
                 module.exports.play(queue.songs[0], message); // 재귀적으로 다음 곡 재생
             })
-            .on("error", (err) => {
+            .on("error", async (err) => {
+                while (!collector) {
+                    await new Promise(r => setTimeout(r, 500));
+                }
+                collector.stop();
                 if (err.message == "input stream: Video unavailable") {
                     message.channel.send("해당 국가에서 차단됐거나 비공개된 동영상입니다.");
                 }
@@ -96,10 +100,9 @@ module.exports = {
         }
 
         const filter = (reaction, user) => user.id !== client.user.id;
-        const collector = playingMessage.createReactionCollector(filter, {
+        collector = playingMessage.createReactionCollector(filter, {
             time: song.duration > 0 ? song.duration * 1000 : 600000
         });
-        collector_init = true;
 
         collector.on("collect", async (reaction, user) => {
             if (!queue) {

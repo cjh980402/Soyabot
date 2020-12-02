@@ -34,7 +34,7 @@ module.exports = {
             .setTimestamp();
 
         if (lyricsEmbed.description.length >= 2000) {
-            lyricsEmbed.description = `${lyricsEmbed.description.substr(0, 1997)}...`;
+            lyricsEmbed.description = `${lyricsEmbed.description.substr(0, 1990)}...`;
         }
         return message.channel.send(lyricsEmbed);
     }
