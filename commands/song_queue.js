@@ -41,7 +41,7 @@ module.exports = {
                         }
                         else {
                             collector.stop();
-                            reaction.message.reactions.removeAll();
+                            await reaction.message.reactions.removeAll();
                         }
                         await reaction.users.remove(user);
                     }

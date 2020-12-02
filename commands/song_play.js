@@ -105,11 +105,11 @@ module.exports = {
             await queueConstruct.connection.voice.setSelfDeaf(true);
             play(queueConstruct.songs[0], message);
         }
-        catch (error) {
-            console.error(error);
+        catch (e) {
+            console.error(e);
             client.queue.delete(message.guild.id);
             await channel.leave();
-            return message.channel.send(`채널에 참가할 수 없습니다: ${error.message}`);
+            return message.channel.send(`채널에 참가할 수 없습니다: ${e.message}`);
         }
     }
 };

@@ -43,7 +43,7 @@ module.exports = {
                         else {
                             collector.stop();
                             if (message.guild) {
-                                reaction.message.reactions.removeAll();
+                                await reaction.message.reactions.removeAll();
                             }
                         }
                         if (message.guild) {

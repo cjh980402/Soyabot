@@ -17,7 +17,7 @@ module.exports = {
             return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
         }
 
-        let songs = queue.songs;
+        const songs = queue.songs;
         for (let i = songs.length - 1; i > 1; i--) {
             let j = 1 + Math.floor(Math.random() * i);
             [songs[i], songs[j]] = [songs[j], songs[i]];

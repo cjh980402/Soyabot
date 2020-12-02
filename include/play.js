@@ -187,10 +187,9 @@ module.exports = {
         });
 
         collector.on("end", async () => {
-            await playingMessage.reactions.removeAll();
             const find = await db.get("SELECT * FROM pruningskip WHERE channelid = ?", [message.guild.id]);
             if (!find && playingMessage && !playingMessage.deleted) {
-                playingMessage.delete({ timeout: 3000 });
+                playingMessage.delete({ timeout: 1000 });
             }
         });
     }

@@ -29,7 +29,7 @@ module.exports = function (message) {
             return message.channel.send('헤비...');
         }
         else if (cmd == 3) {
-            return message.channel.send(`'${message?.member.nickname ?? message.author.username}'님이 소야봇을 불렀습니다.`);
+            return message.channel.send(`'${message.member?.nickname ?? message.author.username}'님이 소야봇을 불렀습니다.`);
         }
         else {
             return message.channel.send('이노시스 조아');

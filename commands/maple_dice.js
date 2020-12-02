@@ -6,7 +6,7 @@ module.exports = {
     description: "- 추억의 메이플스토리 주사위!",
     type: ["메이플"],
     async execute(message) {
-        const nickname = message?.member.nickname ?? message.author.username;
+        const nickname = message.member?.nickname ?? message.author.username;
         await exec(`python3 ./util/maple_stats_drawer.py "${nickname.replace(/"/g, '\\"')}"`);
         const dice = await message.channel.send(`${nickname}님의 스탯`, {
             files: ["./pictures/dice_result.png"]
@@ -18,7 +18,7 @@ module.exports = {
 
         collector.on("collect", async (reaction, user) => {
             collector.stop();
-            dice.delete({ timeout: 3000 });
+            dice.delete({ timeout: 1000 });
             await this.execute(message);
         });
         return dice;
