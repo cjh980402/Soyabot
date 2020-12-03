@@ -97,7 +97,7 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
         if (e instanceof Collection) { // awaitMessages에서 시간초과한 경우
             message.channel.send(`"${commandName.split("_")[0]}"의 입력 대기 시간이 초과되었습니다.`);
         }
-        else if (e?.message.startsWith('메이플')) {
+        else if (e?.message?.startsWith('메이플')) {
             message.reply(e.message);
         }
         else {
