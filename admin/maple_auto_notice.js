@@ -103,7 +103,9 @@ module.exports.startTest = function () {
                     if (!rslt || +/\d+/.exec(rslt.url) < +/\d+/.exec(url)) { // 제목이 다르거나, 같은 경우는 최신 공지인 경우
                         await db.replace('mapletest', { title: data.eq(i).text().trim(), url: url });
                         // 중복방지 위해 db에 삽입
-                        description += `${data.eq(i).find('img').attr('alt')} [${data.eq(i).text().trim()}](${url})\n\n`;
+                        const picurl = data.eq(i).find('img').attr('src');
+                        const type = picurl.endsWith("1.png") ? "[공지]" : (picurl.endsWith("2.png") ? "[GM]" : (picurl.endsWith("3.png") ? "[점검]" : "[패치]"));
+                        description += `${type} [${data.eq(i).text().trim()}](${url})\n\n`;
                     }
                 }
 

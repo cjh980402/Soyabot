@@ -242,7 +242,7 @@ class Maple {
         return this.ggdata("div.col-lg-8 > h3 > img.align-middle").attr("src");
     }
     LevelHistory() {
-        let data = this.ggdata("body > script:nth-child(15)").html()
+        let data = this.ggdata('body > script').filter((i, v) => /\[\[.+\]\]/.exec(this.ggdata(v).html())).eq(0).html()
             .replace(/\\u[\da-fA-F]{4}/g, (m) => String.fromCharCode(parseInt(m.substr(2), 16)));
         // \u코드값 형태로 나온 문자들을 실제 문자로 변환하는 인코딩을 끝에 추가함
         data = JSON.parse(/\[\[.+\]\]/.exec(data));
