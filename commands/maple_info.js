@@ -56,7 +56,6 @@ module.exports = {
         infoEmbed.addField('**종합 랭킹**', `전체: ${char_rank[0]}\n월드: ${char_rank[1]}`, true);
         infoEmbed.addField('**직업 랭킹**', `전체: ${char_rank[3]}\n월드: ${char_rank[2]}`, true);
 
-        infoEmbed.setTimestamp();
         return message.channel.send(infoEmbed);
     }
 };

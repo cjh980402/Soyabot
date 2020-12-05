@@ -2,7 +2,7 @@ const { canModifyQueue } = require("../util/SoyabotUtil");
 
 module.exports = {
     usage: `${client.prefix}skip`,
-    command: ["skip", "s"],
+    command: ["skip"],
     description: "- 지금 재생 중인 노래 건너뜁니다.",
     type: ["음악"],
     async execute(message) {

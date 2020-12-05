@@ -1,6 +1,6 @@
 module.exports = {
     usage: `${client.prefix}pruning`,
-    command: ["pruning"],
+    command: ["pruning", "pr"],
     description: "- 봇의 음악 메시지 자동정리 기능 상태를 전환합니다.",
     type: ["음악"],
     async execute(message) {

@@ -16,7 +16,7 @@ const scoreGrade = [
 module.exports = {
     usage: `${client.prefix}스카우터 (닉네임)`,
     command: ["스카우터", "ㅅㅋㅇㅌ"],
-    description: "- 정해진 조건으로 해당 캐릭터의 점수를 평가합니다.",
+    description: "- 정해진 조건으로 해당 캐릭터의 점수를 평가합니다. 닉네임을 생략시에는 기준 점수표를 보여줍니다.",
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {
@@ -74,7 +74,7 @@ module.exports = {
             }
         }
 
-        const attachment = new MessageAttachment(Maple.userImg(), 'coordi.png');
+        const attachment = new MessageAttachment(Maple.userImg(), 'scouter.png');
         const coordiEmbed = new MessageEmbed()
             .setTitle(`${args[0]}님의 측정결과`)
             .setColor("#F8AA2A")
@@ -89,7 +89,6 @@ module.exports = {
         coordiEmbed.addField('**기록 시간**', `${min}분 ${sec}초`, true);
         coordiEmbed.addField('**측정 결과**', `${grade}! (${score}점)`);
 
-        coordiEmbed.setTimestamp();
         return message.channel.send(coordiEmbed);
     }
 };

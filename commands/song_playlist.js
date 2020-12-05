@@ -8,7 +8,7 @@ const scdl = require("soundcloud-downloader").default;
 module.exports = {
     usage: `${client.prefix}playlist (YouTube 재생목록 주소 | Soundcloud 재생목록 주소 | 재생목록 제목)`,
     command: ["playlist", "pl"],
-    description: "- 유튜브나 Soundcloud의 재생목록을 재생합니다.",
+    description: "- YouTube나 Soundcloud의 재생목록을 재생합니다.",
     type: ["음악"],
     async execute(message, args) {
         if (!message.guild) {

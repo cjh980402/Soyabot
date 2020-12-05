@@ -69,7 +69,8 @@ function generateHelpEmbed(help) {
         const embed = new MessageEmbed()
             .setTitle(`${client.user.username} 도움말`)
             .setColor("#F8AA2A")
-            .setDescription(`모든 명령어 목록\n\n${info}`);
+            .setDescription(`모든 명령어 목록\n\n${info}`)
+            .setTimestamp();
         embeds.push(embed);
     }
     return embeds;

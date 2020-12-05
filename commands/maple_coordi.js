@@ -42,7 +42,6 @@ module.exports = {
             coordiEmbed.addField('**신발**', coordi[5], true);
             coordiEmbed.addField('**무기**', coordi[6], true);
 
-            coordiEmbed.setTimestamp();
             return message.channel.send(coordiEmbed);
         }
     }

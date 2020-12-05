@@ -105,6 +105,7 @@ module.exports = {
         });
 
         collector.on("collect", async (reaction, user) => {
+            await reaction.users.remove(user);
             if (!queue) {
                 return;
             }
@@ -164,7 +165,6 @@ module.exports = {
                 }
                 collector.stop();
             }
-            await reaction.users.remove(user);
         });
 
         collector.on("end", async () => {
