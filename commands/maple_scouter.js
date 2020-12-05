@@ -1,5 +1,17 @@
 const { MessageEmbed, MessageAttachment } = require("discord.js");
 const mapleModule = require("../util/maple_parsing");
+const scoreGrade = [
+    [0, "메린이"],
+    [300, "무자본 평균"],
+    [350, "메른이"],
+    [400, "메벤 평균"],
+    [450, "경손실 따질 스펙"],
+    [500, "메덕"],
+    [550, "현생보다도 메이플"],
+    [600, "메생살이"],
+    [650, "초월자"],
+    [Infinity, ""]
+];
 
 module.exports = {
     usage: `${client.prefix}스카우터 (닉네임)`,
@@ -8,7 +20,12 @@ module.exports = {
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            let rslt = "스카우터 기준 점수표";
+            for (let i = 0; i < scoreGrade.length - 2; i++) {
+                rslt += `\n${scoreGrade[i][0]} ~ ${scoreGrade[i + 1][0] - 1}점: ${scoreGrade[i][1]}`;
+            }
+            rslt += `\n${scoreGrade[8][0]}점 이상: ${scoreGrade[8][1]}`;
+            return message.channel.send(rslt);
         }
         const Maple = new mapleModule(args[0]);
 
@@ -39,43 +56,22 @@ module.exports = {
             time = 900;
         }
         else {
-            murungfl = data[1].replace('층', '') * 1;
-            min = data[2].split('분 ')[0] * 1;
-            sec = data[2].split('분 ')[1].replace('초', '') * 1;
-            time = min * 60 + sec * 1;
+            murungfl = +data[1].replace('층', '');
+            min = +data[2].split('분 ')[0];
+            sec = +data[2].split('분 ')[1].replace('초', '');
+            time = min * 60 + sec;
         }
 
-        let grade, unitemp = union.replace(',', ''), score = level - 100;
-        score += (murungfl >= 45 ? (murungfl * 1 + 1 - time / 900) * 4 : (murungfl * 1 + 1 - time / 900) * 3);
-        score += (unitemp >= 8000 ? 250 : unitemp / 40);
+        let grade, score = level - 100;
+        score += (murungfl >= 45 ? (murungfl + 1 - time / 900) * 4 : (murungfl + 1 - time / 900) * 3);
+        score += (union >= 8000 ? 250 : union / 40);
         score = Math.floor(score);
 
-        if (score <= 300) {
-            grade = '메린이';
-        }
-        else if (score <= 350) {
-            grade = '무자본 평균';
-        }
-        else if (score <= 400) {
-            grade = '메른이';
-        }
-        else if (score <= 450) {
-            grade = '메벤 평균';
-        }
-        else if (score <= 500) {
-            grade = '경손실 따질 스펙';
-        }
-        else if (score <= 550) {
-            grade = '메덕';
-        }
-        else if (score <= 600) {
-            grade = '현생보다도 메이플';
-        }
-        else if (score <= 650) {
-            grade = '메생살이';
-        }
-        else {
-            grade = '초월자';
+        for (let i = 0; i < scoreGrade.length - 1; i++) {
+            if (scoreGrade[i][0] <= score && score < scoreGrade[i + 1][0]) {
+                grade = scoreGrade[i][1];
+                break;
+            }
         }
 
         const attachment = new MessageAttachment(Maple.userImg(), 'coordi.png');
@@ -87,7 +83,7 @@ module.exports = {
             .setImage('attachment://coordi.png');
 
         coordiEmbed.addField('**직업**', job, true);
-        coordiEmbed.addField('**유니온**', union, true);
+        coordiEmbed.addField('**유니온**', union.toLocaleString(), true);
         coordiEmbed.addField('**레벨**', level, true);
         coordiEmbed.addField('**무릉 기록**', `${murungfl}층`, true);
         coordiEmbed.addField('**기록 시간**', `${min}분 ${sec}초`, true);

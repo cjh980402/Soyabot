@@ -37,11 +37,11 @@ class Maple {
             throw new Error("메이플 공식 홈페이지가 서비스 점검 중입니다.");
         }
 
-        if (this.homelevel("tr[class]").length == 0) {
+        if (this.homelevel("tr[class]").length != 10) {
             temp += "&w=254"; // 리부트
             this.homelevel = await linkParse(`https://maplestory.nexon.com/${temp}`);
         }
-        if (len < 1 || len > 12 || this.homelevel("tr[class]").length == 0) {
+        if (len < 1 || len > 12 || this.homelevel("tr[class]").length != 10) {
             return null; // 없는 캐릭터
         }
         return temp; // 있는 캐릭터
@@ -49,9 +49,9 @@ class Maple {
     homeLevel() {
         let data = this.homelevel(".search_com_chk > td");
         if (data.length == 0) {
-            const tmp = this.homelevel("tr[class] > td.left > dl > dt > a"); // 순위 리스트의 닉네임
+            const nickList = this.homelevel("tr[class] > td.left > dl > dt > a"); // 순위 리스트의 닉네임
             for (let i = 0; i < 10; i++) {
-                if (this.name.toLowerCase() == tmp.eq(i).text().toLowerCase()) {
+                if (this.name.toLowerCase() == nickList.eq(i).text().toLowerCase()) {
                     data = this.homelevel("tr[class]").eq(i).find("td");
                     break;
                 }
@@ -62,9 +62,9 @@ class Maple {
         }
 
         const job = data.eq(1).find("dl > dd").text().split(' / ')[1]; // 직업
-        const lev = data.eq(2).text().substr(3); // 레벨
-        const exper = data.eq(3).text(); // 경험치
-        const popul = data.eq(4).text(); // 인기도
+        const lev = +data.eq(2).text().substr(3); // 레벨, 숫자값
+        const exper = +data.eq(3).text().replace(/,/g, ''); // 경험치, 숫자값
+        const popul = +data.eq(4).text().replace(/,/g, ''); // 인기도, 숫자값
         const guild = data.eq(5).text(); // 길드
 
         return [lev, exper, popul, guild, job];
@@ -81,17 +81,17 @@ class Maple {
             throw new Error("메이플 공식 홈페이지가 서비스 점검 중입니다.");
         }
 
-        if (len < 1 || len > 12 || this.homeunion("tr").length < 12) {
-            return 0; // 유니온 기록이 없음
+        if (len < 1 || len > 12 || this.homeunion("tr").length != 12) {
+            return false; // 유니온 기록이 없음
         }
-        return 1; // 유니온 기록이 있음
+        return true; // 유니온 기록이 있음
     }
     homeUnion() {
         let data = this.homeunion(".search_com_chk > td");
         if (data.length == 0) {
-            const tmp = this.homeunion("tr > td.left > dl > dt > a"); // 순위 리스트의 닉네임
+            const nickList = this.homeunion("tr > td.left > dl > dt > a"); // 순위 리스트의 닉네임
             for (let i = 0; i < 10; i++) {
-                if (this.name.toLowerCase() == tmp.eq(i).text().toLowerCase()) {
+                if (this.name.toLowerCase() == nickList.eq(i).text().toLowerCase()) {
                     data = this.homeunion("tr").eq(i + 2).find("td");
                     break;
                 }
@@ -102,9 +102,9 @@ class Maple {
         }
 
         const job = data.eq(1).find("dl > dd").text().split(' / ')[1]; // 직업
-        const lev = data.eq(2).text(); // 유니온 레벨
-        const stat = data.eq(3).text(); // 유니온 전투력
-        const coin = Math.floor(stat.replace(/,/gi, '') * 0.000000864); // 일일 코인 수급량
+        const lev = +data.eq(2).text().replace(/,/g, ''); // 유니온 레벨, 숫자값
+        const stat = +data.eq(3).text().replace(/,/g, ''); // 유니온 전투력, 숫자값
+        const coin = Math.floor(stat * 0.000000864); // 일일 코인 수급량, 숫자값
 
         return [lev, stat, coin, job];
     }
@@ -119,10 +119,10 @@ class Maple {
 
         if (this.ggdata(".d-block.font-weight-light").text().replace(/\s+/g, "") != "마지막업데이트:오늘"
             || this.ggdata(".container.mt-5.text-center > h3").text() == "검색결과가 없습니다.") {
-            return 0;
+            return false;
         }
         else {
-            return 1;
+            return true;
         }
     }
     async updateGG() {
@@ -133,14 +133,14 @@ class Maple {
                 rslt = JSON.parse((await linkParse(`${this.ggurl}/sync`)).text());
                 if (rslt.error == false && rslt.done == true) {
                     this.ggdata = await linkParse(this.ggurl);
-                    return 1; // 갱신성공
+                    return true; // 갱신성공
                 }
             }
             catch (e) {
-                return 0; // 갱신실패
+                return false; // 갱신실패
             }
             if (Date.now() - start >= 20 * 1000) {
-                return 0; // 갱신실패
+                return false; // 갱신실패
             }
             await sleep(100);
         }
@@ -180,9 +180,9 @@ class Maple {
             return null;
         }
 
-        const lev = union.find(".user-summary-level").text().substr(3).replace(/\B(?=(\d{3})+(?!\d))/g, ","); // 유니온 레벨
-        const stat = union.find(".d-block.mb-1 > span").eq(0).contents().last().text().trim(); // 유니온 전투력
-        const coin = Math.floor(stat.replace(/,/gi, '') * 0.000000864); // 일일 코인 수급량
+        const lev = +union.find(".user-summary-level").text().substr(3); // 유니온 레벨, 숫자값
+        const stat = +union.find(".d-block.mb-1 > span").eq(0).contents().last().text().trim().replace(/,/g, ''); // 유니온 전투력, 숫자값
+        const coin = Math.floor(stat * 0.000000864); // 일일 코인 수급량, 숫자값
 
         return [lev, stat, coin];
     }
@@ -195,7 +195,7 @@ class Maple {
 
         const grade = achieve.find(".user-summary-tier-string.font-weight-bold").text(); // 업적 등급
         const score = achieve.find(".user-summary-level").text().substr(5); // 업적 점수
-        const worldrank = achieve.find(".mb-2 > span").eq(0).text().replace(' ', '').replace(/\s+/g, ""); // 월드랭킹
+        const worldrank = achieve.find(".mb-2 > span").eq(0).text().replace(/\s+/g, ""); // 월드랭킹
         const allrank = achieve.find(".mb-2 > span").eq(1).text(); // 전체랭킹
 
         return [grade, score, worldrank, allrank];
@@ -207,9 +207,9 @@ class Maple {
             return null;
         }
 
-        let rslt = new Array(4);
-        for (let i = 0; i < 4; i++) {
-            rslt[i] = rank.eq(i).text().replace(/\s+/g, "");
+        const rslt = [];
+        for (let i = 0; i < rank.length; i++) {
+            rslt.push(rank.eq(i).text().replace(/\s+/g, ""));
         }
         return rslt;
     }
@@ -220,11 +220,29 @@ class Maple {
             return null;
         }
 
-        let rslt = new Array(7);
-        for (let i = 0; i < 7; i++) {
-            rslt[i] = coordi.eq(i).text();
+        const rslt = [];
+        for (let i = 0; i < coordi.length; i++) {
+            rslt.push(coordi.eq(i).text());
         }
         return rslt;
+    }
+    LevelHistory() {
+        const data = this.ggdata('body > script').filter((i, v) => /\[\[.+\]\]/.test(this.ggdata(v).html())).eq(0).html();
+        return JSON.parse(/\[\[.+\]\]/.exec(data)); // 0번째 배열 = 날짜, 1번째 배열 = 레벨
+    }
+    MurungHistory() {
+        const data = this.ggdata('.text-center.px-2.font-size-14.align-middle');
+
+        if (data.length == 0) {
+            return null;
+        }
+
+        const date = [], murung = [];
+        for (let i = 0; i < data.length; i += 6) {
+            date.push(data.eq(i).find('span').text() + data.eq(i).find('b').text()); // 날짜
+            murung.push(`${data.eq(i + 1).find('h5').text()} (${data.eq(i + 1).find('span').text()})`); // 무릉 기록
+        }
+        return [date, murung];
     }
     Level() {
         return this.ggdata(".user-summary-item").eq(0).text().substr(3);
@@ -240,31 +258,6 @@ class Maple {
     }
     serverImg() {
         return this.ggdata("div.col-lg-8 > h3 > img.align-middle").attr("src");
-    }
-    LevelHistory() {
-        let data = this.ggdata('body > script').filter((i, v) => /\[\[.+\]\]/.exec(this.ggdata(v).html())).eq(0).html()
-            .replace(/\\u[\da-fA-F]{4}/g, (m) => String.fromCharCode(parseInt(m.substr(2), 16)));
-        // \u코드값 형태로 나온 문자들을 실제 문자로 변환하는 인코딩을 끝에 추가함
-        data = JSON.parse(/\[\[.+\]\]/.exec(data));
-
-        const date = data[0].slice(1);
-        const level = data[1].slice(1);
-
-        return [date, level];
-    }
-    MurungHistory() {
-        const data = this.ggdata('.text-center.px-2.font-size-14.align-middle');
-
-        if (data.length == 0) {
-            return null;
-        }
-
-        const date = [], murung = [];
-        for (let i = 0; i < data.length; i += 6) {
-            date.push(data.eq(i).find('span').text() + data.eq(i).find('b').text()); // 날짜
-            murung.push(`${data.eq(i + 1).find('h5').text()} (${data.eq(i + 1).find('span').text()})`); // 무릉 기록
-        }
-        return [date, murung];
     }
 }
 

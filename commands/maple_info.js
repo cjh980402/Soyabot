@@ -26,7 +26,7 @@ module.exports = {
 
         const char_union = (await Maple.isMain()) ? Maple.homeUnion() : null; // 유니온 레벨, 전투력, 수급량
         const char_lv = level[0]; // 레벨
-        const char_ex = level[1].replace(/,/g, '');
+        const char_ex = level[1];
         const char_percent = char_lv < 275 ? (char_ex / (levelTable[char_lv] - levelTable[char_lv - 1]) * 100).toFixed(2) : 0; // 경험치 퍼센트
         const char_job = level[4]; // 직업
         const char_guild = level[3]; // 길드
@@ -44,11 +44,11 @@ module.exports = {
 
         infoEmbed.addField('**레벨**', char_lv < 275 ? `${char_lv} (${char_percent}%)` : char_lv, true);
         infoEmbed.addField('**직업**', char_job, true);
-        if (char_guild != '') {
+        if (char_guild) {
             infoEmbed.addField('**길드**', char_guild, true);
         }
-        infoEmbed.addField('**인기도**', char_popul, true);
-        infoEmbed.addField('**유니온 정보**', char_union ? `레벨: ${char_union[0]}\n전투력: ${char_union[1]}` : '-', true);
+        infoEmbed.addField('**인기도**', char_popul.toLocaleString(), true);
+        infoEmbed.addField('**유니온 정보**', char_union ? `레벨: ${char_union[0].toLocaleString()}\n전투력: ${char_union[1].toLocaleString()}` : '-', true);
         if (char_union) {
             infoEmbed.addField('유니온 코인', `1일 ${char_union[2]}개 획득`, true);
         }

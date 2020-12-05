@@ -25,11 +25,11 @@ module.exports = {
             return message.channel.send(`[${args[0]}]\n기록이 없습니다.`);
         }
         else {
-            let rslt = `[${args[0]}]\n`;
+            let rslt = `[${args[0]}]`;
             for (let i = data[0].length - 1; i >= 0; i--) {
-                rslt += `${data[0][i]}: ${data[1][i]}\n`;
+                rslt += `\n${data[0][i]}: ${data[1][i]}`;
             }
-            return message.channel.send(rslt.trimEnd());
+            return message.channel.send(rslt);
         }
     }
 };

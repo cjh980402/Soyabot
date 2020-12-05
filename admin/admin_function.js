@@ -1,4 +1,5 @@
 const Discord = require("discord.js"); // 디버깅용
+const { decodeHTML } = require("entities");
 const { ADMIN_ID } = require("../soyabot_config.json");
 const { botNotice, replyRoomID } = require('./bot_control.js');
 const { exec } = require("../util/async_to_promis");
@@ -38,13 +39,9 @@ module.exports.cmd = async function (_cmd) {
     return cmdResult.replace(/\u001b\[\d\dm/g, "").trimEnd();
 }
 
-Object.defineProperty(String.prototype, "htmlDecode", {
+Object.defineProperty(String.prototype, "decodeHTML", {
     value: function () {
-        return this.replace(/<br>/g, "\n")
-            .replace(/&#x[\da-fA-F]+;/g, (str) => String.fromCharCode(parseInt(str.substr(3), 16)))
-            .replace(/&#[\d]+;/g, (str) => String.fromCharCode(parseInt(str.substr(2))))
-            .replace(/&nbsp;/g, " ").replace(/&quot;/g, '"').replace(/&apos;/g, "`")
-            .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+        return decodeHTML(this).replace(/<br>/g, "\n");
     }
 });
 

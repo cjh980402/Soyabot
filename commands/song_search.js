@@ -36,7 +36,7 @@ module.exports = {
                 return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");
             }
 
-            results.map((video, index) => resultsEmbed.addField(video.shortURL, `${index + 1}. ${video.title.htmlDecode()}`));
+            results.map((video, index) => resultsEmbed.addField(video.shortURL, `${index + 1}. ${video.title.decodeHTML().decodeHTML()}`));
 
             resultsMessage = await message.channel.send(resultsEmbed);
 
@@ -48,8 +48,7 @@ module.exports = {
             }, { max: 1, time: 30000, errors: ["time"] });
 
             for (let song of songs) {
-                await client.commands.find((cmd) => cmd.command.includes("play"))
-                    .execute(message, [resultsEmbed.fields[song - 1].name]);
+                await client.commands.find((cmd) => cmd.command.includes("play")).execute(message, [resultsEmbed.fields[song - 1].name]);
             }
 
             message.channel.activeCollector = false;

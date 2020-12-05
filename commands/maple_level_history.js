@@ -22,10 +22,10 @@ module.exports = {
 
         const data = Maple.LevelHistory();
         const len = data[0].length;
-        let rslt = `[${args[0]}]\n`;
-        for (let i = 0; i < len; i++) {
-            rslt += `Lv.${data[1][i]} 달성일: ${data[0][i]}\n`;
+        let rslt = `[${args[0]}]`;
+        for (let i = 1; i < len; i++) {
+            rslt += `\nLv.${data[1][i]} 달성일: ${data[0][i]}`;
         }
-        return message.channel.send(rslt.trimEnd());
+        return message.channel.send(rslt);
     }
 };

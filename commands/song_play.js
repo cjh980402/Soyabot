@@ -1,5 +1,5 @@
 const { play } = require("../include/play");
-const { YOUTUBE_API_KEY, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
+const { DEFAULT_VOLUME, YOUTUBE_API_KEY, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
 const ytdl = require("ytdl-core");
 const YouTubeAPI = require("simple-youtube-api");
 const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
@@ -52,7 +52,7 @@ module.exports = {
             connection: null,
             songs: [],
             loop: false,
-            volume: 100,
+            volume: DEFAULT_VOLUME ?? 100,
             playing: true
         };
 
@@ -85,7 +85,7 @@ module.exports = {
             }
             const songInfo = await ytdl.getInfo(resultURL);
             song = {
-                title: songInfo.videoDetails.title,
+                title: songInfo.videoDetails.title.decodeHTML(),
                 url: songInfo.videoDetails.video_url,
                 duration: songInfo.videoDetails.lengthSeconds
             };

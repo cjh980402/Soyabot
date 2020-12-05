@@ -19,8 +19,8 @@ module.exports = {
         const data = cheerio.load(await (await fetch("https://www.uos.ac.kr/food/placeList.do")).text())('#week td.al');
         const dayIndex = 3 * week.indexOf(day);
         if (data.length == 15) {
-            await message.channel.send(`**${day}요일의 점심!**\n${data.eq(dayIndex - 2).html().htmlDecode().trim()}`);
-            return message.channel.send(`**${day}요일의 저녁!**\n${data.eq(dayIndex - 1).html().htmlDecode().trim()}`);
+            await message.channel.send(`**${day}요일의 점심!**\n${data.eq(dayIndex - 2).html().decodeHTML().trim()}`);
+            return message.channel.send(`**${day}요일의 저녁!**\n${data.eq(dayIndex - 1).html().decodeHTML().trim()}`);
         }
         else {
             return message.channel.send('학식 정보를 조회할 수 없습니다.');

@@ -16,8 +16,8 @@ module.exports = {
             return message.channel.send(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);
         }
 
-        const char_lv = +rslt[0];
-        const char_ex = +(rslt[1].replace(/,/g, ''));
+        const char_lv = rslt[0];
+        const char_ex = rslt[1];
 
         let repl = `[${args[0]}]\n직업: ${rslt[4]}\n현재: Lv.${char_lv}`;
         if (char_lv < 275) {

@@ -1,6 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const { play } = require("../include/play");
-const { YOUTUBE_API_KEY, MAX_PLAYLIST_SIZE, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
+const { MAX_PLAYLIST_SIZE, DEFAULT_VOLUME, YOUTUBE_API_KEY, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
 const YouTubeAPI = require("simple-youtube-api");
 const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
 const scdl = require("soundcloud-downloader").default;
@@ -52,7 +52,7 @@ module.exports = {
             connection: null,
             songs: [],
             loop: false,
-            volume: 100,
+            volume: DEFAULT_VOLUME ?? 100,
             playing: true
         };
 
@@ -80,7 +80,7 @@ module.exports = {
                 playlist = results[0];
             }
             videos = (await playlist.getVideos(MAX_PLAYLIST_SIZE ?? 10, { part: "snippet" })).map((video) => ({
-                title: video.title,
+                title: video.title.decodeHTML(),
                 url: video.url,
                 duration: video.durationSeconds
             }));
@@ -89,9 +89,9 @@ module.exports = {
         serverQueue ? serverQueue.songs.push(...videos) : queueConstruct.songs.push(...videos);
 
         const playlistEmbed = new MessageEmbed()
-            .setTitle(`${playlist.title}`)
+            .setTitle(`${playlist.title.decodeHTML()}`)
             .setDescription(videos.map((song, index) => `${index + 1}. ${song.title}`))
-            .setURL(playlist.url)
+            .setURL(playlist.url ?? playlist.permalink_url) // 전자는 유튜브, 후자는 SoundCloud
             .setColor("#F8AA2A")
             .setTimestamp();
 
