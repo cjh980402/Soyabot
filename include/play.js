@@ -1,5 +1,6 @@
 const ytdlDiscord = require("discord-ytdl-core");
 const scdl = require("soundcloud-downloader").default;
+const { sleep } = require('../admin/bot_control');
 const { STAY_TIME, DEFAULT_VOLUME, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
 const { canModifyQueue } = require("../util/SoyabotUtil");
 
@@ -57,7 +58,7 @@ module.exports = {
         queue.connection.play(stream, { type: streamType, volume: queue.volume / 100 })
             .on("finish", async () => {
                 while (!collector) {
-                    await new Promise(r => setTimeout(r, 500));
+                    await sleep(500);
                 }
                 collector.stop();
                 if (queue.loop) {
@@ -71,7 +72,7 @@ module.exports = {
             })
             .on("error", async (err) => {
                 while (!collector) {
-                    await new Promise(r => setTimeout(r, 500));
+                    await sleep(500);
                 }
                 collector.stop();
                 if (err.message == "input stream: Video unavailable") {

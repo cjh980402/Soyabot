@@ -20,39 +20,39 @@ module.exports = {
         const gameUser = [message.member]; // 참가자 객체 배열
         message.channel.send(`게임을 시작하셨습니다.\n${client.prefix}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${gameUser[0].nickname ?? gameUser[0].user.username}`)
         while (1) {
-            const rslt = await message.channel.awaitMessages((message) => {
-                if (message.content.trim() == `${client.prefix}참가` || message.content.trim() == `${client.prefix}ㅊㄱ`) {
-                    if (gameUser.includes(message.member)) {
-                        message.channel.send("이미 참가하셨습니다.");
+            const rslt = await message.channel.awaitMessages((msg) => {
+                if (msg.content.trim() == `${client.prefix}참가` || msg.content.trim() == `${client.prefix}ㅊㄱ`) {
+                    if (gameUser.includes(msg.member)) {
+                        msg.channel.send("이미 참가하셨습니다.");
                         return false;
                     }
                     else {
-                        gameUser.push(message.member); // 참가자 리스트에 추가
-                        message.channel.send(`게임에 참가하셨습니다.\n현재 참가자 (${gameUser.length}명): ${gameUser.map(v => v.nickname ?? v.user.username).join(", ")}`)
+                        gameUser.push(msg.member); // 참가자 리스트에 추가
+                        msg.channel.send(`게임에 참가하셨습니다.\n현재 참가자 (${gameUser.length}명): ${gameUser.map(v => v.nickname ?? v.user.username).join(", ")}`)
                         return true;
                     }
                 }
-                else if (message.content.trim() == `${client.prefix}시작` || message.content.trim() == `${client.prefix}ㅅㅈ`) {
-                    if (gameUser.includes(message.member) && gameUser.length > 1) {
-                        message.channel.send("러시안룰렛을 시작합니다.");
+                else if (msg.content.trim() == `${client.prefix}시작` || msg.content.trim() == `${client.prefix}ㅅㅈ`) {
+                    if (gameUser.includes(msg.member) && gameUser.length > 1) {
+                        msg.channel.send("러시안룰렛을 시작합니다.");
                         return true;
                     }
-                    else if (gameUser.includes(message.member)) {
-                        message.channel.send("최소 2명 이상의 참가자가 있어야 시작할 수 있습니다.");
+                    else if (gameUser.includes(msg.member)) {
+                        msg.channel.send("최소 2명 이상의 참가자가 있어야 시작할 수 있습니다.");
                         return false;
                     }
                     else {
-                        message.channel.send("게임에 참가한 사람만 시작할 수 있습니다.");
+                        msg.channel.send("게임에 참가한 사람만 시작할 수 있습니다.");
                         return false;
                     }
                 }
-                else if (message.content.trim() == `${client.prefix}종료` || message.content.trim() == `${client.prefix}ㅈㄹ`) {
-                    if (gameUser.includes(message.member)) {
-                        message.channel.send("게임을 종료합니다.");
+                else if (msg.content.trim() == `${client.prefix}종료` || msg.content.trim() == `${client.prefix}ㅈㄹ`) {
+                    if (gameUser.includes(msg.member)) {
+                        msg.channel.send("게임을 종료합니다.");
                         return true;
                     }
                     else {
-                        message.channel.send("게임에 참여한 사람만 종료할 수 있습니다.");
+                        msg.channel.send("게임에 참여한 사람만 종료할 수 있습니다.");
                         return false;
                     }
                 }
@@ -76,7 +76,7 @@ module.exports = {
         const die = Math.floor(Math.random() * bullet); // 0번째 ~ (bullet - 1)번째 탄환 중에서 선택
         for (let i = 0; i < bullet; i++) {
             try {
-                await message.channel.awaitMessages((message) => (message.member == gameUser[i % gameUser.length] && (message.content == `${client.prefix}빵` || message.content == `${client.prefix}ㅃ`)), { max: 1, time: 60000, errors: ["time"] });
+                await message.channel.awaitMessages((msg) => (msg.member == gameUser[i % gameUser.length] && (msg.content == `${client.prefix}빵` || msg.content == `${client.prefix}ㅃ`)), { max: 1, time: 60000, errors: ["time"] });
             }
             catch (e) { } // 시간 초과돼도 에러 throw 안하게 catch를 해줌
             if (i == die) {

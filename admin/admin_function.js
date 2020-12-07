@@ -2,6 +2,7 @@ const Discord = require("discord.js"); // 디버깅용
 const { decodeHTML } = require("entities");
 const { ADMIN_ID } = require("../soyabot_config.json");
 const { botNotice, replyRoomID } = require('./bot_control.js');
+const { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, startTestPatch, stopTestPatch, startFlag, stopFlag } = require('./maple_auto_notice');
 const { exec } = require("../util/async_to_promis");
 
 module.exports.adminChat = async function (message) {
@@ -37,6 +38,25 @@ module.exports.cmd = async function (_cmd) {
         cmdResult = e.toString();
     }
     return cmdResult.replace(/\u001b\[\d\dm/g, "").trimEnd();
+}
+
+module.exports.initBot = async function () {
+    client.suggestionChat = {};
+    await db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
+    await db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
+    await db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');
+    await db.run('CREATE TABLE IF NOT EXISTS noticeskip(channelid text primary key, name text not null)');
+    await db.run('CREATE TABLE IF NOT EXISTS updateskip(channelid text primary key, name text not null)');
+    await db.run('CREATE TABLE IF NOT EXISTS flagskip(channelid text primary key, name text not null)');
+    await db.run('CREATE TABLE IF NOT EXISTS testskip(channelid text primary key, name text not null)');
+    await db.run('CREATE TABLE IF NOT EXISTS testpatchskip(channelid text primary key, name text not null)');
+    await db.run('CREATE TABLE IF NOT EXISTS pruningskip(channelid text primary key, name text not null)');
+    await db.run("CREATE TABLE IF NOT EXISTS messagedb(channelsenderid text primary key, messagecnt integer default 0, lettercnt integer default 0, lastmessage text default '', lasttime datetime default (datetime('now', 'localtime')))");
+    startNotice(); // 공지 자동 알림 기능
+    startUpdate(); // 업데이트 자동 알림 기능
+    startTest(); // 테섭 자동 알림 기능
+    startTestPatch(); // 테섭 패치 감지 기능
+    startFlag(); // 플래그 5분 전 알림
 }
 
 Object.defineProperty(String.prototype, "decodeHTML", {

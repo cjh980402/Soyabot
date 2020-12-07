@@ -4,16 +4,16 @@ const FormData = require('form-data');
 
 async function requestCFR(type, url) {
     try {
-        const params = new FormData();
+        const form = new FormData();
         const buffer = await (await fetch(url)).buffer();
-        params.append("image", buffer);
+        form.append("image", buffer);
         const response = await fetch(`https://openapi.naver.com/v1/vision/${type}`, {
             method: 'POST',
             headers: {
                 "X-Naver-Client-Id": clientId,
                 "X-Naver-Client-Secret": clientSecret
             },
-            body: params
+            body: form
         });
         return (await response.json());
     }

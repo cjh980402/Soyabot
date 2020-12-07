@@ -113,7 +113,7 @@ class Maple {
         if (this.ggdata('div.alert.alert-warning.mt-3').length != 0) {
             throw new Error("메이플 GG 서버가 점검 중입니다.");
         }
-        else if (this.ggdata('div.flex-center.position-ref.full-height').length != 0) {
+        else if (this.ggdata('title').text().includes("Bad Gateway") || this.ggdata('div.flex-center.position-ref.full-height').length != 0) {
             throw new Error("메이플 GG 서버에 에러가 발생했습니다.");
         }
 

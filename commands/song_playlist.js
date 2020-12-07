@@ -1,8 +1,8 @@
 const { MessageEmbed } = require("discord.js");
 const { play } = require("../include/play");
-const { MAX_PLAYLIST_SIZE, DEFAULT_VOLUME, YOUTUBE_API_KEY, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
+const { MAX_PLAYLIST_SIZE, DEFAULT_VOLUME, GOOGLE_API_KEY, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
 const YouTubeAPI = require("simple-youtube-api");
-const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
+const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 const scdl = require("soundcloud-downloader").default;
 
 module.exports = {
@@ -62,7 +62,7 @@ module.exports = {
         if (scdl.isValidUrl(url)) {
             message.channel.send('⌛ 재생 목록을 가져오는 중...');
             playlist = await scdl.getSetInfo(args[0], SOUNDCLOUD_CLIENT_ID);
-            videos = playlist.tracks.map((track) => ({
+            videos = playlist.tracks.slice(0, MAX_PLAYLIST_SIZE ?? 10).map((track) => ({
                 title: track.title,
                 url: track.permalink_url,
                 duration: Math.ceil(track.duration / 1000)

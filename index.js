@@ -5,8 +5,7 @@ const { Client, Collection } = require("discord.js");
 const cachingMessage = require('./util/message_caching');
 const { readdirSync } = require("fs");
 const { TOKEN, PREFIX, ADMIN_ID } = require("./soyabot_config.json");
-const { adminChat } = require("./admin/admin_function");
-const { startNotice, startUpdate, startTest, startTestPatch, startFlag } = require('./admin/maple_auto_notice.js');
+const { adminChat, initBot } = require("./admin/admin_function");
 const botChatting = require("./util/bot_chatting");
 const { replyAdmin } = require('./admin/bot_control');
 const dbhandler = require('./util/sqlite-handler');
@@ -33,22 +32,8 @@ client.on("ready", async () => {
     readdirSync("./commands").filter((file) => file.endsWith(".js")).forEach(file => { // commands 폴더속 .js 파일 걸러내기
         client.commands.push(require(`./commands/${file}`)); // 배열에 이름과 명령 객체를 push
     });
-    client.suggestionChat = {};
-    await db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
-    await db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
-    await db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');
-    await db.run('CREATE TABLE IF NOT EXISTS noticeskip(channelid text primary key, name text not null)');
-    await db.run('CREATE TABLE IF NOT EXISTS updateskip(channelid text primary key, name text not null)');
-    await db.run('CREATE TABLE IF NOT EXISTS flagskip(channelid text primary key, name text not null)');
-    await db.run('CREATE TABLE IF NOT EXISTS testskip(channelid text primary key, name text not null)');
-    await db.run('CREATE TABLE IF NOT EXISTS testpatchskip(channelid text primary key, name text not null)');
-    await db.run('CREATE TABLE IF NOT EXISTS pruningskip(channelid text primary key, name text not null)');
-    await db.run("CREATE TABLE IF NOT EXISTS messagedb(channelsenderid text primary key, messagecnt integer default 0, lettercnt integer default 0, lastmessage text default '', lasttime datetime default (datetime('now', 'localtime')))");
-    startNotice(); // 공지 자동 알림 기능
-    startUpdate(); // 업데이트 자동 알림 기능
-    startTest(); // 테섭 자동 알림 기능
-    startTestPatch(); // 테섭 패치 감지 기능
-    startFlag(); // 플래그 5분 전 알림
+    await initBot();
+    replyAdmin('소야봇이 작동 중입니다.');
 });
 client.on("warn", console.log);
 client.on("error", console.error);

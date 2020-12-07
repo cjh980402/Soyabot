@@ -35,8 +35,7 @@ module.exports = {
                     .setTimestamp();
                 message.channel.send(userlistEmbed);
 
-                const senderId = message.author.id;
-                const rslt = await message.channel.awaitMessages((message) => (message.author.id == senderId && !isNaN(message.content) && 0 < +message.content && +message.content <= targetInfo.size), { max: 1, time: 20000, errors: ["time"] });
+                const rslt = await message.channel.awaitMessages((msg) => (msg.author.id == message.author.id && !isNaN(msg.content) && 0 < +msg.content && +msg.content <= targetInfo.size), { max: 1, time: 20000, errors: ["time"] });
                 targetInfo = targetInfo.array()[+rslt.first().content - 1];
             }
         }

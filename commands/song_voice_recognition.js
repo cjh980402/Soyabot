@@ -1,0 +1,82 @@
+const { GOOGLE_API_KEY } = require("../soyabot_config.json");
+const { Lame } = require('node-lame');
+const fetch = require('node-fetch');
+
+module.exports = {
+    usage: `${client.prefix}음성테스트`,
+    command: ["음성테스트", "ㅇㅅㅌㅅㅌ"],
+    // description: "- 음성인식 기능 테스트 용도입니다.",
+    type: ["음악"],
+    async execute(message) {
+        if (!message.guild) {
+            return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
+        }
+        const { channel } = message.member.voice;
+
+        const serverQueue = client.queue.get(message.guild.id);
+        if (!channel) {
+            return message.reply("음성 채널에 먼저 참가해주세요!");
+        }
+        if (serverQueue && channel !== message.guild.me.voice.channel) {
+            return message.reply(`같은 채널에 있어야합니다. (${client.user})`);
+        }
+
+        const permissions = channel.permissionsFor(client.user);
+        if (!permissions.has("CONNECT")) {
+            return message.reply("권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.");
+        }
+        if (!permissions.has("SPEAK")) {
+            return message.reply("이 음성 채널에서 말을 할 수 없습니다. 적절한 권한이 있는지 확인해야합니다.");
+        }
+
+        const connection = await channel.join();
+        const receiver = connection.receiver;
+
+        message.channel.send("기능 시작");
+        connection.onSessionDescription("음성인식 테스트"); // Silence 버퍼 자동 전송
+        connection.on('speaking', async (user, speaking) => {
+            if (speaking) {
+                // 분석을 위한 음성 녹음 시작
+                const audioStream = receiver.createStream(user, { mode: 'pcm' });
+                const pcmBufferChunks = [];
+                audioStream.on('data', (d) => {
+                    pcmBufferChunks.push(d);
+                });
+
+                audioStream.on('end', async () => {
+                    // 음성 녹음 종료
+                    const pcmBuffer = Buffer.concat(pcmBufferChunks);
+
+                    const encoder = new Lame({
+                        output: 'buffer',
+                        bitrate: 48,
+                    }).setBuffer(pcmBuffer);
+                    await encoder.encode();
+                    // 녹음된 pcm 버퍼를 mp3로 인코딩
+
+                    // API에 분석 정보 요청
+                    const response = await fetch(`https://speech.googleapis.com/v1p1beta1/speech:recognize?alt=json&key=${GOOGLE_API_KEY}`, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            config: {
+                                encoding: 'MP3',
+                                sampleRateHertz: 48000,
+                                languageCode: 'ko-KR',
+                            },
+                            audio: {
+                                content: encoder.getBuffer().toString('base64'),
+                            }
+                        })
+                    });
+                    const transcription = (await response.json())?.results?.map(result => result.alternatives[0].transcript).join("\n").trim();
+                    if (transcription) {
+                        message.channel.send(`분석 결과: ${transcription}`);
+                    }
+                    if (transcription.includes("소야봇")) {
+                        message.channel.send("소야봇을 호출하셨습니다.");
+                    }
+                });
+            }
+        });
+    }
+};

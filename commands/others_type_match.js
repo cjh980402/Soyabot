@@ -1,9 +1,6 @@
-const Sejong = require('sejong');
+const { sleep } = require('../admin/bot_control');
 const { matchString } = require("../util/soyabot_const.json");
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms)); // 비동기 sleep 함수
-}
+const Sejong = require('sejong');
 
 module.exports = {
     usage: `${client.prefix}타자대결`,
@@ -20,9 +17,9 @@ module.exports = {
             await sleep(1000); // 3초 카운트 다운 로직
         }
         message.channel.send(`대결할 문장: ${choice.split("").join("\u200b")}\n\n위 문장으로 대결을 수행합니다.`);
-        
+
         const start = Date.now()
-        const response = await message.channel.awaitMessages((message) => (message.content == choice), { max: 1, time: 40000, errors: ["time"] });
+        const response = await message.channel.awaitMessages((msg) => (msg.content == choice), { max: 1, time: 40000, errors: ["time"] });
         const time = (Date.now() - start) / 1000;
         return message.channel.send(`${response.first().author}님이 승리하였습니다!
 소요시간: ${time.toFixed(2)}초\n분당타수: ${(choiceLength * 60 / time).toFixed(2)}타`);

@@ -80,7 +80,7 @@ module.exports = {
             .setColor("#F8AA2A")
             .attachFiles(attachment)
             .setURL(`https://maple.gg/u/${args[0]}`)
-            .setImage('attachment://coordi.png');
+            .setImage('attachment://scouter.png');
 
         coordiEmbed.addField('**직업**', job, true);
         coordiEmbed.addField('**유니온**', union.toLocaleString(), true);
