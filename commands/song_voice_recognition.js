@@ -1,6 +1,8 @@
 const { GOOGLE_API_KEY } = require("../soyabot_config.json");
 const { Lame } = require('node-lame');
 const fetch = require('node-fetch');
+let isRecord = false;
+let botCalled = false;
 
 module.exports = {
     usage: `${client.prefix}음성테스트`,
@@ -30,6 +32,11 @@ module.exports = {
         }
 
         const connection = await channel.join();
+        if (connection.eventNames().includes("speaking")) {
+            connection.disconnect();
+            channel.leave();
+            return message.channel.send("실행 중인 기능을 종료합니다.");
+        }
         const receiver = connection.receiver;
 
         message.channel.send("기능 시작");
@@ -37,6 +44,7 @@ module.exports = {
         connection.on('speaking', async (user, speaking) => {
             if (speaking) {
                 // 분석을 위한 음성 녹음 시작
+                isRecord = true;
                 const audioStream = receiver.createStream(user, { mode: 'pcm' });
                 const pcmBufferChunks = [];
                 audioStream.on('data', (d) => {
@@ -45,6 +53,7 @@ module.exports = {
 
                 audioStream.on('end', async () => {
                     // 음성 녹음 종료
+                    isRecord = false;
                     const pcmBuffer = Buffer.concat(pcmBufferChunks);
 
                     const encoder = new Lame({
@@ -72,8 +81,18 @@ module.exports = {
                     if (transcription) {
                         message.channel.send(`분석 결과: ${transcription}`);
                     }
-                    if (transcription.includes("소야봇")) {
+                    if (/안녕\s*소야/.test(transcription)) {
+                        botCalled = true;
+                        setTimeout(() => { botCalled = false }, 120000);
                         message.channel.send("소야봇을 호출하셨습니다.");
+                    }
+                    if (botCalled && transcription?.includes("노래")) {
+                        botCalled = false;
+                        return client.commands.find((cmd) => cmd.command.includes("play")).execute(message, ["멜론차트"]);
+                    }
+                    else if (botCalled && /메이플\s*이벤트/.test(transcription)) {
+                        botCalled = false;
+                        return client.commands.find((cmd) => cmd.command.includes("이벤트")).execute(message);
                     }
                 });
             }
