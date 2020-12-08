@@ -12,10 +12,9 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const Maple = new mapleModule(args[0]);
-        const temp = await Maple.isExist();
-        const level = temp ? Maple.homeLevel() : null;
+        const level = (await Maple.isExist()) ? Maple.homeLevel() : null;
         if (level == null) {
-            return message.channel.send(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);
+            return message.channel.send(`[${Maple.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await Maple.isLatest())) {
             message.channel.send('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
@@ -36,10 +35,10 @@ module.exports = {
 
         const attachment = new MessageAttachment(Maple.userImg(), 'info.png');
         const infoEmbed = new MessageEmbed()
-            .setTitle(`${args[0]}님의 정보`)
+            .setTitle(`${Maple.Name}님의 정보`)
             .setColor("#F8AA2A")
             .attachFiles(attachment)
-            .setURL(`https://maple.gg/u/${args[0]}`)
+            .setURL(Maple.GGURL)
             .setImage('attachment://info.png');
 
         infoEmbed.addField('**레벨**', char_lv < 275 ? `${char_lv} (${char_percent}%)` : char_lv, true);

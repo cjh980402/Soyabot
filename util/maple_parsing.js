@@ -6,22 +6,32 @@ function sleep(ms) {
 }
 
 async function linkParse(link) {
-    try {
-        return cheerio.load(await (await fetch(encodeURI(link))).text()); // encodeURI는 한글 주소의 경우 필수
-    }
-    catch (e) {
-        return e;
-    }
+    return cheerio.load(await (await fetch(link)).text());
+}
+
+async function linkJSon(link) {
+    return await (await fetch(link)).json();
 }
 
 class Maple {
     // 생성자
     constructor(name) {
         this.name = name;
-        this.ggurl = `https://maple.gg/u/${this.name}`;
-        this.ggdata = null;
-        this.homeunion = null;
-        this.homelevel = null;
+        this.ggURL = `https://maple.gg/u/${encodeURI(name)}`; // encodeURI는 한글 주소의 경우 필수
+        this.homeLevelURL = `https://maplestory.nexon.com/Ranking/World/Total?c=${encodeURI(name)}`; // 초기값은 일반 서버
+        this.homeUnionURL = `https://maplestory.nexon.com/Ranking/Union?c=${encodeURI(name)}`;
+        this.ggData = null;
+        this.homeLevel = null;
+        this.homeUnion = null;
+    }
+    get Name() {
+        return this.name;
+    }
+    get GGURL() {
+        return this.ggURL;
+    }
+    get HomeURL() {
+        return this.homeLevelURL;
     }
     // 이하 모두 매소드
     async isExist() {
@@ -31,28 +41,28 @@ class Maple {
                 len++;
             }
         }
-        let temp = `Ranking/World/Total?c=${this.name}`; // 일반섭
-        this.homelevel = await linkParse(`https://maplestory.nexon.com/${temp}`);
-        if (this.homelevel("img[alt='메이플스토리 서비스 점검중!']").length != 0) {
+        this.homeLevel = await linkParse(this.homeLevelURL);
+        if (this.homeLevel("img[alt='메이플스토리 서비스 점검중!']").length != 0) {
             throw new Error("메이플 공식 홈페이지가 서비스 점검 중입니다.");
         }
 
-        if (this.homelevel("tr[class]").length != 10) {
-            temp += "&w=254"; // 리부트
-            this.homelevel = await linkParse(`https://maplestory.nexon.com/${temp}`);
+        if (this.homeLevel("tr[class]").length != 10) {
+            this.homeLevelURL += "&w=254"; // 리부트 서버 목록
+            this.homeLevel = await linkParse(this.homeLevelURL);
         }
-        if (len < 1 || len > 12 || this.homelevel("tr[class]").length != 10) {
-            return null; // 없는 캐릭터
+        if (len < 1 || len > 12 || this.homeLevel("tr[class]").length != 10) {
+            return false; // 없는 캐릭터
         }
-        return temp; // 있는 캐릭터
+        return true; // 있는 캐릭터
     }
     homeLevel() {
-        let data = this.homelevel(".search_com_chk > td");
+        let data = this.homeLevel(".search_com_chk > td");
         if (data.length == 0) {
-            const nickList = this.homelevel("tr[class] > td.left > dl > dt > a"); // 순위 리스트의 닉네임
+            const nickList = this.homeLevel("tr[class] > td.left > dl > dt > a"); // 순위 리스트의 닉네임
             for (let i = 0; i < 10; i++) {
                 if (this.name.toLowerCase() == nickList.eq(i).text().toLowerCase()) {
-                    data = this.homelevel("tr[class]").eq(i).find("td");
+                    this.name = nickList.eq(i).text();
+                    data = this.homeLevel("tr[class]").eq(i).find("td");
                     break;
                 }
             }
@@ -76,23 +86,24 @@ class Maple {
                 len++;
             }
         }
-        this.homeunion = await linkParse(`https://maplestory.nexon.com/Ranking/Union?c=${this.name}`);
-        if (this.homeunion("img[alt='메이플스토리 서비스 점검중!']").length != 0) {
+        this.homeUnion = await linkParse(this.homeUnionURL);
+        if (this.homeUnion("img[alt='메이플스토리 서비스 점검중!']").length != 0) {
             throw new Error("메이플 공식 홈페이지가 서비스 점검 중입니다.");
         }
 
-        if (len < 1 || len > 12 || this.homeunion("tr").length != 12) {
+        if (len < 1 || len > 12 || this.homeUnion("tr").length != 12) {
             return false; // 유니온 기록이 없음
         }
         return true; // 유니온 기록이 있음
     }
     homeUnion() {
-        let data = this.homeunion(".search_com_chk > td");
+        let data = this.homeUnion(".search_com_chk > td");
         if (data.length == 0) {
-            const nickList = this.homeunion("tr > td.left > dl > dt > a"); // 순위 리스트의 닉네임
+            const nickList = this.homeUnion("tr > td.left > dl > dt > a"); // 순위 리스트의 닉네임
             for (let i = 0; i < 10; i++) {
                 if (this.name.toLowerCase() == nickList.eq(i).text().toLowerCase()) {
-                    data = this.homeunion("tr").eq(i + 2).find("td");
+                    this.name = nickList.eq(i).text();
+                    data = this.homeUnion("tr").eq(i + 2).find("td");
                     break;
                 }
             }
@@ -109,16 +120,16 @@ class Maple {
         return [lev, stat, coin, job];
     }
     async isLatest() {
-        this.ggdata = await linkParse(this.ggurl); // this.ggdata는 함수
-        if (this.ggdata('div.alert.alert-warning.mt-3').length != 0) {
+        this.ggData = await linkParse(this.ggURL); // this.ggData는 함수
+        if (this.ggData('div.alert.alert-warning.mt-3').length != 0) {
             throw new Error("메이플 GG 서버가 점검 중입니다.");
         }
-        else if (this.ggdata('title').text().includes("Bad Gateway") || this.ggdata('div.flex-center.position-ref.full-height').length != 0) {
+        else if (this.ggData('title').text().includes("Bad Gateway") || this.ggData('div.flex-center.position-ref.full-height').length != 0) {
             throw new Error("메이플 GG 서버에 에러가 발생했습니다.");
         }
 
-        if (this.ggdata(".d-block.font-weight-light").text().replace(/\s+/g, "") != "마지막업데이트:오늘"
-            || this.ggdata(".container.mt-5.text-center > h3").text() == "검색결과가 없습니다.") {
+        if (this.ggData(".d-block.font-weight-light").text().replace(/\s+/g, "") != "마지막업데이트:오늘"
+            || this.ggData(".container.mt-5.text-center > h3").text() == "검색결과가 없습니다.") {
             return false;
         }
         else {
@@ -127,26 +138,25 @@ class Maple {
     }
     async updateGG() {
         const start = Date.now();
-        let rslt;
         while (1) {
             try {
-                rslt = JSON.parse((await linkParse(`${this.ggurl}/sync`)).text());
+                const rslt = await linkJSon(`${this.ggURL}/sync`);
                 if (rslt.error == false && rslt.done == true) {
-                    this.ggdata = await linkParse(this.ggurl);
+                    this.ggData = await linkParse(this.ggURL);
                     return true; // 갱신성공
                 }
             }
             catch (e) {
                 return false; // 갱신실패
             }
-            if (Date.now() - start >= 20 * 1000) {
-                return false; // 갱신실패
+            if (Date.now() - start >= 20000) {
+                return false; // 20초 지나도 갱신 못했으면 갱신실패 판정
             }
             await sleep(100);
         }
     }
     Murung() {
-        const murung = this.ggdata(".col-lg-3.col-6.mt-3.px-1").eq(0); // murung은 cheerio객체
+        const murung = this.ggData(".col-lg-3.col-6.mt-3.px-1").eq(0); // murung은 cheerio객체
         const nomurung = murung.find(".user-summary-no-data").length; // 0이면 기록 있고 1이면 기록 없음
         if (nomurung) {
             return null;
@@ -160,7 +170,7 @@ class Maple {
         return [murungjob, murungfl, murungtime, murungdate];
     }
     Seed() {
-        const seed = this.ggdata(".col-lg-3.col-6.mt-3.px-1").eq(1);
+        const seed = this.ggData(".col-lg-3.col-6.mt-3.px-1").eq(1);
         const noseed = seed.find(".user-summary-no-data").length; // 0이면 기록 있고 1이면 기록 없음
         if (noseed) {
             return null;
@@ -174,7 +184,7 @@ class Maple {
         return [seedjob, seedfl, seedtime, seeddate];
     }
     Union() {
-        const union = this.ggdata(".col-lg-3.col-6.mt-3.px-1").eq(2);
+        const union = this.ggData(".col-lg-3.col-6.mt-3.px-1").eq(2);
         const nounion = union.find(".user-summary-no-data").length; // 0이면 기록 있고 1이면 기록 없음
         if (nounion) {
             return null;
@@ -187,7 +197,7 @@ class Maple {
         return [lev, stat, coin];
     }
     Achieve() {
-        const achieve = this.ggdata(".col-lg-3.col-6.mt-3.px-1").eq(3);
+        const achieve = this.ggData(".col-lg-3.col-6.mt-3.px-1").eq(3);
         const noachieve = achieve.find(".user-summary-no-data").length; // 0이면 기록 있고 1이면 기록 없음
         if (noachieve) {
             return null;
@@ -201,7 +211,7 @@ class Maple {
         return [grade, score, worldrank, allrank];
     }
     Rank() {
-        const rank = this.ggdata('.col-lg-2.col-md-4.col-sm-4.col-6.mt-3 > span');
+        const rank = this.ggData('.col-lg-2.col-md-4.col-sm-4.col-6.mt-3 > span');
 
         if (rank.length == 0) {
             return null;
@@ -214,7 +224,7 @@ class Maple {
         return rslt;
     }
     Coordi() {
-        const coordi = this.ggdata(".character-coord__item-name");
+        const coordi = this.ggData(".character-coord__item-name");
 
         if (coordi.length == 0) {
             return null;
@@ -227,11 +237,11 @@ class Maple {
         return rslt;
     }
     LevelHistory() {
-        const data = this.ggdata('body > script').filter((i, v) => /\[\[.+\]\]/.test(this.ggdata(v).html())).eq(0).html();
-        return JSON.parse(/\[\[.+\]\]/.exec(data)); // 0번째 배열 = 날짜, 1번째 배열 = 레벨
+        const data = this.ggData('body > script').filter((i, v) => /\[\[.+\]\]/.test(this.ggData(v).html())).eq(0).html();
+        return JSON.parse(/\[\[.+\]\]/.exec(data)); // 0번째 배열 = 날짜, 1번째 배열 = 레벨 (각각 0번 인덱스는 제외 필요)
     }
     MurungHistory() {
-        const data = this.ggdata('.text-center.px-2.font-size-14.align-middle');
+        const data = this.ggData('.text-center.px-2.font-size-14.align-middle');
 
         if (data.length == 0) {
             return null;
@@ -245,19 +255,19 @@ class Maple {
         return [date, murung];
     }
     Level() {
-        return this.ggdata(".user-summary-item").eq(0).text().substr(3);
+        return this.ggData(".user-summary-item").eq(0).text().substr(3);
     }
     Job() {
-        return this.ggdata(".user-summary-item").eq(1).text();
+        return this.ggData(".user-summary-item").eq(1).text();
     }
     Popularity() {
-        return this.ggdata(".user-summary-item > span").eq(1).text();
+        return this.ggData(".user-summary-item > span").eq(1).text();
     }
     userImg() {
-        return this.ggdata("meta[property='og:image']").attr("content").replace("Character/", "Character/180/");
+        return this.ggData("meta[property='og:image']").attr("content").replace("Character/", "Character/180/");
     }
     serverImg() {
-        return this.ggdata("div.col-lg-8 > h3 > img.align-middle").attr("src");
+        return this.ggData("div.col-lg-8 > h3 > img.align-middle").attr("src");
     }
 }
 

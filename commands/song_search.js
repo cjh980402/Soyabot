@@ -33,7 +33,7 @@ module.exports = {
         let resultsMessage;
         try {
             const filter = (await ytsr.getFilters(search)).get("Type").find(v => v.name == "Video").ref;
-            const results = (await ytsr(filter, { limit: 15 })).items.filter(v => v.type == "video");
+            const results = (await ytsr(filter, { limit: 12 })).items.filter(v => v.type == "video");
             // const results = await youtube.searchVideos(search, 10);
             if (results.length == 0) {
                 return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");

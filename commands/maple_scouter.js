@@ -31,7 +31,7 @@ module.exports = {
 
         let union = (await Maple.isMain()) ? Maple.homeUnion() : null;
         if (union == null) {
-            return message.channel.send(`[${args[0]}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
+            return message.channel.send(`[${Maple.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
         }
 
         if (!(await Maple.isLatest())) {
@@ -41,10 +41,9 @@ module.exports = {
             }
         }
 
-        let level = (await Maple.isExist()) ? Maple.homeLevel() : null;
-        let job = level[4];
+        const level = Maple.Level();
+        const job = Maple.Job();
         union = union[0];
-        level = level[0]
 
         let murungfl, time, min, sec;
 
@@ -76,10 +75,10 @@ module.exports = {
 
         const attachment = new MessageAttachment(Maple.userImg(), 'scouter.png');
         const coordiEmbed = new MessageEmbed()
-            .setTitle(`${args[0]}님의 측정결과`)
+            .setTitle(`${Maple.Name}님의 측정결과`)
             .setColor("#F8AA2A")
             .attachFiles(attachment)
-            .setURL(`https://maple.gg/u/${args[0]}`)
+            .setURL(Maple.GGURL)
             .setImage('attachment://scouter.png');
 
         coordiEmbed.addField('**직업**', job, true);

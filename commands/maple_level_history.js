@@ -10,8 +10,8 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const Maple = new mapleModule(args[0]);
-        if ((await Maple.isExist()) == null || Maple.homeLevel() == null) {
-            return message.channel.send(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);
+        if (!(await Maple.isExist()) || !Maple.homeLevel()) {
+            return message.channel.send(`[${Maple.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await Maple.isLatest())) {
             message.channel.send('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
@@ -22,7 +22,7 @@ module.exports = {
 
         const data = Maple.LevelHistory();
         const len = data[0].length;
-        let rslt = `[${args[0]}]`;
+        let rslt = `[${Maple.Name}]`;
         for (let i = 1; i < len; i++) {
             rslt += `\nLv.${data[1][i]} 달성일: ${data[0][i]}`;
         }

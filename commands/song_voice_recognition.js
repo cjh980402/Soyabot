@@ -3,6 +3,31 @@ const { Lame } = require('node-lame');
 const fetch = require('node-fetch');
 let botCalled = false;
 
+function botVoiceCommand(message, transcription) {
+    message.channel.send(`분석 결과: ${transcription}`);
+    if (!botCalled && /(안녕|하이)\s*소야/.test(transcription)) {
+        botCalled = true;
+        setTimeout(() => { botCalled = false }, 60000); // 1분 후 호출 비활성화
+        message.channel.send("소야봇을 호출하셨습니다.");
+    }
+    else if (botCalled) {
+        const songcmd = /(.*)(노래|음악|재생\s*목록).*(틀어|재생)/.exec(transcription);
+        if (songcmd) {
+            botCalled = false;
+            const args = (songcmd[1].trim() || "멜론 차트").split(/\s+/);
+            client.commands.find((cmd) => cmd.command.includes(/재생\s*목록/.test(songcmd[2]) ? "playlist" : "play")).execute(message, args);
+        }
+        else {
+            const args = transcription.split(/\s+/);
+            const command = client.commands.find((cmd) => cmd.type.includes(args[0]) && cmd.command.includes(args[1]));
+            if (command) {
+                botCalled = false;
+                command.execute(message, args.slice(2));
+            }
+        }
+    }
+}
+
 module.exports = {
     usage: `${client.prefix}음성테스트`,
     command: ["음성테스트", "ㅇㅅㅌㅅㅌ"],
@@ -32,8 +57,10 @@ module.exports = {
 
         const connection = await channel.join();
         if (connection.eventNames().includes("speaking")) {
-            connection.disconnect();
-            channel.leave();
+            if (!serverQueue) { // 음악 기능이 실행 중이지 않을 때만 연결을 끊는다.
+                connection.disconnect();
+                channel.leave();
+            }
             return message.channel.send("실행 중인 기능을 종료합니다.");
         }
         const receiver = connection.receiver;
@@ -76,28 +103,7 @@ module.exports = {
                     });
                     const transcription = (await response.json())?.results?.map(result => result.alternatives[0].transcript).join("\n").trim();
                     if (transcription) {
-                        message.channel.send(`분석 결과: ${transcription}`);
-                        if (!botCalled && /(안녕|하이)\s*소야/.test(transcription)) {
-                            botCalled = true;
-                            setTimeout(() => { botCalled = false }, 60000); // 1분 후 호출 비활성화
-                            message.channel.send("소야봇을 호출하셨습니다.");
-                        }
-                        else if (botCalled) {
-                            const songcmd = /(.*)(노래|음악|재생목록).*(틀어|재생)/.exec(transcription);
-                            if (songcmd) {
-                                botCalled = false;
-                                const args = (songcmd[1].trim() || "멜론 차트").split(/\s+/);
-                                client.commands.find((cmd) => cmd.command.includes(songcmd[2] == "재생목록" ? "playlist" : "play")).execute(message, args);
-                            }
-                            else {
-                                const args = transcription.split(/\s+/);
-                                const command = client.commands.find((cmd) => cmd.type.includes(args[0]) && cmd.command.includes(args[1]));
-                                if (command) {
-                                    botCalled = false;
-                                    command.execute(message, args);
-                                }
-                            }
-                        }
+                        botVoiceCommand(message, transcription);
                     }
                 });
             }

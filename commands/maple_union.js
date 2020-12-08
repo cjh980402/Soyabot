@@ -13,10 +13,10 @@ module.exports = {
 
         const union = (await Maple.isMain()) ? Maple.homeUnion() : null;
         if (union == null) {
-            return message.channel.send(`[${args[0]}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
+            return message.channel.send(`[${Maple.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
         }
         else {
-            return message.channel.send(`[${args[0]}]\n직업: ${union[3]}\n유니온 레벨: ${union[0].toLocaleString()}\n전투력: ${union[1].toLocaleString()}\n일일 코인 수급량: ${union[2]}`);
+            return message.channel.send(`[${Maple.Name}]\n직업: ${union[3]}\n유니온 레벨: ${union[0].toLocaleString()}\n전투력: ${union[1].toLocaleString()}\n일일 코인 수급량: ${union[2]}`);
         }
     }
 };

@@ -13,13 +13,13 @@ module.exports = {
         const Maple = new mapleModule(args[0]);
         const rslt = (await Maple.isExist()) ? Maple.homeLevel() : null;
         if (rslt == null) {
-            return message.channel.send(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);
+            return message.channel.send(`[${Maple.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
 
         const char_lv = rslt[0];
         const char_ex = rslt[1];
 
-        let repl = `[${args[0]}]\n직업: ${rslt[4]}\n현재: Lv.${char_lv}`;
+        let repl = `[${Maple.Name}]\n직업: ${rslt[4]}\n현재: Lv.${char_lv}`;
         if (char_lv < 275) {
             const sumExp = levelTable[char_lv - 1] + char_ex;
             const percentage = (char_ex / (levelTable[char_lv] - levelTable[char_lv - 1]) * 100).toFixed(2);

@@ -1,5 +1,5 @@
 const OS = require('os');
-const { exec } = require("../util/async_to_promis");
+const { cmd } = require('../admin/admin_function');
 
 module.exports = {
     usage: `${client.prefix}상태`,
@@ -17,7 +17,7 @@ module.exports = {
 
         let memory;
         if (process.platform == "linux") {
-            const memorycmd = (await exec("free")).stdout.split(/\s+/);
+            const memorycmd = (await cmd("free")).split(/\s+/);
             memory = 100 - Math.round(memorycmd[13] / memorycmd[8] * 100);
         }
         else {
