@@ -21,8 +21,8 @@ class Maple {
         this.homeLevelURL = `https://maplestory.nexon.com/Ranking/World/Total?c=${encodeURI(name)}`; // 초기값은 일반 서버
         this.homeUnionURL = `https://maplestory.nexon.com/Ranking/Union?c=${encodeURI(name)}`;
         this.ggData = null;
-        this.homeLevel = null;
-        this.homeUnion = null;
+        this.homeLevelData = null;
+        this.homeUnionData = null;
     }
     get Name() {
         return this.name;
@@ -41,28 +41,28 @@ class Maple {
                 len++;
             }
         }
-        this.homeLevel = await linkParse(this.homeLevelURL);
-        if (this.homeLevel("img[alt='메이플스토리 서비스 점검중!']").length != 0) {
+        this.homeLevelData = await linkParse(this.homeLevelURL);
+        if (this.homeLevelData("img[alt='메이플스토리 서비스 점검중!']").length != 0) {
             throw new Error("메이플 공식 홈페이지가 서비스 점검 중입니다.");
         }
 
-        if (this.homeLevel("tr[class]").length != 10) {
+        if (this.homeLevelData("tr[class]").length != 10) {
             this.homeLevelURL += "&w=254"; // 리부트 서버 목록
             this.homeLevel = await linkParse(this.homeLevelURL);
         }
-        if (len < 1 || len > 12 || this.homeLevel("tr[class]").length != 10) {
+        if (len < 1 || len > 12 || this.homeLevelData("tr[class]").length != 10) {
             return false; // 없는 캐릭터
         }
         return true; // 있는 캐릭터
     }
     homeLevel() {
-        let data = this.homeLevel(".search_com_chk > td");
+        let data = this.homeLevelData(".search_com_chk > td");
         if (data.length == 0) {
-            const nickList = this.homeLevel("tr[class] > td.left > dl > dt > a"); // 순위 리스트의 닉네임
+            const nickList = this.homeLevelData("tr[class] > td.left > dl > dt > a"); // 순위 리스트의 닉네임
             for (let i = 0; i < 10; i++) {
                 if (this.name.toLowerCase() == nickList.eq(i).text().toLowerCase()) {
                     this.name = nickList.eq(i).text();
-                    data = this.homeLevel("tr[class]").eq(i).find("td");
+                    data = this.homeLevelData("tr[class]").eq(i).find("td");
                     break;
                 }
             }
@@ -86,8 +86,8 @@ class Maple {
                 len++;
             }
         }
-        this.homeUnion = await linkParse(this.homeUnionURL);
-        if (this.homeUnion("img[alt='메이플스토리 서비스 점검중!']").length != 0) {
+        this.homeUnionData = await linkParse(this.homeUnionURL);
+        if (this.homeUnionData("img[alt='메이플스토리 서비스 점검중!']").length != 0) {
             throw new Error("메이플 공식 홈페이지가 서비스 점검 중입니다.");
         }
 
@@ -97,13 +97,13 @@ class Maple {
         return true; // 유니온 기록이 있음
     }
     homeUnion() {
-        let data = this.homeUnion(".search_com_chk > td");
+        let data = this.homeUnionData(".search_com_chk > td");
         if (data.length == 0) {
-            const nickList = this.homeUnion("tr > td.left > dl > dt > a"); // 순위 리스트의 닉네임
+            const nickList = this.homeUnionData("tr > td.left > dl > dt > a"); // 순위 리스트의 닉네임
             for (let i = 0; i < 10; i++) {
                 if (this.name.toLowerCase() == nickList.eq(i).text().toLowerCase()) {
                     this.name = nickList.eq(i).text();
-                    data = this.homeUnion("tr").eq(i + 2).find("td");
+                    data = this.homeUnionData("tr").eq(i + 2).find("td");
                     break;
                 }
             }
