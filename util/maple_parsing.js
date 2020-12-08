@@ -48,7 +48,7 @@ class Maple {
 
         if (this.homeLevelData("tr[class]").length != 10) {
             this.homeLevelURL += "&w=254"; // 리부트 서버 목록
-            this.homeLevel = await linkParse(this.homeLevelURL);
+            this.homeLevelData = await linkParse(this.homeLevelURL);
         }
         if (len < 1 || len > 12 || this.homeLevelData("tr[class]").length != 10) {
             return false; // 없는 캐릭터
@@ -91,7 +91,7 @@ class Maple {
             throw new Error("메이플 공식 홈페이지가 서비스 점검 중입니다.");
         }
 
-        if (len < 1 || len > 12 || this.homeUnion("tr").length != 12) {
+        if (len < 1 || len > 12 || this.homeUnionData("tr").length != 12) {
             return false; // 유니온 기록이 없음
         }
         return true; // 유니온 기록이 있음
