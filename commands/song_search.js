@@ -1,7 +1,8 @@
 const { MessageEmbed, Collection } = require("discord.js");
-const { GOOGLE_API_KEY } = require("../soyabot_config.json");
-const YouTubeAPI = require("simple-youtube-api");
-const youtube = new YouTubeAPI(GOOGLE_API_KEY);
+// const { GOOGLE_API_KEY } = require("../soyabot_config.json");
+// const YouTubeAPI = require("simple-youtube-api");
+// const youtube = new YouTubeAPI(GOOGLE_API_KEY);
+const ytsr = require('ytsr');
 
 module.exports = {
     usage: `${client.prefix}search (영상 제목)`,
@@ -31,12 +32,15 @@ module.exports = {
 
         let resultsMessage;
         try {
-            const results = await youtube.searchVideos(search, 10);
+            const filter = (await ytsr.getFilters(search)).get("Type").find(v => v.name == "Video").ref;
+            const results = (await ytsr(filter, { limit: 15 })).items.filter(v => v.type == "video");
+            // const results = await youtube.searchVideos(search, 10);
             if (results.length == 0) {
                 return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");
             }
 
-            results.map((video, index) => resultsEmbed.addField(video.shortURL, `${index + 1}. ${video.title.decodeHTML().decodeHTML()}`));
+            // results.map((video, index) => resultsEmbed.addField(video.shortURL, `${index + 1}. ${video.title.decodeHTML().decodeHTML()}`));
+            results.map((video, index) => resultsEmbed.addField(`https://youtu.be/${video.id}`, `${index + 1}. ${video.title}`));
 
             resultsMessage = await message.channel.send(resultsEmbed);
 

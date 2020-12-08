@@ -85,9 +85,8 @@ module.exports = {
                 module.exports.play(queue.songs[0], message);
             });
 
-        let playingMessage;
+        const playingMessage = await queue.textChannel.send(`🎶 노래 재생 시작: **${song.title}** ${song.url}`);
         try {
-            playingMessage = await queue.textChannel.send(`🎶 노래 재생 시작: **${song.title}** ${song.url}`);
             await playingMessage.react("⏯");
             await playingMessage.react("⏭");
             await playingMessage.react("🔇");

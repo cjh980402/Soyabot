@@ -1,7 +1,6 @@
 const { GOOGLE_API_KEY } = require("../soyabot_config.json");
 const { Lame } = require('node-lame');
 const fetch = require('node-fetch');
-let isRecord = false;
 let botCalled = false;
 
 module.exports = {
@@ -44,7 +43,6 @@ module.exports = {
         connection.on('speaking', async (user, speaking) => {
             if (speaking) {
                 // 분석을 위한 음성 녹음 시작
-                isRecord = true;
                 const audioStream = receiver.createStream(user, { mode: 'pcm' });
                 const pcmBufferChunks = [];
                 audioStream.on('data', (d) => {
@@ -53,7 +51,6 @@ module.exports = {
 
                 audioStream.on('end', async () => {
                     // 음성 녹음 종료
-                    isRecord = false;
                     const pcmBuffer = Buffer.concat(pcmBufferChunks);
 
                     const encoder = new Lame({
@@ -80,19 +77,27 @@ module.exports = {
                     const transcription = (await response.json())?.results?.map(result => result.alternatives[0].transcript).join("\n").trim();
                     if (transcription) {
                         message.channel.send(`분석 결과: ${transcription}`);
-                    }
-                    if (/안녕\s*소야/.test(transcription)) {
-                        botCalled = true;
-                        setTimeout(() => { botCalled = false }, 120000);
-                        message.channel.send("소야봇을 호출하셨습니다.");
-                    }
-                    if (botCalled && transcription?.includes("노래")) {
-                        botCalled = false;
-                        return client.commands.find((cmd) => cmd.command.includes("play")).execute(message, ["멜론차트"]);
-                    }
-                    else if (botCalled && /메이플\s*이벤트/.test(transcription)) {
-                        botCalled = false;
-                        return client.commands.find((cmd) => cmd.command.includes("이벤트")).execute(message);
+                        if (!botCalled && /(안녕|하이)\s*소야/.test(transcription)) {
+                            botCalled = true;
+                            setTimeout(() => { botCalled = false }, 60000); // 1분 후 호출 비활성화
+                            message.channel.send("소야봇을 호출하셨습니다.");
+                        }
+                        else if (botCalled) {
+                            const songcmd = /(.*)(노래|음악|재생목록).*(틀어|재생)/.exec(transcription);
+                            if (songcmd) {
+                                botCalled = false;
+                                const args = (songcmd[1].trim() || "멜론 차트").split(/\s+/);
+                                client.commands.find((cmd) => cmd.command.includes(songcmd[2] == "재생목록" ? "playlist" : "play")).execute(message, args);
+                            }
+                            else {
+                                const args = transcription.split(/\s+/);
+                                const command = client.commands.find((cmd) => cmd.type.includes(args[0]) && cmd.command.includes(args[1]));
+                                if (command) {
+                                    botCalled = false;
+                                    command.execute(message, args);
+                                }
+                            }
+                        }
                     }
                 });
             }

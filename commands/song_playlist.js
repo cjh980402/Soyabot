@@ -3,6 +3,7 @@ const { play } = require("../include/play");
 const { MAX_PLAYLIST_SIZE, DEFAULT_VOLUME, GOOGLE_API_KEY, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
 const YouTubeAPI = require("simple-youtube-api");
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
+const ytsr = require('ytsr');
 const scdl = require("soundcloud-downloader").default;
 
 module.exports = {
@@ -39,29 +40,19 @@ module.exports = {
         const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
         const playlistPattern = /[&?]list=([\w-]+)/i;
         const url = args[0];
-        const urlValid = playlistPattern.test(url);
+        let playlistID = playlistPattern.exec(url)?.[1];
 
         // 영상 주소가 주어진 경우는 영상을 실행
-        if ((!urlValid && videoPattern.test(url)) || (scdl.isValidUrl(url) && !url.includes("/sets/"))) {
+        if ((!playlistID && videoPattern.test(url)) || (scdl.isValidUrl(url) && !url.includes("/sets/"))) {
             return client.commands.find((cmd) => cmd.command.includes("play")).execute(message, args);
         }
-
-        const queueConstruct = {
-            textChannel: message.channel,
-            channel, // channel이란 property를 설정함과 동시에 값은 channel 변수의 값
-            connection: null,
-            songs: [],
-            loop: false,
-            volume: DEFAULT_VOLUME ?? 100,
-            playing: true
-        };
 
         let playlist = null;
         let videos = [];
 
         if (scdl.isValidUrl(url)) {
             message.channel.send('⌛ 재생 목록을 가져오는 중...');
-            playlist = await scdl.getSetInfo(args[0], SOUNDCLOUD_CLIENT_ID);
+            playlist = await scdl.getSetInfo(url, SOUNDCLOUD_CLIENT_ID);
             videos = playlist.tracks.slice(0, MAX_PLAYLIST_SIZE ?? 10).map((track) => ({
                 title: track.title,
                 url: track.permalink_url,
@@ -69,24 +60,29 @@ module.exports = {
             }));
         }
         else {
-            if (urlValid) {
-                playlist = await youtube.getPlaylistByID(playlistPattern.exec(url)[1], { part: "snippet" });
-            }
-            else {
-                const results = await youtube.searchPlaylists(search, 1, { part: "snippet" });
-                if (results.length == 0) {
+            if (!playlistID) {
+                const filter = (await ytsr.getFilters(search)).get("Type").find(v => v.name == "Playlist").ref;
+                playlistID = (await ytsr(filter, { limit: 1 })).items[0]?.playlistID;
+                if (!playlistID) {
                     return message.reply("재생목록을 찾지 못했습니다 :(");
                 }
-                playlist = results[0];
             }
+            playlist = await youtube.getPlaylistByID(playlistID, { part: "snippet" });
+            /*if (playlistID) {
+                playlist = await youtube.getPlaylistByID(playlistID, { part: "snippet" });
+            }
+            else {
+                playlist = (await youtube.searchPlaylists(search, 1, { part: "snippet" }))[0];
+                if (!playlist) {
+                    return message.reply("재생목록을 찾지 못했습니다 :(");
+                }
+            }*/
             videos = (await playlist.getVideos(MAX_PLAYLIST_SIZE ?? 10, { part: "snippet" })).map((video) => ({
                 title: video.title.decodeHTML(),
                 url: video.url,
                 duration: video.durationSeconds
             }));
         }
-
-        serverQueue ? serverQueue.songs.push(...videos) : queueConstruct.songs.push(...videos);
 
         const playlistEmbed = new MessageEmbed()
             .setTitle(`${playlist.title.decodeHTML()}`)
@@ -96,25 +92,38 @@ module.exports = {
             .setTimestamp();
 
         if (playlistEmbed.description.length > 2000) {
-            playlistEmbed.description = playlistEmbed.description.substr(0, 1900) + "\n\n재생목록이 글자수 제한보다 깁니다...";
+            playlistEmbed.description = `${playlistEmbed.description.substr(0, 1900)}...\n\n재생목록이 글자수 제한보다 깁니다...`;
         }
 
-        message.channel.send(serverQueue ? `✅ ${message.author}가 재생목록을 추가하였습니다.` : `✅ ${message.author}가 재생목록을 시작했습니다.`, playlistEmbed);
+        if (serverQueue) {
+            serverQueue.songs.push(...videos);
+            return serverQueue.textChannel.send(`✅ ${message.author}가 재생목록을 추가하였습니다.`, playlistEmbed);
+        }
 
-        if (!serverQueue) {
-            client.queue.set(message.guild.id, queueConstruct);
-            try {
-                queueConstruct.connection = await channel.join();
-                queueConstruct.connection.setMaxListeners(20); // 이벤트 개수 제한 증가
-                await queueConstruct.connection.voice.setSelfDeaf(true);
-                play(queueConstruct.songs[0], message);
-            }
-            catch (e) {
-                console.error(e);
-                client.queue.delete(message.guild.id);
-                await channel.leave();
-                return message.channel.send(`채널에 참가할 수 없습니다: ${e.message}`);
-            }
+        const queueConstruct = {
+            textChannel: message.channel,
+            channel, // channel이란 property를 설정함과 동시에 값은 channel 변수의 값
+            connection: null,
+            songs: [...videos],
+            loop: false,
+            volume: DEFAULT_VOLUME ?? 100,
+            playing: true
+        };
+
+        client.queue.set(message.guild.id, queueConstruct);
+        message.channel.send(`✅ ${message.author}가 재생목록을 시작했습니다.`, playlistEmbed);
+
+        try {
+            queueConstruct.connection = await channel.join();
+            queueConstruct.connection.setMaxListeners(20); // 이벤트 개수 제한 증가
+            await queueConstruct.connection.voice.setSelfDeaf(true);
+            play(queueConstruct.songs[0], message);
+        }
+        catch (e) {
+            console.error(e);
+            client.queue.delete(message.guild.id);
+            await channel.leave();
+            return message.channel.send(`채널에 참가할 수 없습니다: ${e.message}`);
         }
     }
 };

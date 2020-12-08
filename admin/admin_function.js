@@ -82,7 +82,8 @@ Object.defineProperty(Object.prototype, "prop", {
                 return `${v}: error`;
             }
         }).join("\n");
-    }
+    },
+    set: function () { }
 });
 
 Object.defineProperty(Object.prototype, "pprop", {
@@ -95,5 +96,6 @@ Object.defineProperty(Object.prototype, "pprop", {
                 return `${v}: error`;
             }
         }).join("\n");
-    }
+    },
+    set: function () { }
 });

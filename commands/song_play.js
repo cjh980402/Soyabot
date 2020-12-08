@@ -1,8 +1,9 @@
 const { play } = require("../include/play");
-const { DEFAULT_VOLUME, GOOGLE_API_KEY, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
+const { DEFAULT_VOLUME, /*GOOGLE_API_KEY,*/ SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
 const ytdl = require("ytdl-core");
-const YouTubeAPI = require("simple-youtube-api");
-const youtube = new YouTubeAPI(GOOGLE_API_KEY);
+// const YouTubeAPI = require("simple-youtube-api");
+// const youtube = new YouTubeAPI(GOOGLE_API_KEY);
+const ytsr = require('ytsr');
 const scdl = require("soundcloud-downloader").default;
 
 module.exports = {
@@ -46,16 +47,6 @@ module.exports = {
             return client.commands.find((cmd) => cmd.command.includes("playlist")).execute(message, args);
         }
 
-        const queueConstruct = {
-            textChannel: message.channel,
-            channel, // channel이란 property를 설정함과 동시에 값은 channel 변수의 값
-            connection: null,
-            songs: [],
-            loop: false,
-            volume: DEFAULT_VOLUME ?? 100,
-            playing: true
-        };
-
         let song = null;
 
         if (scdl.isValidUrl(url)) {
@@ -77,11 +68,12 @@ module.exports = {
         else {
             let resultURL = url;
             if (!urlValid) {
-                const results = await youtube.searchVideos(search, 1);
-                if (results.length == 0) {
+                const filter = (await ytsr.getFilters(search)).get("Type").find(v => v.name == "Video").ref;
+                resultURL = (await ytsr(filter, { limit: 1 })).items[0]?.link;
+                // resultURL = (await youtube.searchVideos(search, 1))[0]?.url;
+                if (!resultURL) {
                     return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");
                 }
-                resultURL = results[0].url;
             }
             const songInfo = await ytdl.getInfo(resultURL);
             song = {
@@ -96,7 +88,16 @@ module.exports = {
             return serverQueue.textChannel.send(`✅ ${message.author}가 **${song.title}**를 대기열에 추가했습니다.`);
         }
 
-        queueConstruct.songs.push(song);
+        const queueConstruct = {
+            textChannel: message.channel,
+            channel, // channel이란 property를 설정함과 동시에 값은 channel 변수의 값
+            connection: null,
+            songs: [song],
+            loop: false,
+            volume: DEFAULT_VOLUME ?? 100,
+            playing: true
+        };
+
         client.queue.set(message.guild.id, queueConstruct);
 
         try {
