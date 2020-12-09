@@ -20,11 +20,10 @@ module.exports = {
             return client.queue.delete(message.guild.id);
         }
 
-        let stream = null;
-        let streamType = song.url.includes("youtube.com") ? "opus" : "ogg/opus";
-
+        let stream = null, streamType = null;
         try {
             if (song.url.includes("youtube.com")) {
+                streamType = "opus";
                 stream = ytdlDiscord(song.url, {
                     filter: "audioonly",
                     quality: "highestaudio",
@@ -35,11 +34,12 @@ module.exports = {
             }
             else if (song.url.includes("soundcloud.com")) {
                 try {
+                    streamType = "ogg/opus";
                     stream = await scdl.downloadFormat(song.url, scdl.FORMATS.OPUS, SOUNDCLOUD_CLIENT_ID);
                 }
                 catch (e) {
-                    stream = await scdl.downloadFormat(song.url, scdl.FORMATS.MP3, SOUNDCLOUD_CLIENT_ID);
                     streamType = "unknown";
+                    stream = await scdl.downloadFormat(song.url, scdl.FORMATS.MP3, SOUNDCLOUD_CLIENT_ID);
                 }
             }
         }

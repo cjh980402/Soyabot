@@ -12,7 +12,7 @@ const dbhandler = require('./util/sqlite-handler');
 global.db = new dbhandler('./db/soyabot_data.db');
 global.client = new Client({ disableMentions: "everyone" }); // 여러 기능들에 의해 필수로 최상위 전역
 client.login(TOKEN);
-client.commands = new Array(); // 명령어 객체 저장할 배열
+client.commands = []; // 명령어 객체 저장할 배열
 client.prefix = PREFIX;
 client.queue = new Map();
 client.setMaxListeners(20); // 이벤트 개수 제한 증가

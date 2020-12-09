@@ -45,13 +45,13 @@ module.exports = {
             resultsMessage = await message.channel.send(resultsEmbed);
 
             message.channel.activeCollector = true;
-            let songs;
+            let songChoice;
             const response = await message.channel.awaitMessages((msg) => {
-                songs = msg.content.split(",").map((str) => +str.trim()); // ,가 없으면 길이가 1인 배열
-                return songs.every(v => !isNaN(v) && 1 <= v && v <= results.length);
+                songChoice = msg.content.split(",").map((str) => +str.trim()); // ,가 없으면 길이가 1인 배열
+                return songChoice.every(v => !isNaN(v) && 1 <= v && v <= results.length);
             }, { max: 1, time: 30000, errors: ["time"] });
 
-            for (let song of songs) {
+            for (let song of songChoice) {
                 await client.commands.find((cmd) => cmd.command.includes("play")).execute(message, [resultsEmbed.fields[song - 1].name]);
             }
 

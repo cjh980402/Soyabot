@@ -47,8 +47,7 @@ module.exports = {
             return client.commands.find((cmd) => cmd.command.includes("play")).execute(message, args);
         }
 
-        let playlist = null;
-        let videos = [];
+        let playlist = null, videos = [];
 
         if (scdl.isValidUrl(url)) {
             message.channel.send('⌛ 재생 목록을 가져오는 중...');
@@ -63,20 +62,12 @@ module.exports = {
             if (!playlistID) {
                 const filter = (await ytsr.getFilters(search)).get("Type").find(v => v.name == "Playlist").ref;
                 playlistID = (await ytsr(filter, { limit: 1 })).items[0]?.playlistID;
+                // playlistID = (await youtube.searchPlaylists(search, 1, { part: "snippet" }))[0]?.id;
                 if (!playlistID) {
                     return message.reply("재생목록을 찾지 못했습니다 :(");
                 }
             }
             playlist = await youtube.getPlaylistByID(playlistID, { part: "snippet" });
-            /*if (playlistID) {
-                playlist = await youtube.getPlaylistByID(playlistID, { part: "snippet" });
-            }
-            else {
-                playlist = (await youtube.searchPlaylists(search, 1, { part: "snippet" }))[0];
-                if (!playlist) {
-                    return message.reply("재생목록을 찾지 못했습니다 :(");
-                }
-            }*/
             videos = (await playlist.getVideos(MAX_PLAYLIST_SIZE ?? 10, { part: "snippet" })).map((video) => ({
                 title: video.title.decodeHTML(),
                 url: video.url,

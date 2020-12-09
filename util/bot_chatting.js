@@ -47,6 +47,21 @@ module.exports = function (message) {
             return message.channel.send('도잉도 짐승의 눈...');
         }
     }
+    else if (message.content.includes(client.prefix)) {
+        const cmd = Math.floor(Math.random() * 10);
+        if (cmd == 0) {
+            const send = (message.member?.nickname ?? message.author.username).split(/\s|\//)[2]?.trim();
+            if (send) {
+                return message.channel.send(`저도 '${send}' 해볼까요?`);
+            }
+        }
+    }
+    else if (message.content.includes('ㅊㅊㅊㅊ')) {
+        const cmd = Math.floor(Math.random() * 3);
+        if (cmd == 0) {
+            return message.channel.send('👍');
+        }
+    }
 }
 
 function recommendWork() {

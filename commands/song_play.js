@@ -1,8 +1,7 @@
 const { play } = require("../include/play");
-const { DEFAULT_VOLUME, /*GOOGLE_API_KEY,*/ SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
-const ytdl = require("ytdl-core");
-// const YouTubeAPI = require("simple-youtube-api");
-// const youtube = new YouTubeAPI(GOOGLE_API_KEY);
+const { DEFAULT_VOLUME, GOOGLE_API_KEY, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
+const YouTubeAPI = require("simple-youtube-api");
+const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 const ytsr = require('ytsr');
 const scdl = require("soundcloud-downloader").default;
 
@@ -40,10 +39,10 @@ module.exports = {
         const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
         const playlistPattern = /[&?]list=([\w-]+)/i;
         const url = args[0];
-        const urlValid = videoPattern.test(url);
+        let videoID = videoPattern.exec(url)?.[8];
 
         // 재생목록 주소가 주어진 경우는 재생목록을 실행
-        if ((!urlValid && playlistPattern.test(url)) || (scdl.isValidUrl(url) && url.includes("/sets/"))) {
+        if ((!videoID && playlistPattern.test(url)) || (scdl.isValidUrl(url) && url.includes("/sets/"))) {
             return client.commands.find((cmd) => cmd.command.includes("playlist")).execute(message, args);
         }
 
@@ -66,21 +65,20 @@ module.exports = {
             }
         }
         else {
-            let resultURL = url;
-            if (!urlValid) {
+            if (!videoID) {
                 const filter = (await ytsr.getFilters(search)).get("Type").find(v => v.name == "Video").ref;
-                resultURL = (await ytsr(filter, { limit: 1 })).items[0]?.link;
-                // resultURL = (await youtube.searchVideos(search, 1))[0]?.url;
-                if (!resultURL) {
+                videoID = (await ytsr(filter, { limit: 1 })).items[0]?.id;
+                // videoID = (await youtube.searchVideos(search, 1))[0]?.id;
+                if (!videoID) {
                     return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");
                 }
             }
-            const songInfo = await ytdl.getInfo(resultURL);
+            const songInfo = await youtube.getVideoByID(videoID);
             song = {
-                title: songInfo.videoDetails.title.decodeHTML(),
-                url: songInfo.videoDetails.video_url,
-                duration: songInfo.videoDetails.lengthSeconds
-            };
+                title: songInfo.title.decodeHTML(),
+                url: songInfo.url,
+                duration: songInfo.durationSeconds
+            }
         }
 
         if (serverQueue) {

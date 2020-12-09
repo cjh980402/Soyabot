@@ -9,7 +9,7 @@ async function linkParse(link) {
     return cheerio.load(await (await fetch(link)).text());
 }
 
-async function linkJSon(link) {
+async function linkJSON(link) {
     return await (await fetch(link)).json();
 }
 
@@ -35,12 +35,7 @@ class Maple {
     }
     // 이하 모두 매소드
     async isExist() {
-        let len = this.name.length;
-        for (let c of this.name) {
-            if (/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(c)) {
-                len++;
-            }
-        }
+        const len = this.name.length + this.name.match(/[가-힣]/g).length;
         this.homeLevelData = await linkParse(this.homeLevelURL);
         if (this.homeLevelData("img[alt='메이플스토리 서비스 점검중!']").length != 0) {
             throw new Error("메이플 공식 홈페이지가 서비스 점검 중입니다.");
@@ -61,7 +56,7 @@ class Maple {
             const nickList = this.homeLevelData("tr[class] > td.left > dl > dt > a"); // 순위 리스트의 닉네임
             for (let i = 0; i < 10; i++) {
                 if (this.name.toLowerCase() == nickList.eq(i).text().toLowerCase()) {
-                    this.name = nickList.eq(i).text();
+                    this.name = nickList.eq(i).text(); // 대소문자 정확한 이름으로 갱신
                     data = this.homeLevelData("tr[class]").eq(i).find("td");
                     break;
                 }
@@ -80,12 +75,7 @@ class Maple {
         return [lev, exper, popul, guild, job];
     }
     async isMain() {
-        let len = this.name.length;
-        for (let c of this.name) {
-            if (/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/.test(c)) {
-                len++;
-            }
-        }
+        const len = this.name.length + this.name.match(/[가-힣]/g).length;
         this.homeUnionData = await linkParse(this.homeUnionURL);
         if (this.homeUnionData("img[alt='메이플스토리 서비스 점검중!']").length != 0) {
             throw new Error("메이플 공식 홈페이지가 서비스 점검 중입니다.");
@@ -102,7 +92,7 @@ class Maple {
             const nickList = this.homeUnionData("tr > td.left > dl > dt > a"); // 순위 리스트의 닉네임
             for (let i = 0; i < 10; i++) {
                 if (this.name.toLowerCase() == nickList.eq(i).text().toLowerCase()) {
-                    this.name = nickList.eq(i).text();
+                    this.name = nickList.eq(i).text(); // 대소문자 정확한 이름으로 갱신
                     data = this.homeUnionData("tr").eq(i + 2).find("td");
                     break;
                 }
@@ -124,7 +114,7 @@ class Maple {
         if (this.ggData('div.alert.alert-warning.mt-3').length != 0) {
             throw new Error("메이플 GG 서버가 점검 중입니다.");
         }
-        else if (this.ggData('title').text().includes("Bad Gateway") || this.ggData('div.flex-center.position-ref.full-height').length != 0) {
+        else if (/Bad Gateway|Error/.test(this.ggData('title').text()) || this.ggData('div.flex-center.position-ref.full-height').length != 0) {
             throw new Error("메이플 GG 서버에 에러가 발생했습니다.");
         }
 
@@ -140,7 +130,7 @@ class Maple {
         const start = Date.now();
         while (1) {
             try {
-                const rslt = await linkJSon(`${this.ggURL}/sync`);
+                const rslt = await linkJSON(`${this.ggURL}/sync`);
                 if (rslt.error == false && rslt.done == true) {
                     this.ggData = await linkParse(this.ggURL);
                     return true; // 갱신성공
