@@ -35,7 +35,7 @@ class Maple {
     }
     // 이하 모두 매소드
     async isExist() {
-        const len = this.name.length + this.name.match(/[가-힣]/g).length;
+        const len = this.name.length + (this.name.match(/[가-힣]/g)?.length ?? 0);
         this.homeLevelData = await linkParse(this.homeLevelURL);
         if (this.homeLevelData("img[alt='메이플스토리 서비스 점검중!']").length != 0) {
             throw new Error("메이플 공식 홈페이지가 서비스 점검 중입니다.");
@@ -75,7 +75,7 @@ class Maple {
         return [lev, exper, popul, guild, job];
     }
     async isMain() {
-        const len = this.name.length + this.name.match(/[가-힣]/g).length;
+        const len = this.name.length + (this.name.match(/[가-힣]/g)?.length ?? 0);
         this.homeUnionData = await linkParse(this.homeUnionURL);
         if (this.homeUnionData("img[alt='메이플스토리 서비스 점검중!']").length != 0) {
             throw new Error("메이플 공식 홈페이지가 서비스 점검 중입니다.");
