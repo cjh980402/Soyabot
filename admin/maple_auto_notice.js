@@ -138,7 +138,7 @@ module.exports.startTestPatch = function () {
         testPatchTimer = setInterval(async () => {
             try {
                 const dball = await db.all("SELECT * FROM testpatch");
-                const version = dball[dball.length - 1].version + 1;
+                const version = dball[dball.length - 1].version + 1; // 새로 가져올 패치의 버전
                 const patchURL = `http://maplestory.dn.nexoncdn.co.kr/PatchT/01${version}/01${version - 1}to01${version}.patch`;
                 const patchHeader = (await fetch(patchURL)).headers;
                 if (patchHeader.get('content-type') == 'application/octet-stream') { // 파일이 감지된 경우
@@ -166,9 +166,9 @@ module.exports.startFlag = function () {
     const now = new Date();
     for (let i in flagTimer) {
         if (!flagTimer[i]) {
-            let flagDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), flagtime[i], 55); // 플래그 알림 시간 객체 저장
+            const flagDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), flagtime[i], 55); // 플래그 알림 시간 객체 저장
             if (now > flagDate) {
-                flagDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, flagtime[i], 55);
+                flagDate.setDate(now.getDate() + 1); // 플래그 시간 지났으면 다음 날 플래그로 알림 설정
             }
             setTimeout(async () => {
                 botNotice(`${flagtime[i] + 1}시 플래그를 준비하세요!`, "flag");
