@@ -32,15 +32,14 @@ module.exports = {
                 .setColor("#F8AA2A")
                 .attachFiles(attachment)
                 .setURL(Maple.GGURL)
-                .setImage('attachment://coordi.png');
-
-            coordiEmbed.addField('**헤어**', coordi[1], true);
-            coordiEmbed.addField('**성형**', coordi[2], true);
-            coordiEmbed.addField('**모자**', coordi[0], true);
-            coordiEmbed.addField('**상의**', coordi[3], true);
-            coordiEmbed.addField('**하의**', coordi[4], true);
-            coordiEmbed.addField('**신발**', coordi[5], true);
-            coordiEmbed.addField('**무기**', coordi[6], true);
+                .setImage('attachment://coordi.png')
+                .addField('**헤어**', coordi[1], true)
+                .addField('**성형**', coordi[2], true)
+                .addField('**모자**', coordi[0], true)
+                .addField('**상의**', coordi[3], true)
+                .addField('**하의**', coordi[4], true)
+                .addField('**신발**', coordi[5], true)
+                .addField('**무기**', coordi[6], true);
 
             return message.channel.send(coordiEmbed);
         }

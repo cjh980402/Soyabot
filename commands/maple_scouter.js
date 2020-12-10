@@ -74,20 +74,19 @@ module.exports = {
         }
 
         const attachment = new MessageAttachment(Maple.userImg(), 'scouter.png');
-        const coordiEmbed = new MessageEmbed()
+        const scouterEmbed = new MessageEmbed()
             .setTitle(`${Maple.Name}님의 측정결과`)
             .setColor("#F8AA2A")
             .attachFiles(attachment)
             .setURL(Maple.GGURL)
-            .setImage('attachment://scouter.png');
+            .setImage('attachment://scouter.png')
+            .addField('**직업**', job, true)
+            .addField('**유니온**', union.toLocaleString(), true)
+            .addField('**레벨**', level, true)
+            .addField('**무릉 기록**', `${murungfl}층`, true)
+            .addField('**기록 시간**', `${min}분 ${sec}초`, true)
+            .addField('**측정 결과**', `${grade}! (${score}점)`);
 
-        coordiEmbed.addField('**직업**', job, true);
-        coordiEmbed.addField('**유니온**', union.toLocaleString(), true);
-        coordiEmbed.addField('**레벨**', level, true);
-        coordiEmbed.addField('**무릉 기록**', `${murungfl}층`, true);
-        coordiEmbed.addField('**기록 시간**', `${min}분 ${sec}초`, true);
-        coordiEmbed.addField('**측정 결과**', `${grade}! (${score}점)`);
-
-        return message.channel.send(coordiEmbed);
+        return message.channel.send(scouterEmbed);
     }
 };
