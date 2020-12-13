@@ -1,5 +1,5 @@
 /**
- * Module Imports
+ * 모듈 import
  */
 const { Client, Collection } = require("discord.js");
 const cachingMessage = require('./util/message_caching');
@@ -19,15 +19,14 @@ client.setMaxListeners(20); // 이벤트 개수 제한 증가
 const cooldowns = new Set(); // 중복 명령 방지할 set
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사용자 입력을 이스케이프해서 정규식 내부에서 문자 그대로 취급하기 위해 치환하는 함수
 const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((resolve, reject) => setTimeout(() => reject(new Error("명령어 시간 초과")), ms))]);
-
 /**
- * Client Events
+ * 클라이언트 이벤트
  */
 client.on("ready", async () => {
     console.log(`${client.user.username} ready!`);
     client.user.setActivity(`${PREFIX}help and ${PREFIX}play`, { type: "LISTENING" });
     /**
-     * Import all commands
+     * 모든 명령 import
      */
     readdirSync("./commands").filter((file) => file.endsWith(".js")).forEach(file => { // commands 폴더속 .js 파일 걸러내기
         client.commands.push(require(`./commands/${file}`)); // 배열에 이름과 명령 객체를 push
@@ -41,7 +40,7 @@ client.on("error", console.error);
 client.on("message", async (message) => { // 각 메시지에 반응, 디스코드는 봇의 채팅도 이 이벤트에 들어와서 봇 채팅 캐싱도 같이됨
     let commandName;
     try {
-        console.log(`(${new Date().toKorean()}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username}: ${message.content}\n`);
+        console.log(`(${new Date().toLocaleString()}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username}: ${message.content}\n`);
         if (message.author.bot) { // 봇 여부 체크
             return;
         }
@@ -51,8 +50,8 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
 
         const prefixRegex = new RegExp(`^\\s*(<@!?${client.user.id}>|${escapeRegex(PREFIX)})\\s*`); // 문자열로 정규식 생성하기 위해 생성자 이용
         // 자기자신한테 하는 멘션 또는 PREFIX로 시작하는 명령어에 대응
-        // message.content : 메시지 내용 텍스트
-        // 멘션의 형태 : <@${user.id}>, 인용의 형태 : > ${내용}
+        // message.content: 메시지 내용 텍스트
+        // 멘션의 형태: <@${user.id}>, 인용의 형태: > ${내용}
         const matchedPrefix = prefixRegex.exec(message.content); // 정규식에 대응되는 명령어 접두어 부분을 탐색
         if (!matchedPrefix) {
             return botChatting(message); // 잡담 로직

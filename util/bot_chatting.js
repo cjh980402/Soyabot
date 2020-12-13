@@ -99,5 +99,5 @@ function choiceVS(msg) {
             return `"${choice[i]}" 항목이 중복입니다.`;
         }
     }
-    return (choice[Math.floor(Math.random() * choice.length)]);
+    return choice[Math.floor(Math.random() * choice.length)];
 }

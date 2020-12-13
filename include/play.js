@@ -70,16 +70,16 @@ module.exports = {
                 }
                 module.exports.play(queue.songs[0], message); // 재귀적으로 다음 곡 재생
             })
-            .on("error", async (err) => {
+            .on("error", async (e) => {
                 while (!collector) {
                     await sleep(500);
                 }
                 collector.stop();
-                if (err.message == "input stream: Video unavailable") {
+                if (e.message == "input stream: Video unavailable") {
                     message.channel.send("해당 국가에서 차단됐거나 비공개된 동영상입니다.");
                 }
                 else {
-                    console.error(err);
+                    console.error(e);
                 }
                 queue.songs.shift();
                 module.exports.play(queue.songs[0], message);
@@ -96,74 +96,76 @@ module.exports = {
             await playingMessage.react("⏹");
         }
         catch (e) {
-            message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]!**");
+            message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
         }
 
-        const filter = (reaction, user) => user.id !== client.user.id;
+        const filter = (reaction, user) => user.id != client.user.id;
         collector = playingMessage.createReactionCollector(filter, {
             time: song.duration > 0 ? song.duration * 1000 : 600000
         });
 
         collector.on("collect", async (reaction, user) => {
-            await reaction.users.remove(user);
-            if (!queue) {
-                return;
-            }
-            if (!queue.connection.dispatcher) {
-                return collector.stop();
-            }
-            const member = message.guild.member(user);
-            if (!canModifyQueue(member)) {
-                return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
-            }
+            try {
+                await reaction.users.remove(user);
+                if (!queue?.connection.dispatcher) {
+                    return collector.stop();
+                }
+                const member = message.guild.member(user);
+                if (!canModifyQueue(member)) {
+                    return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
+                }
 
-            if (reaction.emoji.name === "⏯") {
-                if (queue.playing) {
-                    queue.connection.dispatcher.pause(true);
-                    queue.textChannel.send(`${user} ⏸ 노래를 일시정지했습니다.`);
+                if (reaction.emoji.name == "⏯") {
+                    if (queue.playing) {
+                        queue.connection.dispatcher.pause(true);
+                        queue.textChannel.send(`${user} ⏸ 노래를 일시정지했습니다.`);
+                    }
+                    else {
+                        queue.connection.dispatcher.resume();
+                        queue.textChannel.send(`${user} ▶ 노래를 다시 틀었습니다.`);
+                    }
+                    queue.playing = !queue.playing;
                 }
-                else {
-                    queue.connection.dispatcher.resume();
-                    queue.textChannel.send(`${user} ▶ 노래를 다시 틀었습니다.`);
-                }
-                queue.playing = !queue.playing;
-            }
-            else if (reaction.emoji.name === "⏭") {
-                queue.playing = true;
-                queue.connection.dispatcher.end();
-                queue.textChannel.send(`${user} ⏭ 노래를 건너뛰었습니다.`);
-                collector.stop();
-            }
-            else if (reaction.emoji.name === "🔇") {
-                queue.volume = queue.volume <= 0 ? (DEFAULT_VOLUME ?? 100) : 0;
-                queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
-                queue.textChannel.send(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
-            }
-            else if (reaction.emoji.name === "🔉") {
-                queue.volume = Math.max(queue.volume - 10, 0);
-                queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
-                queue.textChannel.send(`${user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
-            }
-            else if (reaction.emoji.name === "🔊") {
-                queue.volume = Math.min(queue.volume + 10, 100);
-                queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
-                queue.textChannel.send(`${user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
-            }
-            else if (reaction.emoji.name === "🔁") {
-                queue.loop = !queue.loop;
-                queue.textChannel.send(`현재 반복 재생 상태: ${queue.loop ? "**ON**" : "**OFF**"}`);
-            }
-            else if (reaction.emoji.name === "⏹") {
-                queue.songs = [];
-                queue.textChannel.send(`${user} ⏹ 노래를 정지했습니다.`);
-                try {
+                else if (reaction.emoji.name == "⏭") {
+                    queue.playing = true;
                     queue.connection.dispatcher.end();
+                    queue.textChannel.send(`${user} ⏭ 노래를 건너뛰었습니다.`);
+                    collector.stop();
                 }
-                catch (e) {
-                    console.error(e);
-                    queue.connection.disconnect();
+                else if (reaction.emoji.name == "🔇") {
+                    queue.volume = queue.volume <= 0 ? (DEFAULT_VOLUME ?? 100) : 0;
+                    queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
+                    queue.textChannel.send(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
                 }
-                collector.stop();
+                else if (reaction.emoji.name == "🔉") {
+                    queue.volume = Math.max(queue.volume - 10, 0);
+                    queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
+                    queue.textChannel.send(`${user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
+                }
+                else if (reaction.emoji.name == "🔊") {
+                    queue.volume = Math.min(queue.volume + 10, 100);
+                    queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
+                    queue.textChannel.send(`${user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
+                }
+                else if (reaction.emoji.name == "🔁") {
+                    queue.loop = !queue.loop;
+                    queue.textChannel.send(`현재 반복 재생 상태: ${queue.loop ? "**ON**" : "**OFF**"}`);
+                }
+                else if (reaction.emoji.name == "⏹") {
+                    queue.songs = [];
+                    queue.textChannel.send(`${user} ⏹ 노래를 정지했습니다.`);
+                    try {
+                        queue.connection.dispatcher.end();
+                    }
+                    catch (e) {
+                        console.error(e);
+                        queue.connection.disconnect();
+                    }
+                    collector.stop();
+                }
+            }
+            catch (e) {
+                return queue.textChannel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
             }
         });
 

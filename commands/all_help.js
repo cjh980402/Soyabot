@@ -14,50 +14,45 @@ module.exports = {
             .map((cmd) => `**${cmd.usage}**\n- 대체 명령어: ${cmd.command.join(', ')}\n${cmd.description}`);
         // description이 없는 명령어는 히든 명령어
 
-        try {
-            let currentPage = 0;
-            const embeds = generateHelpEmbed(description);
-            const helpEmbed = await message.channel.send(
-                `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                embeds[currentPage]
-            );
-            if (embeds.length > 1) {
+        let currentPage = 0;
+        const embeds = generateHelpEmbed(description);
+        const helpEmbed = await message.channel.send(
+            `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+            embeds[currentPage]
+        );
+        if (embeds.length > 1) {
+            try {
                 await helpEmbed.react("⬅️");
                 await helpEmbed.react("⏹");
                 await helpEmbed.react("➡️");
-
-                const filter = (reaction, user) =>
-                    ["⬅️", "⏹", "➡️"].includes(reaction.emoji.name) && message.author.id === user.id;
-                const collector = helpEmbed.createReactionCollector(filter, { time: 60000 });
-
-                collector.on("collect", async (reaction, user) => {
-                    try {
-                        if (reaction.emoji.name === "➡️") {
-                            currentPage = (currentPage + 1) % embeds.length;
-                            helpEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                        }
-                        else if (reaction.emoji.name === "⬅️") {
-                            currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                            helpEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                        }
-                        else {
-                            collector.stop();
-                            if (message.guild) {
-                                await reaction.message.reactions.removeAll();
-                            }
-                        }
-                        if (message.guild) {
-                            await reaction.users.remove(user);
-                        }
-                    }
-                    catch {
-                        return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]!**");
-                    }
-                });
             }
-        }
-        catch {
-            return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]!**");
+            catch {
+                return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
+            }
+            const filter = (reaction, user) => message.author.id == user.id;
+            const collector = helpEmbed.createReactionCollector(filter, { time: 60000 });
+
+            collector.on("collect", async (reaction, user) => {
+                try {
+                    if (message.guild) {
+                        await reaction.users.remove(user);
+                    }
+                    if (reaction.emoji.name == "➡️") {
+                        currentPage = (currentPage + 1) % embeds.length;
+                        helpEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                    }
+                    else if (reaction.emoji.name == "⬅️") {
+                        currentPage = (currentPage - 1 + embeds.length) % embeds.length;
+                        helpEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                    }
+                    else if (reaction.emoji.name == "⏹") {
+                        collector.stop();
+                    }
+                }
+                catch {
+                    return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
+                }
+            });
         }
     }
 };

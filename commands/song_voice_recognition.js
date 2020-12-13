@@ -1,3 +1,4 @@
+const { replyAdmin } = require('../admin/bot_control');
 const { GOOGLE_API_KEY } = require("../soyabot_config.json");
 const { Lame } = require('node-lame');
 const fetch = require('node-fetch');
@@ -29,8 +30,8 @@ function botVoiceCommand(message, transcription) {
 }
 
 module.exports = {
-    usage: `${client.prefix}음성테스트`,
-    command: ["음성테스트", "ㅇㅅㅌㅅㅌ"],
+    usage: `${client.prefix}음성인식`,
+    command: ["음성인식", "ㅇㅅㅇㅅ"],
     // description: "- 음성인식 기능 테스트 용도입니다.",
     type: ["음악"],
     async execute(message) {
@@ -55,7 +56,16 @@ module.exports = {
             return message.reply("이 음성 채널에서 말을 할 수 없습니다. 적절한 권한이 있는지 확인해야합니다.");
         }
 
-        const connection = await channel.join();
+        let connection = null;
+        try {
+            connection = await channel.join();
+        }
+        catch (e) {
+            replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e?.stack}`);
+            await channel.leave();
+            return message.channel.send(`채널에 참가할 수 없습니다: ${e.message}`);
+        }
+
         if (connection.eventNames().includes("speaking")) {
             if (!serverQueue) { // 음악 기능이 실행 중이지 않을 때만 연결을 끊는다.
                 connection.disconnect();

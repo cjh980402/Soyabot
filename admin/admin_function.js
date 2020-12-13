@@ -65,13 +65,6 @@ Object.defineProperty(String.prototype, "decodeHTML", {
     }
 });
 
-Object.defineProperty(Date.prototype, "toKorean", {
-    value: function () {
-        const week = ['일', '월', '화', '수', '목', '금', '토'];
-        return `${this.getFullYear()}. ${this.getMonth() + 1}. ${this.getDate()}.(${week[this.getDay()]}) ${this.getHours()}시 ${this.getMinutes()}분 ${this.getSeconds()}초`;
-    }
-});
-
 Object.defineProperty(Object.prototype, "prop", {
     get: function () {
         return Object.getOwnPropertyNames(this).map(v => {

@@ -42,7 +42,7 @@ module.exports = {
 
         const messagestat = await db.get(`SELECT * FROM messagedb WHERE channelsenderid = ?`, [`${message.guild.id} ${targetInfo.user.id}`]);
         if (messagestat) {
-            return message.channel.send(`${targetInfo.nickname || targetInfo.user.username}의 최근 채팅\n채팅 내용: ${messagestat.lastmessage}\n${new Date(messagestat.lasttime).toKorean()}`);
+            return message.channel.send(`${targetInfo.nickname || targetInfo.user.username}의 최근 채팅\n채팅 내용: ${messagestat.lastmessage}\n${new Date(messagestat.lasttime).toLocaleString()}`);
         }
         else {
             return message.channel.send(`${targetInfo.nickname || targetInfo.user.username}의 채팅기록이 없습니다.`);

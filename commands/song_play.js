@@ -1,4 +1,5 @@
 const { play } = require("../include/play");
+const { replyAdmin } = require('../admin/bot_control');
 const { DEFAULT_VOLUME, GOOGLE_API_KEY, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
 const YouTubeAPI = require("simple-youtube-api");
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
@@ -35,34 +36,28 @@ module.exports = {
             return message.reply("이 음성 채널에서 말을 할 수 없습니다. 적절한 권한이 있는지 확인해야합니다.");
         }
 
+        const url = args[0];
         const search = args.join(" ");
+        const scPattern = /^(https?:\/\/)?((www\.)?(m\.)?soundcloud\.(com|app))\/(.+)/i;
         const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
         const playlistPattern = /[&?]list=([\w-]+)/i;
-        const url = args[0];
+        const scVideo = scPattern.exec(url)?.[6];
         let videoID = videoPattern.exec(url)?.[8];
 
         // 재생목록 주소가 주어진 경우는 재생목록을 실행
-        if ((!videoID && playlistPattern.test(url)) || (scdl.isValidUrl(url) && url.includes("/sets/"))) {
+        if ((!videoID && playlistPattern.test(url)) || (scVideo && url.includes("/sets/"))) {
             return client.commands.find((cmd) => cmd.command.includes("playlist")).execute(message, args);
         }
 
         let song = null;
 
-        if (scdl.isValidUrl(url)) {
-            try {
-                const trackInfo = await scdl.getInfo(url, SOUNDCLOUD_CLIENT_ID);
-                song = {
-                    title: trackInfo.title,
-                    url: trackInfo.permalink_url,
-                    duration: Math.ceil(trackInfo.duration / 1000)
-                };
-            }
-            catch (error) {
-                if (error.statusCode === 404) {
-                    return message.reply("해당하는 Soundcloud 트랙을 찾지 못했습니다.");
-                }
-                return message.reply("Soundcloud 트랙을 재생하는 중 에러가 발생하였습니다.");
-            }
+        if (scVideo) {
+            const trackInfo = await scdl.getInfo(`https://soundcloud.com/${scVideo}`, SOUNDCLOUD_CLIENT_ID);
+            song = {
+                title: trackInfo.title,
+                url: trackInfo.permalink_url,
+                duration: Math.ceil(trackInfo.duration / 1000)
+            };
         }
         else {
             if (!videoID) {
@@ -105,7 +100,7 @@ module.exports = {
             play(queueConstruct.songs[0], message);
         }
         catch (e) {
-            console.error(e);
+            replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e?.stack}`);
             client.queue.delete(message.guild.id);
             await channel.leave();
             return message.channel.send(`채널에 참가할 수 없습니다: ${e.message}`);

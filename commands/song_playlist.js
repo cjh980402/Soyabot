@@ -1,5 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const { play } = require("../include/play");
+const { replyAdmin } = require('../admin/bot_control');
 const { MAX_PLAYLIST_SIZE, DEFAULT_VOLUME, GOOGLE_API_KEY, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
 const YouTubeAPI = require("simple-youtube-api");
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
@@ -36,22 +37,24 @@ module.exports = {
             return message.reply("이 음성 채널에서 말을 할 수 없습니다. 적절한 권한이 있는지 확인해야합니다.");
         }
 
+        const url = args[0];
         const search = args.join(" ");
+        const scPattern = /^(https?:\/\/)?((www\.)?(m\.)?soundcloud\.(com|app))\/(.+)/i;
         const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
         const playlistPattern = /[&?]list=([\w-]+)/i;
-        const url = args[0];
+        const scVideo = scPattern.exec(url)?.[6];
         let playlistID = playlistPattern.exec(url)?.[1];
 
         // 영상 주소가 주어진 경우는 영상을 실행
-        if ((!playlistID && videoPattern.test(url)) || (scdl.isValidUrl(url) && !url.includes("/sets/"))) {
+        if ((!playlistID && videoPattern.test(url)) || (scVideo && !url.includes("/sets/"))) {
             return client.commands.find((cmd) => cmd.command.includes("play")).execute(message, args);
         }
 
         let playlist = null, videos = [];
 
-        if (scdl.isValidUrl(url)) {
+        if (scVideo) {
             message.channel.send('⌛ 재생 목록을 가져오는 중...');
-            playlist = await scdl.getSetInfo(url, SOUNDCLOUD_CLIENT_ID);
+            playlist = await scdl.getSetInfo(`https://soundcloud.com/${scVideo}`, SOUNDCLOUD_CLIENT_ID);
             videos = playlist.tracks.slice(0, MAX_PLAYLIST_SIZE ?? 10).map((track) => ({
                 title: track.title,
                 url: track.permalink_url,
@@ -111,7 +114,7 @@ module.exports = {
             play(queueConstruct.songs[0], message);
         }
         catch (e) {
-            console.error(e);
+            replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e?.stack}`);
             client.queue.delete(message.guild.id);
             await channel.leave();
             return message.channel.send(`채널에 참가할 수 없습니다: ${e.message}`);

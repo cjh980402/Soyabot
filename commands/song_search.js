@@ -24,27 +24,25 @@ module.exports = {
         }
 
         const search = args.join(" ");
-
         const resultsEmbed = new MessageEmbed()
             .setTitle(`**재생할 노래의 번호를 알려주세요.**`)
             .setDescription(`${search}의 검색 결과`)
             .setColor("#F8AA2A");
 
-        let resultsMessage;
+        const filter = (await ytsr.getFilters(search)).get("Type").find(v => v.name == "Video").ref;
+        const results = (await ytsr(filter, { limit: 12 })).items.filter(v => v.type == "video");
+        // const results = await youtube.searchVideos(search, 10);
+        if (results.length == 0) {
+            return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");
+        }
+
+        // results.map((video, index) => resultsEmbed.addField(video.shortURL, `${index + 1}. ${video.title.decodeHTML().decodeHTML()}`));
+        results.map((video, index) => resultsEmbed.addField(`https://youtu.be/${video.id}`, `${index + 1}. ${video.title}`));
+
+        const resultsMessage = await message.channel.send(resultsEmbed);
+
+        message.channel.activeCollector = true;
         try {
-            const filter = (await ytsr.getFilters(search)).get("Type").find(v => v.name == "Video").ref;
-            const results = (await ytsr(filter, { limit: 12 })).items.filter(v => v.type == "video");
-            // const results = await youtube.searchVideos(search, 10);
-            if (results.length == 0) {
-                return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");
-            }
-
-            // results.map((video, index) => resultsEmbed.addField(video.shortURL, `${index + 1}. ${video.title.decodeHTML().decodeHTML()}`));
-            results.map((video, index) => resultsEmbed.addField(`https://youtu.be/${video.id}`, `${index + 1}. ${video.title}`));
-
-            resultsMessage = await message.channel.send(resultsEmbed);
-
-            message.channel.activeCollector = true;
             let songChoice;
             const response = await message.channel.awaitMessages((msg) => {
                 songChoice = msg.content.split(",").map((str) => +str.trim()); // ,가 없으면 길이가 1인 배열
@@ -59,9 +57,12 @@ module.exports = {
             resultsMessage.delete();
             response.first().delete();
         }
-        catch (error) {
-            if (!(error instanceof Collection)) {
-                console.error(error); // 에러가 awaitMessages의 시간초과 때문이라면, 에러는 Collection<Snowflake, Message>
+        catch (e) {
+            if (!(e instanceof Collection)) {
+                console.error(e); // 에러가 awaitMessages의 시간초과 때문이라면, 에러는 Collection<Snowflake, Message>
+            }
+            else if (e.message == "Missing Permissions") {
+                message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
             }
             message.channel.activeCollector = false;
             resultsMessage.delete();

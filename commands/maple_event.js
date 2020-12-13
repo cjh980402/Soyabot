@@ -18,47 +18,45 @@ module.exports = {
             return message.channel.send('현재 진행중인 이벤트가 없습니다.')
         }
         else {
-            try {
-                let currentPage = 0;
-                const embeds = generateEventEmbed(links, names, dates);
-                const eventEmbed = await message.channel.send(
-                    `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                    embeds[currentPage]
-                );
-
-                if (embeds.length > 1) {
+            let currentPage = 0;
+            const embeds = generateEventEmbed(links, names, dates);
+            const eventEmbed = await message.channel.send(
+                `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                embeds[currentPage]
+            );
+            if (embeds.length > 1) {
+                try {
                     await eventEmbed.react("⬅️");
                     await eventEmbed.react("⏹");
                     await eventEmbed.react("➡️");
+                }
+                catch (e) {
+                    return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
+                }
+                const filter = (reaction, user) => message.author.id == user.id;
+                const collector = eventEmbed.createReactionCollector(filter, { time: 60000 });
 
-                    const filter = (reaction, user) =>
-                        ["⬅️", "⏹", "➡️"].includes(reaction.emoji.name) && message.author.id === user.id;
-                    const collector = eventEmbed.createReactionCollector(filter, { time: 60000 });
-
-                    collector.on("collect", async (reaction, user) => {
-                        try {
-                            if (reaction.emoji.name === "➡️") {
-                                currentPage = (currentPage + 1) % embeds.length;
-                                eventEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                            }
-                            else if (reaction.emoji.name === "⬅️") {
-                                currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                                eventEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                            }
-                            else {
-                                collector.stop();
-                                reaction.message.reactions.removeAll();
-                            }
+                collector.on("collect", async (reaction, user) => {
+                    try {
+                        if (message.guild) {
                             await reaction.users.remove(user);
                         }
-                        catch (e) {
-                            return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]!**");
+                        if (reaction.emoji.name == "➡️") {
+                            currentPage = (currentPage + 1) % embeds.length;
+                            eventEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
                         }
-                    });
-                }
-            }
-            catch (e) {
-                return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]!**");
+                        else if (reaction.emoji.name == "⬅️") {
+                            currentPage = (currentPage - 1 + embeds.length) % embeds.length;
+                            eventEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                        }
+                        else if (reaction.emoji.name == "⏹") {
+                            collector.stop();
+                        }
+                    }
+                    catch (e) {
+                        return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
+                    }
+                });
             }
         }
     }
