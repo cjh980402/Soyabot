@@ -3,6 +3,10 @@ const { MessageEmbed } = require("discord.js");
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 
+function calcIncrease(parse, selector) {
+    return `${parse(selector).eq(0).text()} (⬆ ${+parse(selector).eq(0).text() - +parse(selector).eq(1).text()})`;
+}
+
 module.exports = {
     usage: `${client.prefix}코로나`,
     command: ["코로나", "ㅋㄹㄴ"],
@@ -10,24 +14,32 @@ module.exports = {
     type: ["기타"],
     async execute(message) {
         const today = new Date();
+        const startday = new Date(Date.now() - 604800000); // 일주일 전을 시작일로 설정
         const params = new URLSearchParams();
         params.append("serviceKey", OPEN_API_KEY);
         params.append("pageNo", "1");
         params.append("numOfRows", "10");
-        params.append("startCreateDt", "20200310");
+        params.append("startCreateDt", `${startday.getFullYear()}${String(startday.getMonth() + 1).padStart(2, '0')}${String(startday.getDate()).padStart(2, '0')}`);
         params.append("endCreateDt", `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`);
         const response = await fetch(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?${params}`);
         const parse = cheerio.load(await response.text(), { xmlMode: true });
 
-        const coronaEmbed = new MessageEmbed()
-            .setTitle(`${new Date(parse("createDt").eq(0).text()).toLocaleString()} 기준`)
-            .setColor("#F8AA2A")
-            .setURL("http://ncov.mohw.go.kr")
-            .addField('**누적 확진자**', `${parse("decideCnt").eq(0).text()} (⬆ ${+parse("decideCnt").eq(0).text() - +parse("decideCnt").eq(1).text()})`, true)
-            .addField('**검사 중**', `${parse("examCnt").eq(0).text()} (⬆ ${+parse("examCnt").eq(0).text() - +parse("examCnt").eq(1).text()})`, true)
-            .addField('**격리 해제**', `${parse("clearCnt").eq(0).text()} (⬆ ${+parse("clearCnt").eq(0).text() - +parse("clearCnt").eq(1).text()})`, true)
-            .addField('**사망자**', `${parse("deathCnt").eq(0).text()} (⬆ ${+parse("deathCnt").eq(0).text() - +parse("deathCnt").eq(1).text()})`, true);
+        if (parse("resultCode").text() == "00") {
+            const coronaEmbed = new MessageEmbed()
+                .setTitle(`${new Date(parse("createDt").eq(0).text()).toLocaleString()} 기준`)
+                .setThumbnail("https://blogfiles.pstatic.net/MjAyMDEyMTNfMjYw/MDAxNjA3ODQwNTQwMDk4.aIk-UJFp5fjJFxullMfCfHdNGkAUtudaJEsHfMb7l24g.nQ33ZBQ0ZQ2r70XwsU-XfjBdNmIgx_XppPxRD9rc8XMg.PNG.9804cjh/1607840508787.png")
+                .setColor("#F8AA2A")
+                .setURL("http://ncov.mohw.go.kr")
+                .addField('**확진 환자**', calcIncrease(parse, "decideCnt"), true)
+                .addField('**검사 중**', calcIncrease(parse, "examCnt"), true)
+                .addField('**격리 해제**', calcIncrease(parse, "clearCnt"), true)
+                .addField('**격리 중**', calcIncrease(parse, "careCnt"), true)
+                .addField('**사망자**', calcIncrease(parse, "deathCnt"), true);
 
-        return message.channel.send(coronaEmbed);
+            return message.channel.send(coronaEmbed);
+        }
+        else {
+            return message.channel.send('코로나 현황을 조회할 수 없습니다.');
+        }
     }
 };
