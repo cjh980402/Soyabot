@@ -4,7 +4,9 @@ const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 
 function calcIncrease(parse, selector) {
-    return `${parse(selector).eq(0).text()} (⬆ ${+parse(selector).eq(0).text() - +parse(selector).eq(1).text()})`;
+    const today = +parse(selector).eq(0).text();
+    const yesterday = +parse(selector).eq(1).text();
+    return `${today.toLocaleString()} (${today >= yesterday ? `⬆️ ${(today - yesterday).toLocaleString()}` : `⬇️ ${(yesterday - today).toLocaleString()}`})`;
 }
 
 module.exports = {

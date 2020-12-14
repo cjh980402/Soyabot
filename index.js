@@ -37,7 +37,7 @@ client.on("ready", async () => {
 client.on("warn", console.log);
 client.on("error", console.error);
 
-client.on("message", async (message) => { // 각 메시지에 반응, 디스코드는 봇의 채팅도 이 이벤트에 들어와서 봇 채팅 캐싱도 같이됨
+client.on("message", async (message) => { // 각 메시지에 반응, 디스코드는 봇의 채팅도 이 이벤트에 들어옴
     let commandName;
     try {
         console.log(`(${new Date().toLocaleString()}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username}: ${message.content}\n`);
@@ -52,12 +52,12 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
         // 자기자신한테 하는 멘션 또는 PREFIX로 시작하는 명령어에 대응
         // message.content: 메시지 내용 텍스트
         // 멘션의 형태: <@${user.id}>, 인용의 형태: > ${내용}
-        const matchedPrefix = prefixRegex.exec(message.content); // 정규식에 대응되는 명령어 접두어 부분을 탐색
+        const matchedPrefix = prefixRegex.exec(message.content)?.[0]; // 정규식에 대응되는 명령어 접두어 부분을 탐색
         if (!matchedPrefix) {
             return botChatting(message); // 잡담 로직
         } // 멘션이나 PREFIX로 시작하지 않는 경우
 
-        const args = message.content.slice(matchedPrefix[0].length).trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
+        const args = message.content.slice(matchedPrefix.length).trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
         commandName = args.shift().toLowerCase(); // commandName은 args의 첫번째 원소(명령어 부분), shift로 인해 args에는 뒷부분만 남음
 
         const botModule = client.commands.find((cmd) => cmd.command.includes(commandName));
@@ -81,12 +81,12 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
         if (e instanceof Collection) { // awaitMessages에서 시간초과한 경우
             message.channel.send(`"${commandName.split("_")[0]}"의 입력 대기 시간이 초과되었습니다.`);
         }
-        else if (e?.message?.startsWith('메이플')) {
+        else if (e.message?.startsWith('메이플')) {
             message.reply(e.message);
         }
         else {
             message.reply("에러로그가 전송되었습니다.");
-            replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e?.stack}`);
+            replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e.$}`);
         }
     }
     finally {

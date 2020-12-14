@@ -65,7 +65,7 @@ Object.defineProperty(String.prototype, "decodeHTML", {
     }
 });
 
-Object.defineProperty(Object.prototype, "prop", {
+Object.defineProperty(Object.prototype, "$", {
     get: function () {
         return Object.getOwnPropertyNames(this).map(v => {
             try {
@@ -79,7 +79,7 @@ Object.defineProperty(Object.prototype, "prop", {
     set: function () { }
 });
 
-Object.defineProperty(Object.prototype, "pprop", {
+Object.defineProperty(Object.prototype, "$$", {
     get: function () {
         return Object.getOwnPropertyNames(this.__proto__).map(v => {
             try {
