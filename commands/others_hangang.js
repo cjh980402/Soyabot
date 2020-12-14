@@ -9,7 +9,7 @@ module.exports = {
     type: ["기타"],
     async execute(message) {
         const data = cheerio.load(iconv.decode(await (await fetch("http://www.koreawqi.go.kr/wQSCHomeLayout_D.wq?action_type=T#")).buffer(), "euc-kr"));
-        // 수질 정보 사이트 인코딩 : euc-kr
+        // 수질 정보 사이트 인코딩: euc-kr
         if (data('tr.site_S01004 > td').length != 8) {
             return message.channel.send("측정소 운전이 정지됐습니다.");
         }

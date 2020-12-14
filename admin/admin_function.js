@@ -1,5 +1,6 @@
 const Discord = require("discord.js"); // 디버깅용
 const { decodeHTML } = require("entities");
+const { inspect } = require("util");
 const { ADMIN_ID } = require("../soyabot_config.json");
 const { botNotice, replyRoomID } = require('./bot_control.js');
 const { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, startTestPatch, stopTestPatch, startFlag, stopFlag } = require('./maple_auto_notice');
@@ -65,7 +66,13 @@ Object.defineProperty(String.prototype, "decodeHTML", {
     }
 });
 
-Object.defineProperty(Object.prototype, "$", {
+Object.defineProperty(Object.prototype, "$i", { // util.inspect의 결과 출력
+    value: function (dep = 2) {
+        return inspect(this, { depth: dep });
+    }
+});
+
+Object.defineProperty(Object.prototype, "$", { // 객체의 키와 값 출력
     get: function () {
         return Object.getOwnPropertyNames(this).map(v => {
             try {
@@ -75,13 +82,18 @@ Object.defineProperty(Object.prototype, "$", {
                 return `${v}: error`;
             }
         }).join("\n");
-    },
-    set: function () { }
+    }
 });
 
-Object.defineProperty(Object.prototype, "$$", {
+Object.defineProperty(Object.prototype, "$k", { // 객체의 키만 출력
     get: function () {
-        return Object.getOwnPropertyNames(this.__proto__).map(v => {
+        return Object.getOwnPropertyNames(this).join("\n");
+    }
+});
+
+Object.defineProperty(Object.prototype, "$$", { // 상위 프로토타입의 키와 값 출력
+    get: function () {
+        return Object.getOwnPropertyNames(Object.getPrototypeOf(this)).map(v => {
             try {
                 return `${v}: ${this[v]}`;
             }
@@ -89,6 +101,11 @@ Object.defineProperty(Object.prototype, "$$", {
                 return `${v}: error`;
             }
         }).join("\n");
-    },
-    set: function () { }
+    }
+});
+
+Object.defineProperty(Object.prototype, "$$k", { // 상위 프로토타입의 키만 출력
+    get: function () {
+        return Object.getOwnPropertyNames(Object.getPrototypeOf(this)).join("\n");
+    }
 });

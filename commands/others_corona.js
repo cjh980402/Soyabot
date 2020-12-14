@@ -32,11 +32,11 @@ module.exports = {
                 .setThumbnail("https://blogfiles.pstatic.net/MjAyMDEyMTNfMjYw/MDAxNjA3ODQwNTQwMDk4.aIk-UJFp5fjJFxullMfCfHdNGkAUtudaJEsHfMb7l24g.nQ33ZBQ0ZQ2r70XwsU-XfjBdNmIgx_XppPxRD9rc8XMg.PNG.9804cjh/1607840508787.png")
                 .setColor("#F8AA2A")
                 .setURL("http://ncov.mohw.go.kr")
-                .addField('**확진 환자**', calcIncrease(parse, "decideCnt"), true)
-                .addField('**검사 중**', calcIncrease(parse, "examCnt"), true)
-                .addField('**격리 해제**', calcIncrease(parse, "clearCnt"), true)
-                .addField('**격리 중**', calcIncrease(parse, "careCnt"), true)
-                .addField('**사망자**', calcIncrease(parse, "deathCnt"), true);
+                .addField('**확진 환자**', calcIncrease(parse, "decideCnt"))
+                .addField('**검사 중**', calcIncrease(parse, "examCnt"))
+                .addField('**격리 해제**', calcIncrease(parse, "clearCnt"))
+                .addField('**격리 중**', calcIncrease(parse, "careCnt"))
+                .addField('**사망자**', calcIncrease(parse, "deathCnt"));
 
             return message.channel.send(coronaEmbed);
         }
