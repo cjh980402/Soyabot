@@ -41,8 +41,11 @@ module.exports.cmd = async function (_cmd) {
     return cmdResult.replace(/\u001b\[\d\dm/g, "").trimEnd();
 }
 
-module.exports.initBot = async function () {
+module.exports.initClient = async function () {
     client.suggestionChat = {};
+    client.setMaxListeners(20); // 이벤트 개수 제한 증가
+    client.options.retryLimit = 3; // 네트워크 재요청 횟수 설정
+
     await db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');

@@ -5,17 +5,16 @@ const { Client, Collection } = require("discord.js");
 const cachingMessage = require('./util/message_caching');
 const { readdirSync } = require("fs");
 const { TOKEN, PREFIX, ADMIN_ID } = require("./soyabot_config.json");
-const { adminChat, initBot } = require("./admin/admin_function");
+const { adminChat, initClient } = require("./admin/admin_function");
 const botChatting = require("./util/bot_chatting");
 const { replyAdmin } = require('./admin/bot_control');
-const dbhandler = require('./util/sqlite-handler');
-global.db = new dbhandler('./db/soyabot_data.db');
-global.client = new Client({ disableMentions: "everyone" }); // 여러 기능들에 의해 필수로 최상위 전역
+const sqlite = require('./util/sqlite-handler');
+global.db = new sqlite('./db/soyabot_data.db'); // 여러 기능들에 의해 필수로 최상위 전역
+global.client = new Client({ disableMentions: "everyone" });
 client.login(TOKEN);
 client.commands = []; // 명령어 객체 저장할 배열
+client.queue = new Map(); // 음악기능 정보 저장용
 client.prefix = PREFIX;
-client.queue = new Map();
-client.setMaxListeners(20); // 이벤트 개수 제한 증가
 const cooldowns = new Set(); // 중복 명령 방지할 set
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사용자 입력을 이스케이프해서 정규식 내부에서 문자 그대로 취급하기 위해 치환하는 함수
 const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((resolve, reject) => setTimeout(() => reject(new Error("명령어 시간 초과")), ms))]);
@@ -23,15 +22,14 @@ const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((reso
  * 클라이언트 이벤트
  */
 client.on("ready", async () => {
-    console.log(`${client.user.username} ready!`);
-    client.user.setActivity(`${PREFIX}help and ${PREFIX}play`, { type: "LISTENING" });
+    await initClient(); // 클라이언트 초기 세팅 함수
     /**
      * 모든 명령 import
      */
     readdirSync("./commands").filter((file) => file.endsWith(".js")).forEach(file => { // commands 폴더속 .js 파일 걸러내기
         client.commands.push(require(`./commands/${file}`)); // 배열에 이름과 명령 객체를 push
     });
-    await initBot();
+    client.user.setActivity(`${PREFIX}help and ${PREFIX}play`, { type: "LISTENING" });
     replyAdmin('소야봇이 작동 중입니다.');
 });
 client.on("warn", console.log);

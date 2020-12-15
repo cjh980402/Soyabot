@@ -12,7 +12,7 @@ module.exports = {
         }
         const queue = client.queue.get(message.guild.id);
 
-        if (!queue) {
+        if (!queue?.connection.dispatcher) {
             return message.reply("재생 중인 노래가 없습니다.");
         }
         if (!canModifyQueue(message.member)) {

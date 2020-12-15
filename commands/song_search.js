@@ -1,4 +1,5 @@
 const { MessageEmbed, Collection } = require("discord.js");
+const { replyAdmin } = require('../admin/bot_control');
 // const { GOOGLE_API_KEY } = require("../soyabot_config.json");
 // const YouTubeAPI = require("simple-youtube-api");
 // const youtube = new YouTubeAPI(GOOGLE_API_KEY);
@@ -25,13 +26,13 @@ module.exports = {
 
         const search = args.join(" ");
         const resultsEmbed = new MessageEmbed()
-            .setTitle(`**재생할 노래의 번호를 알려주세요.**`)
+            .setTitle("**재생할 노래의 번호를 알려주세요.**")
             .setDescription(`${search}의 검색 결과`)
             .setColor("#F8AA2A");
 
-        const filter = (await ytsr.getFilters(search)).get("Type").find(v => v.name == "Video").ref;
-        const results = (await ytsr(filter, { limit: 12 })).items.filter(v => v.type == "video");
-        // const results = await youtube.searchVideos(search, 10);
+        const filter = (await ytsr.getFilters(search)).get("Type").get("Video").url;
+        const results = (await ytsr(filter, { limit: 12 })).items;
+        // const results = await youtube.searchVideos(search, 12);
         if (results.length == 0) {
             return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");
         }
@@ -58,8 +59,8 @@ module.exports = {
             response.first().delete();
         }
         catch (e) {
-            if (!(e instanceof Collection)) {
-                console.error(e); // 에러가 awaitMessages의 시간초과 때문이라면, 에러는 Collection<Snowflake, Message>
+            if (!(e instanceof Collection)) { // 에러가 awaitMessages의 시간초과 때문이라면, 에러는 Collection<Snowflake, Message>
+                replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e.$}`);
             }
             else if (e.message == "Missing Permissions") {
                 message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");

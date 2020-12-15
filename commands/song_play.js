@@ -38,10 +38,10 @@ module.exports = {
 
         const url = args[0];
         const search = args.join(" ");
-        const scPattern = /^(https?:\/\/)?((www\.)?(m\.)?soundcloud\.(com|app))\/(.+)/i;
+        const scPattern = /^(https?:\/\/)?(www\.)?(m\.)?soundcloud\.(com|app)\/(.+)/i;
         const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?(youtube(-nocookie)?|youtube.googleapis)\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
         const playlistPattern = /[&?]list=([\w-]+)/i;
-        const scVideo = scPattern.exec(url)?.[6];
+        const scVideo = scPattern.exec(url)?.[5];
         let videoID = videoPattern.exec(url)?.[8];
 
         // 재생목록 주소가 주어진 경우는 재생목록을 실행
@@ -61,7 +61,7 @@ module.exports = {
         }
         else {
             if (!videoID) {
-                const filter = (await ytsr.getFilters(search)).get("Type").find(v => v.name == "Video").ref;
+                const filter = (await ytsr.getFilters(search)).get("Type").get("Video").url;
                 videoID = (await ytsr(filter, { limit: 1 })).items[0]?.id;
                 // videoID = (await youtube.searchVideos(search, 1))[0]?.id;
                 if (!videoID) {
@@ -100,7 +100,7 @@ module.exports = {
             play(queueConstruct.songs[0], message);
         }
         catch (e) {
-            replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e?.stack}`);
+            replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e.$}`);
             client.queue.delete(message.guild.id);
             await channel.leave();
             return message.channel.send(`채널에 참가할 수 없습니다: ${e.message}`);

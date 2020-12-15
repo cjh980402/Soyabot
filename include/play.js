@@ -122,7 +122,7 @@ module.exports = {
                     }
                     else {
                         queue.connection.dispatcher.resume();
-                        queue.textChannel.send(`${user} ▶ 노래를 다시 틀었습니다.`);
+                        queue.textChannel.send(`${user} ▶️ 노래를 다시 틀었습니다.`);
                     }
                     queue.playing = !queue.playing;
                 }
