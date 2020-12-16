@@ -31,6 +31,7 @@ module.exports = {
         const char_guild = level[3]; // 길드
         const char_popul = level[2]; // 인기도
         const char_murung = Maple.Murung(); // 1 : 층수, 2 : 클리어 시간
+        const char_seed = Maple.Seed(); // 1 : 층수, 2 : 클리어 시간
         const char_rank = Maple.Rank(); // 종합, 월드, 직업(월드), 직업(전체)
 
         const attachment = new MessageAttachment(Maple.userImg(), 'info.png');
@@ -39,21 +40,19 @@ module.exports = {
             .setColor("#F8AA2A")
             .attachFiles(attachment)
             .setURL(Maple.GGURL)
-            .setImage('attachment://info.png');
-
-        infoEmbed.addField('**레벨**', char_lv < 275 ? `${char_lv} (${char_percent}%)` : char_lv, true);
-        infoEmbed.addField('**직업**', char_job, true);
-        if (char_guild) {
-            infoEmbed.addField('**길드**', char_guild, true);
-        }
-        infoEmbed.addField('**인기도**', char_popul.toLocaleString(), true);
-        infoEmbed.addField('**유니온 정보**', char_union ? `레벨: ${char_union[0].toLocaleString()}\n전투력: ${char_union[1].toLocaleString()}` : '-', true);
+            .setImage('attachment://info.png')
+            .addField('**레벨**', char_lv < 275 ? `${char_lv} (${char_percent}%)` : char_lv, true)
+            .addField('**직업**', char_job, true)
+            .addField('**길드**', char_guild || '-', true)
+            .addField('**인기도**', char_popul.toLocaleString(), true)
+            .addField('**유니온 정보**', char_union ? `레벨: ${char_union[0].toLocaleString()}\n전투력: ${char_union[1].toLocaleString()}` : '-', true);
         if (char_union) {
             infoEmbed.addField('유니온 코인', `1일 ${char_union[2]}개 획득`, true);
         }
-        infoEmbed.addField('**무릉 기록**', char_murung ? `${char_murung[1]} (${char_murung[2]})` : '-', true);
-        infoEmbed.addField('**종합 랭킹**', `전체: ${char_rank[0]}\n월드: ${char_rank[1]}`, true);
-        infoEmbed.addField('**직업 랭킹**', `전체: ${char_rank[3]}\n월드: ${char_rank[2]}`, true);
+        infoEmbed.addField('**무릉 기록**', char_murung ? `${char_murung[1]} (${char_murung[2]})` : '-', true)
+            .addField('**시드 기록**', char_seed ? `${char_seed[1]} (${char_seed[2]})` : '-', true)
+            .addField('**종합 랭킹**', `전체: ${char_rank[0]}\n월드: ${char_rank[1]}`, true)
+            .addField('**직업 랭킹**', `전체: ${char_rank[3]}\n월드: ${char_rank[2]}`, true);
 
         return message.channel.send(infoEmbed);
     }

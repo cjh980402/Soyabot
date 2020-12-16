@@ -37,7 +37,7 @@
     "soundcloud-downloader": "^0.2.1",
     "sqlite3": "^5.0.0",
     "string-progressbar": "^1.0.1",
-    "ytdl-core": "^4.1.5",
+    "ytdl-core": "^4.1.6",
     "ytsr": "^2.0.2"
   },
   "scripts": {
