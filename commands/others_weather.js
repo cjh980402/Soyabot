@@ -33,7 +33,6 @@ module.exports = {
         }
 
         const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-
         const page = await browser.newPage();
         page.setViewport({ width: 1400, height: 1000 }); // 넓은 화면 세팅
         try {
@@ -44,7 +43,6 @@ module.exports = {
             });
         }
         catch (e) {
-            console.log('에러발생');
             return message.channel.send(`${args[0]} 지역 정보를 가져오지 못하였습니다.`);
         }
         finally {

@@ -24,15 +24,20 @@ module.exports = {
         }
 
         const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-
         const page = await browser.newPage();
         page.setViewport({ width: 500, height: 800 }); // 화면이 좁아야 코디 컬렉션이 세로로 길게 나옴
-        await page.goto(`https://maple.gg/u/${args[0]}`);
-        const attachment = new MessageAttachment(await (await page.$('section.box.mt-3')).screenshot(), 'collection.png');
-        // 콜렉션 영역 캡쳐
-        await browser.close();
-        return message.channel.send(`${args[0]}님의 코디 컬렉션`, {
-            files: [attachment]
-        });
+        try {
+            await page.goto(Maple.GGURL);
+            const attachment = new MessageAttachment(await (await page.$('section.box.mt-3')).screenshot(), 'collection.png');
+            return message.channel.send(`${Maple.Name}님의 코디 컬렉션`, {
+                files: [attachment]
+            });
+        }
+        catch (e) {
+            return message.channel.send(`${Maple.Name}님의 코디 컬렉션을 가져오지 못하였습니다.`);
+        }
+        finally {
+            await browser.close();
+        }
     }
 };

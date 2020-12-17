@@ -39,7 +39,7 @@ module.exports = {
                 .addField('**전일대비**', cmpPrice, true)
                 .addField('**거래량**', parse("tr em .blind").eq(3).text() || 0, true)
                 .addField('**거래대금**', `${parse("tr em .blind").eq(6).text() || 0}${parse("td .sptxt.sp_txt11").text()}원`, true)
-                .addField('**시가총액**', parse("div#tab_con1 .strong td").eq(0).text().replace(/\s+/g, "").replace(/[가-힣]\d/g, s => `${s[0]} ${s[1]}`), true) // 단위 띄어쓰기 로직
+                .addField('**시가총액**', parse("div#tab_con1 .strong td").eq(0).text().replace(/\s+/g, "").replace(/([가-힣])(\d)/g, "$1 $2"), true) // 단위 띄어쓰기 로직
                 .addField('**PER(배)**', summary.eq(0).text() || "-", true)
                 .addField('**EPS(원)**', summary.eq(1).text() || "-", true)
                 .addField('**PBR(배)**', summary.eq(4).text() || "-", true)

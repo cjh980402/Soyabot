@@ -24,18 +24,24 @@ module.exports = {
         }
 
         const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-
         const page = await browser.newPage();
         page.setViewport({ width: 1400, height: 1000 }); // 화면이 넓어야 버튼을 눌러도 스크롤 시점이 이동을 안함
-        await page.goto(Maple.GGURL);
-        await page.click('.btn.btn-grape-fruit');
-        await page.waitForTimeout(1000); // 1초 기다리기
-        const box = await (await page.$('.character-card')).boundingBox();
-        const attachment = new MessageAttachment(await page.screenshot({ clip: { x: box.x, y: box.y + 3, width: box.width, height: box.height } }), 'profile.png');
-        // 사진 자체가 아래로 치우쳤기에 3픽셀 보정
-        await browser.close();
-        return message.channel.send(`${Maple.Name}님의 프로필`, {
-            files: [attachment]
-        });
+        try {
+            await page.goto(Maple.GGURL);
+            await page.click('.btn.btn-grape-fruit');
+            await page.waitForTimeout(1000); // 1초 기다리기
+            const box = await (await page.$('.character-card')).boundingBox();
+            const attachment = new MessageAttachment(await page.screenshot({ clip: { x: box.x, y: box.y + 3, width: box.width, height: box.height } }), 'profile.png');
+            // 사진 자체가 아래로 치우쳤기에 3픽셀 보정
+            return message.channel.send(`${Maple.Name}님의 프로필`, {
+                files: [attachment]
+            });
+        }
+        catch (e) {
+            return message.channel.send(`${Maple.Name}님의 프로필을 가져오지 못하였습니다.`);
+        }
+        finally {
+            await browser.close();
+        }
     }
 };
