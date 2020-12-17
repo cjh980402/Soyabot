@@ -38,7 +38,7 @@
     "sqlite3": "^5.0.0",
     "string-progressbar": "^1.0.1",
     "ytdl-core": "^4.1.6",
-    "ytsr": "^2.0.2"
+    "ytsr": "^3.0.0"
   },
   "scripts": {
     "start": "forever start -o ./log/out.log -e ./log/err.log index.js"

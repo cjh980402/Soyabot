@@ -17,8 +17,7 @@ module.exports = {
             return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
         }
 
-        // toggle from false to true and reverse
-        queue.loop = !queue.loop;
+        queue.loop = !queue.loop; // 반복 재생 상태 토글
         return queue.textChannel.send(`현재 반복 재생 상태: ${queue.loop ? "**ON**" : "**OFF**"}`);
     }
 };

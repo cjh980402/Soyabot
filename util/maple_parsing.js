@@ -10,7 +10,7 @@ async function linkParse(link) {
 }
 
 async function linkJSON(link) {
-    return await (await fetch(link)).json();
+    return (await fetch(link)).json();
 }
 
 class Maple {
@@ -254,7 +254,7 @@ class Maple {
         return this.ggData(".user-summary-item > span").eq(1).text();
     }
     userImg() {
-        return this.ggData("meta[property='og:image']").attr("content").replace("Character/", "Character/180/");
+        return this.ggData("meta[property='og:image']").attr("content")?.replace("Character/", "Character/180/");
     }
     serverImg() {
         return this.ggData("div.col-lg-8 > h3 > img.align-middle").attr("src");

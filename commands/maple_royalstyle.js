@@ -36,11 +36,11 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         if (args[0] == '확률' || args[0] == 'ㅎㄹ') {
-            let rslt = '<로얄스타일 확률>\n';
+            let rslt = '<로얄스타일 확률>';
             for (let key in proper) {
-                rslt += `${key}: ${proper[key] / 10}%\n`;
+                rslt += `\n${key}: ${proper[key] / 10}%`;
             }
-            return message.channel.send(rslt.trimEnd());
+            return message.channel.send(rslt);
         }
         if (isNaN(args[0]) || +args[0] < 1 || +args[0] > 20000) {
             return message.channel.send('1 ~ 20000 범위의 숫자만 입력가능합니다.');
@@ -66,12 +66,12 @@ module.exports = {
             }
         }
 
-        let rslt = `로얄 ${args[0]}회 결과\n\n`;
+        let rslt = `로얄 ${args[0]}회 결과\n`;
         for (let key in list) {
             if (list[key] != 0) {
-                rslt += `${key}: ${list[key]}회\n`;
+                rslt += `\n${key}: ${list[key]}회`;
             }
         }
-        return message.channel.send(rslt.trimEnd());
+        return message.channel.send(rslt);
     }
 };

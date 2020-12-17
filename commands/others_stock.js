@@ -10,18 +10,16 @@ module.exports = {
     type: ["기타"],
     async execute(message, args) {
         if (args.length < 1) {
-            return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const search = Array.from(iconv.encode(Buffer.from(args.join(" ")), "euc-kr")).map(v => `%${v.toString(16)}`).join("");
-        let response = await fetch(`https://finance.naver.com/search/searchList.nhn?query=${search}`);
-        let parse = cheerio.load(iconv.decode(await response.buffer(), "euc-kr"));
+        const search = escape(iconv.encode(args.join(" "), "euc-kr").toString("binary")); // euc-kr의 encodeURI
+        let parse = cheerio.load(iconv.decode(await (await fetch(`https://finance.naver.com/search/searchList.nhn?query=${search}`)).buffer(), "euc-kr"));
         const stockdata = parse("td.tit > a");
         if (stockdata.length > 0) {
             const stockfind = stockdata.filter((i, v) => parse(v).text() == args.join(" "));
-            const code = /\d+/.exec((stockfind.length > 0 ? stockfind : stockdata).eq(0).attr("href"));
-            response = await fetch(`https://finance.naver.com/item/main.nhn?code=${code}`);
-            parse = cheerio.load(iconv.decode(await response.buffer(), "euc-kr"));
+            const code = /\d+/.exec((stockfind.length > 0 ? stockfind : stockdata).eq(0).attr("href")); // 내용과 일치하거나 첫번째 항목
+            parse = cheerio.load(iconv.decode(await (await fetch(`https://finance.naver.com/item/main.nhn?code=${code}`)).buffer(), "euc-kr"));
 
             let cmpPrice = "";
             if (parse("div.today > .no_exday .no_down > .ico").eq(0).text() != "하락") {
@@ -40,8 +38,8 @@ module.exports = {
                 .addField('**현재시가**', `${parse("div.today > .no_today .blind").text()}원`, true)
                 .addField('**전일대비**', cmpPrice, true)
                 .addField('**거래량**', parse("tr em .blind").eq(3).text() || 0, true)
-                .addField('**거래대금**', `${parse("tr em .blind").eq(6).text() || 0}${parse("td .sptxt.sp_txt11").text()}`, true)
-                .addField('**시가총액**', parse("div#tab_con1 .strong td").eq(0).text().replace(/\s+/g, "").replace(/[가-힣]\d/g, s => `${s[0]} ${s[1]}`), true)
+                .addField('**거래대금**', `${parse("tr em .blind").eq(6).text() || 0}${parse("td .sptxt.sp_txt11").text()}원`, true)
+                .addField('**시가총액**', parse("div#tab_con1 .strong td").eq(0).text().replace(/\s+/g, "").replace(/[가-힣]\d/g, s => `${s[0]} ${s[1]}`), true) // 단위 띄어쓰기 로직
                 .addField('**PER(배)**', summary.eq(0).text() || "-", true)
                 .addField('**EPS(원)**', summary.eq(1).text() || "-", true)
                 .addField('**PBR(배)**', summary.eq(4).text() || "-", true)

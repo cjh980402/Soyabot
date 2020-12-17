@@ -61,7 +61,7 @@ module.exports = {
             time = min * 60 + sec;
         }
 
-        let grade, score = level - 100;
+        let grade, score = level - (level >= 275 ? 50 : 100);
         score += (murungfl >= 45 ? (murungfl + 1 - time / 900) * 4 : (murungfl + 1 - time / 900) * 3);
         score += (union >= 8000 ? 250 : union / 40);
         score = Math.floor(score);

@@ -26,15 +26,15 @@ module.exports = {
     type: ["메이플"],
     async execute(message, args) {
         if (args.length == 1 && (args[0] == '확률' || args[0] == 'ㅎㄹ')) {
-            let rslt = '<로얄 성형 확률>\n\n- 남자 성형\n';
+            let rslt = '<로얄 성형 확률>\n\n- 남자 성형';
             for (let key in proper["남"]) {
-                rslt += `${key}: ${proper["남"][key]}%\n`;
+                rslt += `\n${key}: ${proper["남"][key]}%`;
             }
-            rslt += '\n- 여자 성형\n';
+            rslt += '\n\n- 여자 성형';
             for (let key in proper["여"]) {
-                rslt += `${key}: ${proper["여"][key]}%\n`;
+                rslt += `\n${key}: ${proper["여"][key]}%`;
             }
-            return message.channel.send(rslt.trimEnd());
+            return message.channel.send(rslt);
         }
         if (args.length < 2) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
@@ -73,10 +73,10 @@ module.exports = {
             }
         }
 
-        rslt += `수행 횟수: ${list.length}회\n\n진행 과정\n`;
+        rslt += `수행 횟수: ${list.length}회\n\n진행 과정`;
         for (let i in list) {
-            rslt += `${+i + 1}번째: ${list[i]}\n`;
+            rslt += `\n${+i + 1}번째: ${list[i]}`;
         }
-        return message.channel.send(rslt.trimEnd());
+        return message.channel.send(rslt);
     }
 };

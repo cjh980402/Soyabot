@@ -58,7 +58,7 @@ module.exports = {
             return message.channel.send(`<지원하는 언어 종류>\n${Object.values(langList).map(v => v[0]).join(", ")}`);
         }
         if (args.length < 2) {
-            return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const langCode = findLangCode(args[0][0], args[0][1]);
         if (langCode == null) {

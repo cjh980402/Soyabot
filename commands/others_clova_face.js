@@ -15,7 +15,7 @@ async function requestCFR(type, url) {
             },
             body: form
         });
-        return (await response.json());
+        return await response.json();
     }
     catch (e) {
         return e;

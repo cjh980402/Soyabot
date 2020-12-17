@@ -23,8 +23,7 @@ module.exports = {
         params.append("numOfRows", "10");
         params.append("startCreateDt", `${startday.getFullYear()}${String(startday.getMonth() + 1).padStart(2, '0')}${String(startday.getDate()).padStart(2, '0')}`);
         params.append("endCreateDt", `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`);
-        const response = await fetch(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?${params}`);
-        const parse = cheerio.load(await response.text(), { xmlMode: true });
+        const parse = cheerio.load(await (await fetch(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?${params}`)).text(), { xmlMode: true });
 
         if (parse("resultCode").text() == "00") {
             const coronaEmbed = new MessageEmbed()

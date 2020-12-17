@@ -10,12 +10,12 @@ module.exports.adminChat = async function (message) {
     if (message.content.startsWith("[")) { // 노드 코드 실행 후 출력
         const funcBody = message.content.substr(1).trim().split('\n');
         funcBody.push(`message.channel.send(String(${funcBody.pop()}) || "empty string", { split: true });`); // 함수의 마지막 줄 내용은 자동으로 출력
-        await eval(`(async()=>{${funcBody.join('\n')}})();`);
+        await eval(`(async()=>{${funcBody.join('\n')}})();`); // 에러캐치를 위해 await까지 해준다.
     }
     else if (message.content.startsWith("]")) { // 콘솔 명령 실행 후 출력
         message.channel.send(await module.exports.cmd(message.content.substr(1).trim()) || "empty string", { split: true });
     }
-    else if (message.content.startsWith("*")) { // 원격 채팅 전송
+    else if (message.content.startsWith("*")) { // 원하는 방에 봇으로 채팅 전송
         const room = message.content.split('*')[1];
         if (room && message.content.startsWith(`*${room}* `)) {
             const rslt = replyRoomID(room, message.content.replace(`*${room}* `, ''));
@@ -42,10 +42,6 @@ module.exports.cmd = async function (_cmd) {
 }
 
 module.exports.initClient = async function () {
-    client.suggestionChat = {};
-    client.setMaxListeners(20); // 이벤트 개수 제한 증가
-    client.options.retryLimit = 3; // 네트워크 재요청 횟수 설정
-
     await db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');
@@ -56,6 +52,11 @@ module.exports.initClient = async function () {
     await db.run('CREATE TABLE IF NOT EXISTS testpatchskip(channelid text primary key, name text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS pruningskip(channelid text primary key, name text not null)');
     await db.run("CREATE TABLE IF NOT EXISTS messagedb(channelsenderid text primary key, messagecnt integer default 0, lettercnt integer default 0, lastmessage text default '', lasttime datetime default (datetime('now', 'localtime')))");
+
+    client.suggestionChat = {};
+    client.setMaxListeners(20); // 이벤트 개수 제한 증가
+    client.options.retryLimit = 3; // 네트워크 재요청 횟수 설정
+
     startNotice(); // 공지 자동 알림 기능
     startUpdate(); // 업데이트 자동 알림 기능
     startTest(); // 테섭 자동 알림 기능

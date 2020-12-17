@@ -18,14 +18,14 @@ module.exports = {
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {
-            return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         if (args[0] == '확률' || args[0] == 'ㅎㄹ') {
-            let rslt = '<원더베리 확률>\n';
+            let rslt = '<원더베리 확률>';
             for (let key in proper) {
-                rslt += `${key}: ${proper[key] / 100}%\n`;
+                rslt += `\n${key}: ${proper[key] / 100}%`;
             }
-            return message.channel.send(rslt.trimEnd());
+            return message.channel.send(rslt);
         }
         if (isNaN(args[0]) || +args[0] < 1 || +args[0] > 20000) {
             return message.channel.send('1 ~ 20000 범위의 숫자만 입력가능합니다.');
@@ -51,12 +51,12 @@ module.exports = {
             }
         }
 
-        let rslt = `원더베리 ${args[0]}회 결과\n\n`;
+        let rslt = `원더베리 ${args[0]}회 결과\n`;
         for (let key in list) {
             if (list[key] != 0) {
-                rslt += `${key}: ${list[key]}회\n`;
+                rslt += `\n${key}: ${list[key]}회`;
             }
         }
-        return message.channel.send(rslt.trimEnd());
+        return message.channel.send(rslt);
     }
 };
