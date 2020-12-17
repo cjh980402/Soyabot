@@ -24,7 +24,7 @@ module.exports = {
 
         const lev = +args[0];
         const rslt = `Lv.${lev} 경험치통: ${(levelTable[lev] - levelTable[lev - 1]).toLocaleString()}
-(${numKoreanUnit(levelTable[lev] - levelTable[lev - 1]).join(" ")})
+(${numKoreanUnit(levelTable[lev] - levelTable[lev - 1]).join(" ") || 0})
 진행률 (~250): ${((lev < 250 ? levelTable[lev - 1] / levelTable[249] : 1) * 100).toFixed(2)}%
 진행률 (~275): ${((lev < 275 ? levelTable[lev - 1] / levelTable[274] : 1) * 100).toFixed(2)}%
 진행률 (~300): ${(levelTable[lev - 1] / levelTable[299] * 100).toFixed(2)}%`;
