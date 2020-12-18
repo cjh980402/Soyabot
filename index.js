@@ -51,15 +51,14 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
         // message.content: 메시지 내용 텍스트
         // 멘션의 형태: <@${user.id}>, 인용의 형태: > ${내용}
         const matchedPrefix = prefixRegex.exec(message.content)?.[0]; // 정규식에 대응되는 명령어 접두어 부분을 탐색
-        if (!matchedPrefix) {
+        if (!matchedPrefix) { // 멘션이나 PREFIX로 시작하지 않는 경우
             return botChatting(message); // 잡담 로직
-        } // 멘션이나 PREFIX로 시작하지 않는 경우
+        }
 
         const args = message.content.slice(matchedPrefix.length).trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
         commandName = args.shift().toLowerCase(); // commandName은 args의 첫번째 원소(명령어 부분), shift로 인해 args에는 뒷부분만 남음
 
-        const botModule = client.commands.find((cmd) => cmd.command.includes(commandName));
-        // 해당하는 명령어 찾기
+        const botModule = client.commands.find((cmd) => cmd.command.includes(commandName)); // 해당하는 명령어 찾기
 
         if (!botModule) {
             return; // 해당하는 명령어 없으면 종료
