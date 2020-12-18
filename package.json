@@ -34,10 +34,10 @@
     "quickchart-js": "^1.0.5",
     "sejong": "^0.2.3",
     "simple-youtube-api": "^5.2.1",
-    "soundcloud-downloader": "^0.2.1",
+    "soundcloud-downloader": "^0.2.2",
     "sqlite3": "^5.0.0",
     "string-progressbar": "^1.0.1",
-    "ytdl-core": "^4.1.6",
+    "ytdl-core": "^4.1.7",
     "ytsr": "^3.0.0"
   },
   "scripts": {
