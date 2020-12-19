@@ -60,6 +60,7 @@ module.exports = {
                 while (!collector) {
                     await sleep(500);
                 }
+                stream.destroy();
                 collector.stop();
                 if (queue.loop) {
                     // 루프가 켜져있다면 현재 노래를 대기열의 마지막에 다시 넣기때문에 대기열이 끝나지 않고 계속 재생됨
@@ -74,6 +75,7 @@ module.exports = {
                 while (!collector) {
                     await sleep(500);
                 }
+                stream.destroy();
                 collector.stop();
                 if (e.message == "input stream: Video unavailable") {
                     message.channel.send("해당 국가에서 차단됐거나 비공개된 동영상입니다.");
