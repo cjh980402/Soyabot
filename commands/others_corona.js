@@ -5,7 +5,8 @@ const cheerio = require('cheerio');
 
 function calcIncrease(parse, selector) {
     const today = +parse(selector).eq(0).text();
-    const yesterday = +parse(selector).eq(1).text();
+    const dateList = parse("stateDt");
+    const yesterday = +parse(selector).filter((i) => dateList.eq(i).text() != dateList.eq(0).text()).eq(0).text();
     return `${today.toLocaleString()} (${today >= yesterday ? `⬆️ ${(today - yesterday).toLocaleString()}` : `⬇️ ${(yesterday - today).toLocaleString()}`})`;
 }
 
