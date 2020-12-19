@@ -9,12 +9,12 @@ module.exports = {
         const queue = client.queue.get(message.guild.id);
 
         if (!song) {
-            setTimeout(() => {
-                if (queue.connection.dispatcher && message.guild.me.voice.channel) {
-                    return;
+            setTimeout(() => { // 종료 후 새로운 음악 기능이 수행 중이면 나가지 않음
+                const newQueue = client.queue.get(message.guild.id);
+                if (!newQueue && message.guild.me.voice.channel) {
+                    queue.channel.leave();
+                    queue.textChannel.send(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
                 }
-                queue.channel.leave();
-                queue.textChannel.send(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
             }, STAY_TIME * 1000);
             queue.textChannel.send("❌ 음악 대기열이 끝났습니다.");
             return client.queue.delete(message.guild.id);
