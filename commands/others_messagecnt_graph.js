@@ -6,7 +6,7 @@ module.exports = {
     usage: `${client.prefix}채팅량그래프 (옵션)`,
     command: ["채팅량그래프", "ㅊㅌㄹㄱㄹㅍ", "ㅊㅌㄹㄱㄿ", "ㅊㅌㄺㄿ"],
     description: `- 전체 사용자의 채팅량 통계를 그래프로 보여줍니다.
-- 옵션을 생략시 전체 사용자, -봇을 넣어주면 통계에서 봇을 제외하고 보여줍니다.`,
+- 옵션을 생략 시 전체 사용자, -봇을 넣어주면 통계에서 봇을 제외하고 보여줍니다.`,
     type: ["기타"],
     async execute(message, args) {
         const targetChannel = (message.author.id == ADMIN_ID && args.length > 0

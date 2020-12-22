@@ -27,7 +27,7 @@ module.exports = {
                 stream = ytdlDiscord(song.url, {
                     filter: "audioonly",
                     quality: "highestaudio",
-                    highWaterMark: 1 << 25,
+                    // highWaterMark: 1 << 25,
                     opusEncoded: true,
                     encoderArgs: ['-af', 'bass=g=10,dynaudnorm=f=200']
                 });
@@ -52,7 +52,9 @@ module.exports = {
             return message.channel.send(`오류 발생: ${e.message ?? e}`);
         }
 
-        queue.connection.on("disconnect", () => client.queue.delete(message.guild.id));
+        if (queue.connection.listenerCount("disconnect") == 0) { // 등록이 안 된 경우만 등록
+            queue.connection.on("disconnect", () => client.queue.delete(message.guild.id));
+        }
 
         let collector = null;
         queue.connection.play(stream, { type: streamType, volume: queue.volume / 100 })

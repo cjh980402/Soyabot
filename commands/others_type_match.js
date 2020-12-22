@@ -3,15 +3,19 @@ const { matchString } = require("../util/soyabot_const.json");
 const Sejong = require('sejong');
 
 module.exports = {
-    usage: `${client.prefix}타자대결`,
+    usage: `${client.prefix}타자대결 (옵션)`,
     command: ["타자대결", "ㅌㅈㄷㄱ"],
-    description: "- 임의의 문장을 빨리 치는 사람이 승리하는 타자 대결을 수행합니다.",
+    description: `- 임의의 문장을 빨리 치는 사람이 승리하는 타자 대결을 수행합니다.
+- 옵션에 한을 입력 시 한글, 영을 입력 시 영어, 생략 시 둘 다 나옵니다.`,
     channelCool: true,
     type: ["기타"],
-    async execute(message) {
-        const choice = matchString[Math.floor(Math.random() * matchString.length)];
+    async execute(message, args) {
+        const [min, max] = args[0] == "한" ? [0, 1004] : (args[0] == "영" ? [1005, 2004] : [0, 2004]);
+        const random = Math.floor(Math.random() * (max - min + 1)) + min; // 랜덤 선택된 문장의 인덱스
+        const choice = matchString[random];
         const choiceLength = Sejong.decompose(choice, { decomposeAssembledVowel: true }).length;
-        message.channel.send(`이번 문장은 ${/\w/.test(choice) ? "영어" : "한글"} 문장입니다.`);
+        message.channel.send(`이번 문장은 ${random <= 1004 ? "한글" : "영어"} 문장입니다.`);
+
         for (let i = 3; i > 0; i--) {
             message.channel.send(i);
             await sleep(1000); // 3초 카운트 다운 로직

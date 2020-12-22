@@ -14,7 +14,7 @@ module.exports = function (message) {
     else if (message.content.includes('뭐먹지') || message.content.includes('ㅁㅁㅈ')) {
         return message.reply(recommendFood());
     }
-    else if (message.content.includes('소야봇')) {
+    else if (message.content.includes(client.user.username)) {
         if (message.content.includes('바보')) {
             return message.channel.send(':frowning2:');
         }
@@ -29,7 +29,7 @@ module.exports = function (message) {
             return message.channel.send('헤비...');
         }
         else if (cmd == 3) {
-            return message.channel.send(`'${message.member?.nickname ?? message.author.username}'님이 소야봇을 불렀습니다.`);
+            return message.channel.send(`'${message.member?.nickname ?? message.author.username}'님이 ${client.user.username}을 불렀습니다.`);
         }
         else {
             return message.channel.send('이노시스 조아');
@@ -45,15 +45,6 @@ module.exports = function (message) {
         }
         else if (cmd == 2) {
             return message.channel.send('도잉도 짐승의 눈...');
-        }
-    }
-    else if (message.content.includes(client.prefix)) {
-        const cmd = Math.floor(Math.random() * 10);
-        if (cmd == 0) {
-            const send = (message.member?.nickname ?? message.author.username).split(/\s|\//)[2]?.trim();
-            if (send) {
-                return message.channel.send(`저도 '${send}' 해볼까요?`);
-            }
         }
     }
     else if (message.content.includes('ㅊㅊㅊㅊ')) {
