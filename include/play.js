@@ -27,7 +27,7 @@ module.exports = {
                 stream = ytdlDiscord(song.url, {
                     filter: "audioonly",
                     quality: "highestaudio",
-                    // highWaterMark: 1 << 25,
+                    highWaterMark: 1 << 20, // 1MB, 기본값은 512KB
                     opusEncoded: true,
                     encoderArgs: ['-af', 'bass=g=10,dynaudnorm=f=200']
                 });

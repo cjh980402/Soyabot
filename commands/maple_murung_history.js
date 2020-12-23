@@ -20,6 +20,7 @@ module.exports = {
                 message.channel.send('제한시간 내에 갱신 작업을 실패하였습니다.');
             }
         }
+
         const data = Maple.MurungHistory();
         if (data == null) {
             return message.channel.send(`[${Maple.Name}]\n기록이 없습니다.`);

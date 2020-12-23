@@ -21,11 +21,16 @@ module.exports = {
         }
 
         const data = Maple.LevelHistory();
-        const len = data[0].length;
-        let rslt = `[${Maple.Name}]`;
-        for (let i = 1; i < len; i++) {
-            rslt += `\nLv.${data[1][i]} 달성일: ${data[0][i]}`;
+        if (data == null) {
+            return message.channel.send(`[${Maple.Name}]\n레벨 히스토리를 가져오지 못했습니다.`);
         }
-        return message.channel.send(rslt);
+        else {
+            const len = data[0].length;
+            let rslt = `[${Maple.Name}]`;
+            for (let i = 1; i < len; i++) {
+                rslt += `\nLv.${data[1][i]} 달성일: ${data[0][i]}`;
+            }
+            return message.channel.send(rslt);
+        }
     }
 };

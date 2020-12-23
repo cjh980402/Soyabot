@@ -22,7 +22,7 @@ module.exports = {
 
         const rslt = Maple.Rank();
         if (rslt == null) {
-            return message.channel.send(`[${Maple.Name}]\n기록이 없습니다.`);
+            return message.channel.send(`[${Maple.Name}]\n랭킹 정보를 가져오지 못했습니다.`);
         }
         else {
             return message.channel.send(`[${Maple.Name}]\n종합 랭킹(전체): ${rslt[0]}\n종합 랭킹(월드): ${rslt[1]}\n직업 랭킹(전체): ${rslt[3]}\n직업 랭킹(월드): ${rslt[2]}`);

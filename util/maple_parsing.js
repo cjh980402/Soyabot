@@ -202,7 +202,6 @@ class Maple {
     }
     Rank() {
         const rank = this.ggData('.col-lg-2.col-md-4.col-sm-4.col-6.mt-3 > span');
-
         if (rank.length == 0) {
             return null;
         }
@@ -215,7 +214,6 @@ class Maple {
     }
     Coordi() {
         const coordi = this.ggData(".character-coord__item-name");
-
         if (coordi.length == 0) {
             return null;
         }
@@ -227,12 +225,15 @@ class Maple {
         return rslt;
     }
     LevelHistory() {
-        const data = this.ggData('body > script').filter((i, v) => /\[\[.+\]\]/.test(this.ggData(v).html())).eq(0).html();
-        return JSON.parse(/\[\[.+\]\]/.exec(data)); // 0번째 배열 = 날짜, 1번째 배열 = 레벨 (각각 0번 인덱스는 제외 필요)
+        const data = this.ggData('body > script').filter((i, v) => /\[\[.+\]\]/.test(this.ggData(v).html()));
+        if (data.length == 0) {
+            return null;
+        }
+
+        return JSON.parse(/\[\[.+\]\]/.exec(data.eq(0).html())); // 0번째 배열 = 날짜, 1번째 배열 = 레벨 (각각 0번 인덱스는 제외 필요)
     }
     MurungHistory() {
         const data = this.ggData('.text-center.px-2.font-size-14.align-middle');
-
         if (data.length == 0) {
             return null;
         }
