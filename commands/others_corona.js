@@ -29,7 +29,7 @@ module.exports = {
         if (parse("resultCode").text() == "00") {
             const coronaEmbed = new MessageEmbed()
                 .setTitle(`${new Date(parse("createDt").eq(0).text()).toLocaleString()} 기준`)
-                .setThumbnail("https://blogfiles.pstatic.net/MjAyMDEyMTNfMjYw/MDAxNjA3ODQwNTQwMDk4.aIk-UJFp5fjJFxullMfCfHdNGkAUtudaJEsHfMb7l24g.nQ33ZBQ0ZQ2r70XwsU-XfjBdNmIgx_XppPxRD9rc8XMg.PNG.9804cjh/1607840508787.png")
+                .setThumbnail("http://140.238.26.231:8170/image/hosting/mohw.png")
                 .setColor("#F8AA2A")
                 .setURL("http://ncov.mohw.go.kr")
                 .addField('**확진 환자**', calcIncrease(parse, "decideCnt"))

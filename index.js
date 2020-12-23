@@ -8,6 +8,7 @@ const { TOKEN, PREFIX, ADMIN_ID } = require("./soyabot_config.json");
 const { adminChat, initClient } = require("./admin/admin_function");
 const botChatting = require("./util/bot_chatting");
 const { replyAdmin } = require('./admin/bot_control');
+const app = require("./util/express_server");
 const sqlite = require('./util/sqlite-handler');
 global.db = new sqlite('./db/soyabot_data.db'); // 여러 기능들에 의해 필수로 최상위 전역
 global.client = new Client({ disableMentions: "everyone" });
