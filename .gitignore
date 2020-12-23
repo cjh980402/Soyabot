@@ -2,6 +2,7 @@
 node_modules/
 other_source/
 log/
+stock/
 .git/
  
 #file
