@@ -1,3 +1,4 @@
+const { writeFile } = require('../util/async_to_promis.js');
 const { MessageEmbed } = require("discord.js");
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
@@ -30,11 +31,14 @@ module.exports = {
             }
             const summary = parse("table[summary='PER/EPS 정보'] em");
 
+            const picName = `${code}_${Math.floor(Date.now() / 60000)}`;
+            await writeFile(`./pictures/stock/${picName}.png`, await (await fetch(`https://ssl.pstatic.net/imgfinance/chart/mobile/candle/day/${code}_end.png`)).buffer());
+
             const stockEmbed = new MessageEmbed()
                 .setTitle(`${parse("dl.blind strong").text()} (${code}) 일봉`)
                 .setColor("#F8AA2A")
                 .setURL(`https://finance.naver.com/item/main.nhn?code=${code}`)
-                .setImage(`https://ssl.pstatic.net/imgfinance/chart/mobile/candle/day/${code}_end.png`)
+                .setImage(`http://140.238.26.231:8170/image/stock/${picName}.png`)
                 .addField('**현재시가**', `${parse("div.today > .no_today .blind").text()}원`, true)
                 .addField('**전일대비**', cmpPrice, true)
                 .addField('**거래량**', parse("tr em .blind").eq(3).text() || 0, true)
