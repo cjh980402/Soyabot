@@ -24,7 +24,10 @@ module.exports = {
 
             const info = parse("tr em .blind");
             const summary1 = parse("table[summary='PER/EPS 정보'] em");
-            const summary2 = parse("table[summary='투자의견 정보'] em");
+            let summary2 = parse("table[summary='투자의견 정보'] em");
+            if (summary2.length == 0) {
+                summary2 = parse("table[summary='시가총액 정보'] em");
+            }
 
             const picName = `${code}_${Math.floor(Date.now() / 60000)}`;
             await writeFile(`./pictures/stock/${picName}.png`, await (await fetch(`https://ssl.pstatic.net/imgfinance/chart/mobile/candle/day/${code}_end.png`)).buffer());
