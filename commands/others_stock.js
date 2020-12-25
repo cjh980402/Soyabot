@@ -29,16 +29,15 @@ module.exports = {
                 summary2 = parse("table[summary='시가총액 정보'] em");
             }
 
-            const picName = `${code}_${Math.floor(Date.now() / 60000)}`;
-            await writeFile(`./pictures/stock/${picName}.png`, await (await fetch(`https://ssl.pstatic.net/imgfinance/chart/mobile/candle/day/${code}_end.png`)).buffer());
-            await exec(`python3 ./util/make_stock_info.py ${picName} "${parse("dl.blind strong").text()} (${code}) 일봉" ${parse("div.today > .no_today .blind").text()} ${parse("div.today > .no_exday .ico").eq(0).text()} ${parse("div.today > .no_exday .blind").eq(0).text()} ${parse("div.today > .no_exday .blind").eq(1).text()} ${info.eq(5).text()} ${info.eq(1).text()} ${summary2.eq(2).text()} ${summary2.eq(3).text()}`);
+            await writeFile(`./pictures/stock/${code}.png`, await (await fetch(`https://ssl.pstatic.net/imgfinance/chart/mobile/candle/day/${code}_end.png`)).buffer());
+            await exec(`python3 ./util/make_stock_info.py ${code} "${parse("dl.blind strong").text()} (${code}) 일봉" ${parse("div.today > .no_today .blind").text()} ${parse("div.today > .no_exday .ico").eq(0).text()} ${parse("div.today > .no_exday .blind").eq(0).text()} ${parse("div.today > .no_exday .blind").eq(1).text()} ${info.eq(5).text()} ${info.eq(1).text()} ${summary2.eq(2).text()} ${summary2.eq(3).text()}`);
             // 파이썬 스크립트 실행
 
             const stockEmbed = new MessageEmbed()
                 .setTitle(`${parse("dl.blind strong").text()} (${code}) 일봉`)
                 .setColor("#F8AA2A")
                 .setURL(`https://finance.naver.com/item/main.nhn?code=${code}`)
-                .setImage(`http://140.238.26.231:8170/image/stock/${picName}.png`)
+                .setImage(`http://140.238.26.231:8170/image/stock/${code}.png?time=${Date.now()}`)
                 .addField('**거래량**', parse("tr em .blind").eq(3).text() || 0, true)
                 .addField('**거래대금**', `${parse("tr em .blind").eq(6).text() || 0}${parse("td .sptxt.sp_txt11").text()}원`, true)
                 .addField('**시가총액**', parse("div#tab_con1 .strong td").eq(0).text().replace(/\s+/g, "").replace(/([가-힣])(\d)/g, "$1 $2"), true) // 단위 띄어쓰기 로직
