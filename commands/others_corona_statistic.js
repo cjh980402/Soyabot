@@ -72,7 +72,7 @@ module.exports = {
             const todaySum = todayRecover + todayCase + todayDeath;
 
             const coronaEmbed = new MessageEmbed()
-                .setTitle(`${updateDate} 코로나 국내 현황`)
+                .setTitle(updateDate)
                 .setThumbnail("http://140.238.26.231:8170/image/hosting/mohw.png")
                 .setColor("#F8AA2A")
                 .setURL("http://ncov.mohw.go.kr")
