@@ -61,9 +61,9 @@ const probTable = [
 ];
 
 function Pool(startlev, endlev) {
-    let lev = startlev, rslt = "", cnt = 0;
+    let rslt = "", cnt = 0;
 
-    for (; lev < endlev; cnt++) {
+    for (let lev = startlev; lev < endlev; cnt++) {
         let seed = Math.random() * 100;
         let probability = 0, i = 0;
         for (i = 0; i < 10; i++) {
@@ -90,7 +90,8 @@ module.exports = {
         }
 
         if (args[0] == '확률' || args[0] == 'ㅎㄹ') {
-            let startlev = +args[1], rslt = `<${startlev}레벨 기준 확률>`;
+            const startlev = +args[1];
+            let rslt = `<${startlev}레벨 기준 확률>`;
             if (isNaN(startlev) || startlev < 141 || startlev > 199) {
                 return message.channel.send('141 ~ 199 범위의 시작 레벨을 입력해주세요.');
             }

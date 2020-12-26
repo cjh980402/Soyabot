@@ -7,7 +7,7 @@ async function farm_monster(name) { // 몬스터 이름
         method: 'POST',
         body: params
     });
-    return await response.text(); // 결과값이 "false"면 DB에 없는 몬스터
+    return response.text(); // 결과값이 "false"면 DB에 없는 몬스터
 }
 
 async function farm_sex(name) { // 몬스터 조합식
@@ -27,7 +27,7 @@ async function farm_sex(name) { // 몬스터 조합식
     }
     else {
         let rslt = "";
-        data.forEach(v => {
+        data.forEach((v) => {
             if (v.type == "child") { // 결과가 name인 경우
                 rslt += `${v.child}(${v.c_grade}): ${v.c_effect}${v.c_effect_value == "+0" ? "" : ` ${v.c_effect_value}`}\n`;
                 rslt += `↳${v.mom} (${v.m_species} ${v.m_grade})\n`;
@@ -74,7 +74,7 @@ async function farm_add(name, user, end_date) { // 농장 추가
         return data.error;
     }
     else {
-        return `${data.monster} 보유 농장 목록에 ${data.user} 농장을 추가하였습니다.\n기간은 ${data.end_date == "" ? "무한" : `${data.end_date}까지`}입니다.`;
+        return `${data.monster} 보유 농장 목록에 ${data.user} 농장을 추가하였습니다.\n기간은 ${data.end_date ? `${data.end_date}까지` : "무한"}입니다.`;
     }
 }
 
@@ -94,13 +94,13 @@ async function farm_read(name) { // 농장 목록
         return data.error;
     }
     else {
-        let rslt = `${name} 보유 농장 목록\n\n`;
+        let rslt = `${name} 보유 농장 목록\n`;
         data.farm_list.forEach(v => {
             if (/^[가-힣]{2,6}$/.test(v[0])) {
-                rslt += `${v[1] || "무한유지"}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})\n`
+                rslt += `\n${v[1] || "무한유지"}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})`
             }
         });
-        return rslt.trimEnd();
+        return rslt;
     }
 }
 
@@ -119,16 +119,16 @@ async function farm_info(name) { // 농장 정보
         return data.error;
     }
     else {
-        let rslt = `${name} 농장의 정보\n\n`;
+        let rslt = `${name} 농장의 정보\n`;
         if (data.monster_list.length) {
             data.monster_list.forEach(v => {
-                rslt += `${v[1] || "무한유지"}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})\n`
+                rslt += `\n${v[1] || "무한유지"}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})`
             });
         }
         else {
-            rslt += "등록된 몬스터 정보가 없습니다.";
+            rslt += "\n등록된 몬스터 정보가 없습니다.";
         }
-        return rslt.trimEnd();
+        return rslt;
     }
 }
 

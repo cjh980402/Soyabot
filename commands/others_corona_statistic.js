@@ -3,14 +3,10 @@ const { MessageEmbed } = require("discord.js");
 const fetch = require('node-fetch');
 const QuickChart = require('quickchart-js');
 
-function calcIncrease(data) {
-    return `${data >= 0 ? `⬆️ ${data.toLocaleString()}` : `⬇️ ${(-data).toLocaleString()}`}`;
-}
-
 module.exports = {
     usage: `${client.prefix}코로나`,
     command: ["코로나", "ㅋㄹㄴ"],
-    description: '- 최신 기준 코로나 국내 현황을 알려줍니다.',
+    description: '- 최신 기준 코로나 국내 현황 통계를 알려줍니다.',
     type: ["기타"],
     async execute(message) {
         const countData = await (await fetch(`https://api.corona-19.kr/korea/?serviceKey=${CORONA_API_KEY}`)).json();
@@ -77,14 +73,14 @@ module.exports = {
                 .setColor("#F8AA2A")
                 .setURL("http://ncov.mohw.go.kr")
                 .setImage(await coronaChart.getShortUrl())
-                .addField('**확진 환자**', `${countData.TotalCase} (${calcIncrease(todaySum)})`)
-                .addField('**격리 해제**', `${countData.TotalRecovered} (${calcIncrease(todayRecover)})`)
-                .addField('**격리 중**', `${countData.NowCase} (${calcIncrease(todayCase)})`)
-                .addField('**사망자**', `${countData.TotalDeath} (${calcIncrease(todayDeath)})`)
+                .addField('**확진 환자**', `${countData.TotalCase} (⬆️ ${todaySum.toLocaleString()})`)
+                .addField('**격리 해제**', `${countData.TotalRecovered} (⬆️ ${todayRecover.toLocaleString()})`)
+                .addField('**격리 중**', `${countData.NowCase} (⬆️ ${todayCase.toLocaleString()})`)
+                .addField('**사망자**', `${countData.TotalDeath} (⬆️ ${todayDeath.toLocaleString()})`)
                 .addField('**검사 중**', countData.checkingCounter)
                 .setTimestamp();
 
-            const rslt = Object.values(countryData).filter(v => v instanceof Object).sort((a, b) => +b.newCase.replace(/,/g, "") - +a.newCase.replace(/,/g, "")).map(v => `${v.countryName}: ${v.totalCase} (국내: +${v.newCcase}, 해외: +${v.newFcase})`);
+            const rslt = Object.values(countryData).filter(v => v instanceof Object).sort((a, b) => +b.newCase.replace(/,/g, "") - +a.newCase.replace(/,/g, "")).map(v => `${v.countryName}: ${v.totalCase} (국내: ⬆️ ${v.newCcase}, 해외: ⬆️ ${v.newFcase})`);
             const coronaEmbed2 = new MessageEmbed()
                 .setTitle("지역별 확진 환자 현황")
                 .setThumbnail("http://140.238.26.231:8170/image/hosting/mohw.png")

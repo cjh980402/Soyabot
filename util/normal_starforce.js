@@ -61,14 +61,14 @@ class item {
             this.nodest = data[5]; //파방 종류 : 12~17 파방 = 1, 15~17 파방 = 2, 미적용 = 그 외
         }
 
-        console.log(`<일반> 레벨 제한 : ${this.lev}, 시작 : ${this.initial}성, 목표 : ${this.goal}성\n스타캐치 : ${this.starcat}, 이벤트 : ${this.sale}, 파방 : ${this.nodest}`);
+        console.log(`<일반> 레벨 제한: ${this.lev}, 시작: ${this.initial}성, 목표: ${this.goal}성\n스타캐치: ${this.starcat}, 이벤트: ${this.sale}, 파방: ${this.nodest}`);
 
         this.star = this.initial;
         while (this.star < this.goal) {
             this.starforce();
         }
 
-        return `${this.star}성까지 강화완료\n소비 메소 : ${(this.sum).toLocaleString()}메소\n찬스 타임 : ${(this.chance).toLocaleString()}회\n실패 횟수 : ${(this.fail).toLocaleString()}회\n파괴 횟수 : ${(this.dest).toLocaleString()}회`;
+        return `${this.star}성까지 강화완료\n소비 메소: ${this.sum.toLocaleString()}메소\n찬스 타임: ${this.chance.toLocaleString()}회\n실패 횟수: ${this.fail.toLocaleString()}회\n파괴 횟수: ${this.dest.toLocaleString()}회`;
     }
     starforce() {
         const pmprob = [[95, 0], [90, 0], [85, 0], [85, 0], [80, 0], [75, 0], [70, 0], [65, 0], [60, 0], [55, 0], [50, 0], [45, 0], [40, 1], [35, 2], [30, 2], [30, 3], [30, 3], [30, 3], [30, 3], [30, 3], [30, 10], [30, 10], [3, 20], [2, 30], [1, 40]];

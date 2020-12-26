@@ -35,14 +35,14 @@ class item {
 
         this.starcat = (len == 3 ? 1 : data[2]); // 스타캐치 여부
 
-        console.log(`<슈페리얼> 레벨 제한 : ${this.lev}, 시작 : ${this.initial}성, 목표 : ${this.goal}성\n스타캐치 : ${this.starcat}`);
+        console.log(`<슈페리얼> 레벨 제한: ${this.lev}, 시작: ${this.initial}성, 목표: ${this.goal}성\n스타캐치: ${this.starcat}`);
 
         this.star = this.initial;
         while (this.star < this.goal) {
             this.starforce();
         }
 
-        return `${this.star}성까지 강화완료\n소비 메소 : ${(this.sum).toLocaleString()}메소\n찬스 타임 : ${(this.chance).toLocaleString()}회\n실패 횟수 : ${(this.fail).toLocaleString()}회\n파괴 횟수 : ${(this.dest).toLocaleString()}회`;
+        return `${this.star}성까지 강화완료\n소비 메소: ${this.sum.toLocaleString()}메소\n찬스 타임: ${this.chance.toLocaleString()}회\n실패 횟수: ${this.fail.toLocaleString()}회\n파괴 횟수: ${this.dest.toLocaleString()}회`;
     }
     starforce() {
         const pmprob = [[50, 0], [50, 0], [45, 0], [40, 0], [40, 0], [40, 3], [40, 5], [40, 7], [40, 7], [37, 15], [35, 20], [35, 25], [3, 50], [2, 50], [1, 50]];

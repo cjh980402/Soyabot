@@ -32,7 +32,6 @@ function botVoiceCommand(message, transcription) {
 module.exports = {
     usage: `${client.prefix}음성인식`,
     command: ["음성인식", "ㅇㅅㅇㅅ"],
-    // description: "- 음성인식 기능 테스트 용도입니다.",
     type: ["음악"],
     async execute(message) {
         if (!message.guild) {

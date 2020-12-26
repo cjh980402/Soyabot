@@ -42,11 +42,13 @@ module.exports = {
             }
             return message.channel.send(rslt);
         }
-        if (isNaN(args[0]) || +args[0] < 1 || +args[0] > 20000) {
+
+        const count = +args[0];
+        if (isNaN(count) || count < 1 || count > 20000) {
             return message.channel.send('1 ~ 20000 범위의 숫자만 입력가능합니다.');
         }
 
-        // args[0]은 로얄 횟수
+        // count는 로얄 횟수
         // random은 0이상 1미만
         const list = {}; // 횟수 담을 객체
         let propsum = 0; // 확률표의 확률값의 합
@@ -54,7 +56,7 @@ module.exports = {
             list[key] = 0;
             propsum += proper[key];
         }
-        for (let i = 0; i < +args[0]; i++) {
+        for (let i = 0; i < count; i++) {
             const now = Math.floor(Math.random() * propsum + 1);
             let sum = 0;
             for (let key in proper) {
@@ -66,7 +68,7 @@ module.exports = {
             }
         }
 
-        let rslt = `로얄 ${args[0]}회 결과\n`;
+        let rslt = `로얄 ${count}회 결과\n`;
         for (let key in list) {
             if (list[key] != 0) {
                 rslt += `\n${key}: ${list[key]}회`;

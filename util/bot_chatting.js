@@ -2,7 +2,7 @@ module.exports = function (message) {
     if (message.content == '주사위') {
         return message.channel.send(`주사위 결과: ${Math.floor(Math.random() * (100) + 1)}`);
     }
-    else if (message.content.includes('vs') && !message.content.includes('vsc')) {
+    else if (/vs/i.test(message.content) && !/vsc/i.test(message.content)) {
         return message.reply(choiceVS(message.content));
     }
     else if (message.content.endsWith("확률")) {
@@ -75,7 +75,7 @@ function recommendFood() {
 }
 
 function choiceVS(msg) {
-    const choice = msg.split('vs');
+    const choice = msg.split(/vs/i);
     const nospace = choice.slice();
     for (let i in choice) {
         choice[i] = choice[i].trim();

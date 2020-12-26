@@ -11,9 +11,9 @@ function calcIncrease(parse, selector) {
 }
 
 module.exports = {
-    usage: `${client.prefix}구코로나`,
-    command: ["구코로나", "ㄱㅋㄹㄴ"],
-    // description: '- 최신 기준 코로나 국내 현황을 알려줍니다.',
+    usage: `${client.prefix}코로나2`,
+    command: ["코로나2", "ㅋㄹㄴ2"],
+    description: '- 최신 기준 코로나 국내 현황을 알려줍니다.',
     type: ["기타"],
     async execute(message) {
         const today = new Date();

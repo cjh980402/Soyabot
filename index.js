@@ -27,7 +27,7 @@ client.on("ready", async () => {
     /**
      * 모든 명령 import
      */
-    readdirSync("./commands").filter((file) => file.endsWith(".js")).forEach(file => { // commands 폴더속 .js 파일 걸러내기
+    readdirSync("./commands").filter((file) => file.endsWith(".js")).forEach((file) => { // commands 폴더속 .js 파일 걸러내기
         client.commands.push(require(`./commands/${file}`)); // 배열에 이름과 명령 객체를 push
     });
     client.user.setActivity(`${PREFIX}help and ${PREFIX}play`, { type: "LISTENING" });
