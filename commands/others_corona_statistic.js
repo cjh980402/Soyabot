@@ -13,13 +13,13 @@ module.exports = {
     description: '- 최신 기준 코로나 국내 현황을 알려줍니다.',
     type: ["기타"],
     async execute(message) {
-        const response = await fetch(`https://api.corona-19.kr/korea/?serviceKey=${CORONA_API_KEY}`);
-        const data = await response.json();
+        const countData = await (await fetch(`https://api.corona-19.kr/korea/?serviceKey=${CORONA_API_KEY}`)).json();
+        const countryData = await (await fetch(`https://api.corona-19.kr/korea/country/new/?serviceKey=${CORONA_API_KEY}`)).json();
 
-        if (data.resultCode == "0") {
-            const rateData = [[data.city1n, data.city2n, data.city3n, data.city4n, data.city5n], [data.city1p, data.city2p, data.city3p, data.city4p, data.city5p]];
+        if (countData.resultCode == "0" && countryData.resultCode == "0") {
+            const rateData = [[countData.city1n, countData.city2n, countData.city3n, countData.city4n, countData.city5n], [countData.city1p, countData.city2p, countData.city3p, countData.city4p, countData.city5p]];
             const colorData = { "서울": "rgb(216, 76, 74)", "경기": "rgb(232, 116, 115)", "대구": "rgb(238, 145, 144)", "인천": "rgb(244, 200, 200)", "기타": "rgb(227, 227, 227)" };
-            const updateDate = /\((.+)\)/.exec(data.updateTime)[1];
+            const updateDate = /\((.+)\)/.exec(countData.updateTime)[1];
 
             const coronaChart = new QuickChart();
             coronaChart
@@ -45,7 +45,7 @@ module.exports = {
                             },
                             doughnutlabel: {
                                 labels: [{
-                                    text: "확진환자 지역별 비율",
+                                    text: "확진 환자 지역별 비율",
                                     font: {
                                         size: 25,
                                         weight: 'bold'
@@ -66,24 +66,72 @@ module.exports = {
                 .setHeight(600)
                 .setBackgroundColor('white');
 
-            const todayRecover = +data.TodayRecovered;
-            const todayCase = +data.TotalCaseBefore;
-            const todayDeath = +data.TodayDeath;
+            const todayRecover = +countData.TodayRecovered;
+            const todayCase = +countData.TotalCaseBefore;
+            const todayDeath = +countData.TodayDeath;
             const todaySum = todayRecover + todayCase + todayDeath;
 
-            const coronaEmbed = new MessageEmbed()
+            const coronaEmbed1 = new MessageEmbed()
                 .setTitle(updateDate)
                 .setThumbnail("http://140.238.26.231:8170/image/hosting/mohw.png")
                 .setColor("#F8AA2A")
                 .setURL("http://ncov.mohw.go.kr")
                 .setImage(await coronaChart.getShortUrl())
-                .addField('**확진 환자**', `${data.TotalCase} (${calcIncrease(todaySum)})`)
-                .addField('**격리 해제**', `${data.TotalRecovered} (${calcIncrease(todayRecover)})`)
-                .addField('**격리 중**', `${data.NowCase} (${calcIncrease(todayCase)})`)
-                .addField('**사망자**', `${data.TotalDeath} (${calcIncrease(todayDeath)})`)
-                .addField('**검사 중**', data.checkingCounter);
+                .addField('**확진 환자**', `${countData.TotalCase} (${calcIncrease(todaySum)})`)
+                .addField('**격리 해제**', `${countData.TotalRecovered} (${calcIncrease(todayRecover)})`)
+                .addField('**격리 중**', `${countData.NowCase} (${calcIncrease(todayCase)})`)
+                .addField('**사망자**', `${countData.TotalDeath} (${calcIncrease(todayDeath)})`)
+                .addField('**검사 중**', countData.checkingCounter)
+                .setTimestamp();
 
-            return message.channel.send(coronaEmbed);
+            const rslt = Object.values(countryData).filter(v => v instanceof Object).sort((a, b) => +b.newCase.replace(/,/g, "") - +a.newCase.replace(/,/g, "")).map(v => `${v.countryName}: ${v.totalCase} (국내: +${v.newCcase}, 해외: +${v.newFcase})`);
+            const coronaEmbed2 = new MessageEmbed()
+                .setTitle("지역별 확진 환자 현황")
+                .setThumbnail("http://140.238.26.231:8170/image/hosting/mohw.png")
+                .setColor("#F8AA2A")
+                .setURL("http://ncov.mohw.go.kr")
+                .setDescription(`${rslt.shift()}\n\n${rslt.join("\n")}`)
+                .setTimestamp();
+
+            let currentPage = 0;
+            const embeds = [coronaEmbed1, coronaEmbed2];
+            const coronaEmbed = await message.channel.send(
+                `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                embeds[currentPage]
+            );
+
+            try {
+                await coronaEmbed.react("⬅️");
+                await coronaEmbed.react("⏹");
+                await coronaEmbed.react("➡️");
+            }
+            catch {
+                return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
+            }
+            const filter = (reaction, user) => message.author.id == user.id;
+            const collector = coronaEmbed.createReactionCollector(filter, { time: 60000 });
+
+            collector.on("collect", async (reaction, user) => {
+                try {
+                    if (message.guild) {
+                        await reaction.users.remove(user);
+                    }
+                    if (reaction.emoji.name == "➡️") {
+                        currentPage = (currentPage + 1) % embeds.length;
+                        coronaEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                    }
+                    else if (reaction.emoji.name == "⬅️") {
+                        currentPage = (currentPage - 1 + embeds.length) % embeds.length;
+                        coronaEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                    }
+                    else if (reaction.emoji.name == "⏹") {
+                        collector.stop();
+                    }
+                }
+                catch {
+                    return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
+                }
+            });
         }
         else {
             return message.channel.send('코로나 현황을 조회할 수 없습니다.');
