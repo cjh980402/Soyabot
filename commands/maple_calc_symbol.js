@@ -12,10 +12,10 @@ module.exports = {
         }
 
         const startlev = +args[0], endlev = +args[1];
-        if (isNaN(startlev) || startlev < 141 || startlev > 199) {
+        if (isNaN(startlev) || startlev < 1 || startlev > 20) {
             return chat.reply('1 ~ 20 범위의 시작 레벨을 입력해주세요.');
         }
-        if (isNaN(endlev) || endlev < startlev || endlev > 200) {
+        if (isNaN(endlev) || endlev < startlev || endlev > 20) {
             return chat.reply('시작레벨 ~ 20 범위의 목표 레벨을 입력해주세요.');
         }
 

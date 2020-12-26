@@ -3,6 +3,11 @@ const { MessageEmbed } = require("discord.js");
 const fetch = require('node-fetch');
 const QuickChart = require('quickchart-js');
 
+function colorData(cityList) {
+    const colorList = ["rgb(216, 75, 75)", "rgb(232, 115, 115)", "rgb(238, 145, 145)", "rgb(244, 200, 200)", "rgb(227, 227, 227)"];
+    return cityList.map((v) => (v == "기타" ? "rgb(227, 227, 227)" : colorList.shift()));
+}
+
 module.exports = {
     usage: `${client.prefix}코로나`,
     command: ["코로나", "ㅋㄹㄴ"],
@@ -14,7 +19,6 @@ module.exports = {
 
         if (countData.resultCode == "0" && countryData.resultCode == "0") {
             const rateData = [[countData.city1n, countData.city2n, countData.city3n, countData.city4n, countData.city5n], [countData.city1p, countData.city2p, countData.city3p, countData.city4p, countData.city5p]];
-            const colorData = { "서울": "rgb(216, 76, 74)", "경기": "rgb(232, 116, 115)", "대구": "rgb(238, 145, 144)", "인천": "rgb(244, 200, 200)", "기타": "rgb(227, 227, 227)" };
             const updateDate = /\((.+)\)/.exec(countData.updateTime)[1];
 
             const coronaChart = new QuickChart();
@@ -26,7 +30,7 @@ module.exports = {
                         datasets: [{
                             label: '지역별 비율',
                             data: rateData[1],
-                            backgroundColor: rateData[0].map(v => colorData[v])
+                            backgroundColor: colorData(rateData[0])
                         }]
                     },
                     options: {
