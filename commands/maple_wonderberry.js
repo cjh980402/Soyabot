@@ -17,7 +17,7 @@ module.exports = {
     description: `- 1 ~ 20000 범위의 횟수를 입력하면 그만큼의 원더베리 시뮬을 수행합니다.\n- 참고. ${client.prefix}원더베리 확률`,
     type: ["메이플"],
     async execute(message, args) {
-        if (args.length != 1) {
+        if (args.length > 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         if (args[0] == '확률' || args[0] == 'ㅎㄹ') {
