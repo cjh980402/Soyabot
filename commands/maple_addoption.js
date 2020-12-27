@@ -14,23 +14,21 @@ const picmatch = {
     "아케인": "arcaneshade",
     "제네시스": "genesis",
     "제네": "genesis",
-    "제로": "zero"
+    "제로": "zero",
+    "해카세": "others",
+    "기타": "others"
 };
 
 module.exports = {
     usage: `${client.prefix}추옵 (무기)`,
     command: ["추옵", "ㅊㅇ"],
-    description: `- 해당하는 무기의 추옵표를 출력합니다.
-- (무기) : 포이즈닉(자쿰), 네크로, 반레온, 쟈이힌, 여제, 우트가르드, 파프, 앱솔, 아케인, 제네시스, 제로, 해카세 입력가능`,
+    description: `- 해당하는 무기의 추옵표를 출력합니다.\n- (무기): ${Object.keys(picmatch).join(", ")} 입력가능`,
     type: ["메이플"],
     async execute(message, args) {
         if (picmatch[args[0]]) {
             return message.channel.send(`${args[0]} 무기의 추옵표`, {
                 files: [`./pictures/add_option/${picmatch[args[0]]}.png`]
             });
-        }
-        else if (args[0] == '해카세') {
-            return message.channel.send('해방된 카이세리움\n기본 공격력: 400\n추가옵션: 16 / 36 / 59 / 86 / 118');
         }
         else {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);

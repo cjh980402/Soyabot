@@ -6,16 +6,16 @@ module.exports = {
     description: "- 메이플스토리 닉네임을 추천합니다. (2 ~ 6글자)",
     type: ["메이플"],
     async execute(message, args) {
-        const cnt = (!args[0] ? 2 : +args[0]);
-        if (cnt < 2 || cnt > 6 || isNaN(cnt)) {
+        const count = +(args[0] ?? 2);
+        if (isNaN(count) || count < 2 || count > 6) {
             message.reply("닉네임은 2 ~ 6 글자만 가능합니다.");
         }
 
         let rslt = "";
 
-        for (let i = 0; i < cnt; i++) {
+        for (let i = 0; i < count; i++) {
             rslt += list[Math.floor(Math.random() * list.length)];
         }
-        return message.reply(`${cnt}글자 닉네임 추천: ${rslt}`);
+        return message.reply(`${count}글자 닉네임 추천: ${rslt}`);
     }
 };
