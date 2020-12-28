@@ -9,8 +9,8 @@ const typematch = {
 module.exports = {
     usage: `${client.prefix}자동알림 (카테고리)`,
     command: ["자동알림", "ㅈㄷㅇㄹ"],
-    description: `- 입력한 카테고리 (공지, 업데이트, 플래그, 테섭공지, 테섭파일)에 따른 자동알림 기능 상태를 전환합니다.
-카테고리 생략시 현재 알림상태를 알려줍니다.`,
+    description: `- 입력한 카테고리(${Object.keys(typematch).join(", ")})에 따른 자동알림 기능 상태를 전환합니다.
+카테고리 생략 시 현재 알림상태를 알려줍니다.`,
     type: ["메이플"],
     async execute(message, args) {
         if (!message.guild) {

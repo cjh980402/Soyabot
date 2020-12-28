@@ -84,7 +84,7 @@ module.exports = {
                 .addField('**검사 중**', countData.checkingCounter)
                 .setTimestamp();
 
-            const rslt = Object.values(countryData).filter(v => v instanceof Object).sort((a, b) => +b.newCase.replace(/,/g, "") - +a.newCase.replace(/,/g, "")).map(v => `${v.countryName}: ${v.totalCase} (국내: ⬆️ ${v.newCcase}, 해외: ⬆️ ${v.newFcase})`);
+            const rslt = Object.values(countryData).filter((v) => v instanceof Object).sort((a, b) => +b.newCase.replace(/,/g, "") - +a.newCase.replace(/,/g, "")).map((v) => `${v.countryName}: ${v.totalCase} (국내: ⬆️ ${v.newCcase}, 해외: ⬆️ ${v.newFcase})`);
             const coronaEmbed2 = new MessageEmbed()
                 .setTitle("지역별 확진 환자 현황")
                 .setThumbnail("http://140.238.26.231:8170/image/hosting/mohw.png")
