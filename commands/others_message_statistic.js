@@ -43,13 +43,13 @@ module.exports = {
 
         const messagestat = await db.get(`SELECT * FROM messagedb WHERE channelsenderid = ?`, [`${message.guild.id} ${targetInfo.user.id}`]);
         if (messagestat) {
-            return message.channel.send(`${targetInfo.nickname ?? targetInfo.user.username}
+            return message.channel.send(`[${targetInfo.nickname ?? targetInfo.user.username}]
 채팅 건수: ${messagestat.messagecnt.toLocaleString()}
 문자 개수: ${messagestat.lettercnt.toLocaleString()}
 채팅 지수: ${(messagestat.lettercnt / messagestat.messagecnt).toFixed(2)}`);
         }
         else {
-            return message.channel.send(`${targetInfo.nickname ?? targetInfo.user.username}\n채팅 건수: 0\n문자 개수: 0\n채팅 지수: 0.00`);
+            return message.channel.send(`[${targetInfo.nickname ?? targetInfo.user.username}]\n채팅 건수: 0\n문자 개수: 0\n채팅 지수: 0.00`);
         }
     }
 };
