@@ -43,7 +43,7 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
         if (message.author.bot) { // 봇 여부 체크
             return;
         }
-        if (message.author.id == ADMIN_ID) { // 관리자 여부 체크
+        if (message.author.id == ADMIN_ID && message.type == "DEFAULT") { // 관리자 여부 체크와 채팅 종류 검사
             await adminChat(message);
         }
 

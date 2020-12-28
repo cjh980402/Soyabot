@@ -10,7 +10,7 @@ module.exports.adminChat = async function (message) {
     if (message.content.startsWith("[")) { // 노드 코드 실행 후 출력
         const funcBody = message.content.substr(1).trim().split('\n');
         funcBody.push(`message.channel.send(String(${funcBody.pop()}) || "empty string", { split: true });`); // 함수의 마지막 줄 내용은 자동으로 출력
-        await eval(`(async () => {${funcBody.join('\n')}})();`); // 에러캐치를 위해 await까지 해준다.
+        await eval(`(async () => {${funcBody.join('\n')}})();`); // 프로미스 에러 캐치를 위해 await까지 해준다.
     }
     else if (message.content.startsWith("]")) { // 콘솔 명령 실행 후 출력
         message.channel.send(await module.exports.cmd(message.content.substr(1).trim()) || "empty string", { split: true });
