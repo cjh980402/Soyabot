@@ -91,17 +91,16 @@ module.exports = {
             playing: true
         };
 
-        client.queue.set(message.guild.id, queueConstruct);
-
         try {
             queueConstruct.connection = await channel.join();
             await queueConstruct.connection.voice.setSelfDeaf(true);
+            client.queue.set(message.guild.id, queueConstruct);
             play(queueConstruct.songs[0], message);
         }
         catch (e) {
             replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e.$}`);
+            channel.leave();
             client.queue.delete(message.guild.id);
-            await channel.leave();
             return message.channel.send(`채널에 참가할 수 없습니다: ${e.message}`);
         }
     }

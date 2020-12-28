@@ -1,6 +1,5 @@
 const { canModifyQueue } = require("../util/SoyabotUtil");
 
-
 module.exports = {
     usage: `${client.prefix}stop`,
     command: ["stop"],

@@ -12,7 +12,7 @@ module.exports = {
             setTimeout(() => { // 종료 후 새로운 음악 기능이 수행 중이면 나가지 않음
                 const newQueue = client.queue.get(message.guild.id);
                 if (!newQueue && message.guild.me.voice.channel) {
-                    queue.channel.leave();
+                    message.guild.me.voice.channel.leave();
                     queue.textChannel.send(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
                 }
             }, STAY_TIME * 1000);

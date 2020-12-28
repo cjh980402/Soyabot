@@ -72,10 +72,8 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
         await (botModule.channelCool ? botModule.execute(message, args) : promiseTimeout(botModule.execute(message, args), 180000)); // 명령어 수행 부분
-        cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
     }
     catch (e) {
-        cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
         if (e instanceof Collection) { // awaitMessages에서 시간초과한 경우
             message.channel.send(`"${commandName.split("_")[0]}"의 입력 대기 시간이 초과되었습니다.`);
         }
@@ -88,7 +86,8 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
         }
     }
     finally {
-        await cachingMessage(message);
+        cooldowns.delete(commandName); // 동작 수행이 끝나면 항상 쿨타임 삭제
+        await cachingMessage(message); // 들어오는 채팅 항상 캐싱
     }
 });
 
