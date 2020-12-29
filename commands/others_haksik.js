@@ -7,7 +7,7 @@ module.exports = {
     type: ["기타"],
     async execute(message, args) {
         const week = ['일', '월', '화', '수', '목', '금', '토'];
-        const day = args[0] ?? week[new Date().getDay()];
+        const day = args[0]?.[0] ?? week[new Date().getDay()];
 
         if (day == '일' || day == '토') {
             return message.channel.send('주말은 학식이 제공되지 않습니다.');
