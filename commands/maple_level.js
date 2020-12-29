@@ -16,7 +16,8 @@ function numKoreanUnit(num) { // 숫자 값에 한글 단위를 붙이는 함수
 module.exports = {
     usage: `${client.prefix}레벨 (닉네임)`,
     command: ["레벨", "ㄹㅂ", "ㄼ"],
-    description: "- 캐릭터의 공식 홈페이지 기준 레벨과 경험치를 통해 250, 275까지 남은 경험치량을 계산합니다.",
+    description: `- 캐릭터의 공식 홈페이지 기준 현재 레벨과 경험치를 기준으로 275, 300까지 남은 경험치량을 계산합니다.
+- 250미만은 250, 275, 300까지 남은 양을 계산합니다.`,
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {
