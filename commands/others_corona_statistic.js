@@ -3,6 +3,10 @@ const { MessageEmbed } = require("discord.js");
 const fetch = require('node-fetch');
 const QuickChart = require('quickchart-js');
 
+function calcIncrease(data) {
+    return `${data >= 0 ? `⬆️ ${data.toLocaleString()}` : `⬇️ ${(-data).toLocaleString()}`}`;
+}
+
 function colorData(cityList) {
     const colorList = ["rgb(216, 75, 75)", "rgb(232, 115, 115)", "rgb(238, 145, 145)", "rgb(244, 200, 200)", "rgb(227, 227, 227)"];
     return cityList.map((v) => (v == "기타" ? "rgb(227, 227, 227)" : colorList.shift()));
@@ -71,21 +75,21 @@ module.exports = {
             const todayDeath = +countData.TodayDeath;
             const todaySum = todayRecover + todayCase + todayDeath;
 
-            const coronaEmbed1 = new MessageEmbed()
+            const corona1 = new MessageEmbed()
                 .setTitle(updateDate)
                 .setThumbnail("http://140.238.26.231:8170/image/hosting/mohw.png")
                 .setColor("#F8AA2A")
                 .setURL("http://ncov.mohw.go.kr")
                 .setImage(await coronaChart.getShortUrl())
-                .addField('**확진 환자**', `${countData.TotalCase} (⬆️ ${todaySum.toLocaleString()})`)
-                .addField('**격리 해제**', `${countData.TotalRecovered} (⬆️ ${todayRecover.toLocaleString()})`)
-                .addField('**격리 중**', `${countData.NowCase} (⬆️ ${todayCase.toLocaleString()})`)
-                .addField('**사망자**', `${countData.TotalDeath} (⬆️ ${todayDeath.toLocaleString()})`)
+                .addField('**확진 환자**', `${countData.TotalCase} (${calcIncrease(todaySum)})`)
+                .addField('**격리 해제**', `${countData.TotalRecovered} (${calcIncrease(todayRecover)})`)
+                .addField('**격리 중**', `${countData.NowCase} (${calcIncrease(todayCase)})`)
+                .addField('**사망자**', `${countData.TotalDeath} (${calcIncrease(todayDeath)})`)
                 .addField('**검사 중**', countData.checkingCounter)
                 .setTimestamp();
 
             const rslt = Object.values(countryData).filter((v) => v instanceof Object).sort((a, b) => +b.newCase.replace(/,/g, "") - +a.newCase.replace(/,/g, "")).map((v) => `${v.countryName}: ${v.totalCase} (국내: ⬆️ ${v.newCcase}, 해외: ⬆️ ${v.newFcase})`);
-            const coronaEmbed2 = new MessageEmbed()
+            const corona2 = new MessageEmbed()
                 .setTitle("지역별 확진 환자 현황")
                 .setThumbnail("http://140.238.26.231:8170/image/hosting/mohw.png")
                 .setColor("#F8AA2A")
@@ -94,7 +98,7 @@ module.exports = {
                 .setTimestamp();
 
             let currentPage = 0;
-            const embeds = [coronaEmbed1, coronaEmbed2];
+            const embeds = [corona1, corona2];
             const coronaEmbed = await message.channel.send(
                 `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
                 embeds[currentPage]
