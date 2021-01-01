@@ -14,11 +14,12 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const search = escape(iconv.encode(args.join(" "), "euc-kr").toString("binary")); // euc-kr의 encodeURI
-        let parse = cheerio.load(iconv.decode(await (await fetch(`https://finance.naver.com/search/searchList.nhn?query=${search}`)).buffer(), "euc-kr"));
+        const search = args.join(" ").toLowerCase();
+        const searchQuery = escape(iconv.encode(search, "euc-kr").toString("binary")); // euc-kr의 encodeURI
+        let parse = cheerio.load(iconv.decode(await (await fetch(`https://finance.naver.com/search/searchList.nhn?query=${searchQuery}`)).buffer(), "euc-kr"));
         const stockdata = parse("td.tit > a");
         if (stockdata.length > 0) {
-            const stockfind = stockdata.filter((i, v) => parse(v).text() == args.join(" "));
+            const stockfind = stockdata.filter((i, v) => parse(v).text().toLowerCase() == search);
             const code = /\d+/.exec((stockfind.length > 0 ? stockfind : stockdata).eq(0).attr("href")); // 내용과 일치하거나 첫번째 항목
             parse = cheerio.load(iconv.decode(await (await fetch(`https://finance.naver.com/item/main.nhn?code=${code}`)).buffer(), "euc-kr"));
 

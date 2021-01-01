@@ -2,7 +2,7 @@ from PIL import Image, ImageFont, ImageDraw
 import sys
 
 def stock_info(img: Image):
-    image = Image.new("RGB", (658, 658), (255,255,255)) # 흰 정사각형 배경 이미지 생성
+    image = Image.new("RGB", (658, 658), (255, 255, 255)) # 흰 정사각형 배경 이미지 생성
     image.paste(img, (0, 135)) # 이미지가 658 * 408이므로 135(원본의 여백 고려)를 더해서 y축 위치를 가운데로 조정 후 붙여넣기
     drawer = ImageDraw.Draw(image)
 

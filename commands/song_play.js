@@ -21,7 +21,7 @@ module.exports = {
         if (!channel) {
             return message.reply("음성 채널에 먼저 참가해주세요!");
         }
-        if (serverQueue && channel !== message.guild.me.voice.channel) {
+        if (serverQueue && channel != message.guild.me.voice.channel) {
             return message.reply(`같은 채널에 있어야합니다. (${client.user})`);
         }
         if (!args.length) {

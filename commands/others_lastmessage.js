@@ -20,7 +20,7 @@ module.exports = {
         }
         else {
             const targetNick = message.content.substr(message.content.indexOf(args[0])).trim();
-            targetInfo = message.guild.members.cache.filter(v => (v.nickname ?? v.user.username).includes(targetNick));
+            targetInfo = message.guild.members.cache.filter((v) => (v.nickname ?? v.user.username).includes(targetNick));
             if (targetInfo.size == 0) {
                 return message.channel.send("채팅방에 존재하지 않는 사람입니다.");
             }

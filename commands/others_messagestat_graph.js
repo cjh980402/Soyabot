@@ -11,16 +11,16 @@ module.exports = {
     type: ["기타"],
     async execute(message, args) {
         const targetChannel = (message.author.id == ADMIN_ID && args.length > 0
-            && client.guilds.cache.find(v => v.name.includes(args.join(" ")))) || message.guild;
+            && client.guilds.cache.find((v) => v.name.includes(args.join(" ")))) || message.guild;
         if (!targetChannel) {
             return message.channel.send("사용이 불가능한 채널입니다.");
         }
 
-        const roommessage = (await db.all(`SELECT * FROM messagedb WHERE channelsenderid LIKE ?`, [`${targetChannel.id}%`])).filter(v => {
+        const roommessage = (await db.all(`SELECT * FROM messagedb WHERE channelsenderid LIKE ?`, [`${targetChannel.id}%`])).filter((v) => {
             const member = targetChannel.members.cache.get(v.channelsenderid.split(' ')[1]);
             return member && (args[0] != "-봇" || !member.user.bot);
         }).sort((a, b) => ((b.lettercnt / b.messagecnt) - (a.lettercnt / a.messagecnt))); // 내림차순
-        const usercolor = roommessage.map(v => {
+        const usercolor = roommessage.map((v) => {
             const color = v.channelsenderid.split(' ')[1] & 0xFFFFFF;
             let r = (color >> 16) & 0xFF;
             let g = (color >> 8) & 0xFF;
@@ -39,15 +39,15 @@ module.exports = {
             .setConfig({
                 type: 'horizontalBar',
                 data: {
-                    labels: roommessage.map(v => {
+                    labels: roommessage.map((v) => {
                         const member = targetChannel.members.cache.get(v.channelsenderid.split(' ')[1]);
                         return member.nickname ?? member.user.username;
                     }),
                     datasets: [{
                         label: '채팅지수',
-                        data: roommessage.map(v => (v.lettercnt / v.messagecnt).toFixed(2)),
-                        backgroundColor: usercolor.map(v => `${v}, 0.5)`),
-                        borderColor: usercolor.map(v => `${v}, 1)`),
+                        data: roommessage.map((v) => (v.lettercnt / v.messagecnt).toFixed(2)),
+                        backgroundColor: usercolor.map((v) => `${v}, 0.5)`),
+                        borderColor: usercolor.map((v) => `${v}, 1)`),
                         borderWidth: 4,
                         maxBarThickness: 120
                     }]
