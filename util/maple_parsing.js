@@ -24,6 +24,7 @@ class Maple {
         this.homeLevelData = null;
         this.homeUnionData = null;
     }
+    // getter
     get Name() {
         return this.name;
     }
@@ -33,7 +34,7 @@ class Maple {
     get HomeURL() {
         return this.homeLevelURL;
     }
-    // 이하 모두 매소드
+    // 메소드
     async isExist() {
         const len = this.name.length + (this.name.match(/[가-힣]/g)?.length ?? 0);
         this.homeLevelData = await linkParse(this.homeLevelURL);
@@ -148,7 +149,7 @@ class Maple {
     Murung() {
         const murung = this.ggData(".col-lg-3.col-6.mt-3.px-1").eq(0); // murung은 cheerio객체
         const nomurung = murung.find(".user-summary-no-data").length; // 0이면 기록 있고 1이면 기록 없음
-        if (nomurung) {
+        if (murung.length == 0 || nomurung) {
             return null;
         }
 
@@ -162,7 +163,7 @@ class Maple {
     Seed() {
         const seed = this.ggData(".col-lg-3.col-6.mt-3.px-1").eq(1);
         const noseed = seed.find(".user-summary-no-data").length; // 0이면 기록 있고 1이면 기록 없음
-        if (noseed) {
+        if (seed.length == 0 || noseed) {
             return null;
         }
 
@@ -176,7 +177,7 @@ class Maple {
     Union() {
         const union = this.ggData(".col-lg-3.col-6.mt-3.px-1").eq(2);
         const nounion = union.find(".user-summary-no-data").length; // 0이면 기록 있고 1이면 기록 없음
-        if (nounion) {
+        if (union.length == 0 || nounion) {
             return null;
         }
 
@@ -189,7 +190,7 @@ class Maple {
     Achieve() {
         const achieve = this.ggData(".col-lg-3.col-6.mt-3.px-1").eq(3);
         const noachieve = achieve.find(".user-summary-no-data").length; // 0이면 기록 있고 1이면 기록 없음
-        if (noachieve) {
+        if (achieve.length == 0 || noachieve) {
             return null;
         }
 

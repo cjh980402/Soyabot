@@ -5,7 +5,7 @@ module.exports.botNotice = async function (data, type = null) {
     // type이 null(전체 알림)인 경우는 예외리스트는 없음
     client.guilds.cache.filter((v) => !skiplist.includes(v.id)).forEach((v) => {
         const guildText = v.channels.cache.filter((v) => v.type == 'text');
-        const target = guildText.find((v) => /공지|알림/.test(v.name)) ?? guildText.first();
+        const target = guildText.find((v) => /소야봇.*(공지|알림)/.test(v.name)) ?? guildText.first();
         if (target?.permissionsFor(client.user).has("VIEW_CHANNEL") && target?.permissionsFor(client.user).has("SEND_MESSAGES")) {
             target.send(data); // 디스코드 봇은 딜레이 없이 공지 보내기 가능
         }

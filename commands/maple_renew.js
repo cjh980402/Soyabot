@@ -20,11 +20,11 @@ module.exports = {
                 return message.channel.send('제한시간 내에 갱신 작업을 실패하였습니다.');
             }
             else {
-                return message.channel.send(`[${Maple.Name}]\n갱신이 완료되었습니다.\n\n${Maple.GGURL}`);
+                return message.channel.send(`[${Maple.Name}]\n갱신이 완료되었습니다.\n\n${decodeURI(Maple.GGURL)}`);
             }
         }
         else {
-            return message.channel.send(`[${Maple.Name}]\n이미 최신 상태입니다.\n\n${Maple.GGURL}`);
+            return message.channel.send(`[${Maple.Name}]\n이미 최신 상태입니다.\n\n${decodeURI(Maple.GGURL)}`);
         }
     }
 };
