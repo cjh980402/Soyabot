@@ -1,6 +1,6 @@
 const { MessageAttachment } = require("discord.js");
-const QuickChart = require('quickchart-js');
 const { ADMIN_ID } = require("../soyabot_config.json");
+const QuickChart = require('quickchart-js');
 
 module.exports = {
     usage: `${client.prefix}채팅지수그래프 (옵션)`,
@@ -86,7 +86,7 @@ module.exports = {
             .setHeight(height)
             .setBackgroundColor('white');
 
-        const attachment = new MessageAttachment(await messageChart.toBinary());
+        const attachment = new MessageAttachment(await messageChart.toBinary(), 'graph.png');
         return message.channel.send({
             files: [attachment]
         });

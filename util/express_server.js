@@ -2,6 +2,10 @@ const { exists, readFile } = require('./async_to_promis.js');
 const express = require('express');
 const app = express();
 
+const server = app.listen(8170, () => {
+    console.log(`${server.address().port}번 port에 http server를 띄웠습니다.`);
+});
+
 app.get('/image/:category/:name', async (req, res) => { // 이미지 경로
     console.log(`익스프레스 접속\n${req.params.$}\n${req.query.$}`); // 라우팅 경로와 쿼리에 해당하는 부분
     if (await exists(`./pictures/${req.params.category}/${req.params.name}`)) {
@@ -26,8 +30,4 @@ app.get('/', async (req, res) => { // 메인 화면
     }
 });
 
-app.listen(8170, () => {
-    console.log("8170번 port에 http server를 띄웠습니다.");
-});
-
-module.exports = app;
+module.exports = server;

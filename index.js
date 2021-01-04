@@ -8,7 +8,7 @@ const { TOKEN, PREFIX, ADMIN_ID } = require("./soyabot_config.json");
 const { adminChat, initClient } = require("./admin/admin_function");
 const botChatting = require("./util/bot_chatting");
 const { replyAdmin } = require('./admin/bot_control');
-const app = require("./util/express_server");
+const server = require("./util/express_server");
 const sqlite = require('./util/sqlite-handler');
 global.db = new sqlite('./db/soyabot_data.db'); // 여러 기능들에 의해 필수로 최상위 전역
 global.client = new Client({ disableMentions: "everyone" });
@@ -31,7 +31,7 @@ client.on("ready", async () => {
         client.commands.push(require(`./commands/${file}`)); // 배열에 이름과 명령 객체를 push
     });
     client.user.setActivity(`${PREFIX}help and ${PREFIX}play`, { type: "LISTENING" });
-    replyAdmin('소야봇이 작동 중입니다.');
+    replyAdmin(`소야봇이 작동 중입니다.\n${server.address().port}번 포트에서 http 서버가 작동 중입니다.`);
 });
 client.on("warn", console.log);
 client.on("error", console.error);
@@ -92,7 +92,7 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
     }
 });
 
-client.on("voiceStateUpdate", (oldState, newState) => {
+client.on("voiceStateUpdate", (oldState, newState) => { // 유저 음성채팅 상태 변경 이벤트
     const oldVoice = oldState.channel;
     const newVoice = newState.channel;
     if (oldVoice != newVoice) {
