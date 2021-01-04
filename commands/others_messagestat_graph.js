@@ -21,7 +21,7 @@ module.exports = {
             return member && (args[0] != "-봇" || !member.user.bot);
         }).sort((a, b) => ((b.lettercnt / b.messagecnt) - (a.lettercnt / a.messagecnt))); // 내림차순
         const usercolor = roommessage.map((v) => {
-            const color = v.channelsenderid.split(' ')[1] & 0xFFFFFF;
+            const color = v.channelsenderid.split(' ')[1].hashCode() & 0xFFFFFF;
             let r = (color >> 16) & 0xFF;
             let g = (color >> 8) & 0xFF;
             let b = color & 0xFF;

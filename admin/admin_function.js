@@ -70,6 +70,16 @@ Object.defineProperty(String.prototype, "decodeHTML", {
     }
 });
 
+Object.defineProperty(String.prototype, "hashCode", {
+    value: function () {
+        let h = 0;
+        for (let i = 0; i < this.length; i++) {
+            h = (31 * h + this.codePointAt(i)) | 0; // 연산 후 signed 32-bit 정수로 변환
+        }
+        return h;
+    }
+});
+
 Object.defineProperty(Object.prototype, "$i", { // util.inspect의 결과 출력
     value: function (dep = 2) {
         return inspect(this, { depth: dep });
