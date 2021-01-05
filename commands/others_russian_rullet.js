@@ -1,3 +1,9 @@
+const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const gameRegExp = [new RegExp(`^${escapeRegex(client.prefix)}\\s*(참가|ㅊㄱ)$`),
+new RegExp(`^${escapeRegex(client.prefix)}\\s*(시작|ㅅㅈ)$`),
+new RegExp(`^${escapeRegex(client.prefix)}\\s*(종료|ㅈㄹ)$`),
+new RegExp(`^${escapeRegex(client.prefix)}\\s*(빵|ㅃ)$`)];
+
 module.exports = {
     usage: `${client.prefix}러시안룰렛 (탄환 수)`,
     command: ["러시안룰렛", "ㄹㅅㅇㄹㄹ", "ㄽㅇㄹㄹ"],
@@ -20,20 +26,23 @@ module.exports = {
         const gameUser = [message.member]; // 참가자 객체 배열
         message.channel.send(`게임을 시작하셨습니다.\n${client.prefix}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${gameUser[0].nickname ?? gameUser[0].user.username}`)
         while (1) {
-            const rslt = await message.channel.awaitMessages((msg) => {
-                if (msg.content.trim() == `${client.prefix}참가` || msg.content.trim() == `${client.prefix}ㅊㄱ`) {
+            let gameChatType = 0;
+            await message.channel.awaitMessages((msg) => {
+                if (gameRegExp[0].test(msg.content.trim())) {
                     if (gameUser.includes(msg.member)) {
                         msg.channel.send("이미 참가하셨습니다.");
                         return false;
                     }
                     else {
+                        gameChatType = 1;
                         gameUser.push(msg.member); // 참가자 리스트에 추가
-                        msg.channel.send(`게임에 참가하셨습니다.\n현재 참가자 (${gameUser.length}명): ${gameUser.map(v => v.nickname ?? v.user.username).join(", ")}`)
+                        msg.channel.send(`게임에 참가하셨습니다.\n현재 참가자 (${gameUser.length}명): ${gameUser.map((v) => v.nickname ?? v.user.username).join(", ")}`)
                         return true;
                     }
                 }
-                else if (msg.content.trim() == `${client.prefix}시작` || msg.content.trim() == `${client.prefix}ㅅㅈ`) {
+                else if (gameRegExp[1].test(msg.content.trim())) {
                     if (gameUser.includes(msg.member) && gameUser.length > 1) {
+                        gameChatType = 2;
                         msg.channel.send("러시안룰렛을 시작합니다.");
                         return true;
                     }
@@ -46,8 +55,9 @@ module.exports = {
                         return false;
                     }
                 }
-                else if (msg.content.trim() == `${client.prefix}종료` || msg.content.trim() == `${client.prefix}ㅈㄹ`) {
+                else if (gameRegExp[2].test(msg.content.trim())) {
                     if (gameUser.includes(msg.member)) {
+                        gameChatType = 3;
                         msg.channel.send("게임을 종료합니다.");
                         return true;
                     }
@@ -60,32 +70,37 @@ module.exports = {
                     return false;
                 }
             }, { max: 1, time: 300000, errors: ["time"] }); // 5분 대기
-            if (gameUser.length == bullet) {
-                message.channel.send("인원이 가득 차 게임이 자동으로 시작됩니다.");
+            if (gameChatType == 1 && gameUser.length == bullet) {
+                await message.channel.send("인원이 가득 차 게임이 자동으로 시작됩니다.");
                 break; // 게임 시작
             }
-            else if (rslt.first().content.trim() == `${client.prefix}시작` || rslt.first().content.trim() == `${client.prefix}ㅅㅈ`) {
+            else if (gameChatType == 2) {
                 break; // 게임 시작
             }
-            else if (rslt.first().content.trim() == `${client.prefix}종료` || rslt.first().content.trim() == `${client.prefix}ㅈㄹ`) {
+            else if (gameChatType == 3) {
                 return; // 게임 종료
             }
         }
         // 게임을 진행할 때는 멘션으로 해당하는 사람에게 알려준다.
-        message.channel.send(`탄환 ${bullet}발이 장전되었습니다. 첫 시작은 ${gameUser[0]}님입니다.\n${client.prefix}빵 명령어로 방아쇠를 당겨주세요.`);
+        await message.channel.send(`탄환 ${bullet}발이 장전되었습니다. 첫 시작은 ${gameUser[0]}님입니다.\n${client.prefix}빵 명령어로 방아쇠를 당겨주세요.`);
         const die = Math.floor(Math.random() * bullet); // 0번째 ~ (bullet - 1)번째 탄환 중에서 선택
         for (let i = 0; i < bullet; i++) {
             try {
-                await message.channel.awaitMessages((msg) => (msg.member == gameUser[i % gameUser.length] && (msg.content == `${client.prefix}빵` || msg.content == `${client.prefix}ㅃ`)), { max: 1, time: 60000, errors: ["time"] });
+                await message.channel.awaitMessages((msg) => (msg.member == gameUser[i % gameUser.length] && gameRegExp[3].test(msg.content.trim())), { max: 1, time: 60000, errors: ["time"] });
             }
             catch (e) { } // 시간 초과돼도 에러 throw 안하게 catch를 해줌
             if (i == die) {
-                await message.channel.send(`:gun: ${gameUser[i % gameUser.length]}님이 사망하셨습니다......\n한 판 더 하실?`);
-                break; // 게임 종료
+                return message.channel.send(`:gun: ${gameUser[i % gameUser.length]}님이 사망하셨습니다......\n한 판 더 하실?`);
             }
             else {
-                await message.channel.send(`:gun: 철컥 (${bullet - (i + 1)}발 남음)`);
-                await message.channel.send(`다음 차례는 ${gameUser[(i + 1) % gameUser.length]}님입니다.`);
+                const nextUser = message.guild.member(gameUser[(i + 1) % gameUser.length]);
+                if (nextUser) {
+                    await message.channel.send(`:gun: 철컥 (${bullet - (i + 1)}발 남음)`);
+                    await message.channel.send(`다음 차례는 ${gameUser[(i + 1) % gameUser.length]}님입니다.`);
+                }
+                else {
+                    return message.channel.send("다음 차례 유저가 방에서 나가서 게임이 자동으로 종료됩니다.");
+                }
             }
         }
     }

@@ -47,7 +47,7 @@ module.exports = {
             let songChoice;
             const response = await message.channel.awaitMessages((msg) => {
                 songChoice = msg.content.split(",").map((str) => +str.trim()); // ,가 없으면 길이가 1인 배열
-                return songChoice.every(v => !isNaN(v) && 1 <= v && v <= results.length);
+                return songChoice.every((v) => !isNaN(v) && 1 <= v && v <= results.length);
             }, { max: 1, time: 30000, errors: ["time"] });
 
             for (let song of songChoice) {
