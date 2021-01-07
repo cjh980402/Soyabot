@@ -6,12 +6,12 @@ const { canModifyQueue } = require("../util/SoyabotUtil");
 
 module.exports = {
     async play(song, guild) {
-        const queue = client.queue.get(guild.voice.channel?.guild.id);
+        const queue = client.queue.get(guild.me.voice.channel?.guild.id);
 
         if (!song) {
             client.queue.delete(guild.id);
             setTimeout(() => { // 종료 후 새로운 음악 기능이 수행 중이면 나가지 않음
-                const newQueue = client.queue.get(guild.voice.channel?.guild.id);
+                const newQueue = client.queue.get(guild.me.voice.channel?.guild.id);
                 if (!newQueue && guild.voice.channel) {
                     guild.voice.channel.leave(); // 봇이 참가한 음성 채널을 떠남
                     queue.TextChannel.send(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);

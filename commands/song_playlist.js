@@ -18,8 +18,8 @@ module.exports = {
         }
 
         const { channel } = message.member.voice;
-        const serverQueue = client.queue.get(message.guild.voice.channel?.guild.id);
-        if (!channel || (serverQueue && channel != message.guild.voice.channel)) {
+        const serverQueue = client.queue.get(message.guild.me.voice.channel?.guild.id);
+        if (!channel || (serverQueue && channel != message.guild.me.voice.channel)) {
             return message.reply(`같은 음성 채널에 참가해주세요! (${client.user})`);
         }
         if (!args.length) {
