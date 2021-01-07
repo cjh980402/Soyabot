@@ -12,8 +12,8 @@ module.exports = {
             client.queue.delete(guild.id);
             setTimeout(() => { // 종료 후 새로운 음악 기능이 수행 중이면 나가지 않음
                 const newQueue = client.queue.get(guild.me.voice.channel?.guild.id);
-                if (!newQueue && guild.voice.channel) {
-                    guild.voice.channel.leave(); // 봇이 참가한 음성 채널을 떠남
+                if (!newQueue && guild.me.voice.channel) {
+                    guild.me.voice.channel.leave(); // 봇이 참가한 음성 채널을 떠남
                     queue.TextChannel.send(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
                 }
             }, STAY_TIME * 1000);
@@ -80,7 +80,10 @@ module.exports = {
                 stream.destroy();
                 collector.stop();
                 if (e.message == "input stream: Video unavailable") {
-                    queue.TextChannel.send("해당 국가에서 차단됐거나 비공개된 동영상입니다.");
+                    queue.TextChannel.send("비공개 상태이거나 해당 국가에서 차단된 동영상입니다.");
+                }
+                else if (e.message == "input stream: This video is only available to Music Premium members") {
+                    queue.TextChannel.send("유튜브 프리미엄 회원에게만 공개된 동영상입니다.");
                 }
                 else {
                     console.error(e);
