@@ -1,6 +1,6 @@
 const ytdlDiscord = require("discord-ytdl-core");
 const scdl = require("soundcloud-downloader").default;
-const { sleep } = require('../admin/bot_control');
+const { sleep, replyAdmin } = require('../admin/bot_control');
 const { STAY_TIME, DEFAULT_VOLUME, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
 const { canModifyQueue } = require("../util/SoyabotUtil");
 
@@ -79,15 +79,10 @@ module.exports = {
                 }
                 stream.destroy();
                 collector.stop();
-                if (e.message == "input stream: Video unavailable") {
-                    queue.TextChannel.send("비공개 상태이거나 해당 국가에서 차단된 동영상입니다.");
+                if (e.message.startsWith("input stream")) {
+                    queue.TextChannel.send("재생할 수 없는 동영상입니다.");
                 }
-                else if (e.message == "input stream: This video is only available to Music Premium members") {
-                    queue.TextChannel.send("유튜브 프리미엄 회원에게만 공개된 동영상입니다.");
-                }
-                else {
-                    console.error(e);
-                }
+                replyAdmin(`노래 재생 에러\nsong 객체: ${song.$}}\n에러 내용: ${e}\n${e.stack ?? e.$}`);
                 queue.songs.shift();
                 module.exports.play(queue.songs[0], guild);
             });
