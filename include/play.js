@@ -79,9 +79,7 @@ module.exports = {
                 }
                 stream.destroy();
                 collector.stop();
-                if (e.message.startsWith("input stream")) {
-                    queue.TextChannel.send("재생할 수 없는 동영상입니다.");
-                }
+                queue.TextChannel.send(e.message.startsWith("input stream") ? "재생할 수 없는 동영상입니다." : "에러로그가 전송되었습니다.");
                 replyAdmin(`노래 재생 에러\nsong 객체: ${song.$}}\n에러 내용: ${e}\n${e.stack ?? e.$}`);
                 queue.songs.shift();
                 module.exports.play(queue.songs[0], guild);
