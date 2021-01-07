@@ -15,7 +15,7 @@ module.exports = function (message) {
         return message.reply(recommendFood());
     }
     else if (message.content.includes(client.user.username)) {
-        if (message.content.includes('바보')) {
+        if (/바보|멍청이/.test(message.content)) {
             return message.channel.send(':frowning2:');
         }
         const cmd = Math.floor(Math.random() * 5);

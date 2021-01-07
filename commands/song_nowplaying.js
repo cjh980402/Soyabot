@@ -10,7 +10,8 @@ module.exports = {
         if (!message.guild) {
             return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         }
-        const queue = client.queue.get(message.guild.id);
+
+        const queue = client.queue.get(message.guild.voice.channel?.guild.id);
         if (!queue?.connection.dispatcher) {
             return message.reply("재생 중인 노래가 없습니다.");
         }
@@ -27,14 +28,10 @@ module.exports = {
         if (song.duration > 0) {
             nowPlaying.addField(
                 "\u200b",
-                new Date(seek * 1000).toISOString().substr(11, 8) +
-                "[" +
-                createBar(song.duration == 0 ? seek : song.duration, seek, 20)[0] +
-                "]" +
-                (song.duration == 0 ? " ◉ LIVE" : new Date(song.duration * 1000).toISOString().substr(11, 8)),
+                `${new Date(seek * 1000).toISOString().substr(11, 8)}[${createBar(song.duration == 0 ? seek : song.duration, seek, 20)[0]}]${song.duration == 0 ? " ◉ LIVE" : new Date(song.duration * 1000).toISOString().substr(11, 8)}`,
                 false
             );
-            nowPlaying.setFooter("남은 시간: " + new Date(left * 1000).toISOString().substr(11, 8));
+            nowPlaying.setFooter(`남은 시간: ${new Date(left * 1000).toISOString().substr(11, 8)}`);
         }
 
         return message.channel.send(nowPlaying);

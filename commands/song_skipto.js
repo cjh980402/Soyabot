@@ -13,12 +13,12 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const queue = client.queue.get(message.guild.id);
-        if (!queue) {
-            return message.channel.send("현재 대기열이 없습니다.");
+        const queue = client.queue.get(message.guild.voice.channel?.guild.id);
+        if (!queue?.connection.dispatcher) {
+            return message.reply("재생 중인 노래가 없습니다.");
         }
         if (!canModifyQueue(message.member)) {
-            return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
+            return message.reply(`같은 음성 채널에 참가해주세요! (${client.user})`);
         }
 
         if (+args[0] < 2 || +args[0] > queue.songs.length) {
@@ -35,6 +35,6 @@ module.exports = {
             queue.songs = queue.songs.slice(args[0] - 2);
         }
         queue.connection.dispatcher.end();
-        return queue.textChannel.send(`${message.author} ⏭ ${args[0] - 1}개의 노래를 건너뛰었습니다.`);
+        return message.channel.send(`${message.author} ⏭ ${args[0] - 1}개의 노래를 건너뛰었습니다.`);
     }
 };

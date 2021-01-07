@@ -9,15 +9,16 @@ module.exports = {
         if (!message.guild) {
             return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         }
-        const queue = client.queue.get(message.guild.id);
+
+        const queue = client.queue.get(message.guild.voice.channel?.guild.id);
         if (!queue?.connection.dispatcher) {
             return message.reply("재생 중인 노래가 없습니다.");
         }
         if (!canModifyQueue(message.member)) {
-            return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
+            return message.reply(`같은 음성 채널에 참가해주세요! (${client.user})`);
         }
 
-        queue.loop = !queue.loop; // 반복 재생 상태 토글
-        return queue.textChannel.send(`현재 반복 재생 상태: ${queue.loop ? "**ON**" : "**OFF**"}`);
+        queue.loop = !queue.loop; // 반복 재생 상태 전환
+        return message.channel.send(`현재 반복 재생 상태: ${queue.loop ? "**ON**" : "**OFF**"}`);
     }
 };

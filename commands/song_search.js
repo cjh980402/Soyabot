@@ -59,11 +59,11 @@ module.exports = {
             response.first().delete();
         }
         catch (e) {
-            if (!(e instanceof Collection)) { // 에러가 awaitMessages의 시간초과 때문이라면, 에러는 Collection<Snowflake, Message>
+            if (!(e instanceof Collection)) { // awaitMessages에서 발생한 시간초과 에러는 Collection<Snowflake, Message>
                 replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e.$}`);
             }
             else if (e.message == "Missing Permissions") {
-                message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
+                message.channel.send("**권한이 없습니다 - [MANAGE_MESSAGES]**");
             }
             message.channel.activeCollector = false;
             resultsMessage.delete();

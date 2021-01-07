@@ -10,7 +10,8 @@ module.exports = {
         if (!message.guild) {
             return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         }
-        const queue = client.queue.get(message.guild.id);
+
+        const queue = client.queue.get(message.guild.voice.channel?.guild.id);
         if (!queue?.connection.dispatcher) {
             return message.channel.send("재생 중인 노래가 없습니다.");
         }

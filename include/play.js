@@ -5,19 +5,19 @@ const { STAY_TIME, DEFAULT_VOLUME, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_
 const { canModifyQueue } = require("../util/SoyabotUtil");
 
 module.exports = {
-    async play(song, message) {
-        const queue = client.queue.get(message.guild.id);
+    async play(song, guild) {
+        const queue = client.queue.get(guild.voice.channel?.guild.id);
 
         if (!song) {
+            client.queue.delete(guild.id);
             setTimeout(() => { // 종료 후 새로운 음악 기능이 수행 중이면 나가지 않음
-                const newQueue = client.queue.get(message.guild.id);
-                if (!newQueue && message.guild.me.voice.channel) {
-                    message.guild.me.voice.channel.leave();
-                    queue.textChannel.send(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
+                const newQueue = client.queue.get(guild.voice.channel?.guild.id);
+                if (!newQueue && guild.voice.channel) {
+                    guild.voice.channel.leave(); // 봇이 참가한 음성 채널을 떠남
+                    queue.TextChannel.send(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
                 }
             }, STAY_TIME * 1000);
-            queue.textChannel.send("❌ 음악 대기열이 끝났습니다.");
-            return client.queue.delete(message.guild.id);
+            return queue.TextChannel.send("❌ 음악 대기열이 끝났습니다.");
         }
 
         let stream = null, streamType = null;
@@ -46,14 +46,14 @@ module.exports = {
         catch (e) {
             if (queue) {
                 queue.songs.shift();
-                module.exports.play(queue.songs[0], message);
+                module.exports.play(queue.songs[0], guild);
             }
             console.error(e);
-            return message.channel.send(`오류 발생: ${e.message ?? e}`);
+            return queue.TextChannel.send(`오류 발생: ${e.message ?? e}`);
         }
 
         if (queue.connection.listenerCount("disconnect") == 0) { // 등록이 안 된 경우만 등록
-            queue.connection.on("disconnect", () => client.queue.delete(message.guild.id));
+            queue.connection.on("disconnect", () => client.queue.delete(guild.id));
         }
 
         let collector = null;
@@ -71,7 +71,7 @@ module.exports = {
                 else {
                     queue.songs.shift();
                 }
-                module.exports.play(queue.songs[0], message); // 재귀적으로 다음 곡 재생
+                module.exports.play(queue.songs[0], guild); // 재귀적으로 다음 곡 재생
             })
             .on("error", async (e) => {
                 while (!collector) {
@@ -80,16 +80,16 @@ module.exports = {
                 stream.destroy();
                 collector.stop();
                 if (e.message == "input stream: Video unavailable") {
-                    message.channel.send("해당 국가에서 차단됐거나 비공개된 동영상입니다.");
+                    queue.TextChannel.send("해당 국가에서 차단됐거나 비공개된 동영상입니다.");
                 }
                 else {
                     console.error(e);
                 }
                 queue.songs.shift();
-                module.exports.play(queue.songs[0], message);
+                module.exports.play(queue.songs[0], guild);
             });
 
-        const playingMessage = await queue.textChannel.send(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
+        const playingMessage = await queue.TextChannel.send(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
         try {
             await playingMessage.react("⏯");
             await playingMessage.react("⏭");
@@ -100,7 +100,7 @@ module.exports = {
             await playingMessage.react("⏹");
         }
         catch (e) {
-            message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
+            queue.TextChannel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
         }
 
         const filter = (reaction, user) => user.id != client.user.id;
@@ -114,50 +114,49 @@ module.exports = {
                 if (!queue?.connection.dispatcher) {
                     return collector.stop();
                 }
-                const member = message.guild.member(user);
-                if (!canModifyQueue(member)) {
-                    return queue.textChannel.send("음성 채널에 먼저 참가해주세요!");;
+                if (!canModifyQueue(guild.member(user))) {
+                    return queue.TextChannel.send(`같은 음성 채널에 참가해주세요! (${client.user})`);
                 }
 
                 if (reaction.emoji.name == "⏯") {
                     if (queue.playing) {
                         queue.connection.dispatcher.pause(true);
-                        queue.textChannel.send(`${user} ⏸ 노래를 일시정지했습니다.`);
+                        queue.TextChannel.send(`${user} ⏸ 노래를 일시정지했습니다.`);
                     }
                     else {
                         queue.connection.dispatcher.resume();
-                        queue.textChannel.send(`${user} ▶️ 노래를 다시 틀었습니다.`);
+                        queue.TextChannel.send(`${user} ▶️ 노래를 다시 틀었습니다.`);
                     }
                     queue.playing = !queue.playing;
                 }
                 else if (reaction.emoji.name == "⏭") {
                     queue.playing = true;
                     queue.connection.dispatcher.end();
-                    queue.textChannel.send(`${user} ⏭ 노래를 건너뛰었습니다.`);
+                    queue.TextChannel.send(`${user} ⏭ 노래를 건너뛰었습니다.`);
                     collector.stop();
                 }
                 else if (reaction.emoji.name == "🔇") {
                     queue.volume = queue.volume <= 0 ? (DEFAULT_VOLUME ?? 100) : 0;
                     queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
-                    queue.textChannel.send(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
+                    queue.TextChannel.send(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
                 }
                 else if (reaction.emoji.name == "🔉") {
                     queue.volume = Math.max(queue.volume - 10, 0);
                     queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
-                    queue.textChannel.send(`${user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
+                    queue.TextChannel.send(`${user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
                 }
                 else if (reaction.emoji.name == "🔊") {
                     queue.volume = Math.min(queue.volume + 10, 100);
                     queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
-                    queue.textChannel.send(`${user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
+                    queue.TextChannel.send(`${user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
                 }
                 else if (reaction.emoji.name == "🔁") {
                     queue.loop = !queue.loop;
-                    queue.textChannel.send(`현재 반복 재생 상태: ${queue.loop ? "**ON**" : "**OFF**"}`);
+                    queue.TextChannel.send(`현재 반복 재생 상태: ${queue.loop ? "**ON**" : "**OFF**"}`);
                 }
                 else if (reaction.emoji.name == "⏹") {
                     queue.songs = [];
-                    queue.textChannel.send(`${user} ⏹ 노래를 정지했습니다.`);
+                    queue.TextChannel.send(`${user} ⏹ 노래를 정지했습니다.`);
                     try {
                         queue.connection.dispatcher.end();
                     }
@@ -169,12 +168,12 @@ module.exports = {
                 }
             }
             catch (e) {
-                return queue.textChannel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
+                return queue.TextChannel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
             }
         });
 
         collector.on("end", async () => {
-            const find = await db.get("SELECT * FROM pruningskip WHERE channelid = ?", [message.guild.id]);
+            const find = await db.get("SELECT * FROM pruningskip WHERE channelid = ?", [guild.id]);
             if (!find && playingMessage && !playingMessage.deleted) {
                 playingMessage.delete({ timeout: 1000 });
             }
