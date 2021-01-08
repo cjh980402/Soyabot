@@ -36,7 +36,7 @@
     "sejong": "^0.2.3",
     "simple-youtube-api": "^5.2.1",
     "soundcloud-downloader": "^0.2.3",
-    "sqlite3": "^5.0.0",
+    "sqlite3": "^5.0.1",
     "string-progressbar": "^1.0.1",
     "ytdl-core": "^4.4.1",
     "ytsr": "^3.2.1"
