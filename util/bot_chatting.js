@@ -8,14 +8,14 @@ module.exports = function (message) {
     else if (message.content.endsWith("확률")) {
         return message.reply(`확률: ${Math.floor(Math.random() * 101)}%`);
     }
-    else if (message.content.includes('뭐하지') || message.content.includes('ㅁㅎㅈ')) {
+    else if (/뭐하지|ㅁㅎㅈ/i.test(message.content)) {
         return message.reply(recommendWork());
     }
-    else if (message.content.includes('뭐먹지') || message.content.includes('ㅁㅁㅈ')) {
+    else if (/뭐먹지|ㅁㅁㅈ/i.test(message.content)) {
         return message.reply(recommendFood());
     }
     else if (message.content.includes(client.user.username)) {
-        if (/바보|멍청이/.test(message.content)) {
+        if (/바\s*보|멍\s*청\s*이/.test(message.content)) {
             return message.channel.send(':frowning2:');
         }
         const cmd = Math.floor(Math.random() * 5);
@@ -29,22 +29,10 @@ module.exports = function (message) {
             return message.channel.send('헤비...');
         }
         else if (cmd == 3) {
-            return message.channel.send(`'${message.member?.nickname ?? message.author.username}'님이 ${client.user.username}을 불렀습니다.`);
-        }
-        else {
             return message.channel.send('이노시스 조아');
         }
-    }
-    else if (message.content.includes('아잉') || message.content.includes('도잉')) {
-        const cmd = Math.floor(Math.random() * 9);
-        if (cmd == 0) {
-            return message.channel.send('아잉은 짐승의 눈...');
-        }
-        else if (cmd == 1) {
-            return message.channel.send('짐승은 아잉의 눈...');
-        }
-        else if (cmd == 2) {
-            return message.channel.send('도잉도 짐승의 눈...');
+        else {
+            return message.channel.send(`'${message.member?.nickname ?? message.author.username}'님이 ${client.user.username}을 불렀습니다.`);
         }
     }
     else if (message.content.includes('ㅊㅊㅊㅊ')) {
@@ -79,7 +67,7 @@ function choiceVS(msg) {
     const nospace = choice.slice();
     for (let i in choice) {
         choice[i] = choice[i].trim();
-        nospace[i] = nospace[i].replace(/[ \{\}\[\]\/?.,;:|\)*~`!^\-<>@\$%&\\\=\(\'\"]/gi, '').replace('조아', '좋아').replace('시러', '싫어');
+        nospace[i] = nospace[i].replace(/[\s\{\}\[\]\/?.,;:|\)*~`!^\-<>@\$%&\\\=\(\'\"]/g, '').replace('조아', '좋아').replace('시러', '싫어');
         if (choice[i] == '') {
             return '빈 항목이 존재합니다.';
         }

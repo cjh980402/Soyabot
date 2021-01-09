@@ -1,7 +1,7 @@
 module.exports = {
-    usage: `${client.prefix}입대 YYMMDD`,
+    usage: `${client.prefix}입대 (입대일)`,
     command: ["입대", "ㅇㄷ"],
-    description: "- 입력한 입대일을 기준으로 전역일을 계산해줍니다. (육군 기준)",
+    description: "- YYMMDD 형식으로 입력한 입대일을 기준으로 전역일을 계산해줍니다. (육군 기준)",
     type: ["기타"],
     async execute(message, args) {
         if (args.length != 1) {
