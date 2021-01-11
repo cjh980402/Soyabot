@@ -47,9 +47,11 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
             await adminChat(message);
         }
 
-        const permissions = message.channel.permissionsFor(client.user);
-        if (!permissions.has("VIEW_CHANNEL") || !permissions.has("SEND_MESSAGES")) {
-            return message.author.send(`"${message.guild}" 서버에서 봇의 권한을 허용해야합니다.`); // 기본 권한이 없는 채널이므로 유저에게 DM으로 알려주기
+        if (message.channel.permissionsFor) {
+            const permissions = message.channel.permissionsFor(client.user);
+            if (!permissions.has("VIEW_CHANNEL") || !permissions.has("SEND_MESSAGES")) {
+                return message.author.send(`"${message.guild}" 서버에서 봇의 권한을 허용해야합니다.`); // 기본 권한이 없는 채널이므로 유저에게 DM으로 알려주기
+            }
         }
 
         const prefixRegex = new RegExp(`^\\s*(<@!?${client.user.id}>|${escapeRegex(PREFIX)})\\s*`); // 문자열로 정규식 생성하기 위해 생성자 이용
