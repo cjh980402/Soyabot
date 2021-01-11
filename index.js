@@ -43,15 +43,14 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
         if (message.author.bot) { // 봇 여부 체크
             return;
         }
-        if (message.author.id == ADMIN_ID) { // 관리자 여부 체크와 채팅 종류 검사
-            await adminChat(message);
-        }
-
         if (message.channel.permissionsFor) {
             const permissions = message.channel.permissionsFor(client.user);
             if (!permissions.has("VIEW_CHANNEL") || !permissions.has("SEND_MESSAGES")) {
-                return message.author.send(`"${message.guild}" 서버에서 봇의 권한을 허용해야합니다.`); // 기본 권한이 없는 채널이므로 유저에게 DM으로 알려주기
+                return; // 기본 권한이 없는 채널이므로 바로 종료
             }
+        }
+        if (message.author.id == ADMIN_ID) { // 관리자 여부 체크와 채팅 종류 검사
+            await adminChat(message);
         }
 
         const prefixRegex = new RegExp(`^\\s*(<@!?${client.user.id}>|${escapeRegex(PREFIX)})\\s*`); // 문자열로 정규식 생성하기 위해 생성자 이용
