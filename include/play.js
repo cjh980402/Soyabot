@@ -6,15 +6,16 @@ const { canModifyQueue } = require("../util/SoyabotUtil");
 
 module.exports = {
     async play(song, guild) {
-        const queue = client.queue.get(guild.me.voice.channel?.guild.id);
+        const queue = client.queue.get(guild.id);
+        const deleteQueue = () => client.queue.delete(guild.id);
 
         if (!queue) {
             return;
         }
         if (!song) {
-            client.queue.delete(guild.id);
+            deleteQueue();
             setTimeout(() => { // 종료 후 새로운 음악 기능이 수행 중이면 나가지 않음
-                const newQueue = client.queue.get(guild.me.voice.channel?.guild.id);
+                const newQueue = client.queue.get(guild.id);
                 if (!newQueue && guild.me.voice.channel) {
                     guild.me.voice.channel.leave(); // 봇이 참가한 음성 채널을 떠남
                     queue.TextChannel.send(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
@@ -55,8 +56,8 @@ module.exports = {
             return queue.TextChannel.send(`오류 발생: ${e.message ?? e}`);
         }
 
-        if (queue.connection.listenerCount("disconnect") == 0) { // 등록이 안 된 경우만 등록
-            queue.connection.on("disconnect", () => client.queue.delete(guild.id));
+        if (!queue.connection.rawListeners("disconnect").find((v) => v.name == "deleteQueue")) { // 리스너 중복 체크
+            queue.connection.on("disconnect", deleteQueue); // 등록이 안된 경우 연결 끊기면 자동으로 삭제하는 리스너 등록
         }
 
         let collector = null;
@@ -65,7 +66,6 @@ module.exports = {
                 while (!collector) {
                     await sleep(500);
                 }
-                stream.destroy();
                 collector.stop();
                 if (queue.loop) {
                     // 루프가 켜져있다면 현재 노래를 대기열의 마지막에 다시 넣기때문에 대기열이 끝나지 않고 계속 재생됨
@@ -80,7 +80,6 @@ module.exports = {
                 while (!collector) {
                     await sleep(500);
                 }
-                stream.destroy();
                 collector.stop();
                 queue.TextChannel.send(e.message.startsWith("input stream") ? "재생할 수 없는 동영상입니다." : "에러로그가 전송되었습니다.");
                 replyAdmin(`노래 재생 에러\nsong 객체: ${song.$}}\n에러 내용: ${e}\n${e.stack ?? e.$}`);
