@@ -20,7 +20,9 @@ module.exports = {
         if (!canModifyQueue(message.member)) {
             return message.reply(`같은 음성 채널에 참가해주세요! (${client.user})`);
         }
-
+        if (queue.songs.length < 2) {
+            return message.reply("현재 대기열에서 건너뛸 수 있는 노래가 없습니다.");
+        }
         if (+args[0] < 2 || +args[0] > queue.songs.length) {
             return message.reply(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래로 건너뛸 수 있습니다.`);
         }

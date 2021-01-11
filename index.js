@@ -2,12 +2,12 @@
  * 모듈 import
  */
 const { Client, Collection } = require("discord.js");
-const cachingMessage = require('./util/message_caching');
 const { readdirSync } = require("fs");
 const { TOKEN, PREFIX, ADMIN_ID } = require("./soyabot_config.json");
 const { adminChat, initClient } = require("./admin/admin_function");
-const botChatting = require("./util/bot_chatting");
 const { replyAdmin } = require('./admin/bot_control');
+const cachingMessage = require('./util/message_caching');
+const botChatting = require("./util/bot_chatting");
 const server = require("./util/express_server");
 const sqlite = require('./util/sqlite-handler');
 global.db = new sqlite('./db/soyabot_data.db'); // 여러 기능들에 의해 필수로 최상위 전역

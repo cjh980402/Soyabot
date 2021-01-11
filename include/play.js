@@ -8,6 +8,9 @@ module.exports = {
     async play(song, guild) {
         const queue = client.queue.get(guild.me.voice.channel?.guild.id);
 
+        if (!queue) {
+            return;
+        }
         if (!song) {
             client.queue.delete(guild.id);
             setTimeout(() => { // 종료 후 새로운 음악 기능이 수행 중이면 나가지 않음

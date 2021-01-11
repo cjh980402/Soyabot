@@ -7,4 +7,5 @@ stock/
  
 #file
 *.log
+*.tflite
 pictures/dice_result.png

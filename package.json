@@ -28,7 +28,7 @@
     "express": "^4.17.1",
     "ffmpeg-static": "^4.2.7",
     "iconv-lite": "^0.6.2",
-    "lyrics-finder": "^21.4.0",
+    "lyrics-finder": "^21.7.0",
     "node-fetch": "^2.6.1",
     "node-lame": "^1.2.2",
     "puppeteer": "^5.5.0",
@@ -38,7 +38,7 @@
     "soundcloud-downloader": "^0.2.3",
     "sqlite3": "^5.0.1",
     "string-progressbar": "^1.0.1",
-    "ytdl-core": "^4.4.1",
+    "ytdl-core": "^4.4.2",
     "ytsr": "^3.2.1"
   },
   "scripts": {
