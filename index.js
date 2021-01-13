@@ -49,7 +49,7 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
                 return; // 기본 권한이 없는 채널이므로 바로 종료
             }
         }
-        if (message.author.id == ADMIN_ID) { // 관리자 여부 체크와 채팅 종류 검사
+        if (message.author.id == ADMIN_ID) { // 관리자 여부 체크
             await adminChat(message);
         }
 
