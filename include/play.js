@@ -57,15 +57,16 @@ module.exports = {
         }
 
         if (!queue.connection.rawListeners("disconnect").find((v) => v.name == "deleteQueue")) { // 리스너 중복 체크
-            queue.connection.on("disconnect", deleteQueue); // 등록이 안된 경우 연결 끊기면 자동으로 삭제하는 리스너 등록
+            queue.connection.once("disconnect", deleteQueue); // 등록이 안된 경우 연결 끊기면 자동으로 삭제하는 리스너 등록
         }
 
         let collector = null;
         queue.connection.play(stream, { type: streamType, volume: queue.volume / 100 })
-            .on("finish", async () => {
+            .once("finish", async () => {
                 while (!collector) {
                     await sleep(500);
                 }
+                stream.destroy();
                 collector.stop();
                 if (queue.loop) {
                     // 루프가 켜져있다면 현재 노래를 대기열의 마지막에 다시 넣기때문에 대기열이 끝나지 않고 계속 재생됨
@@ -76,10 +77,11 @@ module.exports = {
                 }
                 module.exports.play(queue.songs[0], guild); // 재귀적으로 다음 곡 재생
             })
-            .on("error", async (e) => {
+            .once("error", async (e) => {
                 while (!collector) {
                     await sleep(500);
                 }
+                stream.destroy();
                 collector.stop();
                 queue.TextChannel.send(e.message.startsWith("input stream") ? "재생할 수 없는 동영상입니다." : "에러로그가 전송되었습니다.");
                 replyAdmin(`노래 재생 에러\nsong 객체: ${song.$}}\n에러 내용: ${e}\n${e.stack ?? e.$}`);
@@ -170,7 +172,7 @@ module.exports = {
             }
         });
 
-        collector.on("end", async () => {
+        collector.once("end", async () => {
             const find = await db.get("SELECT * FROM pruningskip WHERE channelid = ?", [guild.id]);
             if (!find && playingMessage && !playingMessage.deleted) {
                 playingMessage.delete({ timeout: 1000 });

@@ -37,14 +37,11 @@ module.exports = {
         if (!message.guild) {
             return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         }
-        const { channel } = message.member.voice;
 
+        const { channel } = message.member.voice;
         const serverQueue = client.queue.get(message.guild.id);
-        if (!channel) {
-            return message.reply("음성 채널에 먼저 참가해주세요!");
-        }
-        if (serverQueue && channel !== message.guild.me.voice.channel) {
-            return message.reply(`같은 채널에 있어야합니다. (${client.user})`);
+        if (!channel || (serverQueue && channel != message.guild.me.voice.channel)) {
+            return message.reply(`같은 음성 채널에 참가해주세요! (${client.user})`);
         }
 
         const permissions = channel.permissionsFor(client.user);
@@ -57,25 +54,27 @@ module.exports = {
 
         let connection = null;
         try {
-            connection = await channel.join();
+            connection = serverQueue?.connection ?? await channel.join();
         }
         catch (e) {
             replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e?.stack}`);
             await channel.leave();
-            return message.channel.send(`채널에 참가할 수 없습니다: ${e.message}`);
+            return message.channel.send(`채널에 참가할 수 없습니다: ${e.message ?? e}`);
         }
 
-        if (connection.eventNames().includes("speaking")) {
+        if (connection.listenerCount("speaking") > 0) { // 이미 음성인식이 실행 중인 경우
             if (!serverQueue) { // 음악 기능이 실행 중이지 않을 때만 연결을 끊는다.
                 connection.disconnect();
-                channel.leave();
             }
+            connection.removeAllListeners("speaking");
             return message.channel.send("실행 중인 기능을 종료합니다.");
         }
         const receiver = connection.receiver;
 
         message.channel.send("기능 시작");
-        connection.onSessionDescription("음성인식 테스트"); // Silence 버퍼 자동 전송
+        if (!serverQueue) {
+            connection.onSessionDescription("음성인식 테스트"); // Silence 버퍼 자동 전송
+        }
         connection.on('speaking', async (user, speaking) => {
             if (speaking) {
                 // 분석을 위한 음성 녹음 시작
@@ -110,7 +109,7 @@ module.exports = {
                             }
                         })
                     });
-                    const transcription = (await response.json())?.results?.map(result => result.alternatives[0].transcript).join("\n").trim();
+                    const transcription = (await response.json()).results?.map(result => result.alternatives[0].transcript).join("\n").trim();
                     if (transcription) {
                         botVoiceCommand(message, transcription);
                     }
@@ -118,4 +117,4 @@ module.exports = {
             }
         });
     }
-};
+}
