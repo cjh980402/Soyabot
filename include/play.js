@@ -54,7 +54,7 @@ module.exports = {
         }
 
         if (!queue.connection.rawListeners("disconnect").find((v) => v.name == "deleteQueue")) { // 리스너 중복 체크
-            queue.connection.on("disconnect", deleteQueue); // 등록이 안된 경우 연결 끊기면 자동으로 삭제하는 리스너 등록
+            queue.connection.on("disconnect", deleteQueue); // 연결 끊기면 자동으로 큐를 삭제하는 리스너 등록
         }
 
         let collector = null;

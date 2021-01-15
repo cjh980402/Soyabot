@@ -68,11 +68,13 @@ module.exports = {
                 }
             }
             playlist = await youtube.getPlaylistByID(playlistID, { part: "snippet" });
-            videos = (await playlist.getVideos(MAX_PLAYLIST_SIZE ?? 10, { part: "snippet" })).map((video) => ({
-                title: video.title.decodeHTML(),
-                url: video.url,
-                duration: video.durationSeconds
-            }));
+            videos = (await playlist.getVideos(MAX_PLAYLIST_SIZE ?? 10, { part: "snippet" }))
+                .filter((video) => (video.title != "Private video" && video.title != "Deleted video")) // 비공개 또는 삭제된 동영상 거르기
+                .map((video) => ({
+                    title: video.title.decodeHTML(),
+                    url: video.url,
+                    duration: video.durationSeconds
+                }));
         }
 
         const playlistEmbed = new MessageEmbed()
@@ -96,7 +98,7 @@ module.exports = {
             textChannel: message.channel,
             channel, // channel이란 property를 설정함과 동시에 값은 channel 변수의 값
             connection: null,
-            songs: [...videos],
+            songs: videos,
             loop: false,
             volume: DEFAULT_VOLUME ?? 100,
             playing: true,

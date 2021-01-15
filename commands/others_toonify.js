@@ -2,6 +2,10 @@ const { DEEP_API_KEY } = require("../soyabot_config.json");
 const deepai = require('deepai');
 deepai.setApiKey(DEEP_API_KEY);
 
+function getMessageImage(message) {
+    return message?.attachments.first()?.height ? message.attachments.first().url : null;
+}
+
 module.exports = {
     usage: `${client.prefix}만화`,
     command: ["만화", "ㅁㅎ"],

@@ -60,7 +60,7 @@ module.exports = {
             if (!videoID) {
                 const filter = (await ytsr.getFilters(search)).get("Type").get("Video").url;
                 videoID = (await ytsr(filter, { limit: 1 })).items[0]?.id;
-                // videoID = (await youtube.searchVideos(search, 1))[0]?.id;
+                // videoID = (await youtube.searchVideos(search, 1, { part: "snippet" }))[0]?.id;
                 if (!videoID) {
                     return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");
                 }

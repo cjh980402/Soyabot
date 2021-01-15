@@ -45,7 +45,7 @@ async function clova_face(url) {
 }
 
 function getMessageImage(message) {
-    return (message?.attachments.size > 0 && message?.attachments.first().height) ? message.attachments.first().url : null;
+    return message?.attachments.first()?.height ? message.attachments.first().url : null;
 }
 
 module.exports = {
