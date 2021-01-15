@@ -1,7 +1,7 @@
 /**
  * 모듈 import
  */
-const { Client, Collection } = require("discord.js");
+const { Client, Collection, Intents } = require("discord.js");
 const { readdirSync } = require("fs");
 const { TOKEN, PREFIX, ADMIN_ID } = require("./soyabot_config.json");
 const { adminChat, initClient } = require("./admin/admin_function");

@@ -9,9 +9,6 @@ module.exports = {
         const queue = client.queue.get(guild.id);
         const deleteQueue = () => client.queue.delete(guild.id);
 
-        if (!queue) {
-            return;
-        }
         if (!song) {
             deleteQueue();
             setTimeout(() => { // 종료 후 새로운 음악 기능이 수행 중이면 나가지 않음
@@ -57,12 +54,12 @@ module.exports = {
         }
 
         if (!queue.connection.rawListeners("disconnect").find((v) => v.name == "deleteQueue")) { // 리스너 중복 체크
-            queue.connection.once("disconnect", deleteQueue); // 등록이 안된 경우 연결 끊기면 자동으로 삭제하는 리스너 등록
+            queue.connection.on("disconnect", deleteQueue); // 등록이 안된 경우 연결 끊기면 자동으로 삭제하는 리스너 등록
         }
 
         let collector = null;
         queue.connection.play(stream, { type: streamType, volume: queue.volume / 100 })
-            .once("finish", async () => {
+            .on("finish", async () => {
                 while (!collector) {
                     await sleep(500);
                 }
@@ -77,7 +74,7 @@ module.exports = {
                 }
                 module.exports.play(queue.songs[0], guild); // 재귀적으로 다음 곡 재생
             })
-            .once("error", async (e) => {
+            .on("error", async (e) => {
                 while (!collector) {
                     await sleep(500);
                 }
@@ -172,7 +169,7 @@ module.exports = {
             }
         });
 
-        collector.once("end", async () => {
+        collector.on("end", async () => {
             const find = await db.get("SELECT * FROM pruningskip WHERE channelid = ?", [guild.id]);
             if (!find && playingMessage && !playingMessage.deleted) {
                 playingMessage.delete({ timeout: 1000 });

@@ -53,9 +53,10 @@ module.exports.initClient = async function () {
     await db.run('CREATE TABLE IF NOT EXISTS pruningskip(channelid text primary key, name text not null)');
     await db.run("CREATE TABLE IF NOT EXISTS messagedb(channelsenderid text primary key, messagecnt integer default 0, lettercnt integer default 0, lastmessage text default '', lasttime datetime default (datetime('now', 'localtime')))");
 
-    client.suggestionChat = {};
+    client.suggestionChat = {}; // 건의 기능을 사용한 Message객체 임시 저장
     client.setMaxListeners(20); // 이벤트 개수 제한 증가
     client.options.retryLimit = 3; // 네트워크 재요청 횟수 설정
+    client.guilds.cache.forEach((v) => v.members.fetch()); // 모든 멤버 목록 가져오기
 
     startNotice(); // 공지 자동 알림 기능
     startUpdate(); // 업데이트 자동 알림 기능

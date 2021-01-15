@@ -37,17 +37,22 @@ async function clova_celebrity(url) {
     return rslt;
 }
 
+function getMessageImage(message) {
+    return (message?.attachments.size > 0 && message?.attachments.first().height) ? message.attachments.first().url : null;
+}
+
 module.exports = {
     usage: `${client.prefix}닮은꼴`,
     command: ["닮은꼴", "ㄷㅇㄲ"],
     description: "- 원하는 사진과 함께 명령어를 사용하면 얼굴을 분석한 후 닮은 유명인을 알려줍니다.",
     type: ["기타"],
     async execute(message) {
-        if (message.attachments.array().length == 0 || !message.attachments.array()[0].height) {
+        const imageURL = getMessageImage(message) ?? getMessageImage(message.channel.messages.cache.get(message.reference?.messageID));
+        if (!imageURL) {
             return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
         }
         else {
-            return message.channel.send(await clova_celebrity(message.attachments.array()[0].url));
+            return message.channel.send(await clova_celebrity(imageURL));
         }
     }
 };

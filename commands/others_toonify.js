@@ -8,13 +8,14 @@ module.exports = {
     description: "- 원하는 인물 사진과 함께 명령어를 사용하면 대상을 만화캐릭터처럼 변경합니다.",
     type: ["기타"],
     async execute(message) {
-        if (message.attachments.size == 0 || !message.attachments.first().height) {
-            message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
+        const imageURL = getMessageImage(message) ?? getMessageImage(message.channel.messages.cache.get(message.reference?.messageID));
+        if (!imageURL) {
+            return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
         }
         else {
             try {
                 const resp = await deepai.callStandardApi("toonify", {
-                    image: message.attachments.first().url,
+                    image: imageURL,
                 });
                 message.channel.send({
                     files: [resp.output_url]
