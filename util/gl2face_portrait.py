@@ -5,7 +5,7 @@ import tflite_runtime.interpreter as tflite
 
 img = Image.open('./pictures/portrait/input.png')
 w, h = img.size
-image = Image.new('RGB', (512, 512), (255, 255, 255)) # RGB 스케일의 흰 정사각형 배경 이미지 생성
+image = Image.new('RGB', (512, 512), "WHITE") # RGB 스케일의 흰 정사각형 배경 이미지 생성
 if w >= h: # 리사이징 후 붙여넣기
     image.paste(img.resize((512, 512 * h // w)), (0, 256 * (w - h) // w))
 else:

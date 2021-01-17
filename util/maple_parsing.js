@@ -184,8 +184,9 @@ class Maple {
         const lev = +union.find(".user-summary-level").text().substr(3); // 유니온 레벨, 숫자값
         const stat = +union.find(".d-block.mb-1 > span").eq(0).contents().last().text().trim().replace(/,/g, ''); // 유니온 전투력, 숫자값
         const coin = Math.floor(stat * 0.000000864); // 일일 코인 수급량, 숫자값
+        const grade = union.find(".user-summary-tier-string.font-weight-bold").text(); // 유니온 등급
 
-        return [lev, stat, coin];
+        return [lev, stat, coin, grade];
     }
     Achieve() {
         const achieve = this.ggData(".col-lg-3.col-6.mt-3.px-1").eq(3);
@@ -246,6 +247,19 @@ class Maple {
         }
         return [date, murung];
     }
+    Collection() {
+        const collection = this.ggData("section.box.mt-3 .avatar-collection-item.col-lg-2.col-md-4.col-6");
+        if (collection.length == 0) {
+            return null;
+        }
+
+        const coordi = [], date = [];
+        for (let i = 0; i < collection.length; i++) {
+            coordi.push(collection.eq(i).find("img").attr("src")?.replace("Character/", "Character/180/")); // 코디 이미지
+            date.push(+/\d+/.exec(collection.eq(i).text())); // 날짜
+        }
+        return [coordi, date];
+    }
     Level() {
         return this.ggData(".user-summary-item").eq(0).text().substr(3);
     }
@@ -255,11 +269,15 @@ class Maple {
     Popularity() {
         return this.ggData(".user-summary-item > span").eq(1).text();
     }
-    userImg() {
-        return this.ggData("meta[property='og:image']").attr("content")?.replace("Character/", "Character/180/");
+    userImg(full = true) {
+        const img = this.ggData("meta[property='og:image']").attr("content");
+        return full ? img?.replace("Character/", "Character/180/") : img;
     }
     serverImg() {
         return this.ggData("div.col-lg-8 > h3 > img.align-middle").attr("src");
+    }
+    serverName() {
+        return this.ggData("div.col-lg-8 > h3 > img.align-middle").attr("alt");
     }
 }
 

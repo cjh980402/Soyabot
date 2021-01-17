@@ -9,3 +9,5 @@ stock/
 *.log
 *.tflite
 pictures/dice_result.png
+pictures/collection.png
+pictures/profile.png

@@ -71,7 +71,7 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
             return; // 해당하는 명령어 없으면 종료
         }
 
-        commandName = botModule.browser ? "browser" : (botModule.channelCool ? `${botModule.command[0]}_${message.channel.id}` : botModule.command[0]);
+        commandName = botModule.channelCool ? `${botModule.command[0]}_${message.channel.id}` : botModule.command[0];
 
         if (cooldowns.has(commandName)) { // 명령이 수행 중인 경우
             return message.reply(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);

@@ -1,19 +1,19 @@
-const { MessageAttachment } = require("discord.js");
-const puppeteer = require('puppeteer');
+const { exec } = require("../util/async_to_promis");
 const mapleModule = require("../util/maple_parsing");
 
 module.exports = {
     usage: `${client.prefix}프로필 (닉네임)`,
     command: ["프로필", "ㅍㄹㅍ", "ㅍㄿ"],
     description: "- 캐릭터의 메이플 gg 프로필을 출력합니다.",
-    browser: true,
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
+        
         const Maple = new mapleModule(args[0]);
-        if (!(await Maple.isExist()) || !Maple.homeLevel()) {
+        const level = (await Maple.isExist()) ? Maple.homeLevel() : null;
+        if (level == null) {
             return message.channel.send(`[${Maple.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await Maple.isLatest())) {
@@ -23,25 +23,15 @@ module.exports = {
             }
         }
 
-        const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-        const page = await browser.newPage();
-        page.setViewport({ width: 1400, height: 1000 }); // 화면이 넓어야 버튼을 눌러도 스크롤 시점이 이동을 안함
-        try {
-            await page.goto(Maple.GGURL);
-            await page.click('.btn.btn-grape-fruit');
-            await page.waitForTimeout(1000); // 1초 기다리기
-            const box = await (await page.$('.character-card')).boundingBox();
-            const attachment = new MessageAttachment(await page.screenshot({ clip: { x: box.x, y: box.y + 3, width: box.width, height: box.height } }), 'profile.png');
-            // 사진 자체가 아래로 치우쳤기에 3픽셀 보정
-            return message.channel.send(`${Maple.Name}님의 프로필`, {
-                files: [attachment]
-            });
-        }
-        catch (e) {
-            return message.channel.send(`${Maple.Name}님의 프로필을 가져오지 못하였습니다.`);
-        }
-        finally {
-            await browser.close();
-        }
+        const rank = Maple.Rank();
+        const rankString = rank[2] == "-" ? " " : `월드 ${rank[2]} (전체 ${rank[3]})`;
+        const murung = Maple.Murung();
+        const union = Maple.Union();
+        const seed = Maple.Seed();
+
+        await exec(`python3 ./util/maple_gg_profile.py ${Maple.userImg(false)} ${Maple.Name} ${Maple.serverName()} ${level[0]} ${level[4]} ${Maple.serverImg()} ${level[2].toLocaleString()} ${level[3]} "${rankString}" "${murung ? murung[1] : "기록없음"}" "${murung ? murung[2] : " "}" "${union ? union[3] : "기록없음"}" "${union ? `Lv.${union[0].toLocaleString()}` : " "}" "${seed ? seed[1] : "기록없음"}" "${seed ? seed[2] : " "}"`);
+        return message.channel.send(`${Maple.Name}님의 프로필`, {
+            files: ["./pictures/profile.png"]
+        });
     }
 };
