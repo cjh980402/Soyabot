@@ -19,7 +19,4 @@ for i in range(count): # 2+argv[1] ~ 1+2*argv[1]: 날짜
     w, h = drawer.textsize(msg, font) # 텍스트의 사이즈를 반환
     drawer.text((180 * (i % 2) + 90 - w // 2, 160 + 180 * (i // 2)), msg, (150, 150, 150), font)
 
-font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 14)
-drawer.text((10, 10), "코디 컬렉션", (0, 0, 0), font)
-
 image.save("./pictures/collection.png")
