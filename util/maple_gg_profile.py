@@ -2,7 +2,7 @@ from PIL import Image, ImageFont, ImageDraw
 import requests
 import sys
 
-image = Image.open(requests.get("https://maple.gg/images/images/bg-character-card@3x.png", stream = True).raw).resize((380, 550))
+image = Image.open(requests.get("https://maple.gg/images/images/bg-character-card@3x.png", stream = True).raw).convert("RGB").resize((380, 550))
 
 char_img = Image.open(requests.get(sys.argv[1], stream = True).raw).resize((200, 200)) # url -> Image
 image.paste(char_img, (90, 65), mask = char_img) # 투명 배경때문에 mask를 붙여넣을 이미지로 지정
