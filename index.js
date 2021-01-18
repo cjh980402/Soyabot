@@ -11,7 +11,7 @@ const botChatting = require("./util/bot_chatting");
 const server = require("./util/express_server");
 const sqlite = require('./util/sqlite-handler');
 global.db = new sqlite('./db/soyabot_data.db'); // 여러 기능들에 의해 필수로 최상위 전역
-global.client = new Client({ disableMentions: "everyone" });
+global.client = new Client({ disableMentions: "everyone", restTimeOffset: 0 });
 client.login(TOKEN);
 client.commands = []; // 명령어 객체 저장할 배열
 client.queue = new Map(); // 음악기능 정보 저장용

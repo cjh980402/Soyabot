@@ -1,4 +1,5 @@
 from PIL import Image, ImageFont, ImageDraw
+import requests
 import sys
 
 def stock_info(img: Image):
@@ -44,5 +45,5 @@ def stock_info(img: Image):
 
     return image
 
-stock_info(Image.open(f"./pictures/stock/{sys.argv[1]}.png")).save(f"./pictures/stock/{sys.argv[1]}.png")
+stock_info(Image.open(requests.get(f"https://ssl.pstatic.net/imgfinance/chart/mobile/candle/day/{sys.argv[1]}_end.png", stream = True).raw)).save(f"./pictures/stock/{sys.argv[1]}.png")
 # argv[1]은 사진 이름, 병합한 이미지 저장하기

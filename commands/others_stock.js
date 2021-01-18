@@ -1,4 +1,4 @@
-const { writeFile, exec } = require('../util/async_to_promis.js');
+const { exec } = require('../util/async_to_promis.js');
 const { MessageEmbed } = require("discord.js");
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
@@ -30,7 +30,6 @@ module.exports = {
                 summary2 = parse("table[summary='시가총액 정보'] em");
             }
 
-            await writeFile(`./pictures/stock/${code}.png`, await (await fetch(`https://ssl.pstatic.net/imgfinance/chart/mobile/candle/day/${code}_end.png`)).buffer());
             await exec(`python3 ./util/make_stock_info.py ${code} "${parse("dl.blind strong").text()} (${code}) 일봉" ${parse("div.today > .no_today .blind").text()} ${parse("div.today > .no_exday .ico").eq(0).text()} ${parse("div.today > .no_exday .blind").eq(0).text()} ${parse("div.today > .no_exday .blind").eq(1).text()} ${info.eq(5).text()} ${info.eq(1).text()} ${summary2.eq(2).text()} ${summary2.eq(3).text()}`);
             // 파이썬 스크립트 실행
 
