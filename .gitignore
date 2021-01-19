@@ -1,9 +1,10 @@
 # folder
+.git/
+db/
+log/
 node_modules/
 other_source/
-log/
 stock/
-.git/
 
 # file
 *.log
