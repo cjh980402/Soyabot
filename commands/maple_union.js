@@ -9,10 +9,10 @@ module.exports = {
         if (args.length != 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
-        const Maple = new mapleModule(args[0]);
 
-        const union = (await Maple.isMain()) ? Maple.homeUnion() : null;
-        if (union == null) {
+        const Maple = new mapleModule(args[0]);
+        const union = await Maple.homeUnion();
+        if (!union) {
             return message.channel.send(`[${Maple.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
         }
         else {
