@@ -12,7 +12,7 @@ module.exports = {
         }
 
         const Maple = new mapleModule(args[0]);
-        if ((await Maple.isExist()) == null || Maple.homeLevel() == null) {
+        if (!(await Maple.homeLevel())) {
             return message.channel.send(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await Maple.isLatest())) {
@@ -23,7 +23,7 @@ module.exports = {
         }
 
         const collection = Maple.Collection();
-        if (collection == null) {
+        if (!collection) {
             return message.channel.send(`${Maple.Name}님의 코디 컬렉션을 가져오지 못하였습니다.`);
         }
         else {

@@ -9,8 +9,9 @@ module.exports = {
         if (args.length != 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
+
         const Maple = new mapleModule(args[0]);
-        if (!(await Maple.isExist()) || !Maple.homeLevel()) {
+        if (!(await Maple.homeLevel())) {
             return message.channel.send(`[${Maple.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await Maple.isLatest())) {
@@ -19,8 +20,9 @@ module.exports = {
                 message.channel.send('제한시간 내에 갱신 작업을 실패하였습니다.');
             }
         }
+
         const rslt = Maple.Achieve();
-        if (rslt == null) {
+        if (!rslt) {
             return message.channel.send(`[${Maple.Name}]\n기록이 없습니다.`);
         }
         else {

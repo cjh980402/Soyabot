@@ -9,8 +9,9 @@ module.exports = {
         if (args.length != 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
+
         const Maple = new mapleModule(args[0]);
-        if (!(await Maple.isExist()) || !Maple.homeLevel()) {
+        if (!(await Maple.homeLevel())) {
             return message.channel.send(`[${Maple.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await Maple.isLatest())) {
@@ -20,12 +21,12 @@ module.exports = {
             }
         }
 
-        const rslt = Maple.Seed();
-        if (rslt == null) {
+        const seed = Maple.Seed();
+        if (!seed) {
             return message.channel.send(`[${Maple.Name}]\n기록이 없습니다.`);
         }
         else {
-            return message.channel.send(`[${Maple.Name}]\n${rslt[0]}\n기록: ${rslt[1]}\n시간: ${rslt[2]}\n날짜: ${rslt[3]}`);
+            return message.channel.send(`[${Maple.Name}]\n${seed[0]}\n기록: ${seed[1]}\n시간: ${seed[2]}\n날짜: ${seed[3]}`);
         }
     }
 };

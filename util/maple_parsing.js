@@ -35,7 +35,7 @@ class Maple {
         return this.homeLevelURL;
     }
     // 메소드
-    async isExist() {
+    async homeLevel() {
         const len = this.name.length + (this.name.match(/[가-힣]/g)?.length ?? 0);
         this.homeLevelData = await linkParse(this.homeLevelURL);
         if (this.homeLevelData("img[alt='메이플스토리 서비스 점검중!']").length != 0) {
@@ -47,11 +47,9 @@ class Maple {
             this.homeLevelData = await linkParse(this.homeLevelURL);
         }
         if (len < 1 || len > 12 || this.homeLevelData("tr[class]").length != 10) {
-            return false; // 없는 캐릭터
+            return null; // 없는 캐릭터
         }
-        return true; // 있는 캐릭터
-    }
-    homeLevel() {
+
         let data = this.homeLevelData(".search_com_chk > td");
         if (data.length == 0) {
             const nickList = this.homeLevelData("tr[class] > td.left > dl > dt > a"); // 순위 리스트의 닉네임
@@ -75,7 +73,7 @@ class Maple {
 
         return [lev, exper, popul, guild, job];
     }
-    async isMain() {
+    async homeUnion() {
         const len = this.name.length + (this.name.match(/[가-힣]/g)?.length ?? 0);
         this.homeUnionData = await linkParse(this.homeUnionURL);
         if (this.homeUnionData("img[alt='메이플스토리 서비스 점검중!']").length != 0) {
@@ -83,11 +81,9 @@ class Maple {
         }
 
         if (len < 1 || len > 12 || this.homeUnionData("tr").length != 12) {
-            return false; // 유니온 기록이 없음
+            return null; // 유니온 기록이 없음
         }
-        return true; // 유니온 기록이 있음
-    }
-    homeUnion() {
+
         let data = this.homeUnionData(".search_com_chk > td");
         if (data.length == 0) {
             const nickList = this.homeUnionData("tr > td.left > dl > dt > a"); // 순위 리스트의 닉네임
@@ -154,8 +150,8 @@ class Maple {
         }
 
         const murungdate = murung.find(".user-summary-date > span").text().replace('기준일: ', ''); // 무릉 최고기록 날짜
-        const murungtime = murung.find(".user-summary-duration").text(); // 무릉 클리어 시간
-        const murungfl = murung.find(".user-summary-floor.font-weight-bold").text().replace(/\s+/g, ""); // 무릉 최고 층수
+        const murungtime = murung.find(".user-summary-duration").text(); // 무릉 클리어 시간 (0분 0초 형식)
+        const murungfl = murung.find(".user-summary-floor.font-weight-bold").text().replace(/\s+/g, ""); // 무릉 최고 층수 (0층 형식)
         const murungjob = murung.find(".d-block.mb-1 > span").text().replace(/\s+/g, "").replace('/', ' / '); // 유저 레벨, 직업
 
         return [murungjob, murungfl, murungtime, murungdate];
@@ -168,8 +164,8 @@ class Maple {
         }
 
         const seeddate = seed.find(".user-summary-date > span").text().replace('기준일: ', ''); // 시드 최고기록 날짜
-        const seedtime = seed.find(".user-summary-duration").text(); // 시드 클리어 시간
-        const seedfl = seed.find(".user-summary-floor.font-weight-bold").text().replace(/\s+/g, ""); // 시드 최고 층수
+        const seedtime = seed.find(".user-summary-duration").text(); // 시드 클리어 시간 (0분 0초 형식)
+        const seedfl = seed.find(".user-summary-floor.font-weight-bold").text().replace(/\s+/g, ""); // 시드 최고 층수 (0층 형식)
         const seedjob = seed.find(".d-block.mb-1 > span").text().replace(/\s+/g, "").replace('/', ' / '); // 유저 레벨, 직업
 
         return [seedjob, seedfl, seedtime, seeddate];
@@ -182,7 +178,7 @@ class Maple {
         }
 
         const lev = +union.find(".user-summary-level").text().substr(3); // 유니온 레벨, 숫자값
-        const stat = +union.find(".d-block.mb-1 > span").eq(0).contents().last().text().trim().replace(/,/g, ''); // 유니온 전투력, 숫자값
+        const stat = +union.find(".d-block.mb-1 > span").contents().last().text().replace(/[\s,]/g, ''); // 유니온 전투력, 숫자값
         const coin = Math.floor(stat * 0.000000864); // 일일 코인 수급량, 숫자값
         const grade = union.find(".user-summary-tier-string.font-weight-bold").text(); // 유니온 등급
 
@@ -210,7 +206,7 @@ class Maple {
 
         const rslt = [];
         for (let i = 0; i < rank.length; i++) {
-            rslt.push(rank.eq(i).text().replace(/\s+/g, ""));
+            rslt.push(rank.eq(i).text().replace(/\s+/g, "")); // 0위 형식
         }
         return rslt;
     }

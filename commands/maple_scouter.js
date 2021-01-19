@@ -24,13 +24,13 @@ module.exports = {
             for (let i = 0; i < scoreGrade.length - 2; i++) {
                 rslt += `\n${scoreGrade[i][0]} ~ ${scoreGrade[i + 1][0] - 1}점: ${scoreGrade[i][1]}`;
             }
-            rslt += `\n${scoreGrade[8][0]}점 이상: ${scoreGrade[8][1]}`;
+            rslt += `\n${scoreGrade[scoreGrade.length - 2][0]}점 이상: ${scoreGrade[scoreGrade.length - 2][1]}`;
             return message.channel.send(rslt);
         }
-        const Maple = new mapleModule(args[0]);
 
-        let union = (await Maple.isMain()) ? Maple.homeUnion() : null;
-        if (union == null) {
+        const Maple = new mapleModule(args[0]);
+        const union = (await Maple.homeUnion())?.[0];
+        if (!union) {
             return message.channel.send(`[${Maple.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
         }
 
@@ -43,7 +43,6 @@ module.exports = {
 
         const level = Maple.Level();
         const job = Maple.Job();
-        union = union[0];
 
         let murungfl, time, min, sec;
 
@@ -55,17 +54,13 @@ module.exports = {
             time = 900;
         }
         else {
-            murungfl = +data[1].replace('층', '');
-            min = +data[2].split('분 ')[0];
-            sec = +data[2].split('분 ')[1].replace('초', '');
+            murungfl = +/\d+/.exec(data[1]);
+            [min, sec] = data[2].match(/\d+/g).map((v) => +v);
             time = min * 60 + sec;
         }
 
-        let grade, score = level - (level >= 275 ? 50 : 100);
-        score += (murungfl >= 45 ? (murungfl + 1 - time / 900) * 4 : (murungfl + 1 - time / 900) * 3);
-        score += (union >= 8000 ? 250 : union / 40);
-        score = Math.floor(score);
-
+        const score = Math.floor(level - (level >= 275 ? 50 : 100) + (murungfl + 1 - time / 900) * (murungfl >= 45 ? 4 : 3) + (union / (union >= 8000 ? 32 : 40)));
+        let grade;
         for (let i = 0; i < scoreGrade.length - 1; i++) {
             if (scoreGrade[i][0] <= score && score < scoreGrade[i + 1][0]) {
                 grade = scoreGrade[i][1];

@@ -11,10 +11,11 @@ module.exports = {
         if (args.length != 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
+
         const Maple = new mapleModule(args[0]);
-        const level = (await Maple.isExist()) ? Maple.homeLevel() : null;
-        if (level == null) {
-            return message.channel.send(`[${Maple.Name}]\n존재하지 않는 캐릭터입니다.`);
+        const level = await Maple.homeLevel();
+        if (!level) {
+            return chat.reply(`[${Maple.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await Maple.isLatest())) {
             message.channel.send('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');

@@ -1,13 +1,14 @@
-#folder
+# folder
 node_modules/
 other_source/
 log/
 stock/
 .git/
- 
-#file
+
+# file
 *.log
 *.tflite
+soyabot_config.json
 pictures/dice_result.png
 pictures/collection.png
 pictures/profile.png

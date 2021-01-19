@@ -9,8 +9,9 @@ module.exports = {
         if (args.length != 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
+
         const Maple = new mapleModule(args[0]);
-        if (!(await Maple.isExist()) || !Maple.homeLevel()) {
+        if (!(await Maple.homeLevel())) {
             return message.channel.send(`[${Maple.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await Maple.isLatest())) {
@@ -21,7 +22,7 @@ module.exports = {
         }
 
         const data = Maple.LevelHistory();
-        if (data == null) {
+        if (!data) {
             return message.channel.send(`[${Maple.Name}]\n레벨 히스토리를 가져오지 못했습니다.`);
         }
         else {

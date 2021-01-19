@@ -11,7 +11,7 @@ module.exports = {
         }
 
         const Maple = new mapleModule(args[0]);
-        if (!(await Maple.isExist()) || !Maple.homeLevel()) {
+        if (!(await Maple.homeLevel())) {
             return message.channel.send(`[${Maple.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await Maple.isLatest())) {
@@ -22,7 +22,7 @@ module.exports = {
         }
 
         const data = Maple.MurungHistory();
-        if (data == null) {
+        if (!data) {
             return message.channel.send(`[${Maple.Name}]\n기록이 없습니다.`);
         }
         else {

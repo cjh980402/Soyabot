@@ -10,8 +10,9 @@ module.exports = {
         if (args.length != 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
+
         const Maple = new mapleModule(args[0]);
-        if (!(await Maple.isExist()) || !Maple.homeLevel()) {
+        if (!(await Maple.homeLevel())) {
             return message.channel.send(`[${Maple.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await Maple.isLatest())) {
@@ -22,7 +23,7 @@ module.exports = {
         }
 
         const coordi = Maple.Coordi();
-        if (coordi == null) {
+        if (!coordi) {
             return message.channel.send(`[${Maple.Name}]\n코디 정보가 없습니다.`);
         }
         else {

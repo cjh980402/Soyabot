@@ -12,8 +12,8 @@ module.exports = {
         }
 
         const Maple = new mapleModule(args[0]);
-        const level = (await Maple.isExist()) ? Maple.homeLevel() : null;
-        if (level == null) {
+        const level = await Maple.homeLevel();
+        if (!level) {
             return message.channel.send(`[${Maple.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await Maple.isLatest())) {
