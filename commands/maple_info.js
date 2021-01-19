@@ -24,7 +24,7 @@ module.exports = {
             }
         }
 
-        const char_union = (await Maple.isMain()) ? Maple.homeUnion() : null; // 유니온 레벨, 전투력, 수급량
+        const char_union = await Maple.homeUnion(); // 유니온 레벨, 전투력, 수급량
         const char_lv = level[0]; // 레벨
         const char_ex = level[1];
         const char_percent = (char_ex / (levelTable[char_lv] - levelTable[char_lv - 1]) * 100).toFixed(3); // 경험치 퍼센트
