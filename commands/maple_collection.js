@@ -1,4 +1,4 @@
-const { exec } = require("../util/async_to_promis");
+const { cmd } = require('../admin/admin_function');
 const mapleModule = require("../util/maple_parsing");
 
 module.exports = {
@@ -27,7 +27,7 @@ module.exports = {
             return message.channel.send(`${Maple.Name}님의 코디 컬렉션을 가져오지 못하였습니다.`);
         }
         else {
-            await exec(`python3 ./util/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(" ")} ${collection[1].join(" ")}`);
+            await cmd(`python3 ./util/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(" ")} ${collection[1].join(" ")}`);
             return message.channel.send(`${Maple.Name}님의 코디 컬렉션`, {
                 files: ["./pictures/collection.png"]
             });

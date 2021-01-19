@@ -1,10 +1,10 @@
 const Discord = require("discord.js"); // 디버깅용
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 const { decodeHTML } = require("entities");
-const { inspect } = require("util");
 const { ADMIN_ID } = require("../soyabot_config.json");
 const { botNotice, replyRoomID } = require('./bot_control.js');
 const { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, startTestPatch, stopTestPatch, startFlag, stopFlag } = require('./maple_auto_notice');
-const { exec } = require("../util/async_to_promis");
 
 module.exports.adminChat = async function (message) {
     if (message.content.startsWith(">")) { // 노드 코드 실행 후 출력
@@ -30,15 +30,20 @@ module.exports.adminChat = async function (message) {
     }
 }
 
-module.exports.cmd = async function (_cmd) {
-    let cmdResult;
-    try {
-        cmdResult = (await exec(_cmd)).stdout;
+module.exports.cmd = async function (_cmd, returnRslt = false) {
+    if (returnRslt) {
+        let cmdResult;
+        try {
+            cmdResult = (await exec(_cmd)).stdout;
+        }
+        catch (e) {
+            cmdResult = e.toString();
+        }
+        return cmdResult.replace(/\u001b\[\d\dm/g, "").trimEnd();
     }
-    catch (e) {
-        cmdResult = e.toString();
+    else {
+        await exec(_cmd)
     }
-    return cmdResult.replace(/\u001b\[\d\dm/g, "").trimEnd();
 }
 
 module.exports.initClient = async function () {
@@ -83,7 +88,7 @@ Object.defineProperty(String.prototype, "hashCode", {
 
 Object.defineProperty(Object.prototype, "$i", { // util.inspect의 결과 출력
     value: function (dep = 2) {
-        return inspect(this, { depth: dep });
+        return util.inspect(this, { depth: dep });
     }
 });
 

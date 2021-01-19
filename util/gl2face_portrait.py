@@ -1,11 +1,13 @@
 from PIL import Image
+import requests
+import sys
 import numpy as np
 import tflite_runtime.interpreter as tflite
 # import time
 
-img = Image.open('./pictures/portrait/input.png')
+img = Image.open(requests.get(sys.argv[1], stream = True).raw)
 w, h = img.size
-image = Image.new('RGB', (512, 512), "WHITE") # RGB 스케일의 흰 정사각형 배경 이미지 생성
+image = Image.new('RGB', (512, 512), "WHITE") # RGM 스케일의 흰 정사각형 배경 이미지 생성
 if w >= h: # 리사이징 후 붙여넣기
     image.paste(img.resize((512, 512 * h // w)), (0, 256 * (w - h) // w))
 else:

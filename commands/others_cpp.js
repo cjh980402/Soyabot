@@ -1,5 +1,5 @@
 const { ADMIN_ID } = require('../soyabot_config.json');
-const { writeFile } = require('../util/async_to_promis');
+const { writeFile } = require('fs').promises
 const { cmd } = require('../admin/admin_function');
 const { spawn } = require('child_process');
 let proc = null;
@@ -16,7 +16,7 @@ module.exports = {
             else {
                 const sourceCode = message.content.substr(message.content.indexOf(args[0])).trim();
                 await writeFile(`./other_source/cpp_source.cpp`, sourceCode);
-                const compile = await cmd("g++ -o ./other_source/cpp_result ./other_source/cpp_source.cpp");
+                const compile = await cmd("g++ -o ./other_source/cpp_result ./other_source/cpp_source.cpp", true);
                 if (compile) {
                     return message.channel.send(compile); // 컴파일 에러 출력
                 }

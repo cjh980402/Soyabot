@@ -15,7 +15,7 @@ module.exports = {
         const Maple = new mapleModule(args[0]);
         const level = await Maple.homeLevel();
         if (!level) {
-            return chat.reply(`[${Maple.Name}]\n존재하지 않는 캐릭터입니다.`);
+            return message.channel.send(`[${Maple.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await Maple.isLatest())) {
             message.channel.send('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');

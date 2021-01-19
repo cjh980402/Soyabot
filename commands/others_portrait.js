@@ -1,5 +1,4 @@
-const { writeFile, exec } = require('../util/async_to_promis');
-const fetch = require("node-fetch");
+const { cmd } = require('../admin/admin_function');
 
 function getMessageImage(message) {
     return message?.attachments.first()?.height ? message.attachments.first().url : null;
@@ -16,8 +15,7 @@ module.exports = {
             return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
         }
         else {
-            await writeFile("./pictures/portrait/input.png", await (await fetch(imageURL)).buffer());
-            await exec("python3 ./util/gl2face_portrait.py"); // 파이썬 스크립트 실행
+            await cmd(`python3 ./util/gl2face_portrait.py ${rslt.originurl}`); // 파이썬 스크립트 실행
             return message.channel.send({
                 files: ["./pictures/portrait/output.png"]
             });

@@ -1,7 +1,7 @@
 /**
  * 모듈 import
  */
-const { Client, Collection, Intents } = require("discord.js");
+const { Client, Collection } = require("discord.js");
 const { readdirSync } = require("fs");
 const { TOKEN, PREFIX, ADMIN_ID } = require("./soyabot_config.json");
 const { adminChat, initClient } = require("./admin/admin_function");
@@ -17,8 +17,7 @@ client.commands = []; // 명령어 객체 저장할 배열
 client.queue = new Map(); // 음악기능 정보 저장용
 client.prefix = PREFIX;
 const cooldowns = new Set(); // 중복 명령 방지할 set
-const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 사용자 입력을 이스케이프해서 정규식 내부에서 문자 그대로 취급하기 위해 치환하는 함수
-const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((resolve, reject) => setTimeout(() => reject(new Error("명령어 시간 초과")), ms))]);
+const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 정규식 내부에서 일부 특수 문자를 그대로 취급하기 위해 사용자 입력을 이스케이프로 치환하는 함수
 /**
  * 클라이언트 이벤트
  */
@@ -77,7 +76,13 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
             return message.reply(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
-        await (botModule.channelCool ? botModule.execute(message, args) : promiseTimeout(botModule.execute(message, args), 180000)); // 명령어 수행 부분
+        setTimeout(() => {
+            if (cooldowns.has(commandName)) {
+                cooldowns.delete(commandName);
+                replyRoomID(adminroomID, `명령어 동작 4분 초과\n작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}`);
+            }
+        }, 240000);
+        await botModule.execute(chat, args); // 명령어 수행 부분
         cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
     }
     catch (e) {
