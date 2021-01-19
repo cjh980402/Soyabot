@@ -82,7 +82,7 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
                 replyRoomID(adminroomID, `명령어 동작 4분 초과\n작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}`);
             }
         }, 240000);
-        await botModule.execute(chat, args); // 명령어 수행 부분
+        await botModule.execute(message, args); // 명령어 수행 부분
         cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
     }
     catch (e) {
