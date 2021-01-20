@@ -275,6 +275,9 @@ class Maple {
     serverName() {
         return this.ggData("div.col-lg-8 > h3 > img.align-middle").attr("alt");
     }
+    lastActiveDay() {
+        return this.ggData(".col-6.col-md-8.col-lg-6 .font-size-12.text-white").text().replace(/(\d+)\s+/, "$1") || "마지막 활동일: 알 수 없음";
+    }
 }
 
 module.exports = Maple;

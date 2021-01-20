@@ -40,15 +40,8 @@ module.exports = {
         for (let i = 0; i < memberCount; i++) {
             const name = memberData.eq(i).find(".mb-2 a").eq(1).text();
             const Maple = new mapleModule(name);
-            const union = (await Maple.homeUnion())?.[0];
-            if (await Maple.isLatest()) {
-                rslt += "\n\n[갱신 성공] ";
-            }
-            else {
-                rslt += (await Maple.updateGG() ? "\n\n[갱신 성공] " : "\n\n[갱신 실패] ");
-            }
-            const murung = Maple.Murung()?.[1];
-            rslt += `\n\n${memberData.eq(i).find("header > span").text() || "길드원"}: ${name}, ${memberData.eq(i).find(".mb-2 span").text()}, 유니온: ${union?.toLocaleString() ?? "-"}, 무릉: ${murung ?? "-"} (${memberData.eq(i).find(".user-summary-date").text()})`;
+            rslt += (await Maple.isLatest() ? "\n\n[갱신 성공] " : (await Maple.updateGG() ? "\n\n[갱신 성공] " : "\n\n[갱신 실패] "));
+            rslt += `${memberData.eq(i).find("header > span").text() || "길드원"}: ${name}, ${Maple.Job()} / Lv.${Maple.Level()}, 유니온: ${Maple.Union()?.[0].toLocaleString() ?? "-"}, 무릉: ${Maple.Murung()?.[1] ?? "-"} (${Maple.lastActiveDay()})`;
         }
         return message.channel.send(rslt, { split: true });
     }
