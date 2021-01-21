@@ -114,7 +114,7 @@ function generateWeatherEmbed(local, weather) {
             .setTimestamp();
 
         if (embed.description.length > 2000) {
-            embed.description = `${playlistEmbed.description.substr(0, 1950)}...`;
+            embed.description = `${embed.description.substr(0, 1950)}...`;
         }
         embeds.push(embed);
     }
