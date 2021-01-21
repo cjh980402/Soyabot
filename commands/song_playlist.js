@@ -85,7 +85,7 @@ module.exports = {
             .setTimestamp();
 
         if (playlistEmbed.description.length > 2000) {
-            playlistEmbed.description = `${playlistEmbed.description.substr(0, 1900)}...\n\n재생목록이 글자수 제한보다 깁니다...`;
+            playlistEmbed.description = `${playlistEmbed.description.substr(0, 1950)}...\n\n재생목록이 글자수 제한보다 깁니다...`;
         }
 
         if (serverQueue) {

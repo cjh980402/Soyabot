@@ -112,6 +112,10 @@ function generateWeatherEmbed(local, weather) {
             .setColor("#F8AA2A")
             .setDescription(weather[i])
             .setTimestamp();
+
+        if (embed.description.length > 2000) {
+            embed.description = `${playlistEmbed.description.substr(0, 1950)}...`;
+        }
         embeds.push(embed);
     }
     return embeds;
