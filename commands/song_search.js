@@ -37,18 +37,15 @@ module.exports = {
             return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");
         }
 
-        // results.map((video, index) => resultsEmbed.addField(video.shortURL, `${index + 1}. ${video.title.decodeHTML().decodeHTML()}`));
-        results.map((video, index) => resultsEmbed.addField(`https://youtu.be/${video.id}`, `${index + 1}. ${video.title}`));
+        // results.forEach((video, index) => resultsEmbed.addField(video.shortURL, `${index + 1}. ${video.title.decodeHTML().decodeHTML()}`));
+        results.forEach((video, index) => resultsEmbed.addField(`https://youtu.be/${video.id}`, `${index + 1}. ${video.title}`));
 
         const resultsMessage = await message.channel.send(resultsEmbed);
 
         message.channel.activeCollector = true;
         try {
             let songChoice;
-            const response = await message.channel.awaitMessages((msg) => {
-                songChoice = msg.content.split(",").map((str) => +str.trim()); // ,가 없으면 길이가 1인 배열
-                return songChoice.every((v) => !isNaN(v) && 1 <= v && v <= results.length);
-            }, { max: 1, time: 30000, errors: ["time"] });
+            const response = await message.channel.awaitMessages((msg) => (msg.author.id == message.author.id && msg.content.split(",").every((v) => !isNaN(v) && 1 <= +v && +v <= results.length)), { max: 1, time: 20000, errors: ["time"] });
 
             for (let song of songChoice) {
                 await client.commands.find((cmd) => cmd.command.includes("play")).execute(message, [resultsEmbed.fields[song - 1].name]);
