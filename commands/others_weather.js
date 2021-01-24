@@ -5,8 +5,8 @@ const cheerio = require('cheerio');
 module.exports = {
     usage: `${client.prefix}날씨 (지역)`,
     command: ["날씨", "ㄴㅆ"],
-    description: `- 입력한 지역의 날씨를 알려줍니다.
-- 참고. ${client.prefix}날씨 목록`,
+    description: "- 입력한 지역의 날씨를 알려줍니다.",
+    channelCool: true,
     type: ["기타"],
     async execute(message, args) {
         const search = args.length > 0 ? args.join(" ") : "동대문구 전농동";

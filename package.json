@@ -35,11 +35,11 @@
     "quickchart-js": "^1.0.5",
     "sejong": "^0.2.3",
     "simple-youtube-api": "^5.2.1",
-    "soundcloud-downloader": "^0.2.3",
+    "soundcloud-downloader": "^0.2.4",
     "sqlite3": "^5.0.1",
-    "string-progressbar": "^1.0.1",
+    "string-progressbar": "^1.0.2",
     "ytdl-core": "^4.4.4",
-    "ytsr": "^3.2.2"
+    "ytsr": "^3.2.3"
   },
   "scripts": {
     "start": "forever start -o ./log/out.log -e ./log/err.log index.js"

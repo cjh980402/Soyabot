@@ -9,11 +9,11 @@ const { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, s
 module.exports.adminChat = async function (message) {
     if (message.content.startsWith(">")) { // 노드 코드 실행 후 출력
         const funcBody = message.content.substr(1).trim().split('\n');
-        funcBody.push(`await message.channel.send(String(${funcBody.pop()}) || "empty string", { split: true });`); // 함수의 마지막 줄 내용은 자동으로 출력
-        await eval(`(async () => {${funcBody.join('\n')}})();`); // 프로미스 에러 캐치를 위해 await까지 해준다.
+        funcBody.push(`return ${funcBody.pop()};`); // 함수의 마지막 줄 내용은 자동으로 반환
+        message.channel.send(String(await eval(`(async () => {${funcBody.join('\n')}})()`)) || "empty string", { split: true }); // async 함수의 리턴값이므로 await까지 해준다.
     }
     else if (message.content.startsWith(")")) { // 콘솔 명령 실행 후 출력
-        message.channel.send(await module.exports.cmd(message.content.substr(1).trim()) || "empty string", { split: true });
+        message.channel.send(await module.exports.cmd(message.content.substr(1).trim(), true) || "empty string", { split: true });
     }
     else if (message.content.startsWith("*")) { // 원하는 방에 봇으로 채팅 전송
         const room = message.content.split('*')[1];
@@ -32,17 +32,15 @@ module.exports.adminChat = async function (message) {
 
 module.exports.cmd = async function (_cmd, returnRslt = false) {
     if (returnRslt) {
-        let cmdResult;
         try {
-            cmdResult = (await exec(_cmd)).stdout;
+            return (await exec(_cmd)).stdout.replace(/\u001b\[\d\dm/g, "").trimEnd();
         }
         catch (e) {
-            cmdResult = e.toString();
+            return e.toString();
         }
-        return cmdResult.replace(/\u001b\[\d\dm/g, "").trimEnd();
     }
     else {
-        await exec(_cmd)
+        return await exec(_cmd);
     }
 }
 
@@ -61,7 +59,7 @@ module.exports.initClient = async function () {
     client.suggestionChat = {}; // 건의 기능을 사용한 Message객체 임시 저장
     client.setMaxListeners(20); // 이벤트 개수 제한 증가
     client.options.retryLimit = 3; // 네트워크 재요청 횟수 설정
-    // client.guilds.cache.forEach((v) => v.members.fetch()); // 모든 멤버 목록 가져오기 (Privileged intents허가 돼야 가능)
+    // client.guilds.cache.forEach((v) => v.members.fetch()); // 모든 멤버 목록 가져오기 (Privileged intents 허가 돼야 가능)
 
     startNotice(); // 공지 자동 알림 기능
     startUpdate(); // 업데이트 자동 알림 기능
@@ -94,7 +92,7 @@ Object.defineProperty(Object.prototype, "$i", { // util.inspect의 결과 출력
 
 Object.defineProperty(Object.prototype, "$", { // 객체의 키와 값 출력
     get: function () {
-        return Object.getOwnPropertyNames(this).map(v => {
+        return Object.getOwnPropertyNames(this).map((v) => {
             try {
                 return `${v}: ${this[v]}`;
             }
@@ -113,7 +111,7 @@ Object.defineProperty(Object.prototype, "$k", { // 객체의 키만 출력
 
 Object.defineProperty(Object.prototype, "$$", { // 상위 프로토타입의 키와 값 출력
     get: function () {
-        return Object.getOwnPropertyNames(Object.getPrototypeOf(this)).map(v => {
+        return Object.getOwnPropertyNames(Object.getPrototypeOf(this)).map((v) => {
             try {
                 return `${v}: ${this[v]}`;
             }
