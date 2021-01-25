@@ -53,7 +53,7 @@ module.exports = {
             return queue.TextChannel.send(`오류 발생: ${e.message ?? e}`);
         }
 
-        if (!queue.connection.rawListeners("disconnect").find((v) => v.name == "deleteQueue")) { // 리스너 중복 체크
+        if (!queue.connection.rawListeners("disconnect").some((v) => v.name == "deleteQueue")) { // 리스너 중복 체크
             queue.connection.on("disconnect", deleteQueue); // 연결 끊기면 자동으로 큐를 삭제하는 리스너 등록
         }
 
@@ -66,8 +66,7 @@ module.exports = {
                 stream.destroy();
                 collector.stop();
                 if (queue.loop) {
-                    // 루프가 켜져있다면 현재 노래를 대기열의 마지막에 다시 넣기때문에 대기열이 끝나지 않고 계속 재생됨
-                    queue.songs.push(queue.songs.shift());
+                    queue.songs.push(queue.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣음 -> 루프 발생
                 }
                 else {
                     queue.songs.shift();

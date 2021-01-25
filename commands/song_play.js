@@ -88,7 +88,7 @@ module.exports = {
             volume: DEFAULT_VOLUME ?? 100,
             playing: true,
             get TextChannel() { // 채널이 삭제되는 경우를 대비해서 getter를 설정
-                if (!client.channels.cache.get(this.textChannel.id)) {
+                if (!client.channels.cache.get(this.textChannel.id)) { // 해당하는 채널이 삭제된 경우
                     this.textChannel = message.guild.channels.cache.filter((v) => v.type == 'text').first();
                 }
                 return this.textChannel;
