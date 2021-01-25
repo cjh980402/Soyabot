@@ -14,7 +14,7 @@ module.exports = {
         const random = Math.floor(Math.random() * (max - min + 1)) + min; // 랜덤 선택된 문장의 인덱스
         const choice = matchString[random];
         const choiceLength = Sejong.decompose(choice, { decomposeAssembledVowel: true }).length;
-        message.channel.send(`이번 문장은 ${random <= 1004 ? "한글" : "영어"} 문장입니다.`);
+        message.channel.send(`이번 문장은 ${random <= 1120 ? "한글" : "영어"} 문장입니다.`);
 
         for (let i = 3; i > 0; i--) {
             message.channel.send(i);
