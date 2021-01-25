@@ -17,7 +17,7 @@ module.exports = {
         const stdday = new Date(2017, 1 - 1, 3); // 2017. 01. 03. 부터 2주마다 1일씩 단축
         const after18 = new Date(2020, 6 - 1, 16); // 2020. 06. 16. 부터 18개월 복무
         const start = new Date(year, mon - 1, day);
-        const before = new Date(year + 2, mon - 1 - 3, day - 1); //단축 전 전역일
+        const before = new Date(year + 2, mon - 1 - 3, day - 1); // 단축 전 전역일
         if (start < stdday) { // 21개월 복무
             return message.channel.send(`입대일: ${start.toLocaleDateString()}\n전역일: ${before.toLocaleDateString()}\n전체 복무일: ${(before - start) / 86400000}일`);
         }

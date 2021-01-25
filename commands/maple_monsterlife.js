@@ -1,8 +1,8 @@
 const fetch = require('node-fetch');
 
-async function farm_monster(name) { // 몬스터 이름
+async function farm_monster(monster) { // 몬스터 이름
     const params = new URLSearchParams();
-    params.append("monster", name);
+    params.append("monster", monster);
     const response = await fetch("http://wachan.me/farm_monster.php", {
         method: 'POST',
         body: params
@@ -10,13 +10,13 @@ async function farm_monster(name) { // 몬스터 이름
     return response.text(); // 결과값이 "false"면 DB에 없는 몬스터
 }
 
-async function farm_sex(name) { // 몬스터 조합식
-    name = await farm_monster(name);
-    if (name == "false") {
+async function farm_sex(monster) { // 몬스터 조합식
+    monster = await farm_monster(monster);
+    if (monster == "false") {
         return '데이터에 없는 몬스터거나 올바르지 않은 몬스터입니다.';
     }
     const params = new URLSearchParams();
-    params.append("monster", name);
+    params.append("monster", monster);
     const response = await fetch("http://wachan.me/farm_sex.php", {
         method: 'POST',
         body: params
@@ -28,12 +28,12 @@ async function farm_sex(name) { // 몬스터 조합식
     else {
         let rslt = "";
         data.forEach((v) => {
-            if (v.type == "child") { // 결과가 name인 경우
+            if (v.type == "child") { // 결과가 monster인 경우
                 rslt += `${v.child}(${v.c_grade}): ${v.c_effect}${v.c_effect_value == "+0" ? "" : ` ${v.c_effect_value}`}\n`;
                 rslt += `↳${v.mom} (${v.m_species} ${v.m_grade})\n`;
                 rslt += `↳${v.dad} (${v.d_species} ${v.d_grade})\n\n`;
             }
-            else if (v.type == "parents") { // name이 재료인 경우
+            else if (v.type == "parents") { // monster가 재료인 경우
                 rslt += `↱${v.mom} (${v.m_species} ${v.m_grade})\n`;
                 rslt += `↱${v.dad} (${v.d_species} ${v.d_grade})\n`;
                 rslt += `${v.child}(${v.c_grade}): ${v.c_effect}${v.c_effect_value == "+0" ? "" : ` ${v.c_effect_value}`}\n\n`;
@@ -43,26 +43,31 @@ async function farm_sex(name) { // 몬스터 조합식
     }
 }
 
-async function farm_add(name, user, end_date) { // 농장 추가
-    if (end_date) { // 날짜 설정
+async function farm_add(end_date, user, monster) { // 농장 추가
+    if (end_date == "무한유지") {
+        end_date = ""; // 무한유지의 경우 빈 값을 넘겨야함
+    }
+    else { // 날짜 설정
         const date = end_date.match(/^(\d{2})(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/);
         // 올바른 YYMMDD 형식인지 확인하는 정규식 -> 인덱스 1: 연도, 2: 월, 3: 일
-        if (!date)
+        if (!date) {
             return '잘못된 형식의 날짜를 입력하였습니다. YYMMDD 형식으로 끝나는 날짜를 입력해주세요.';
+        }
         const monlife = new Date(+date[1] + 2000, +date[2] - 1, +date[3] + 1); // 하루 유예기간 설정
-        if (monlife < Date.now())
+        if (monlife < Date.now()) {
             return '수명이 지난 몬스터는 추가할 수 없습니다.';
+        }
         end_date = `20${date[1]}-${date[2]}-${date[3]}`; // YYYY-MM-DD 형태로 변환
     }
-    else {// 무한 유지
-        end_date = "";
+    if (!/^[가-힣]{2,6}$/.test(user)) {
+        return '올바르지 않은 농장 이름입니다. 농장 이름은 2 ~ 6글자의 한글이어야 합니다.';
     }
-    name = await farm_monster(name);
-    if (name == "false") {
+    monster = await farm_monster(monster);
+    if (monster == "false") {
         return '데이터에 없는 몬스터거나 올바르지 않은 몬스터입니다.';
     }
     const params = new URLSearchParams();
-    params.append("monster", name);
+    params.append("monster", monster);
     params.append("user", user);
     params.append("end_date", end_date);
     const response = await fetch("http://wachan.me/farm_info_adding.php", {
@@ -78,13 +83,13 @@ async function farm_add(name, user, end_date) { // 농장 추가
     }
 }
 
-async function farm_read(name) { // 농장 목록
-    name = await farm_monster(name);
-    if (name == "false") {
+async function farm_read(monster) { // 농장 목록
+    monster = await farm_monster(monster);
+    if (monster == "false") {
         return '데이터에 없는 몬스터거나 올바르지 않은 몬스터입니다.';
     }
     const params = new URLSearchParams();
-    params.append("monster", name);
+    params.append("monster", monster);
     const response = await fetch("http://wachan.me/farm_read2.php", {
         method: 'POST',
         body: params
@@ -94,7 +99,7 @@ async function farm_read(name) { // 농장 목록
         return data.error;
     }
     else {
-        let rslt = `${name} 보유 농장 목록\n`;
+        let rslt = `${monster} 보유 농장 목록${"\u200b".repeat(500)}\n`;
         data.farm_list.forEach((v) => {
             if (/^[가-힣]{2,6}$/.test(v[0])) {
                 rslt += `\n${v[1] ?? "무한유지"}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})`
@@ -104,12 +109,12 @@ async function farm_read(name) { // 농장 목록
     }
 }
 
-async function farm_info(name) { // 농장 정보
-    if (!/^[가-힣]{2,6}$/.test(name)) {
+async function farm_info(user) { // 농장 정보
+    if (!/^[가-힣]{2,6}$/.test(user)) {
         return '올바르지 않은 농장 이름입니다. 농장 이름은 2 ~ 6글자의 한글이어야 합니다.';
     }
     const params = new URLSearchParams();
-    params.append("farm", name);
+    params.append("farm", user);
     const response = await fetch("http://wachan.me/farm_read_from_name.php", {
         method: 'POST',
         body: params
@@ -119,14 +124,15 @@ async function farm_info(name) { // 농장 정보
         return data.error;
     }
     else {
-        let rslt = `${name} 농장의 정보\n`;
+        let rslt = `${user} 농장의 정보`;
         if (data.monster_list.length) {
+            rslt += `${"\u200b".repeat(500)}\n`;
             data.monster_list.forEach((v) => {
                 rslt += `\n${v[1] ?? "무한유지"}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})`
             });
         }
         else {
-            rslt += "\n등록된 몬스터 정보가 없습니다.";
+            rslt += "\n\n등록된 몬스터 정보가 없습니다.";
         }
         return rslt;
     }
@@ -139,10 +145,9 @@ module.exports = {
 - ${client.prefix}농장 목록 (몬스터 이름)
 - ${client.prefix}농장 조합식 (몬스터 이름)
 - ${client.prefix}농장 정보 (농장 이름)
-- ${client.prefix}농장 추가 (몬스터 이름) (농장 이름) (끝나는 날짜)
-- 참고 1. 농장 추가의 경우 몬스터 이름은 띄어쓰기 없이 입력해야합니다.
-- 참고 2. 농장 추가의 경우 무한유지를 하는 몬스터는 끝나는 날짜를 비워야합니다.
-- 참고 3. 끝나는 날짜의 형식은 YYMMDD 형식입니다.`,
+- ${client.prefix}농장 추가 (끝나는 날짜) (농장 이름) (몬스터 이름)
+- 참고 1. 끝나는 날짜의 형식은 YYMMDD 형식입니다.
+- 참고 2. 무한유지를 하는 몬스터는 끝나는 날짜에 "무한유지"라고 적어주세요.`,
     type: ["메이플"],
     async execute(message, args) {
         if (args.length < 2) {
@@ -156,13 +161,13 @@ module.exports = {
             return message.channel.send(await farm_sex(args.slice(1).join("")));
         }
         else if (args[0] == "정보" || args[0] == "ㅈㅂ") {
-            return message.channel.send(await farm_info(args[1]), { split: true });
+            return message.channel.send(await farm_info(args.slice(1).join("")), { split: true });
         }
         else if (args[0] == "추가" || args[0] == "ㅊㄱ") {
-            if (args.length < 3) {
+            if (args.length < 4) {
                 return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
             }
-            return message.channel.send(await farm_add(args[1], args[2], args[3]));
+            return message.channel.send(await farm_add(args[1], args[2], args.slice(3).join("")));
         }
         else {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
