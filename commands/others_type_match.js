@@ -10,7 +10,7 @@ module.exports = {
     channelCool: true,
     type: ["기타"],
     async execute(message, args) {
-        const [min, max] = /^한글?$/.test(args[0]) ? [0, 1004] : (/^영어?$/.test(args[0]) ? [1005, 2004] : [0, 2004]);
+        const [min, max] = /^한글?$/.test(args[0]) ? [0, 1120] : (/^영어?$/.test(args[0]) ? [1121, matchString.length - 1] : [0, matchString.length - 1]);
         const random = Math.floor(Math.random() * (max - min + 1)) + min; // 랜덤 선택된 문장의 인덱스
         const choice = matchString[random];
         const choiceLength = Sejong.decompose(choice, { decomposeAssembledVowel: true }).length;
