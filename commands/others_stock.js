@@ -109,8 +109,8 @@ module.exports = {
                     const amount = data.eq(4).text().trim() || "0";
                     const totalPrice = data.eq(5).text().trim();
                     const capitalization = data.eq(6).text().trim();
-                    const min_52weeks = data.eq(9).text().trim() || "0";
-                    const max_52weeks = data.eq(8).text().trim() || "0";
+                    const min_52weeks = data.eq(9).contents().first().text().trim() || "0";
+                    const max_52weeks = data.eq(8).contents().first().text().trim() || "0";
 
                     await cmd(`python3 ./util/make_stock_info.py ${code} ${chartURL} "${name} (${code}) ${type}" 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                     // 파이썬 스크립트 실행
