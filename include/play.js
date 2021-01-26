@@ -58,7 +58,7 @@ module.exports = {
         }
 
         let collector = null;
-        queue.connection.play(stream, { type: streamType, volume: queue.volume / 100 })
+        queue.connection.play(stream, { type: streamType })
             .on("finish", async () => {
                 while (!collector) {
                     await sleep(500);
@@ -83,7 +83,8 @@ module.exports = {
                 replyAdmin(`노래 재생 에러\nsong 객체: ${song.$}\n에러 내용: ${e}\n${e.stack ?? e.$}`);
                 queue.songs.shift();
                 module.exports.play(queue.songs[0], guild);
-            });
+            })
+            .setVolumeLogarithmic(queue.volume / 100); // 음량 설정
 
         const playingMessage = await queue.TextChannel.send(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
         try {

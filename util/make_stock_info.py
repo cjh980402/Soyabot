@@ -7,43 +7,40 @@ def stock_info(img: Image):
     image.paste(img, (0, 135)) # 이미지가 658 * 408이므로 135(원본의 여백 고려)를 더해서 y축 위치를 가운데로 조정 후 붙여넣기
     drawer = ImageDraw.Draw(image)
 
-    msg = sys.argv[2] # argv[2]는 주식 이름
+    msg = sys.argv[3] # argv[3]는 이미지 타이틀
     font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 32)
     drawer.text((20, 18), msg, (0, 0, 0), font)
 
-    if sys.argv[4] != "하락": # argv[4]는 상승, 하락 여부
-        msg = f"현재 시가: {sys.argv[3]}원" # argv[3]은 현재 시가
-        font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 28)
-        w, h = drawer.textsize(msg, font) # 텍스트의 사이즈를 반환
-        drawer.text((638 - w, 60), msg, (255, 100, 100), font) # 텍스트가 우측에서 20만큼의 여백을 가짐
+    tempString = f"{abs(float(sys.argv[6])):,.2f}".replace(".00", "")
+    msg = f"현재: {sys.argv[5]}{sys.argv[4]}" # argv[5]은 현재 가격, argv[4]는 화폐 단위
+    font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 28)
+    w, h = drawer.textsize(msg, font) # 텍스트의 사이즈를 반환
 
-        msg = f"▲{sys.argv[5]}원 | {sys.argv[6]}%" # argv[5]는 변화량, argv[6]는 변화율
+    if float(sys.argv[6]) >= 0: # argv[6]는 변화량
+        drawer.text((638 - w, 60), msg, (255, 100, 100), font) # 텍스트가 우측에서 20만큼의 여백을 가짐
+        msg = f"▲{tempString}{sys.argv[4]} | {sys.argv[7]}%" # argv[7]는 변화율
         font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 30)
         drawer.text((20, 80), msg, (255, 100, 100), font)
     else:
-        msg = f"현재 시가: {sys.argv[3]}원"
-        font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 28)
-        w, h = drawer.textsize(msg, font)
         drawer.text((638 - w, 60), msg, (100, 100, 255), font)
-
-        msg = f"▼{sys.argv[5]}원 | {sys.argv[6]}%"
+        msg = f"▼{tempString}{sys.argv[4]} | {sys.argv[7]}%"
         font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 30)
         drawer.text((20, 80), msg, (100, 100, 255), font)
 
-    msg = f"({sys.argv[7]}원 ~ {sys.argv[8]}원)" # argv[7]은 저가, argv[8]은 고가
+    msg = f"({sys.argv[8]}{sys.argv[4]} ~ {sys.argv[9]}{sys.argv[4]})" # argv[8]은 저가, argv[9]은 고가
     font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 25)
     w, h = drawer.textsize(msg, font)
     drawer.text((638 - w, 97), msg, (0, 0, 0), font)
 
-    msg = f"52주 최고가: {sys.argv[9]}원" # argv[9]은 52주 최고가
+    msg = f"52주 최고가: {sys.argv[10]}{sys.argv[4]}" # argv[10]은 52주 최고가
     font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 30)
     drawer.text((20, 550), msg, (50, 50, 50), font)
 
-    msg = f"52주 최저가: {sys.argv[10]}원" # argv[10]은 52주 최저가
+    msg = f"52주 최저가: {sys.argv[11]}{sys.argv[4]}" # argv[11]은 52주 최저가
     font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 30)
     drawer.text((20, 590), msg, (50, 50, 50), font)
 
     return image
 
-stock_info(Image.open(requests.get(f"https://ssl.pstatic.net/imgfinance/chart/mobile/candle/day/{sys.argv[1]}_end.png", stream = True).raw)).save(f"./pictures/stock/{sys.argv[1]}.png")
-# argv[1]은 사진 이름, 병합한 이미지 저장하기
+stock_info(Image.open(requests.get(sys.argv[2], stream = True).raw)).save(f"./pictures/stock/{sys.argv[1]}.png")
+# argv[1]은 주식 코드, argv[2]는 차트 이미지 주소, 병합한 이미지 저장하기

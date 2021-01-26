@@ -4,7 +4,7 @@ const Sejong = require('sejong');
 module.exports = {
     usage: `${client.prefix}채팅량 (닉네임)`,
     command: ["채팅량", "ㅊㅌㄹ"],
-    description: "- 해당하는 닉네임의 채팅 통계를 보여줍니다. 닉네임을 생략시에는 본인의 채팅 통계를 보여줍니다.",
+    description: "- 해당하는 닉네임의 채팅 통계를 보여줍니다. 닉네임을 생략 시에는 본인의 채팅 통계를 보여줍니다.",
     channelCool: true,
     type: ["기타"],
     async execute(message, args) {
