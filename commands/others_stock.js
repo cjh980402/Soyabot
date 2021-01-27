@@ -51,7 +51,7 @@ module.exports = {
                 const min_52weeks = data.eq(identifer == "FUT" ? 7 : 5).text().trim() || "0";
                 const max_52weeks = data.eq(identifer == "FUT" ? 6 : 4).text().trim() || "0";
 
-                await cmd(`python3 ./util/make_stock_info.py ${code} ${chartURL} "${name} (${code}) ${type == "1일" ? "일봉" : type}" 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
+                await cmd(`python3 ./util/make_stock_info.py ${code} ${chartURL} "${name} (${code}) ${type == "1일" ? "일봉" : type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                 // 파이썬 스크립트 실행
 
                 stockEmbed.setTitle(`${name} (${code}) ${type == "1일" ? "일봉" : type}`)
