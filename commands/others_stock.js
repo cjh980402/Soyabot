@@ -56,7 +56,7 @@ module.exports = {
 
                 stockEmbed.setTitle(`${name} (${code}) ${type == "1일" ? "일봉" : type}`)
                     .addField(identifer == "FUT" ? '**약정수량**' : '**거래량**', amount, true)
-                    .addField('**거래대금**', `${totalPrice}원`, true)
+                    .addField('**거래대금**', totalPrice, true)
                     .addField('**개인**', trendData.eq(0).find("span").eq(0).text(), true)
                     .addField('**외국인**', trendData.eq(0).find("span").eq(1).text(), true)
                     .addField('**기관**', trendData.eq(0).find("span").eq(2).text(), true);
