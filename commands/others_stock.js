@@ -2,50 +2,33 @@ const { cmd } = require('../admin/admin_function');
 const { MessageEmbed } = require("discord.js");
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
-const chartType = ["일봉", "주봉", "월봉", "1일", "3개월", "1년", "3년", "10년"];
+const chartType = {
+    "일봉": "candle/day",
+    "주봉": "candle/week",
+    "월봉": "candle/month",
+    "1일": "day",
+    "3개월": "area/month3",
+    "1년": "area/year",
+    "3년": "area/year3",
+    "10년": "area/year10"
+};
 
-function getChartImage(identifer, type, isWorld) {
-    const typeIndex = chartType.indexOf(type);
-    const urlPrefix = `https://ssl.pstatic.net/imgfinance/chart/mobile${isWorld ? "/world" : ""}`;
-    const urlSuffix = `${identifer}_end.png?sidcode=${Date.now()}`;
-    if (typeIndex == 0) {
-        return `${urlPrefix}/candle/day/${urlSuffix}`;
-    }
-    else if (typeIndex == 1) {
-        return `${urlPrefix}/candle/week/${urlSuffix}`;
-    }
-    else if (typeIndex == 2) {
-        return `${urlPrefix}/candle/month/${urlSuffix}`;
-    }
-    else if (typeIndex == 3) {
-        return `${urlPrefix}/day/${urlSuffix}`;
-    }
-    else if (typeIndex == 4) {
-        return `${urlPrefix}/area/month3/${urlSuffix}`;
-    }
-    else if (typeIndex == 5) {
-        return `${urlPrefix}/area/year/${urlSuffix}`;
-    }
-    else if (typeIndex == 6) {
-        return `${urlPrefix}/area/year3/${urlSuffix}`;
-    }
-    else if (typeIndex == 7) {
-        return `${urlPrefix}/area/year10/${urlSuffix}`;
-    }
+function getChartImage(identifer, type, isWorld = false, isWorldItem = false) {
+    return `https://ssl.pstatic.net/imgfinance/chart/mobile${isWorld ? "/world" : ""}${isWorldItem ? "/item" : ""}/${chartType[type]}/${identifer}_end.png?sidcode=${Date.now()}`;
 }
 
 module.exports = {
     usage: `${client.prefix}주식정보 (검색 내용) (차트 종류)`,
     command: ["주식정보", "ㅈㅅㅈㅂ"],
     description: `- 검색 내용에 해당하는 주식의 정보를 보여줍니다.
-- (차트 종류): ${chartType.join(", ")} 입력가능 (생략 시 일봉으로 적용)`,
+- (차트 종류): ${Object.keys(chartType).join(", ")} 입력가능 (생략 시 일봉으로 적용)`,
     type: ["기타"],
     async execute(message, args) {
         if (args.length < 1) {
             return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const type = (args.length > 1 && chartType.includes(args[args.length - 1])) ? args.pop() : "일봉"; // 차트 종류
+        const type = (args.length > 1 && Object.keys(chartType).includes(args[args.length - 1])) ? args.pop() : "일봉"; // 차트 종류
         const search = args.join(" ").toLowerCase();
         const searchRslt = (await (await fetch(`https://ac.finance.naver.com/ac?q=${encodeURI(search)}&t_koreng=1&st=111&r_lt=111`)).json()).items[0];
 
@@ -67,7 +50,7 @@ module.exports = {
                 const nowData = (await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_INDEX%3A${identifer}`)).json());
                 const trendData = parse(".ct_box.dmst_trend .trend_lst");
 
-                const chartURL = getChartImage(identifer, type, false);
+                const chartURL = getChartImage(identifer, type);
                 const nowPrice = nowData.result.areas[0].datas[0].nv / 100; // 숫자값
                 const changeAmount = nowData.result.areas[0].datas[0].cv / 100; // 숫자값
                 const changeRate = nowData.result.areas[0].datas[0].cr;
@@ -141,7 +124,7 @@ module.exports = {
                 const data = parse(".total_list > li > span");
                 const nowData = (await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_ITEM%3A${identifer}`)).json());
 
-                const chartURL = getChartImage(identifer, type, false);
+                const chartURL = getChartImage(identifer, type);
                 const beforePrice = nowData.result.areas[0].datas[0].pcv; // 숫자값
                 const nowPrice = nowData.result.areas[0].datas[0].nv; // 숫자값
                 const changeAmount = nowPrice - beforePrice; // 숫자값
@@ -173,7 +156,7 @@ module.exports = {
             else { // 해외 주식
                 const data = (await (await fetch(`https://api.stock.naver.com/stock/${identifer}/basic`)).json());
 
-                const chartURL = getChartImage(identifer, type, true);
+                const chartURL = getChartImage(identifer, type, true, true);
                 const nowPrice = data.closePrice;
                 const changeAmount = data.compareToPreviousClosePrice.replace(/,/g, "");;
                 const changeRate = data.fluctuationsRatio;
