@@ -41,6 +41,6 @@ output_data = interpreter.get_tensor(output_details[0]['index'])
 
 out = 255 - np.squeeze(output_data) * 255
 if w >= h: # 그레이 스케일로 변환 후 원래 비율로 크롭
-    Image.fromarray(out).convert('L').crop((0, 256 * (w - h) // w, 512, 256 * (w + h) // w)).save('./pictures/portrait/output.png')
+    Image.fromarray(out).convert('L').crop((0, 256 * (w - h) // w, 512, 256 * (w + h) // w)).save('./pictures/portrait.png')
 else:
-    Image.fromarray(out).convert('L').crop((256 * (h - w) // h, 0, 256 * (w + h) // h, 512)).save('./pictures/portrait/output.png')
+    Image.fromarray(out).convert('L').crop((256 * (h - w) // h, 0, 256 * (w + h) // h, 512)).save('./pictures/portrait.png')

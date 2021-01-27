@@ -17,7 +17,7 @@ module.exports = {
         else {
             await cmd(`python3 ./util/gl2face_portrait.py ${imageURL}`); // 파이썬 스크립트 실행
             return message.channel.send({
-                files: ["./pictures/portrait/output.png"]
+                files: ["./pictures/portrait.png"]
             });
         }
     }
