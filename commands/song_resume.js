@@ -5,7 +5,7 @@ module.exports = {
     command: ["resume", "rs"],
     description: "- 가장 최근 노래를 다시 재생합니다.",
     type: ["음악"],
-    execute(message) {
+    async execute(message) {
         if (!message.guild) {
             return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         }

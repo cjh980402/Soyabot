@@ -1,5 +1,21 @@
 const { MessageEmbed } = require("discord.js");
 
+function generateQueueEmbed(message, queue) {
+    const embeds = [];
+    for (let i = 0; i < queue.length; i += 8) {
+        const current = queue.slice(i, i + 8);
+        const info = current.map((track, j) => `${i + j + 1}. [${track.title}](${track.url})`).join("\n\n");
+        const embed = new MessageEmbed()
+            .setTitle(`${client.user.username} 음악 대기열`)
+            .setThumbnail(message.guild.iconURL())
+            .setColor("#F8AA2A")
+            .setDescription(`**현재 재생 중인 노래 - [${queue[0].title}](${queue[0].url})**\n\n${info}`)
+            .setTimestamp();
+        embeds.push(embed);
+    }
+    return embeds;
+}
+
 module.exports = {
     usage: `${client.prefix}queue`,
     command: ["queue", "q"],
@@ -54,19 +70,3 @@ module.exports = {
         }
     }
 };
-
-function generateQueueEmbed(message, queue) {
-    const embeds = [];
-    for (let i = 0; i < queue.length; i += 8) {
-        const current = queue.slice(i, i + 8);
-        const info = current.map((track, j) => `${i + j + 1}. [${track.title}](${track.url})`).join("\n\n");
-        const embed = new MessageEmbed()
-            .setTitle(`${client.user.username} 음악 대기열`)
-            .setThumbnail(message.guild.iconURL())
-            .setColor("#F8AA2A")
-            .setDescription(`**현재 재생 중인 노래 - [${queue[0].title}](${queue[0].url})**\n\n${info}`)
-            .setTimestamp();
-        embeds.push(embed);
-    }
-    return embeds;
-}

@@ -5,7 +5,7 @@ module.exports = {
     command: ["volume", "v"],
     description: "- 지금 재생 중인 노래의 음량을 변경합니다. (0 ~ 100 범위)",
     type: ["음악"],
-    execute(message, args) {
+    async execute(message, args) {
         if (!message.guild) {
             return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         }

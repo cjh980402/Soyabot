@@ -2,6 +2,23 @@ const { MessageEmbed } = require("discord.js");
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 
+function generateEventEmbed(links, names, dates) {
+    const embeds = [];
+    for (let i = 0; i < links.length; i += 5) {
+        const curLinks = links.slice(i, i + 5);
+        const curNames = names.slice(i, i + 5);
+        const curDates = dates.slice(i, i + 5);
+        const info = Array.from(curLinks.map((j, link) => `${i + j + 1}. [${curNames[j]}](https://maplestory.nexon.com${link})\n기간: ${curDates[j]}`)).join("\n\n");
+        const embed = new MessageEmbed()
+            .setTitle("진행중인 이벤트")
+            .setColor("#F8AA2A")
+            .setDescription(info)
+            .setTimestamp();
+        embeds.push(embed);
+    }
+    return embeds;
+}
+
 module.exports = {
     usage: `${client.prefix}이벤트`,
     command: ["이벤트", "ㅇㅂㅌ"],
@@ -61,20 +78,3 @@ module.exports = {
         }
     }
 };
-
-function generateEventEmbed(links, names, dates) {
-    const embeds = [];
-    for (let i = 0; i < links.length; i += 5) {
-        const curLinks = links.slice(i, i + 5);
-        const curNames = names.slice(i, i + 5);
-        const curDates = dates.slice(i, i + 5);
-        const info = Array.from(curLinks.map((j, link) => `${i + j + 1}. [${curNames[j]}](https://maplestory.nexon.com${link})\n기간: ${curDates[j]}`)).join("\n\n");
-        const embed = new MessageEmbed()
-            .setTitle("진행중인 이벤트")
-            .setColor("#F8AA2A")
-            .setDescription(info)
-            .setTimestamp();
-        embeds.push(embed);
-    }
-    return embeds;
-}

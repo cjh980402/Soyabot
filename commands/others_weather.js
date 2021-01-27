@@ -2,6 +2,23 @@ const { MessageEmbed } = require("discord.js");
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 
+function generateWeatherEmbed(local, weather) {
+    const embeds = [];
+    for (let i = 0; i < weather.length; i++) {
+        const embed = new MessageEmbed()
+            .setTitle(local)
+            .setColor("#F8AA2A")
+            .setDescription(weather[i])
+            .setTimestamp();
+
+        if (embed.description.length > 2000) {
+            embed.description = `${embed.description.substr(0, 1950)}...`;
+        }
+        embeds.push(embed);
+    }
+    return embeds;
+}
+
 module.exports = {
     usage: `${client.prefix}날씨 (지역)`,
     command: ["날씨", "ㄴㅆ"],
@@ -103,20 +120,3 @@ module.exports = {
         });
     }
 };
-
-function generateWeatherEmbed(local, weather) {
-    const embeds = [];
-    for (let i = 0; i < weather.length; i++) {
-        const embed = new MessageEmbed()
-            .setTitle(local)
-            .setColor("#F8AA2A")
-            .setDescription(weather[i])
-            .setTimestamp();
-
-        if (embed.description.length > 2000) {
-            embed.description = `${embed.description.substr(0, 1950)}...`;
-        }
-        embeds.push(embed);
-    }
-    return embeds;
-}
