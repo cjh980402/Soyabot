@@ -28,7 +28,14 @@ module.exports = {
             return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const parse = cheerio.load(await (await fetch(encodeURI(`https://maple.gg/guild/${serverEngName[args[0]]}/${args[1]}/members?sort=level`))).text());
+        const parse = cheerio.load(await (await fetch(`https://maple.gg/guild/${serverEngName[args[0]]}/${encodeURI(args[1])}/members?sort=level`)).text());
+        if (parse('div.alert.alert-warning.mt-3').length != 0) {
+            throw new Error("메이플 GG 서버가 점검 중입니다.");
+        }
+        else if (/Bad Gateway|Error/.test(parse('title').text()) || parse('div.flex-center.position-ref.full-height').length != 0) {
+            throw new Error("메이플 GG 서버에 에러가 발생했습니다.");
+        }
+
         const memberData = parse(".pt-2.bg-white.rounded.border.font-size-0.line-height-1");
         const memberCount = memberData.length;
         if (memberCount == 0) {
