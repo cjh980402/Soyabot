@@ -43,7 +43,7 @@ module.exports = {
 
             const stockEmbed = new MessageEmbed()
                 .setTitle(`**${name} (${code}) ${type}**`)
-                .setColor("#F8AA2A")
+                .setColor("#FF9899")
                 .setURL(`https://m.stock.naver.com${stockfind[3][0]}`);
             if (stockfind[2][0] == "국내지수") { // 국내 지수
                 const parse = cheerio.load(await (await fetch(`https://m.stock.naver.com/sise/siseIndex.nhn?code=${identifer}`)).text());

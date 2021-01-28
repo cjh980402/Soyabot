@@ -71,7 +71,7 @@ module.exports = {
         const attachment = new MessageAttachment(Maple.userImg(), 'scouter.png');
         const scouterEmbed = new MessageEmbed()
             .setTitle(`**${Maple.Name}님의 측정결과**`)
-            .setColor("#F8AA2A")
+            .setColor("#FF9899")
             .attachFiles(attachment)
             .setURL(Maple.GGURL)
             .setImage('attachment://scouter.png')

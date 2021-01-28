@@ -116,7 +116,7 @@ module.exports = {
         const mesoEmbed = new MessageEmbed()
             .setTitle(`**${args[0]} 서버 메소 시세**`)
             .setURL("https://talk.gamemarket.kr/maple/graph")
-            .setColor("#F8AA2A")
+            .setColor("#FF9899")
             .setImage(await mesoChart.getShortUrl())
             .addField("**메소마켓**", `${market[14][serverList[server]]}메포`)
             .addField("**무통거래**", `${direct[14][serverList[server]]}원`);

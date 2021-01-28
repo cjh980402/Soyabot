@@ -78,7 +78,7 @@ module.exports = {
             const corona1 = new MessageEmbed()
                 .setTitle(`**${updateDate}**`)
                 .setThumbnail("http://140.238.26.231:8170/image/hosting/mohw.png")
-                .setColor("#F8AA2A")
+                .setColor("#FF9899")
                 .setURL("http://ncov.mohw.go.kr")
                 .setImage(await coronaChart.getShortUrl())
                 .addField('**확진 환자**', `${countData.TotalCase} (${calcIncrease(todaySum)})`)
@@ -92,7 +92,7 @@ module.exports = {
             const corona2 = new MessageEmbed()
                 .setTitle("**지역별 확진 환자 현황**")
                 .setThumbnail("http://140.238.26.231:8170/image/hosting/mohw.png")
-                .setColor("#F8AA2A")
+                .setColor("#FF9899")
                 .setURL("http://ncov.mohw.go.kr")
                 .setDescription(`${rslt.shift()}\n\n${rslt.join("\n")}`)
                 .setTimestamp();

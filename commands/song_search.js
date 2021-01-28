@@ -28,7 +28,7 @@ module.exports = {
         const resultsEmbed = new MessageEmbed()
             .setTitle("**재생할 노래의 번호를 알려주세요.**")
             .setDescription(`${search}의 검색 결과`)
-            .setColor("#F8AA2A");
+            .setColor("#FF9899");
 
         const filter = (await ytsr.getFilters(search)).get("Type").get("Video").url;
         const results = (await ytsr(filter, { limit: 12 })).items;

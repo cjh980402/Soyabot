@@ -8,7 +8,7 @@ function generateQueueEmbed(message, queue) {
         const embed = new MessageEmbed()
             .setTitle(`**${client.user.username} 음악 대기열**`)
             .setThumbnail(message.guild.iconURL())
-            .setColor("#F8AA2A")
+            .setColor("#FF9899")
             .setDescription(`**현재 재생 중인 노래 - [${queue[0].title}](${queue[0].url})**\n\n${info}`)
             .setTimestamp();
         embeds.push(embed);

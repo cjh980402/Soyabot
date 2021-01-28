@@ -30,7 +30,7 @@ module.exports = {
             const coronaEmbed = new MessageEmbed()
                 .setTitle(`**${new Date(parse("createDt").eq(0).text()).toLocaleString()} 기준**`)
                 .setThumbnail("http://140.238.26.231:8170/image/hosting/mohw.png")
-                .setColor("#F8AA2A")
+                .setColor("#FF9899")
                 .setURL("http://ncov.mohw.go.kr")
                 .addField('**확진 환자**', calcIncrease(parse, "decideCnt"))
                 .addField('**검사 중**', calcIncrease(parse, "examCnt"))

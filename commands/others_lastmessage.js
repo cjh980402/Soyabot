@@ -31,7 +31,7 @@ module.exports = {
                 const userlistEmbed = new MessageEmbed()
                     .setTitle(`**${Sejong.addJosa(targetNick, '을')} 포함한 닉네임**`)
                     .setDescription(targetInfo.array().map((v, i) => `${i + 1}. ${v.nickname ?? v.user.username}`))
-                    .setColor("#F8AA2A")
+                    .setColor("#FF9899")
                     .setTimestamp();
                 message.channel.send(userlistEmbed);
 

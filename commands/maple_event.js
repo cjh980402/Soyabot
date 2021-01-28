@@ -11,7 +11,7 @@ function generateEventEmbed(links, names, dates) {
         const info = Array.from(curLinks.map((j, link) => `${i + j + 1}. [${curNames[j]}](https://maplestory.nexon.com${link})\n기간: ${curDates[j]}`)).join("\n\n");
         const embed = new MessageEmbed()
             .setTitle("**진행중인 이벤트**")
-            .setColor("#F8AA2A")
+            .setColor("#FF9899")
             .setDescription(info)
             .setTimestamp();
         embeds.push(embed);

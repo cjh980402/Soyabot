@@ -29,7 +29,7 @@ module.exports.startNotice = function () {
                     const noticeEmbed = new MessageEmbed()
                         .setTitle("**메이플 공지사항**")
                         .setDescription(description.trimEnd())
-                        .setColor("#F8AA2A")
+                        .setColor("#FF9899")
                         .setTimestamp();
 
                     botNotice(noticeEmbed, "notice");
@@ -70,7 +70,7 @@ module.exports.startUpdate = function () {
                     const noticeEmbed = new MessageEmbed()
                         .setTitle("**메이플 업데이트**")
                         .setDescription(description.trimEnd())
-                        .setColor("#F8AA2A")
+                        .setColor("#FF9899")
                         .setTimestamp();
 
                     botNotice(noticeEmbed, "update");
@@ -113,7 +113,7 @@ module.exports.startTest = function () {
                     const noticeEmbed = new MessageEmbed()
                         .setTitle("**메이플 테스트월드 공지**")
                         .setDescription(description.trimEnd())
-                        .setColor("#F8AA2A")
+                        .setColor("#FF9899")
                         .setTimestamp();
 
                     botNotice(noticeEmbed, "test");

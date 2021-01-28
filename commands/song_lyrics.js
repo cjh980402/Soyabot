@@ -31,7 +31,7 @@ module.exports = {
         const lyricsEmbed = new MessageEmbed()
             .setTitle(`**${queue.songs[0].title} — 가사**`)
             .setDescription(lyrics)
-            .setColor("#F8AA2A")
+            .setColor("#FF9899")
             .setTimestamp();
 
         if (lyricsEmbed.description.length >= 2000) {

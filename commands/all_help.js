@@ -6,7 +6,7 @@ function generateHelpEmbed(help) {
         const info = help.slice(i, i + 7).join("\n");
         const embed = new MessageEmbed()
             .setTitle(`**${client.user.username} 도움말**`)
-            .setColor("#F8AA2A")
+            .setColor("#FF9899")
             .setDescription(`모든 명령어 목록\n\n${info}`)
             .setTimestamp();
         embeds.push(embed);
