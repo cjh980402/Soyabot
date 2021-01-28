@@ -42,6 +42,7 @@ module.exports = {
             const identifer = stockfind[3][0].includes(stockfind[4][0]) ? stockfind[4][0] : stockfind[3][0].split("/")[4];
 
             const stockEmbed = new MessageEmbed()
+                .setTitle(`**${name} (${code}) ${type}**`)
                 .setColor("#F8AA2A")
                 .setURL(`https://m.stock.naver.com${stockfind[3][0]}`);
             if (stockfind[2][0] == "국내지수") { // 국내 지수
@@ -65,8 +66,7 @@ module.exports = {
                 await cmd(`python3 ./util/make_stock_info.py ${code} ${chartURL} "${name} (${code}) ${type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                 // 파이썬 스크립트 실행
 
-                stockEmbed.setTitle(`${name} (${code}) ${type}`)
-                    .addField(identifer == "FUT" ? '**약정수량**' : '**거래량**', amount, true)
+                stockEmbed.addField(identifer == "FUT" ? '**약정수량**' : '**거래량**', amount, true)
                     .addField('**거래대금**', totalPrice, true)
                     .addField('**개인**', trendData.eq(0).find("span").eq(0).text(), true)
                     .addField('**외국인**', trendData.eq(0).find("span").eq(1).text(), true)
@@ -98,8 +98,6 @@ module.exports = {
 
                     await cmd(`python3 ./util/make_stock_info.py ${code} ${chartURL} "${name} (${code}) ${type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                     // 파이썬 스크립트 실행
-
-                    stockEmbed.setTitle(`${name} (${code}) ${type}`);
                 }
                 else {
                     const data = (await (await fetch(`https://api.stock.naver.com/index/${identifer}/basic`)).json());
@@ -115,8 +113,6 @@ module.exports = {
 
                     await cmd(`python3 ./util/make_stock_info.py ${code} ${chartURL} "${name} (${code}) ${type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                     // 파이썬 스크립트 실행
-
-                    stockEmbed.setTitle(`${name} (${code}) ${type}`);
                 }
             }
             else if (stockfind[3][0].startsWith('/item/main')) { // 국내 주식
@@ -141,8 +137,7 @@ module.exports = {
                 await cmd(`python3 ./util/make_stock_info.py ${code} ${chartURL} "${name} (${code}) ${type}" 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                 // 파이썬 스크립트 실행
 
-                stockEmbed.setTitle(`${name} (${code}) ${type}`)
-                    .addField('**거래량**', amount, true)
+                stockEmbed.addField('**거래량**', amount, true)
                     .addField('**거래대금**', `${totalPrice}원`, true)
                     .addField('**시가총액**', `${capitalization}원`, true)
                     .addField('**외인소진율**', data.eq(7).text().trim(), true)
@@ -172,8 +167,7 @@ module.exports = {
                 await cmd(`python3 ./util/make_stock_info.py ${code} ${chartURL} "${name} (${code}) ${type}" ${data.currencyType.name} ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                 // 파이썬 스크립트 실행
 
-                stockEmbed.setTitle(`${name} (${code}) ${type}`)
-                    .addField('**거래량**', amount, true)
+                stockEmbed.addField('**거래량**', amount, true)
                     .addField('**거래대금**', `${totalPrice}${data.currencyType.name}`, true)
                     .addField('**시가총액**', `${capitalization}${data.currencyType.name}`, true)
                     .addField('**업종**', data.stockItemTotalInfos[7].value, true)

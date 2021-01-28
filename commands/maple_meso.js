@@ -65,8 +65,7 @@ module.exports = {
                         fill: false,
                         borderWidth: 6,
                         pointRadius: 6
-                    }
-                    ]
+                    }]
                 },
                 options: {
                     plugins: {
@@ -76,7 +75,7 @@ module.exports = {
                             anchor: 'end',
                             align: 'end',
                             font: {
-                                size: 30
+                                size: 23
                             }
                         }
                     },
@@ -86,7 +85,7 @@ module.exports = {
                                 lineWidth: 3
                             },
                             ticks: {
-                                fontSize: 30
+                                fontSize: 23
                             }
                         }],
                         yAxes: [{
@@ -94,24 +93,24 @@ module.exports = {
                                 lineWidth: 3
                             },
                             ticks: {
-                                fontSize: 30
+                                fontSize: 23
                             }
                         }]
                     },
                     title: {
                         display: true,
-                        fontSize: 35,
+                        fontSize: 26,
                         text: `${server} 서버 메소시세`
                     },
                     legend: {
                         labels: {
-                            fontSize: 30
+                            fontSize: 23
                         }
                     }
                 }
             })
-            .setWidth(1600)
-            .setHeight(1300)
+            .setWidth(1200)
+            .setHeight(975)
             .setBackgroundColor('white');
 
         const mesoEmbed = new MessageEmbed()

@@ -20,7 +20,7 @@ module.exports = {
         const left = song.duration - seek;
 
         const nowPlaying = new MessageEmbed()
-            .setTitle("현재 재생 중인 노래")
+            .setTitle("**현재 재생 중인 노래**")
             .setDescription(`${song.title}\n${song.url}`)
             .setColor("#F8AA2A")
             .setAuthor(client.user.username);

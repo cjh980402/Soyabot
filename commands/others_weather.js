@@ -6,7 +6,7 @@ function generateWeatherEmbed(local, weather) {
     const embeds = [];
     for (let i = 0; i < weather.length; i++) {
         const embed = new MessageEmbed()
-            .setTitle(local)
+            .setTitle(`**${local}**`)
             .setColor("#F8AA2A")
             .setDescription(weather[i])
             .setTimestamp();
@@ -37,7 +37,7 @@ module.exports = {
         }
         else {
             const locallistEmbed = new MessageEmbed()
-                .setTitle("검색된 지역")
+                .setTitle("**검색된 지역**")
                 .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`))
                 .setColor("#F8AA2A")
                 .setTimestamp();

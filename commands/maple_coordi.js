@@ -29,7 +29,7 @@ module.exports = {
         else {
             const attachment = new MessageAttachment(Maple.userImg(), 'coordi.png');
             const coordiEmbed = new MessageEmbed()
-                .setTitle(`${Maple.Name}님의 코디`)
+                .setTitle(`**${Maple.Name}님의 코디**`)
                 .setColor("#F8AA2A")
                 .attachFiles(attachment)
                 .setURL(Maple.GGURL)

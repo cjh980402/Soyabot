@@ -27,7 +27,7 @@ module.exports.startNotice = function () {
 
                 if (description.length > 0) {
                     const noticeEmbed = new MessageEmbed()
-                        .setTitle("메이플 공지사항")
+                        .setTitle("**메이플 공지사항**")
                         .setDescription(description.trimEnd())
                         .setColor("#F8AA2A")
                         .setTimestamp();
@@ -68,7 +68,7 @@ module.exports.startUpdate = function () {
 
                 if (description.length > 0) {
                     const noticeEmbed = new MessageEmbed()
-                        .setTitle("메이플 업데이트")
+                        .setTitle("**메이플 업데이트**")
                         .setDescription(description.trimEnd())
                         .setColor("#F8AA2A")
                         .setTimestamp();
@@ -111,7 +111,7 @@ module.exports.startTest = function () {
 
                 if (description.length > 0) {
                     const noticeEmbed = new MessageEmbed()
-                        .setTitle("메이플 테스트월드 공지")
+                        .setTitle("**메이플 테스트월드 공지**")
                         .setDescription(description.trimEnd())
                         .setColor("#F8AA2A")
                         .setTimestamp();

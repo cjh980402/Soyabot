@@ -28,7 +28,7 @@ module.exports = {
 
         if (parse("resultCode").text() == "00") {
             const coronaEmbed = new MessageEmbed()
-                .setTitle(`${new Date(parse("createDt").eq(0).text()).toLocaleString()} 기준`)
+                .setTitle(`**${new Date(parse("createDt").eq(0).text()).toLocaleString()} 기준**`)
                 .setThumbnail("http://140.238.26.231:8170/image/hosting/mohw.png")
                 .setColor("#F8AA2A")
                 .setURL("http://ncov.mohw.go.kr")

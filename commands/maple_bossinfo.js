@@ -17,13 +17,13 @@ module.exports = {
         const bossGrade = !bossData[bossName][args[1]] ? Object.keys(bossData[bossName])[0] : args[1];
 
         const bossEmbed = new MessageEmbed()
-            .setTitle(`${bossName}(${bossGrade})의 보상`)
+            .setTitle(`**${bossName}(${bossGrade})의 보상**`)
             .setColor("#F8AA2A")
-            .setDescription(bossData[bossName][bossGrade][0].map(v => `**${v}**`).join("\n\n"));
+            .setDescription(bossData[bossName][bossGrade][0].join("\n\n"));
         message.channel.send(bossEmbed);
 
-        bossEmbed.setTitle(`${bossName}(${bossGrade})의 정보`)
-            .setDescription(bossData[bossName][bossGrade][1].map(v => `**${v}**`).join("\n\n"));
+        bossEmbed.setTitle(`**${bossName}(${bossGrade})의 정보**`)
+            .setDescription(bossData[bossName][bossGrade][1].join("\n\n"));
 
         return message.channel.send(bossEmbed);
     }

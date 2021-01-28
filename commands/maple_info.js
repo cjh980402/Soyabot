@@ -37,7 +37,7 @@ module.exports = {
 
         const attachment = new MessageAttachment(Maple.userImg(), 'info.png');
         const infoEmbed = new MessageEmbed()
-            .setTitle(`${Maple.Name}님의 정보`)
+            .setTitle(`**${Maple.Name}님의 정보**`)
             .setColor("#F8AA2A")
             .attachFiles(attachment)
             .setURL(Maple.GGURL)

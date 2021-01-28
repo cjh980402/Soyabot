@@ -13,7 +13,7 @@ module.exports = {
         const names = eventdata.find("li dl dt a").map((i, v) => parse(v).text());
         let index = -1;
         for (let i in names) { // 목록을 돌며 썬데이가 있는지 확인
-            if (names[i] == '썬데이메이플' || names[i] == '썬데이 메이플') {
+            if (/썬데이\s*메이플/.test(names[i])) {
                 index = i;
                 break;
             }

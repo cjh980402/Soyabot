@@ -78,7 +78,7 @@ module.exports = {
         }
 
         const playlistEmbed = new MessageEmbed()
-            .setTitle(`${playlist.title.decodeHTML()}`)
+            .setTitle(`**${playlist.title.decodeHTML()}**`)
             .setDescription(videos.map((song, index) => `${index + 1}. ${song.title}`))
             .setURL(playlist.url ?? playlist.permalink_url) // 전자는 유튜브, 후자는 SoundCloud
             .setColor("#F8AA2A")
