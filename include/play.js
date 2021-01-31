@@ -1,4 +1,4 @@
-const ytdlDiscord = require("discord-ytdl-core");
+const ytdl = require("ytdl-core");
 const scdl = require("soundcloud-downloader").default;
 const { sleep, replyAdmin } = require('../admin/bot_control');
 const { STAY_TIME, DEFAULT_VOLUME, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
@@ -24,13 +24,11 @@ module.exports = {
         let stream = null, streamType = null;
         try {
             if (song.url.includes("youtube.com")) {
-                streamType = "opus";
-                stream = ytdlDiscord(song.url, {
+                streamType = "unknown";
+                stream = ytdl(song.url, {
                     filter: "audioonly",
                     quality: "highestaudio",
-                    highWaterMark: 1 << 20, // 1MB, 기본값은 512KB
-                    opusEncoded: true,
-                    encoderArgs: ['-af', 'bass=g=10,dynaudnorm=f=200']
+                    highWaterMark: 1 << 20 // 1MB, 기본값은 512KB
                 });
             }
             else if (song.url.includes("soundcloud.com")) {
@@ -58,12 +56,11 @@ module.exports = {
         }
 
         let collector = null;
-        queue.connection.play(stream, { type: streamType })
+        queue.connection.play(stream, { type: streamType, volume: queue.volume / 100 })
             .on("finish", async () => {
                 while (!collector) {
                     await sleep(500);
                 }
-                stream.destroy();
                 collector.stop();
                 if (queue.loop) {
                     queue.songs.push(queue.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣음 -> 루프 발생
@@ -77,14 +74,12 @@ module.exports = {
                 while (!collector) {
                     await sleep(500);
                 }
-                stream.destroy();
                 collector.stop();
                 queue.TextChannel.send(e.message.startsWith("input stream") ? "재생할 수 없는 동영상입니다." : "에러로그가 전송되었습니다.");
                 replyAdmin(`노래 재생 에러\nsong 객체: ${song.$}\n에러 내용: ${e}\n${e.stack ?? e.$}`);
                 queue.songs.shift();
                 module.exports.play(queue.songs[0], guild);
-            })
-            .setVolumeLogarithmic(queue.volume / 100); // 음량 설정
+            });
 
         const playingMessage = await queue.TextChannel.send(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
         try {
@@ -134,17 +129,17 @@ module.exports = {
                 }
                 else if (reaction.emoji.name == "🔇") {
                     queue.volume = queue.volume <= 0 ? (DEFAULT_VOLUME ?? 100) : 0;
-                    queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
+                    queue.connection.dispatcher.setVolume(queue.volume / 100);
                     queue.TextChannel.send(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
                 }
                 else if (reaction.emoji.name == "🔉") {
                     queue.volume = Math.max(queue.volume - 10, 0);
-                    queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
+                    queue.connection.dispatcher.setVolume(queue.volume / 100);
                     queue.TextChannel.send(`${user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
                 }
                 else if (reaction.emoji.name == "🔊") {
                     queue.volume = Math.min(queue.volume + 10, 100);
-                    queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
+                    queue.connection.dispatcher.setVolume(queue.volume / 100);
                     queue.TextChannel.send(`${user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
                 }
                 else if (reaction.emoji.name == "🔁") {

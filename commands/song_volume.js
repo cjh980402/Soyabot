@@ -29,7 +29,7 @@ module.exports = {
         }
 
         queue.volume = +args[0];
-        queue.connection.dispatcher.setVolumeLogarithmic(queue.volume / 100);
+        queue.connection.dispatcher.setVolume(queue.volume / 100);
         return message.channel.send(`변경된 음량: **${queue.volume}%**`);
     }
 };
