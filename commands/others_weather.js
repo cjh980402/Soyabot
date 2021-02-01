@@ -69,16 +69,13 @@ module.exports = {
         const rain = rainData.find('.data');
         const humidity = parse('div[data-name="humidity"] .row_graph > .data');
         const wind = parse('div[data-name="wind"] .row_graph > .data');
-        let raintemp = 0, weather2 = "날씨 예보\n";
+        let rainSpan = 1, weather2 = "날씨 예보\n";
 
         for (let i = 0, j = 0; i < weather.length - 1; i++) {
+            rainSpan--;
             weather2 += `\n${weather.eq(i).find(".time").text()}: ${weather.eq(i).attr("data-tmpr")}° (${weather.eq(i).attr("data-wetr-txt")}) | ${rainName}: ${rain.eq(j).text().trim()}${rainUnit} | 습도: ${humidity.eq(i).text().trim()}% | 풍속: ${wind.eq(i).text().trim()}㎧`;
-            if (raintemp) {
-                raintemp--;
-            }
-            else {
-                j++;
-                raintemp = +rain.eq(j).attr("colspan") - 1;
+            if (rainSpan == 0) {
+                rainSpan = +(rain.eq(++j).attr("colspan") ?? 1);
             }
         }
 

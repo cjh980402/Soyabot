@@ -10,11 +10,11 @@ module.exports = {
     channelCool: true,
     type: ["기타"],
     async execute(message, args) {
-        const [min, max] = /^한글?$/.test(args[0]) ? [0, 1120] : (/^영어?$/.test(args[0]) ? [1121, matchString.length - 1] : [0, matchString.length - 1]);
+        const [min, max] = /^한글?$/.test(args[0]) ? [0, 1119] : (/^영어?$/.test(args[0]) ? [1120, matchString.length - 1] : [0, matchString.length - 1]);
         const random = Math.floor(Math.random() * (max - min + 1)) + min; // 랜덤 선택된 문장의 인덱스
         const choice = matchString[random];
         const choiceLength = Sejong.decompose(choice, { decomposeAssembledVowel: true }).length;
-        message.channel.send(`이번 문장은 ${random <= 1120 ? "한글" : "영어"} 문장입니다.`);
+        message.channel.send(`이번 문장은 ${random <= 1119 ? "한글" : "영어"} 문장입니다.`);
 
         for (let i = 3; i > 0; i--) {
             message.channel.send(i);

@@ -5,8 +5,8 @@ const QuickChart = require('quickchart-js');
 module.exports = {
     usage: `${client.prefix}채팅지수그래프 (옵션)`,
     command: ["채팅지수그래프", "ㅊㅌㅈㅅㄱㄹㅍ", "ㅊㅌㅈㅅㄱㄿ"],
-    description: `- 전체 사용자의 채팅지수 통계를 그래프로 보여줍니다.
-- 옵션을 생략 시 전체 사용자, -봇을 넣어주면 통계에서 봇을 제외하고 보여줍니다.
+    description: `- 상위 180명의 채팅지수 통계를 그래프로 보여줍니다.
+- 옵션을 생략 시 상위 180명, -봇을 넣어주면 통계에서 봇을 제외하고 보여줍니다.
 - 채팅지수 = (공백 문자 제외 글자 개수) / 채팅량`,
     type: ["기타"],
     async execute(message, args) {
@@ -19,7 +19,7 @@ module.exports = {
         const roommessage = (await db.all(`SELECT * FROM messagedb WHERE channelsenderid LIKE ?`, [`${targetChannel.id}%`])).filter((v) => {
             const member = targetChannel.members.cache.get(v.channelsenderid.split(' ')[1]);
             return member && (args[0] != "-봇" || !member.user.bot);
-        }).sort((a, b) => ((b.lettercnt / b.messagecnt) - (a.lettercnt / a.messagecnt))); // 내림차순
+        }).sort((a, b) => ((b.lettercnt / b.messagecnt) - (a.lettercnt / a.messagecnt))).slice(0, 180); // 내림차순
         const usercolor = roommessage.map((v) => {
             const color = v.channelsenderid.split(' ')[1].hashCode() & 0xFFFFFF;
             let r = (color >> 16) & 0xFF;
