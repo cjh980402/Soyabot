@@ -51,7 +51,7 @@ module.exports = {
             return queue.TextChannel.send(`오류 발생: ${e.message ?? e}`);
         }
 
-        if (!queue.connection.rawListeners("disconnect").some((v) => v.name == "deleteQueue")) { // 리스너 중복 체크
+        if (queue.connection.rawListeners("disconnect").every((v) => v.name != "deleteQueue")) { // 리스너 중복 체크
             queue.connection.on("disconnect", deleteQueue); // 연결 끊기면 자동으로 큐를 삭제하는 리스너 등록
         }
 

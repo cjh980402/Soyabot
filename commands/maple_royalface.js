@@ -40,8 +40,8 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const gender = args.shift()[0];
-        const goalface = args.join(' ');
-        if (!proper[gender] || !proper[gender][goalface]) {
+        const goalface = Object.keys(proper[gender] ?? {}).find((v) => v.replace(/\s+/, '').includes(args.join('')));
+        if (!goalface) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         // gender은 성별, goalface는 목표 성형 이름
