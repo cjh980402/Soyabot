@@ -66,7 +66,7 @@ function Pool(startlev, endlev) {
     for (let lev = startlev; lev < endlev; cnt++) {
         const now = Math.floor(Math.random() * 100 + 1);
         let sum = 0, i = 0;
-        for (i in probTable[lev - 141]) {
+        for (i = 0; i < 10; i++) {
             sum += probTable[lev - 141][i];
             if (now <= sum) {
                 break;
@@ -94,7 +94,7 @@ module.exports = {
             if (isNaN(startlev) || startlev < 141 || startlev > 199) {
                 return message.channel.send('141 ~ 199 범위의 시작 레벨을 입력해주세요.');
             }
-            for (i = 0; i < 10; i++) {
+            for (let i = 0; i < 10; i++) {
                 rslt += `\n${i + 1} 레벨업 확률: ${probTable[startlev - 141][i]}%`;
             }
             return message.channel.send(rslt);
