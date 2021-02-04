@@ -64,25 +64,24 @@ function Pool(startlev, endlev) {
     let rslt = "", cnt = 0;
 
     for (let lev = startlev; lev < endlev; cnt++) {
-        let seed = Math.random() * 100;
-        let probability = 0, i = 0;
-        for (i = 0; i < 10; i++) {
-            probability += probTable[lev - 141][i];
-            if (seed <= probability) {
+        const now = Math.floor(Math.random() * 100 + 1);
+        let sum = 0, i = 0;
+        for (i in probTable[lev - 141]) {
+            sum += probTable[lev - 141][i];
+            if (now <= sum) {
                 break;
             }
         }
-        rslt += `${lev}레벨 → ${lev + 1 + i}레벨 (${i + 1}레벨 상승)\n`;
-        lev += i + 1;
+        rslt += `${lev}레벨 → ${lev += i + 1}레벨 (${i + 1}레벨 상승)\n`;
     }
-    return `${rslt}총 ${cnt}회의 풀장을 진행`;
+    return `${rslt}총 ${cnt}개의 익성비를 소모`;
 }
 
 module.exports = {
-    usage: `${client.prefix}풀장 (시작 레벨) (목표 레벨)`,
-    command: ["풀장", "ㅍㅈ"],
-    description: `- 시작 레벨 ~ 목표 레벨의 풀장 시뮬레이션을 수행합니다.
-- 참고. ${client.prefix}풀장 확률 (시작 레벨)`,
+    usage: `${client.prefix}익성비 (시작 레벨) (목표 레벨)`,
+    command: ["익성비", "ㅇㅅㅂ", "풀장", "ㅍㅈ"],
+    description: `- 시작 레벨 ~ 목표 레벨의 익성비 시뮬레이션을 수행합니다.
+- 참고. ${client.prefix}익성비 확률 (시작 레벨)`,
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 2) {

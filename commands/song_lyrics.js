@@ -2,34 +2,21 @@ const { MessageEmbed } = require("discord.js");
 const lyricsFinder = require("lyrics-finder");
 
 module.exports = {
-    usage: `${client.prefix}lyrics`,
+    usage: `${client.prefix}lyrics (노래 제목)`,
     command: ["lyrics", "ly"],
-    description: "- 현재 재생 중인 노래의 가사를 출력합니다.",
+    description: "- 입력한 노래의 가사를 출력합니다. 노래 제목을 생략 시에는 현재 재생 중인 노래의 가사를 출력합니다.",
     type: ["음악"],
-    async execute(message) {
-        if (!message.guild) {
-            return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
+    async execute(message, args) {
+        const queue = client.queue.get(message.guild?.id);
+        const title = args.join(" ") || queue?.songs[0].title;
+        if (!title) {
+            return message.channel.send("검색할 노래가 없습니다.");
         }
 
-        const queue = client.queue.get(message.guild.id);
-        if (!queue?.connection.dispatcher) {
-            return message.channel.send("재생 중인 노래가 없습니다.");
-        }
-
-        let lyrics = null;
-
-        try {
-            lyrics = await lyricsFinder(queue.songs[0].title, "");
-            if (!lyrics) {
-                lyrics = `${queue.songs[0].title}의 가사를 찾지 못했습니다.`;
-            }
-        }
-        catch (error) {
-            lyrics = `${queue.songs[0].title}의 가사를 찾지 못했습니다.`;
-        }
+        const lyrics = await lyricsFinder(title, "") || "검색된 가사가 없습니다.";
 
         const lyricsEmbed = new MessageEmbed()
-            .setTitle(`**${queue.songs[0].title} — 가사**`)
+            .setTitle(`**${title} — 가사**`)
             .setDescription(lyrics)
             .setColor("#FF9899")
             .setTimestamp();
