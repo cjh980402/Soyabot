@@ -50,7 +50,6 @@ module.exports = {
         let playlist = null, videos = [];
 
         if (scVideo) {
-            message.channel.send('⌛ 재생 목록을 가져오는 중...');
             playlist = await scdl.getSetInfo(`https://soundcloud.com/${scVideo}`, SOUNDCLOUD_CLIENT_ID);
             videos = playlist.tracks.slice(0, MAX_PLAYLIST_SIZE ?? 10).map((track) => ({
                 title: track.title,

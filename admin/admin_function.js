@@ -1,6 +1,7 @@
 const Discord = require("discord.js"); // 디버깅용
 const util = require('util');
-const exec = util.promisify(require('child_process').exec);
+const cp = require('child_process');
+const exec = util.promisify(cp.exec);
 const { decodeHTML } = require("entities");
 const { ADMIN_ID } = require("../soyabot_config.json");
 const { botNotice, replyRoomID } = require('./bot_control.js');
@@ -10,7 +11,7 @@ module.exports.adminChat = async function (message) {
     if (message.content.startsWith(">")) { // 노드 코드 실행 후 출력
         const funcBody = message.content.substr(1).trim().split('\n');
         funcBody.push(`return ${funcBody.pop()};`); // 함수의 마지막 줄 내용은 자동으로 반환
-        message.channel.send(String(await eval(`(async () => {${funcBody.join('\n')}})()`)) || "empty string", { split: true }); // async 함수의 리턴값이므로 await까지 해준다.
+        message.channel.send(String(await eval(`(async () => {\n${funcBody.join('\n')}\n})()`)) || "empty string", { split: true }); // async 함수의 리턴값이므로 await까지 해준다.
     }
     else if (message.content.startsWith(")")) { // 콘솔 명령 실행 후 출력
         message.channel.send(await module.exports.cmd(message.content.substr(1).trim(), true) || "empty string", { split: true });

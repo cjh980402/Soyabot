@@ -25,11 +25,7 @@ module.exports = {
         try {
             if (song.url.includes("youtube.com")) {
                 streamType = "unknown";
-                stream = ytdl(song.url, {
-                    filter: "audioonly",
-                    quality: "highestaudio",
-                    highWaterMark: 1 << 20 // 1MB, 기본값은 512KB
-                });
+                stream = ytdl(song.url, { filter: "audioonly", quality: "highestaudio" });
             }
             else if (song.url.includes("soundcloud.com")) {
                 try {
