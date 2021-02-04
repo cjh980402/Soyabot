@@ -3,7 +3,7 @@ const lyricsFinder = require("lyrics-finder");
 
 module.exports = {
     usage: `${client.prefix}lyrics (노래 제목)`,
-    command: ["lyrics", "ly"],
+    command: ["lyrics", "ly", "가사"],
     description: "- 입력한 노래의 가사를 출력합니다. 노래 제목을 생략 시에는 현재 재생 중인 노래의 가사를 출력합니다.",
     type: ["음악"],
     async execute(message, args) {
