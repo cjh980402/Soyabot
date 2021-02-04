@@ -16,7 +16,7 @@ module.exports = {
         const lyrics = await lyricsFinder(title, "") || "검색된 가사가 없습니다.";
 
         const lyricsEmbed = new MessageEmbed()
-            .setTitle(`**${title} — 가사**`)
+            .setTitle(`**${title} - 가사**`)
             .setDescription(lyrics)
             .setColor("#FF9899")
             .setTimestamp();
