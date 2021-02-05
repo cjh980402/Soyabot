@@ -99,12 +99,15 @@ async function farm_read(monster) { // 농장 목록
         return data.error;
     }
     else {
-        let rslt = `${monster} 보유 농장 목록${"\u200b".repeat(500)}\n`;
-        data.farm_list.forEach((v) => {
-            if (/^[가-힣]{2,6}$/.test(v[0])) {
-                rslt += `\n${v[1] ?? "무한유지"}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})`
-            }
-        });
+        let rslt = `${monster} 보유 농장 목록\n`;
+        if (data.farm_list.length) {
+            data.farm_list.forEach((v) => {
+                rslt += `\n${v[1] ?? "무한유지"}: ${v[0]} (👍: ${v[3]}, 👎: ${v[4]})`;
+            });
+        }
+        else {
+            rslt += "\n등록된 농장 정보가 없습니다.";
+        }
         return rslt;
     }
 }
@@ -124,15 +127,14 @@ async function farm_info(user) { // 농장 정보
         return data.error;
     }
     else {
-        let rslt = `${user} 농장의 정보`;
+        let rslt = `${user} 농장의 정보\n`;
         if (data.monster_list.length) {
-            rslt += `${"\u200b".repeat(500)}\n`;
             data.monster_list.forEach((v) => {
-                rslt += `\n${v[1] ?? "무한유지"}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})`
+                rslt += `\n${v[1] ?? "무한유지"}: ${v[0]} (👍: ${v[3]}, 👎: ${v[4]})`
             });
         }
         else {
-            rslt += "\n\n등록된 몬스터 정보가 없습니다.";
+            rslt += "\n등록된 몬스터 정보가 없습니다.";
         }
         return rslt;
     }
@@ -146,8 +148,7 @@ module.exports = {
 - ${client.prefix}농장 조합식 (몬스터 이름)
 - ${client.prefix}농장 정보 (농장 이름)
 - ${client.prefix}농장 추가 (끝나는 날짜) (농장 이름) (몬스터 이름)
-- 참고 1. 끝나는 날짜의 형식은 YYMMDD 형식입니다.
-- 참고 2. 무한유지를 하는 몬스터는 끝나는 날짜에 "무한유지"라고 적어주세요.`,
+- 참고. 끝나는 날짜의 형식은 YYMMDD 형식입니다. (무한유지를 하는 몬스터는 "무한유지")`,
     type: ["메이플"],
     async execute(message, args) {
         if (args.length < 2) {

@@ -8,24 +8,15 @@ module.exports = {
     type: ["메이플"],
     async execute(message) {
         const parse = cheerio.load(await (await fetch("https://maplestory.nexon.com/News/Event")).text());
-        const eventdata = parse('.event_all_banner');
-        const links = eventdata.find("li dl dt a").map((i, v) => parse(v).attr("href"));
-        const names = eventdata.find("li dl dt a").map((i, v) => parse(v).text());
-        let index = -1;
-        for (let i in names) { // 목록을 돌며 썬데이가 있는지 확인
-            if (/썬데이\s*메이플/.test(names[i])) {
-                index = i;
-                break;
-            }
-        }
-        if (index == -1) {
+        const eventdata = parse(".event_all_banner li dl dt a");
+        const sunday = eventdata.filter((i, v) => /^썬데이\s*메이플$/.test(parse(v).text())).attr("href");
+        if (!sunday) {
             return message.channel.send('썬데이 메이플 공지가 아직 없습니다.');
         }
-        else {
-            const imgLink = cheerio.load(await (await fetch(`https://maplestory.nexon.com${links[index]}`)).text())("img[alt='썬데이 메이플!']").attr("src");
-            return message.channel.send({
-                files: [imgLink]
-            });
-        }
+
+        const imgLink = cheerio.load(await (await fetch(`https://maplestory.nexon.com${sunday}`)).text())("img[alt='썬데이 메이플!']").attr("src");
+        return message.channel.send({
+            files: [imgLink]
+        });
     }
 };

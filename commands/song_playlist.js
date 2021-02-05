@@ -22,7 +22,7 @@ module.exports = {
         if (!channel || (serverQueue && channel != message.guild.me.voice.channel)) {
             return message.reply(`같은 음성 채널에 참가해주세요! (${client.user})`);
         }
-        if (!args.length) {
+        if (args.length < 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 

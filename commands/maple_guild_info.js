@@ -21,7 +21,7 @@ const serverEngName = {
 module.exports = {
     usage: `${client.prefix}길드 (서버 이름) (길드 이름)`,
     command: ["길드", "ㄱㄷ"],
-    description: '- 입력한 내용에 해당하는 길드의 길드원 정보를 보여줍니다.',
+    description: '- 입력한 내용에 해당하는 길드의 길드원 정보(직위, 직업, 레벨, 유니온, 무릉)를 보여줍니다.',
     type: ["메이플"],
     async execute(message, args) {
         if (args.length != 2 || !serverEngName[args[0]]) {
@@ -42,7 +42,7 @@ module.exports = {
             return message.channel.send("존재하지 않는 길드입니다.");
         }
 
-        message.channel.send("정보 가져오는 중...");
+        message.channel.send("정보 가져오는 중...\n(최대 약 15분)");
         let rslt = `${args[0]} ${args[1]} 길드 (${memberCount}명)`;
         for (let i = 0; i < memberCount; i++) {
             const name = memberData.eq(i).find(".mb-2 a").eq(1).text();

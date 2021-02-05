@@ -55,13 +55,13 @@ module.exports = {
     type: ["기타"],
     async execute(message, args) {
         if (args[0] == '목록' || args[0] == 'ㅁㄹ') {
-            return message.channel.send(`<지원하는 언어 종류>\n${Object.values(langList).map(v => v[0]).join(", ")}`);
+            return message.channel.send(`<지원하는 언어 종류>\n${Object.values(langList).map((v) => v[0]).join(", ")}`);
         }
         if (args.length < 2) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const langCode = findLangCode(args[0][0], args[0][1]);
-        if (langCode == null) {
+        if (!langCode) {
             return message.channel.send(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 "${this.usage}"입니다.\n언어의 목록은 ${client.prefix}번역 목록을 확인해주세요.`);
         }
 

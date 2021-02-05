@@ -46,16 +46,16 @@ module.exports = {
 
         let murungfl, time, min, sec;
 
-        const data = Maple.Murung();
-        if (data == null) {
+        const murung = Maple.Murung();
+        if (!murung) {
             murungfl = 0;
             min = 0;
             sec = 0;
             time = 900;
         }
         else {
-            murungfl = +/\d+/.exec(data[1]);
-            [min, sec] = data[2].match(/\d+/g).map((v) => +v);
+            murungfl = +/\d+/.exec(murung[1]);
+            [min, sec] = murung[2].match(/\d+/g).map((v) => +v);
             time = min * 60 + sec;
         }
 
