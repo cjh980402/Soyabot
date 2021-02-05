@@ -102,7 +102,7 @@ async function farm_read(monster) { // 농장 목록
         let rslt = `${monster} 보유 농장 목록\n`;
         if (data.farm_list.length) {
             data.farm_list.forEach((v) => {
-                rslt += `\n${v[1] ?? "무한유지"}: ${v[0]} (👍: ${v[3]}, 👎: ${v[4]})`;
+                rslt += `\n${v[1] ?? "무한유지"}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})`; // 좋아요, 싫어요 값이 0일 때 null로 들어옴
             });
         }
         else {
@@ -130,7 +130,7 @@ async function farm_info(user) { // 농장 정보
         let rslt = `${user} 농장의 정보\n`;
         if (data.monster_list.length) {
             data.monster_list.forEach((v) => {
-                rslt += `\n${v[1] ?? "무한유지"}: ${v[0]} (👍: ${v[3]}, 👎: ${v[4]})`
+                rslt += `\n${v[1] ?? "무한유지"}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})`; // 좋아요, 싫어요 값이 0일 때 null로 들어옴
             });
         }
         else {
