@@ -28,7 +28,6 @@
     "ffmpeg-static": "^4.2.7",
     "form-data": "^3.0.0",
     "iconv-lite": "^0.6.2",
-    "lyrics-finder": "^21.7.0",
     "node-fetch": "^2.6.1",
     "node-lame": "^1.2.2",
     "quickchart-js": "^1.0.6",

@@ -71,7 +71,7 @@ module.exports.initClient = async function () {
 
 Object.defineProperty(String.prototype, "decodeHTML", {
     value: function () {
-        return decodeHTML(this).replace(/<br>/g, "\n");
+        return decodeHTML(this).replace(/<br>/gi, "\n");
     }
 });
 

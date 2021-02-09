@@ -1,5 +1,6 @@
 const { MessageEmbed } = require("discord.js");
-const lyricsFinder = require("lyrics-finder");
+const fetch = require('node-fetch');
+const cheerio = require('cheerio');
 
 module.exports = {
     usage: `${client.prefix}lyrics (노래 제목)`,
@@ -8,18 +9,30 @@ module.exports = {
     type: ["음악"],
     async execute(message, args) {
         const queue = client.queue.get(message.guild?.id);
-        const title = args.join(" ") || queue?.songs[0].title;
-        if (!title) {
+        const search = args.join(" ") || queue?.songs[0].title;
+        if (!search) {
             return message.channel.send("검색할 노래가 없습니다.");
         }
 
-        const lyrics = await lyricsFinder(title, "") || "검색된 가사가 없습니다.";
-
         const lyricsEmbed = new MessageEmbed()
-            .setTitle(`**${title} - 가사**`)
-            .setDescription(lyrics)
             .setColor("#FF9899")
             .setTimestamp();
+        const search = args.join(" ");
+        const data = cheerio.load(await (await fetch(`https://www.melon.com/search/lyric/index.htm?q=${encodeURI(search)}`)).text())(".list_lyric .cntt_lyric .btn.btn_icon_detail"); // length가 검색 결과 수
+
+        if (data.length > 0) {
+            const songId = data.eq(0).attr("data-song-no");
+            const parse = cheerio.load(await (await fetch(`https://www.melon.com/song/detail.htm?songId=${songId}`)).text());
+            const title = parse(".song_name").contents().last().text().trim();
+            const artist = parse(".artist_name").eq(0).text();
+            const lyrics = parse(".lyric").html().replace(/<!--.*-->/g, "").decodeHTML().trim();
+            lyricsEmbed.setTitle(`**"${title} - ${artist}"의 가사**`)
+                .setDescription(lyrics);
+        }
+        else {
+            lyricsEmbed.setTitle(`**"${search}"의 가사**`)
+                .setDescription("검색된 가사가 없습니다.");
+        }
 
         if (lyricsEmbed.description.length >= 2000) {
             lyricsEmbed.description = `${lyricsEmbed.description.substr(0, 1990)}...`;
