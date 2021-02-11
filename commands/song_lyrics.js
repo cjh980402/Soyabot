@@ -17,7 +17,6 @@ module.exports = {
         const lyricsEmbed = new MessageEmbed()
             .setColor("#FF9899")
             .setTimestamp();
-        const search = args.join(" ");
         const data = cheerio.load(await (await fetch(`https://www.melon.com/search/lyric/index.htm?q=${encodeURI(search)}`)).text())(".list_lyric .cntt_lyric .btn.btn_icon_detail"); // length가 검색 결과 수
 
         if (data.length > 0) {
@@ -25,9 +24,9 @@ module.exports = {
             const parse = cheerio.load(await (await fetch(`https://www.melon.com/song/detail.htm?songId=${songId}`)).text());
             const title = parse(".song_name").contents().last().text().trim();
             const artist = parse(".artist_name").eq(0).text();
-            const lyrics = parse(".lyric").html().replace(/<!--.*-->/g, "").decodeHTML().trim();
+            const lyrics = parse(".lyric").html()?.replace(/<!--.*-->/g, "").decodeHTML().trim();
             lyricsEmbed.setTitle(`**"${title} - ${artist}"의 가사**`)
-                .setDescription(lyrics);
+                .setDescription(lyrics ?? "등록된 가사가 없거나 연령 제한이 있는 콘텐츠입니다.");
         }
         else {
             lyricsEmbed.setTitle(`**"${search}"의 가사**`)
