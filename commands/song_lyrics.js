@@ -17,16 +17,18 @@ module.exports = {
         const lyricsEmbed = new MessageEmbed()
             .setColor("#FF9899")
             .setTimestamp();
-        const data = cheerio.load(await (await fetch(`https://www.melon.com/search/lyric/index.htm?q=${encodeURI(search)}`)).text())(".list_lyric .cntt_lyric .btn.btn_icon_detail"); // length가 검색 결과 수
+        const songData = cheerio.load(await (await fetch(`https://www.melon.com/search/song/index.htm?q=${encodeURI(search)}`)).text())("input[name='input_check']"); // length가 검색 결과 수
+        const lyricData = cheerio.load(await (await fetch(`https://www.melon.com/search/lyric/index.htm?q=${encodeURI(search)}`)).text())(".list_lyric .cntt_lyric .btn.btn_icon_detail"); // length가 검색 결과 수
+        const songId = songData.eq(0).attr("value") ?? lyricData.eq(0).attr("data-song-no");
 
-        if (data.length > 0) {
-            const songId = data.eq(0).attr("data-song-no");
+        if (songId) {
             const parse = cheerio.load(await (await fetch(`https://www.melon.com/song/detail.htm?songId=${songId}`)).text());
             const title = parse(".song_name").contents().last().text().trim();
+            const is19 = parse(".song_name .bullet_icons.age_19.large").length;
             const artist = parse(".artist_name").eq(0).text();
             const lyrics = parse(".lyric").html()?.replace(/<!--.*-->/g, "").decodeHTML().trim();
             lyricsEmbed.setTitle(`**"${title} - ${artist}"의 가사**`)
-                .setDescription(lyrics ?? "등록된 가사가 없거나 연령 제한이 있는 콘텐츠입니다.");
+                .setDescription(lyrics ?? `${is19 ? "연령 제한이 있는" : "등록된 가사가 없는"} 콘텐츠입니다.`);
         }
         else {
             lyricsEmbed.setTitle(`**"${search}"의 가사**`)
