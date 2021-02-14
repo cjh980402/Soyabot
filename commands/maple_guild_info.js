@@ -42,14 +42,14 @@ module.exports = {
             return message.channel.send("존재하지 않는 길드입니다.");
         }
 
-        message.channel.send("정보 가져오는 중...\n(최대 약 15분)");
+        message.channel.send("정보 가져오는 중...");
         let rslt = `${args[0]} ${args[1]} 길드 (${memberCount}명)`;
+        const memberList = memberData.map((i, v) => new mapleModule(parse(v).find(".mb-2 a").eq(1).text()));
+        const updateRslt = await Promise.all(memberList.map(async (i, v) => (await v.isLatest() || await v.updateGG())));
         for (let i = 0; i < memberCount; i++) {
-            const name = memberData.eq(i).find(".mb-2 a").eq(1).text();
-            const Maple = new mapleModule(name);
-            rslt += (await Maple.isLatest() ? "\n\n[갱신 성공] " : (await Maple.updateGG(5000) ? "\n\n[갱신 성공] " : "\n\n[갱신 실패] "));
-            rslt += `${memberData.eq(i).find("header > span").text() || "길드원"}: ${name}, ${Maple.Job()} / Lv.${Maple.Level()}, 유니온: ${Maple.Union()?.[0].toLocaleString() ?? "-"}, 무릉: ${Maple.Murung()?.[1] ?? "-"} (${Maple.lastActiveDay()})`;
+            rslt += `${updateRslt[i] ? "\n\n[갱신 성공]" : "\n\n[갱신 실패]"} ${memberData.eq(i).find("header > span").text() || "길드원"}: ${memberList[i].Name}, ${memberList[i].Job()} / Lv.${memberList[i].Level()}, 유니온: ${memberList[i].Union()?.[0].toLocaleString() ?? "-"}, 무릉: ${memberList[i].Murung()?.[1] ?? "-"} (${memberList[i].lastActiveDay()})`;
         }
+
         return message.channel.send(rslt, { split: true });
     }
 };
