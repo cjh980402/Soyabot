@@ -60,10 +60,10 @@ module.exports = {
         else {
             if (!playlistID) {
                 const filter = (await ytsr.getFilters(search)).get("Type").get("Playlist").url;
-                playlistID = (await ytsr(filter, { limit: 1 })).items[0]?.playlistID;
+                playlistID = filter && (await ytsr(filter, { limit: 1 })).items[0]?.playlistID;
                 // playlistID = (await youtube.searchPlaylists(search, 1, { part: "snippet" }))[0]?.id;
                 if (!playlistID) {
-                    return message.reply("재생목록을 찾지 못했습니다 :(");
+                    return message.reply("검색 내용에 해당하는 재생목록을 찾지 못했습니다.");
                 }
             }
             playlist = await youtube.getPlaylistByID(playlistID, { part: "snippet" });

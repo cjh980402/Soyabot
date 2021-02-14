@@ -13,7 +13,7 @@ async function linkJSON(link) {
     return (await fetch(link)).json();
 }
 
-class Maple {
+class MapleUser {
     // 생성자
     constructor(name) {
         this.name = name;
@@ -280,4 +280,4 @@ class Maple {
     }
 }
 
-module.exports = Maple;
+module.exports = MapleUser;

@@ -1,6 +1,6 @@
 {
   "name": "soyabot",
-  "version": "4.4.0",
+  "version": "4.5.0",
   "description": "MapleStory, Music Discord Bot",
   "main": "index.js",
   "author": "9804cjh@naver.com",
@@ -37,7 +37,7 @@
     "sqlite3": "^5.0.1",
     "string-progressbar": "^1.0.3",
     "ytdl-core": "^4.4.5",
-    "ytsr": "^3.2.4"
+    "ytsr": "^3.3.0"
   },
   "scripts": {
     "start": "forever start -o ./log/out.log -e ./log/err.log index.js"
