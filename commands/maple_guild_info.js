@@ -61,7 +61,7 @@ module.exports = {
             throw new Error("메이플 GG 서버에 에러가 발생했습니다.");
         }
 
-        const memberData = guildInfo[1](".pt-2.bg-white.rounded.border.font-size-0.line-height-1");
+        const memberData = parse(".pt-2.bg-white.rounded.border.font-size-0.line-height-1");
         const memberCount = memberData.length;
         if (memberCount == 0) {
             return message.channel.send("존재하지 않는 길드입니다.");
