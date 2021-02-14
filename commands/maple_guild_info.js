@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 const mapleModule = require("../util/maple_parsing");
+const { sleep } = require('../admin/bot_control');
 const serverEngName = {
     "스카니아": "scania",
     "베라": "bera",
@@ -18,6 +19,28 @@ const serverEngName = {
     "리부트2": "reboot2"
 };
 
+async function updateGuild(guildURL) {
+    const start = Date.now();
+    while (1) {
+        try {
+            const rslt = await (await fetch(`${guildURL}/sync`)).json();
+            if (rslt.done) {
+                return true; // 갱신성공
+            }
+            else if (rslt.error) {
+                return false; // 갱신실패
+            }
+        }
+        catch (e) {
+            return false; // 갱신실패
+        }
+        if (Date.now() - start >= 20000) {
+            return false; // 20초가 지나도 갱신 못했으면 갱신실패 판정
+        }
+        await sleep(100);
+    }
+}
+
 module.exports = {
     usage: `${client.prefix}길드 (서버 이름) (길드 이름)`,
     command: ["길드", "ㄱㄷ"],
@@ -28,7 +51,9 @@ module.exports = {
             return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const parse = cheerio.load(await (await fetch(`https://maple.gg/guild/${serverEngName[args[0]]}/${encodeURI(args[1])}/members?sort=level`)).text());
+        const guildURL = `https://maple.gg/guild/${serverEngName[args[0]]}/${encodeURI(args[1])}`;
+        await updateGuild(guildURL);
+        const parse = cheerio.load(await (await fetch(`${guildURL}/members?sort=level`)).text());
         if (parse('div.alert.alert-warning.mt-3').length != 0) {
             throw new Error("메이플 GG 서버가 점검 중입니다.");
         }

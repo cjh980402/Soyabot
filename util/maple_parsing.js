@@ -123,12 +123,12 @@ class Maple {
             return true;
         }
     }
-    async updateGG(timeLimit = 20000) { // timeLimit의 단위는 ms
+    async updateGG() {
         const start = Date.now();
         while (1) {
             try {
                 const rslt = await linkJSON(`${this.ggURL}/sync`);
-                if (rslt.error == false && rslt.done == true) {
+                if (!rslt.error && rslt.done) {
                     this.ggData = await linkParse(this.ggURL);
                     return true; // 갱신성공
                 }
@@ -136,8 +136,8 @@ class Maple {
             catch (e) {
                 return false; // 갱신실패
             }
-            if (Date.now() - start >= timeLimit) {
-                return false; // timeLimit이 지나도 갱신 못했으면 갱신실패 판정
+            if (Date.now() - start >= 20000) {
+                return false; // 20초가 지나도 갱신 못했으면 갱신실패 판정
             }
             await sleep(100);
         }
