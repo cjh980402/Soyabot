@@ -14,7 +14,7 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        args = args.map(v => +v);
+        args = args.map((v) => +v);
         const starforce = {
             130: [6, 7, 7, 8, 9],
             140: [7, 8, 8, 9, 10, 11, 12, 30, 31, 32],
@@ -40,4 +40,4 @@ module.exports = {
 
         return message.channel.send(`${args[2]}제 ${args[3]}성 강화\n작으로 상승한 공: ${args[0] - args[1]}`);
     }
-};};
+};
