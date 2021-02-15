@@ -11,7 +11,7 @@ module.exports = {
 
         const igList = args.map((v) => +v);
         const monster = igList.shift();
-        if (isNaN(monster)) {
+        if (isNaN(monster) || monster < 0) {
             return message.channel.send('입력한 값이 잘못되었습니다.');
         }
 
