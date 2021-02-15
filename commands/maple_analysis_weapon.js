@@ -40,4 +40,4 @@ module.exports = {
 
         return message.channel.send(`${args[2]}제 ${args[3]}성 강화\n작으로 상승한 공: ${args[0] - args[1]}`);
     }
-};
+};};

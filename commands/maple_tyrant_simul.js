@@ -12,6 +12,6 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const result = new superialitem();
-        return message.channel.send(result.doingStarforce(args.map(v => +v)));
+        return message.channel.send(result.doingStarforce(args.map((v) => +v)));
     }
 };
