@@ -22,7 +22,7 @@ module.exports = {
     description: '- 해당 서버의 메소 시세를 알려줍니다. 서버 이름은 정확히 입력해야 합니다.',
     type: ["메이플"],
     async execute(message, args) {
-        if (args.length != 1 || !Object.keys(serverList).includes(args[0])) {
+        if (args.length != 1 || !serverList[args[0]]) {
             return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const response = await fetch("https://commapi.gamemarket.kr/comm/graph", {
