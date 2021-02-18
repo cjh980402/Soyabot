@@ -8,7 +8,7 @@ function generateEventEmbed(links, names, dates) {
         const curLinks = links.slice(i, i + 5);
         const curNames = names.slice(i, i + 5);
         const curDates = dates.slice(i, i + 5);
-        const info = Array.from(curLinks.map((j, link) => `${i + j + 1}. [${curNames[j]}](https://maplestory.nexon.com${link})\n기간: ${curDates[j]}`)).join("\n\n");
+        const info = curLinks.map((j, link) => `${i + j + 1}. [${curNames[j]}](https://maplestory.nexon.com${link})\n기간: ${curDates[j]}`).get().join("\n\n");
         const embed = new MessageEmbed()
             .setTitle("**진행중인 이벤트**")
             .setColor("#FF9899")
@@ -26,10 +26,10 @@ module.exports = {
     type: ["메이플"],
     async execute(message) {
         const parse = cheerio.load(await (await fetch("https://maplestory.nexon.com/News/Event")).text());
-        const eventdata = parse('.event_all_banner');
-        const links = eventdata.find("li dl dt a").map((i, v) => parse(v).attr("href"));
-        const names = eventdata.find("li dl dt a").map((i, v) => parse(v).text());
-        const dates = eventdata.find("li dl dd a").map((i, v) => parse(v).text());
+        const eventdata = parse('.event_all_banner li dl');
+        const links = eventdata.find("dt a").map((i, v) => parse(v).attr("href"));
+        const names = eventdata.find("dt a").map((i, v) => parse(v).text());
+        const dates = eventdata.find("dd a").map((i, v) => parse(v).text());
 
         if (links.length == 0) {
             return message.channel.send('현재 진행중인 이벤트가 없습니다.')
