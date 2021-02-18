@@ -40,10 +40,12 @@ module.exports = {
         if (args.length > 2 || !proper[args[0]]) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
+
+        const category = args[0];
         if (args[1] == '확률' || args[1] == 'ㅎㄹ') {
-            let rslt = `<루나크리스탈 ${args[0]} 확률>`;
-            for (let key in proper[args[0]]) {
-                rslt += `\n${key}: ${proper[args[0]][key] / 100}%`;
+            let rslt = `<루나크리스탈 ${category} 확률>`;
+            for (let key in proper[category]) {
+                rslt += `\n${key}: ${proper[category][key] / 100}%`;
             }
             return message.channel.send(rslt);
         }
@@ -53,29 +55,26 @@ module.exports = {
             return message.channel.send('1 ~ 20000 범위의 숫자만 입력가능합니다.');
         }
 
-        // args[0]은 루나크리스탈 종류, count는 루나크리스탈 횟수
+        // category은 루나크리스탈 종류, count는 루나크리스탈 횟수
         // random은 0이상 1미만
         const list = {}; // 횟수 담을 객체
-        let propsum = 0; // 확률표의 확률값의 합
-        for (let key in proper[args[0]]) {
-            list[key] = 0;
-            propsum += proper[args[0]][key];
-        }
+        const propsum = Object.values(proper[category]).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
+
         for (let i = 0; i < count; i++) {
             const now = Math.floor(Math.random() * propsum + 1);
             let sum = 0;
-            for (let key in proper[args[0]]) {
-                sum += proper[args[0]][key];
+            for (let key in proper[category]) {
+                sum += proper[category][key];
                 if (now <= sum) {
-                    list[key]++;
+                    list[key] = (list[key] ?? 0) + 1;
                     break;
                 }
             }
         }
 
-        let rslt = `루나크리스탈 ${args[0]} ${count}회 결과\n`;
-        for (let key in list) {
-            if (list[key] != 0) {
+        let rslt = `루나크리스탈 ${category} ${count}회 결과\n`;
+        for (let key in proper) {
+            if (list[key]) {
                 rslt += `\n${key}: ${list[key]}회`;
             }
         }

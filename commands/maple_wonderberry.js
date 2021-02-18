@@ -36,26 +36,23 @@ module.exports = {
         // count는 원더베리 횟수
         // random은 0이상 1미만
         const list = {}; // 횟수 담을 객체
-        let propsum = 0; // 확률표의 확률값의 합
-        for (let key in proper) {
-            list[key] = 0;
-            propsum += proper[key];
-        }
+        const propsum = Object.values(proper[gender]).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
+
         for (let i = 0; i < count; i++) {
             const now = Math.floor(Math.random() * propsum + 1);
             let sum = 0;
             for (let key in proper) {
                 sum += proper[key];
                 if (now <= sum) {
-                    list[key]++;
+                    list[key] = (list[key] ?? 0) + 1;
                     break;
                 }
             }
         }
 
         let rslt = `원더베리 ${count}회 결과\n`;
-        for (let key in list) {
-            if (list[key] != 0) {
+        for (let key in proper) {
+            if (list[key]) {
                 rslt += `\n${key}: ${list[key]}회`;
             }
         }
