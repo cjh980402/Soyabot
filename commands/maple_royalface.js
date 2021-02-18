@@ -1,19 +1,19 @@
 const proper = {
     "남": {
-        "차차 얼굴": 17,
-        "차분한 헤헤 얼굴": 17,
-        "은구슬 얼굴": 17,
-        "안개비 얼굴": 17,
-        "미래적인 얼굴": 17,
-        "코분홍 얼굴": 17
+        "살구 얼굴": 17,
+        "창백한 뭐래 얼굴": 17,
+        "아기사슴 얼굴": 17,
+        "헤헤 얼굴": 17,
+        "도도한 얼굴": 17,
+        "슈가 얼굴": 17
     },
     "여": {
-        "차차 얼굴": 17,
-        "샤이닝 얼굴": 17,
-        "은구슬 얼굴": 17,
-        "안개비 얼굴": 17,
-        "미래적인 얼굴": 17,
-        "코분홍 얼굴": 17
+        "살구 얼굴": 17,
+        "창백한 뭐래 얼굴": 17,
+        "아기사슴 얼굴": 17,
+        "헤헤 얼굴": 17,
+        "소심한 얼굴": 17,
+        "슈가 얼굴": 17
     }
 }
 
@@ -48,10 +48,8 @@ module.exports = {
         // random은 0이상 1미만
         const list = []; // 진행 과정 담을 배열
         let rslt = `로얄 성형 (목표: ${goalface}) 결과\n\n`;
-        let propsum = 0; // 확률표의 확률값의 합
-        for (let key in proper[gender]) {
-            propsum += proper[gender][key];
-        }
+        const propsum = Object.values(proper[gender]).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
+
         for (let nowface = '', proptemp = 0; nowface != goalface;) {
             const now = Math.floor(Math.random() * (propsum - proptemp) + 1);
             let sum = 0;

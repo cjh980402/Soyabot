@@ -1,19 +1,19 @@
 const proper = {
     "남": {
-        "산구름 헤어": 10,
-        "포근곱슬 헤어": 15,
-        "미로 헤어": 15,
-        "소이 헤어": 20,
-        "나이트 헤어": 20,
-        "허리케인 헤어": 20
+        "산호 헤어": 10,
+        "크림라떼 헤어": 15,
+        "스윗송 헤어": 15,
+        "순수 헤어": 20,
+        "아이돌스타": 20,
+        "소솜 헤어": 20
     },
     "여": {
-        "하리화 헤어": 10,
-        "꼬마야 헤어": 15,
-        "델핀 헤어": 15,
-        "미나 헤어": 20,
-        "단아 헤어": 20,
-        "뮤즈 헤어": 20
+        "뮬리 헤어": 10,
+        "블링 소프라노 헤어": 15,
+        "솜솜이 헤어": 15,
+        "아이비 헤어": 20,
+        "보브 세란 헤어": 20,
+        "다솜 헤어": 20
     }
 }
 
@@ -48,10 +48,8 @@ module.exports = {
         // random은 0이상 1미만
         const list = []; // 진행 과정 담을 배열
         let rslt = `로얄 헤어 (목표: ${goalhair}) 결과\n\n`;
-        let propsum = 0; // 확률표의 확률값의 합
-        for (let key in proper[gender]) {
-            propsum += proper[gender][key];
-        }
+        const propsum = Object.values(proper[gender]).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
+
         for (let nowhair = '', proptemp = 0; nowhair != goalhair;) {
             const now = Math.floor(Math.random() * (propsum - proptemp) + 1);
             let sum = 0;
