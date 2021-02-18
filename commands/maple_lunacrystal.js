@@ -55,7 +55,7 @@ module.exports = {
             return message.channel.send('1 ~ 20000 범위의 숫자만 입력가능합니다.');
         }
 
-        // category은 루나크리스탈 종류, count는 루나크리스탈 횟수
+        // category는 루나크리스탈 종류, count는 루나크리스탈 횟수
         // random은 0이상 1미만
         const list = {}; // 횟수 담을 객체
         const propsum = Object.values(proper[category]).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
