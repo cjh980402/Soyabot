@@ -73,7 +73,7 @@ module.exports = {
         }
 
         let rslt = `루나크리스탈 ${category} ${count}회 결과\n`;
-        for (let key in proper) {
+        for (let key in proper[category]) {
             if (list[key]) {
                 rslt += `\n${key}: ${list[key]}회`;
             }
