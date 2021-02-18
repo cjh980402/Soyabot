@@ -114,7 +114,7 @@ module.exports = {
             .setBackgroundColor('white');
 
         const mesoEmbed = new MessageEmbed()
-            .setTitle(`**${args[0]} 서버 메소 시세**`)
+            .setTitle(`**${server} 서버 메소 시세**`)
             .setURL("https://talk.gamemarket.kr/maple/graph")
             .setColor("#FF9899")
             .setImage(await mesoChart.getShortUrl())

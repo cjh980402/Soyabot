@@ -13,10 +13,10 @@ module.exports = {
 
         const startlev = +args[0], endlev = +args[1];
         if (isNaN(startlev) || startlev < 1 || startlev > 20) {
-            return chat.reply('1 ~ 20 범위의 시작 레벨을 입력해주세요.');
+            return message.channel.send('1 ~ 20 범위의 시작 레벨을 입력해주세요.');
         }
         if (isNaN(endlev) || endlev < startlev || endlev > 20) {
-            return chat.reply('시작레벨 ~ 20 범위의 목표 레벨을 입력해주세요.');
+            return message.channel.send('시작레벨 ~ 20 범위의 목표 레벨을 입력해주세요.');
         }
 
         let total_req1 = 0, total_req2 = 0, total_meso1 = 0, total_meso2 = 0, total_meso3 = 0;

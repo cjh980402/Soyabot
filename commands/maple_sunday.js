@@ -11,7 +11,7 @@ module.exports = {
         const eventdata = parse('.event_all_banner li dl');
         const sunday = eventdata.find("dt a").filter((i, v) => /^썬데이\s*메이플$/.test(parse(v).text())).attr("href");
         if (!sunday) {
-            return chat.reply('썬데이 메이플 공지가 아직 없습니다.');
+            return message.channel.send('썬데이 메이플 공지가 아직 없습니다.');
         }
 
         const sundayTitle = `${eventdata.find("dd a").filter((i, v) => parse(v).attr("href") == sunday).text().substr(0, 14)}의 썬데이 메이플`;
