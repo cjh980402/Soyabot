@@ -150,7 +150,7 @@ module.exports = {
         // count는 골드애플 횟수
         // random은 0이상 1미만
         const list = {}; // 횟수 담을 객체
-        const propsum = Object.values(proper[gender]).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
+        const propsum = Object.values(proper).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
 
         for (let i = 0; i < count; i++) {
             const now = Math.floor(Math.random() * propsum + 1);
