@@ -33,8 +33,8 @@ client.on("ready", async () => {
     client.user.setActivity(`${PREFIX}help and ${PREFIX}play`, { type: "LISTENING" });
     replyAdmin(`소야봇이 작동 중입니다.\n${server.address().port}번 포트에서 http 서버가 작동 중입니다.`);
 });
+client.on("error", (e) => console.error(`에러 내용: ${e}\n${e.stack ?? e.$}`));
 client.on("warn", console.log);
-client.on("error", console.error);
 
 client.on("message", async (message) => { // 각 메시지에 반응, 디스코드는 봇의 채팅도 이 이벤트에 들어옴
     let commandName;
