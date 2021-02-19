@@ -1,3 +1,6 @@
+const probTable = [[95, 0], [90, 0], [85, 0], [85, 0], [80, 0], [75, 0], [70, 0], [65, 0], [60, 0], [55, 0], [50, 0], [45, 0], [40, 1], [35, 2], [30, 2], [30, 3], [30, 3], [30, 3], [30, 3], [30, 3], [30, 10], [30, 10], [3, 20], [2, 30], [1, 40]];
+// 확률을 백분율 수치로 저장       
+
 function meso(star, lev) {
     let temp = 0;
     if (star >= 15) {
@@ -83,13 +86,11 @@ class NormalItem {
         return `${this.star}성까지 강화완료\n소비 메소: ${this.sum.toLocaleString()}메소\n찬스 타임: ${this.chance.toLocaleString()}회\n실패 횟수: ${this.fail.toLocaleString()}회\n파괴 횟수: ${this.dest.toLocaleString()}회`;
     }
     starforce() {
-        const pmprob = [[95, 0], [90, 0], [85, 0], [85, 0], [80, 0], [75, 0], [70, 0], [65, 0], [60, 0], [55, 0], [50, 0], [45, 0], [40, 1], [35, 2], [30, 2], [30, 3], [30, 3], [30, 3], [30, 3], [30, 3], [30, 10], [30, 10], [3, 20], [2, 30], [1, 40]];
-        // 확률을 백분율 수치로 저장
         let startNodest = 100; // 파괴방지 구간
         let afterSaleRate = 1; // 할인 후 가격 비율
 
-        const sucprob = (this.strcat ? 1045 : 1000) * pmprob[this.star][0]; // 백분율 -> 십만분율 변환, 스타캐치는 곱적용 4.5%
-        let destprob = (100000 - sucprob) * (1000 * pmprob[this.star][1]) / 100000; // 파괴확률 = 조건부 확률, 백분율 -> 십만분율 변환
+        const sucprob = (this.strcat ? 1050 : 1000) * probTable[this.star][0]; // 백분율 -> 십만분율 변환, 스타캐치는 곱적용 5%
+        let destprob = (100000 - sucprob) * (1000 * probTable[this.star][1]) / 100000; // 파괴확률 = 조건부 확률, 백분율 -> 십만분율 변환
 
         if (this.nodest == 1) {
             startNodest = 12;

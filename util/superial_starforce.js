@@ -1,3 +1,6 @@
+const probTable = [[50, 0], [50, 0], [45, 0], [40, 0], [40, 0], [40, 3], [40, 5], [40, 7], [40, 7], [37, 15], [35, 20], [35, 25], [3, 50], [2, 50], [1, 50]];
+// 확률을 백분율 수치로 저장    
+
 function meso(lev) {
     return Math.round(Math.pow(lev, 3.56) / 100) * 100; // 십의자리에서 반올림
 }
@@ -49,11 +52,8 @@ class SuperialItem {
         return `${this.star}성까지 강화완료\n소비 메소: ${this.sum.toLocaleString()}메소\n찬스 타임: ${this.chance.toLocaleString()}회\n실패 횟수: ${this.fail.toLocaleString()}회\n파괴 횟수: ${this.dest.toLocaleString()}회`;
     }
     starforce() {
-        const pmprob = [[50, 0], [50, 0], [45, 0], [40, 0], [40, 0], [40, 3], [40, 5], [40, 7], [40, 7], [37, 15], [35, 20], [35, 25], [3, 50], [2, 50], [1, 50]];
-        // 확률을 백분율 수치로 저장
-
-        const sucprob = (this.strcat ? 1045 : 1000) * pmprob[this.star][0]; // 백분율 -> 십만분율 변환, 스타캐치는 곱적용 4.5%
-        const destprob = (100000 - sucprob) * (1000 * pmprob[this.star][1]) / 100000; // 파괴확률 = 조건부 확률, 백분율 -> 십만분율 변환
+        const sucprob = (this.strcat ? 1045 : 1000) * probTable[this.star][0]; // 백분율 -> 십만분율 변환, 스타캐치는 곱적용 4.5%
+        const destprob = (100000 - sucprob) * (1000 * probTable[this.star][1]) / 100000; // 파괴확률 = 조건부 확률, 백분율 -> 십만분율 변환
 
         this.sum += meso(this.lev); // 항상 고정비용
 

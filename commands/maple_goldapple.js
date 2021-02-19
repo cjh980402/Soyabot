@@ -1,4 +1,4 @@
-const proper = {
+const probTable = {
     "위대한 루시드의 소울": 114,
     "위대한 매그너스의 소울": 41402,
     "위대한 반반의 소울": 62103,
@@ -137,8 +137,8 @@ module.exports = {
         }
         if (args[0] == '확률' || args[0] == 'ㅎㄹ') {
             let rslt = `<골드애플 확률>`;
-            for (let key in proper)
-                rslt += `\n${key}: ${proper[key] / 100000}%`;
+            for (let key in probTable)
+                rslt += `\n${key}: ${probTable[key] / 100000}%`;
             return message.channel.send(rslt, { split: true });
         }
 
@@ -150,13 +150,13 @@ module.exports = {
         // count는 골드애플 횟수
         // random은 0이상 1미만
         const list = {}; // 횟수 담을 객체
-        const propsum = Object.values(proper).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
+        const probSum = Object.values(probTable).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
 
         for (let i = 0; i < count; i++) {
-            const now = Math.floor(Math.random() * propsum + 1);
+            const now = Math.floor(Math.random() * probSum + 1);
             let sum = 0;
-            for (let key in proper) {
-                sum += proper[key];
+            for (let key in probTable) {
+                sum += probTable[key];
                 if (now <= sum) {
                     list[key] = (list[key] ?? 0) + 1;
                     break;
@@ -165,7 +165,7 @@ module.exports = {
         }
 
         let rslt = `골드애플 ${count}회 결과\n`;
-        for (let key in proper) {
+        for (let key in probTable) {
             if (list[key]) {
                 rslt += `\n${key}: ${list[key]}회`;
             }
