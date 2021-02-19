@@ -52,7 +52,7 @@ class SuperialItem {
         return `${this.star}성까지 강화완료\n소비 메소: ${this.sum.toLocaleString()}메소\n찬스 타임: ${this.chance.toLocaleString()}회\n실패 횟수: ${this.fail.toLocaleString()}회\n파괴 횟수: ${this.dest.toLocaleString()}회`;
     }
     starforce() {
-        const sucprob = (this.strcat ? 1045 : 1000) * probTable[this.star][0]; // 백분율 -> 십만분율 변환, 스타캐치는 곱적용 4.5%
+        const sucprob = (this.strcat ? 1050 : 1000) * probTable[this.star][0]; // 백분율 -> 십만분율 변환, 스타캐치는 곱적용 5%
         const destprob = (100000 - sucprob) * (1000 * probTable[this.star][1]) / 100000; // 파괴확률 = 조건부 확률, 백분율 -> 십만분율 변환
 
         this.sum += meso(this.lev); // 항상 고정비용
