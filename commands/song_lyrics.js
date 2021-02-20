@@ -25,7 +25,7 @@ module.exports = {
             const parse = cheerio.load(await (await fetch(`https://www.melon.com/song/detail.htm?songId=${songId}`)).text());
             const title = parse(".song_name").contents().last().text().trim();
             const is19 = parse(".song_name .bullet_icons.age_19.large").length;
-            const artist = parse(".artist_name").eq(0).text();
+            const artist = parse(".artist").eq(0).text().trim();
             const lyrics = parse(".lyric").html()?.replace(/<!--.*-->/g, "").decodeHTML().trim();
             lyricsEmbed.setTitle(`**"${title} - ${artist}"의 가사**`)
                 .setDescription(lyrics ?? `${is19 ? "연령 제한이 있는" : "등록된 가사가 없는"} 콘텐츠입니다.`);
