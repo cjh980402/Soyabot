@@ -34,7 +34,7 @@ module.exports = {
         if (args[3] < 0 || args[3] > 25) {
             return message.channel.send('강화 단계가 올바르지 않습니다.');
         }
-        for (i = args[3]; i >= 1; i--) {
+        for (let i = args[3]; i >= 1; i--) {
             args[0] -= ((i >= 16) ? starforce[args[2]][i - 16] : Math.floor((args[0] + 50) / 51)); // 스타포스 상승 수치를 없애는 과정
         }
 
