@@ -15,13 +15,13 @@ module.exports.botNotice = async function (data, type = null) {
 
 module.exports.replyRoomID = function (roomID, str) {
     const target = client.channels.cache.get(roomID); // 메세지를 보내고 싶은 방 객체 획득
-    target?.send(str, { split: true });
+    target?.send(str);
     return target;
 }
 
 module.exports.replyAdmin = function (str) {
     const admin = client.users.cache.get(ADMIN_ID);
-    admin?.send(str, { split: true }); // 관리자에게 DM으로 보냄
+    admin?.send(str); // 관리자에게 DM으로 보냄
     return admin;
 }
 

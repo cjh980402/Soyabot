@@ -83,8 +83,8 @@ module.exports = {
             .setColor("#FF9899")
             .setTimestamp();
 
-        if (playlistEmbed.description.length > 2000) {
-            playlistEmbed.description = `${playlistEmbed.description.substr(0, 1950)}...\n\n재생목록이 글자수 제한보다 깁니다...`;
+        if (playlistEmbed.description.length > 2048) {
+            playlistEmbed.description = `${playlistEmbed.description.substr(0, 2045)}...`;
         }
 
         if (serverQueue) {

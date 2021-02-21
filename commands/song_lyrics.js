@@ -35,8 +35,8 @@ module.exports = {
                 .setDescription("검색된 가사가 없습니다.");
         }
 
-        if (lyricsEmbed.description.length >= 2000) {
-            lyricsEmbed.description = `${lyricsEmbed.description.substr(0, 1990)}...`;
+        if (lyricsEmbed.description.length > 2048) {
+            lyricsEmbed.description = `${lyricsEmbed.description.substr(0, 2045)}...`;
         }
         return message.channel.send(lyricsEmbed);
     }

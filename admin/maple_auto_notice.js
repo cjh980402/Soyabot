@@ -12,7 +12,7 @@ module.exports.startNotice = function () {
     if (!noticeTimer) {
         noticeTimer = setInterval(async () => {
             try {
-                const data = cheerio.load(await (await fetch("https://maplestory.nexon.com/News/Notice")).text())('li > p');
+                const data = cheerio.load(await (await fetch("https://maplestory.nexon.com/News/Notice")).text())('.news_board li > p');
 
                 let description = "";
                 for (let i = 0; i < data.length; i++) {
@@ -36,7 +36,7 @@ module.exports.startNotice = function () {
                 }
             }
             catch (e) {
-                replyAdmin(`자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack}`);
+                replyAdmin(`자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack ?? e.$}`);
             }
         }, 120000);
     }
@@ -53,7 +53,7 @@ module.exports.startUpdate = function () {
     if (!updateTimer) {
         updateTimer = setInterval(async () => {
             try {
-                const data = cheerio.load(await (await fetch("https://maplestory.nexon.com/News/Update")).text())('li > p');
+                const data = cheerio.load(await (await fetch("https://maplestory.nexon.com/News/Update")).text())('.update_board li > p');
 
                 let description = "";
                 for (let i = 0; i < data.length; i++) {
@@ -77,7 +77,7 @@ module.exports.startUpdate = function () {
                 }
             }
             catch (e) {
-                replyAdmin(`자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack}`);
+                replyAdmin(`자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack ?? e.$}`);
             }
         }, 120000);
     }
@@ -94,7 +94,7 @@ module.exports.startTest = function () {
     if (!testTimer) {
         testTimer = setInterval(async () => {
             try {
-                const data = cheerio.load(await (await fetch("https://maplestory.nexon.com/Testworld/Totalnotice")).text())('li > p');
+                const data = cheerio.load(await (await fetch("https://maplestory.nexon.com/Testworld/Totalnotice")).text())('.news_board li > p');
 
                 let description = "";
                 for (let i = 0; i < data.length; i++) {
@@ -120,7 +120,7 @@ module.exports.startTest = function () {
                 }
             }
             catch (e) {
-                replyAdmin(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack}`);
+                replyAdmin(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack ?? e.$}`);
             }
         }, 120000);
     }
@@ -148,7 +148,7 @@ module.exports.startTestPatch = function () {
                 }
             }
             catch (e) {
-                replyAdmin(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack}`);
+                replyAdmin(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack ?? e.$}`);
             }
         }, 120000);
     }

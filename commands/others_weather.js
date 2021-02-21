@@ -11,8 +11,8 @@ function generateWeatherEmbed(local, weather) {
             .setDescription(weather[i])
             .setTimestamp();
 
-        if (embed.description.length > 2000) {
-            embed.description = `${embed.description.substr(0, 1950)}...`;
+        if (embed.description.length > 2048) {
+            embed.description = `${embed.description.substr(0, 2045)}...`;
         }
         embeds.push(embed);
     }

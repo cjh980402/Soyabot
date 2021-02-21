@@ -2,6 +2,7 @@ const Discord = require("discord.js"); // 디버깅용
 const util = require('util');
 const cp = require('child_process');
 const exec = util.promisify(cp.exec);
+const fetch = require("node-fetch");
 const { decodeHTML } = require("entities");
 const { ADMIN_ID } = require("../soyabot_config.json");
 const { botNotice, replyRoomID } = require('./bot_control.js');
@@ -9,12 +10,14 @@ const { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, s
 
 module.exports.adminChat = async function (message) {
     if (message.content.startsWith(">")) { // 노드 코드 실행 후 출력
-        const funcBody = message.content.substr(1).trim().split('\n');
+        const funcBody = (await message.fullContent).substr(1).trim().split('\n');
         funcBody.push(`return ${funcBody.pop()};`); // 함수의 마지막 줄 내용은 자동으로 반환
-        message.channel.send(String(await eval(`(async () => {\n${funcBody.join('\n')}\n})()`)) || "empty string", { split: true }); // async 함수의 리턴값이므로 await까지 해준다.
+        await message.channel.send(String(await eval(`(async () => {\n${funcBody.join('\n')}\n})()`)) || "empty message", { split: true });
+        // eval의 내부가 async 함수의 리턴값이므로 await까지 해준다. send도 await하는 이유는 split 에러 대응
     }
     else if (message.content.startsWith(")")) { // 콘솔 명령 실행 후 출력
-        message.channel.send(await module.exports.cmd(message.content.substr(1).trim(), true) || "empty string", { split: true });
+        await message.channel.send(await module.exports.cmd(message.content.substr(1).trim(), true) || "empty message", { split: true });
+        // send를 await하는 이유는 split 에러 대응
     }
     else if (message.content.startsWith("*")) { // 원하는 방에 봇으로 채팅 전송
         const room = message.content.split('*')[1];
@@ -68,6 +71,17 @@ module.exports.initClient = async function () {
     startTestPatch(); // 테섭 패치 감지 기능
     startFlag(); // 플래그 5분 전 알림
 }
+
+Object.defineProperty(Discord.Message.prototype, "fullContent", {
+    get: async function () {
+        if (this.type == "DEFAULT" && this.attachments.first()?.name == "message.txt") {
+            return (await fetch(this.attachments.first().url)).text();
+        }
+        else {
+            return this.content;
+        }
+    }
+});
 
 Object.defineProperty(String.prototype, "decodeHTML", {
     value: function () {
