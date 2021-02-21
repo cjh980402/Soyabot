@@ -9,7 +9,7 @@ const { botNotice, replyRoomID } = require('./bot_control.js');
 const { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, startTestPatch, stopTestPatch, startFlag, stopFlag } = require('./maple_auto_notice');
 
 module.exports.adminChat = async function (message) {
-    if (message.content.startsWith(">")) { // 노드 코드 실행 후 출력
+    if ((await message.fullContent).startsWith(">")) { // 노드 코드 실행 후 출력
         const funcBody = (await message.fullContent).substr(1).trim().split('\n');
         funcBody.push(`return ${funcBody.pop()};`); // 함수의 마지막 줄 내용은 자동으로 반환
         await message.channel.send(String(await eval(`(async () => {\n${funcBody.join('\n')}\n})()`)) || "empty message", { split: true });
