@@ -31,9 +31,9 @@ module.exports = {
             .setColor("#FF9899");
 
         const filter = (await ytsr.getFilters(search)).get("Type").get("Video").url;
-        const results = (await ytsr(filter, { limit: 12 })).items;
-        // const results = await youtube.searchVideos(search, 12);
-        if (results.length == 0) {
+        const results = filter && (await ytsr(filter, { limit: 10 })).items;
+        // const results = await youtube.searchVideos(search, 10);
+        if (!results?.length) {
             return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");
         }
 

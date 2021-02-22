@@ -37,7 +37,7 @@ module.exports = {
         }
         else {
             const locallistEmbed = new MessageEmbed()
-                .setTitle("**검색된 지역**")
+                .setTitle("**검색할 지역의 번호를 알려주세요.**")
                 .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`))
                 .setColor("#FF9899")
                 .setTimestamp();
