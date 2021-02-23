@@ -8,7 +8,7 @@ const ytsr = require('ytsr');
 module.exports = {
     usage: `${client.prefix}search (영상 제목)`,
     command: ["search", "s"],
-    description: "- 재생할 노래를 검색하고 선택합니다.",
+    description: "- 재생할 노래를 검색하고 선택합니다. (,로 구분하여 여러 노래 선택 가능)",
     type: ["음악"],
     async execute(message, args) {
         if (!message.guild) {
