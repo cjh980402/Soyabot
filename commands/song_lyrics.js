@@ -32,7 +32,7 @@ module.exports = {
         }
         else {
             lyricsEmbed.setTitle(`**"${search}"의 가사**`)
-                .setDescription("검색된 가사가 없습니다.");
+                .setDescription("검색된 노래가 없습니다.");
         }
 
         if (lyricsEmbed.description.length > 2048) {
