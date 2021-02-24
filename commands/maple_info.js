@@ -31,8 +31,8 @@ module.exports = {
         const char_job = level[4]; // 직업
         const char_guild = level[3]; // 길드
         const char_popul = level[2]; // 인기도
-        const char_murung = Maple.Murung(); // 1 : 층수, 2 : 클리어 시간
-        const char_seed = Maple.Seed(); // 1 : 층수, 2 : 클리어 시간
+        const char_murung = Maple.Murung(); // 1: 층수, 2: 클리어 시간
+        const char_seed = Maple.Seed(); // 1: 층수, 2: 클리어 시간
         const char_rank = Maple.Rank(); // 종합, 월드, 직업(월드), 직업(전체)
 
         const attachment = new MessageAttachment(Maple.userImg(), 'info.png');

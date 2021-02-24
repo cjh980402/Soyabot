@@ -90,12 +90,12 @@ module.exports = {
             }
             catch (e) { } // 시간 초과돼도 에러 throw 안하게 catch를 해줌
             if (i == die) {
-                return message.channel.send(`:gun: ${gameUser[i % gameUser.length]}님이 사망하셨습니다......\n한 판 더 하실?`);
+                return message.channel.send(`🔫 ${gameUser[i % gameUser.length]}님이 사망하셨습니다......\n한 판 더 하실?`);
             }
             else {
                 const nextUser = message.guild.member(gameUser[(i + 1) % gameUser.length]);
                 if (nextUser) {
-                    await message.channel.send(`:gun: 철컥 (${bullet - (i + 1)}발 남음)`);
+                    await message.channel.send(`🔫 철컥 (${bullet - (i + 1)}발 남음)`);
                     await message.channel.send(`다음 차례는 ${gameUser[(i + 1) % gameUser.length]}님입니다.`);
                 }
                 else {

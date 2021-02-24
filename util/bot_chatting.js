@@ -16,7 +16,7 @@ module.exports = function (message) {
     }
     else if (message.content.includes(client.user.username)) {
         if (/바\s*보|멍\s*청\s*이/.test(message.content)) {
-            return message.channel.send(':frowning2:');
+            return message.channel.send('🤔');
         }
         const cmd = Math.floor(Math.random() * 5);
         if (cmd == 0) {
@@ -64,13 +64,13 @@ function recommendFood() {
 
 function choiceVS(msg) {
     const choice = msg.split(/vs/i);
-    const nospace = choice.slice();
+    const nospace = [];
     for (let i in choice) {
         choice[i] = choice[i].trim();
-        nospace[i] = nospace[i].replace(/[\s\{\}\[\]\/?.,;:|\)*~`!^\-<>@\$%&\\\=\(\'\"]/g, '').replace('조아', '좋아').replace('시러', '싫어');
         if (choice[i] == '') {
             return '빈 항목이 존재합니다.';
         }
+        nospace.push(choice[i].replace(/[\s`'"~.,;:*+-=!?^$@%&{}()<>/|[\]\\]/g, '').replace('조아', '좋아').replace('시러', '싫어'));
     }
     for (let i = choice.length - 1, ind; i >= choice.length / 2; i--) {
         ind = nospace.indexOf(nospace[i]);
