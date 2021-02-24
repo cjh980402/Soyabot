@@ -2,7 +2,7 @@ const cheerio = require('cheerio');
 const fetch = require('node-fetch');
 
 function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function linkParse(link) {
@@ -28,9 +28,11 @@ class MapleUser {
     get Name() {
         return this.name;
     }
+
     get GGURL() {
         return this.ggURL;
     }
+
     get HomeURL() {
         return this.homeLevelURL;
     }
@@ -73,6 +75,7 @@ class MapleUser {
 
         return [lev, exper, popul, guild, job];
     }
+
     async homeUnion() {
         const len = this.name.length + (this.name.match(/[가-힣]/g)?.length ?? 0);
         this.homeUnionData = await linkParse(this.homeUnionURL);
@@ -106,6 +109,7 @@ class MapleUser {
 
         return [lev, stat, coin, job];
     }
+
     async isLatest() {
         this.ggData = await linkParse(this.ggURL); // this.ggData는 함수
         if (this.ggData('div.alert.alert-warning.mt-3').length != 0) {
@@ -123,6 +127,7 @@ class MapleUser {
             return true;
         }
     }
+
     async updateGG() {
         const start = Date.now();
         while (1) {
@@ -142,6 +147,7 @@ class MapleUser {
             await sleep(100);
         }
     }
+
     Murung() {
         const murung = this.ggData(".col-lg-3.col-6.mt-3.px-1").eq(0); // murung은 cheerio객체
         const nomurung = murung.find(".user-summary-no-data").length; // 0이면 기록 있고 1이면 기록 없음
@@ -156,6 +162,7 @@ class MapleUser {
 
         return [murungjob, murungfl, murungtime, murungdate];
     }
+
     Seed() {
         const seed = this.ggData(".col-lg-3.col-6.mt-3.px-1").eq(1);
         const noseed = seed.find(".user-summary-no-data").length; // 0이면 기록 있고 1이면 기록 없음
@@ -170,6 +177,7 @@ class MapleUser {
 
         return [seedjob, seedfl, seedtime, seeddate];
     }
+
     Union() {
         const union = this.ggData(".col-lg-3.col-6.mt-3.px-1").eq(2);
         const nounion = union.find(".user-summary-no-data").length; // 0이면 기록 있고 1이면 기록 없음
@@ -184,6 +192,7 @@ class MapleUser {
 
         return [lev, stat, coin, grade];
     }
+
     Achieve() {
         const achieve = this.ggData(".col-lg-3.col-6.mt-3.px-1").eq(3);
         const noachieve = achieve.find(".user-summary-no-data").length; // 0이면 기록 있고 1이면 기록 없음
@@ -198,6 +207,7 @@ class MapleUser {
 
         return [grade, score, worldrank, allrank];
     }
+
     Rank() {
         const rank = this.ggData('.col-lg-2.col-md-4.col-sm-4.col-6.mt-3 > span');
         if (rank.length == 0) {
@@ -210,6 +220,7 @@ class MapleUser {
         }
         return rslt;
     }
+
     Coordi() {
         const coordi = this.ggData(".character-coord__item-name");
         if (coordi.length == 0) {
@@ -222,6 +233,7 @@ class MapleUser {
         }
         return rslt;
     }
+
     LevelHistory() {
         const data = this.ggData('body > script').filter((i, v) => /\[\[.+\]\]/.test(this.ggData(v).html()));
         if (data.length == 0) {
@@ -230,6 +242,7 @@ class MapleUser {
 
         return JSON.parse(/\[\[.+\]\]/.exec(data.eq(0).html())); // 0번째 배열 = 날짜, 1번째 배열 = 레벨 (각각 0번 인덱스는 제외 필요)
     }
+
     MurungHistory() {
         const data = this.ggData('.text-center.px-2.font-size-14.align-middle');
         if (data.length == 0) {
@@ -243,6 +256,7 @@ class MapleUser {
         }
         return [date, murung];
     }
+
     Collection() {
         const collection = this.ggData("section.box.mt-3 .avatar-collection-item.col-lg-2.col-md-4.col-6");
         if (collection.length == 0) {
@@ -256,25 +270,32 @@ class MapleUser {
         }
         return [coordi, date];
     }
+
     Level() {
         return this.ggData(".user-summary-item").eq(0).text().substr(3);
     }
+
     Job() {
         return this.ggData(".user-summary-item").eq(1).text();
     }
+
     Popularity() {
         return this.ggData(".user-summary-item > span").eq(1).text();
     }
+
     userImg(full = true) {
         const img = this.ggData("meta[property='og:image']").attr("content");
         return full ? img?.replace("Character/", "Character/180/") : img;
     }
+
     serverImg() {
         return this.ggData("div.col-lg-8 > h3 > img.align-middle").attr("src");
     }
+
     serverName() {
         return this.ggData("div.col-lg-8 > h3 > img.align-middle").attr("alt");
     }
+
     lastActiveDay() {
         return this.ggData(".col-6.col-md-8.col-lg-6 .font-size-12.text-white").text().replace(/(\d+)\s+/, "$1") || "마지막 활동일: 알 수 없음";
     }
