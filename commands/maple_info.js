@@ -42,7 +42,7 @@ module.exports = {
             .attachFiles(attachment)
             .setURL(Maple.GGURL)
             .setImage('attachment://info.png')
-            .addField('**레벨**', char_lv < 300 ? `${char_lv} (${char_percent}%)` : char_lv, true)
+            .addField('**레벨**', (char_lv < 300) ? `${char_lv} (${char_percent}%)` : char_lv, true)
             .addField('**직업**', char_job, true)
             .addField('**길드**', char_guild || '-', true)
             .addField('**인기도**', char_popul.toLocaleString(), true)

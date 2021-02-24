@@ -4,12 +4,12 @@ const fetch = require('node-fetch');
 const QuickChart = require('quickchart-js');
 
 function calcIncrease(data) {
-    return `${data >= 0 ? `⬆️ ${data.toLocaleString()}` : `⬇️ ${(-data).toLocaleString()}`}`;
+    return `${(data >= 0) ? `⬆️ ${data.toLocaleString()}` : `⬇️ ${(-data).toLocaleString()}`}`;
 }
 
 function colorData(cityList) {
     const colorList = ["rgb(216, 75, 75)", "rgb(232, 115, 115)", "rgb(238, 145, 145)", "rgb(244, 200, 200)", "rgb(227, 227, 227)"];
-    return cityList.map((v) => (v == "기타" ? "rgb(227, 227, 227)" : colorList.shift()));
+    return cityList.map((v) => ((v == "기타") ? "rgb(227, 227, 227)" : colorList.shift()));
 }
 
 module.exports = {

@@ -17,7 +17,7 @@ module.exports = {
 
         let sum = 1;
         for (let ig of igList) {
-            sum = (ig >= 0 ? sum * (1 - ig / 100) : sum / (1 + ig / 100)); // sum은 실제로 무시하고 남은 양의 비율
+            sum = ((ig >= 0) ? sum * (1 - ig / 100) : sum / (1 + ig / 100)); // sum은 실제로 무시하고 남은 양의 비율
             if (sum > 1 || ig <= -100 || ig > 100 || isNaN(ig)) {
                 return message.channel.send('입력한 값이 잘못되었습니다.');
             }

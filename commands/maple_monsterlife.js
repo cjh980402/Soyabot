@@ -29,14 +29,14 @@ async function farm_sex(monster) { // 몬스터 조합식
         let rslt = "";
         data.forEach((v) => {
             if (v.type == "child") { // 결과가 monster인 경우
-                rslt += `${v.child}(${v.c_grade}): ${v.c_effect}${v.c_effect_value == "+0" ? "" : ` ${v.c_effect_value}`}\n`;
+                rslt += `${v.child}(${v.c_grade}): ${v.c_effect}${(v.c_effect_value == "+0") ? "" : ` ${v.c_effect_value}`}\n`;
                 rslt += `↳${v.mom} (${v.m_species} ${v.m_grade})\n`;
                 rslt += `↳${v.dad} (${v.d_species} ${v.d_grade})\n\n`;
             }
             else if (v.type == "parents") { // monster가 재료인 경우
                 rslt += `↱${v.mom} (${v.m_species} ${v.m_grade})\n`;
                 rslt += `↱${v.dad} (${v.d_species} ${v.d_grade})\n`;
-                rslt += `${v.child}(${v.c_grade}): ${v.c_effect}${v.c_effect_value == "+0" ? "" : ` ${v.c_effect_value}`}\n\n`;
+                rslt += `${v.child}(${v.c_grade}): ${v.c_effect}${(v.c_effect_value == "+0") ? "" : ` ${v.c_effect_value}`}\n\n`;
             }
         });
         return rslt.trimEnd();

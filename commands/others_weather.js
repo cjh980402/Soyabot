@@ -26,7 +26,7 @@ module.exports = {
     channelCool: true,
     type: ["기타"],
     async execute(message, args) {
-        const search = args.length > 0 ? args.join(" ") : "동대문구 전농동";
+        const search = (args.length > 0) ? args.join(" ") : "동대문구 전농동";
         const searchRslt = (await (await fetch(`https://ac.weather.naver.com/ac?q_enc=utf-8&r_format=json&r_enc=utf-8&r_lt=1&st=1&q=${encodeURI(search)}`)).json()).items[0];
         let targetLocal;
         if (!searchRslt?.length) {
@@ -65,7 +65,7 @@ module.exports = {
         const weather = parse(".time_list > .item_time");
         const rainData = parse('div[data-name="rain"] .row_graph').eq(0); // 가끔 적설량이 병기되는 경우에 대응
         const rainName = rainData.find('.blind').text();
-        const rainUnit = rainName == "적설량" ? "㎝" : "㎜";
+        const rainUnit = (rainName == "적설량") ? "㎝" : "㎜";
         const rain = rainData.find('.data');
         const humidity = parse('div[data-name="humidity"] .row_graph > .data');
         const wind = parse('div[data-name="wind"] .row_graph > .data');

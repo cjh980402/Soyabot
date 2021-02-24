@@ -93,7 +93,7 @@ module.exports = {
 
         const filter = (reaction, user) => user.id != client.user.id;
         collector = playingMessage.createReactionCollector(filter, {
-            time: song.duration > 0 ? song.duration * 1000 : 600000
+            time: (song.duration > 0) ? song.duration * 1000 : 600000
         });
 
         collector.on("collect", async (reaction, user) => {
@@ -124,7 +124,7 @@ module.exports = {
                     collector.stop();
                 }
                 else if (reaction.emoji.name == "🔇") {
-                    queue.volume = queue.volume <= 0 ? (DEFAULT_VOLUME ?? 100) : 0;
+                    queue.volume = (queue.volume <= 0) ? (DEFAULT_VOLUME ?? 100) : 0;
                     queue.connection.dispatcher.setVolume(queue.volume / 100);
                     queue.TextChannel.send(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
                 }

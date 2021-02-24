@@ -7,7 +7,7 @@ function calcIncrease(parse, selector) {
     const today = +parse(selector).eq(0).text();
     const dateList = parse("stateDt");
     const yesterday = +parse(selector).filter((i) => dateList.eq(i).text() != dateList.eq(0).text()).eq(0).text();
-    return `${today.toLocaleString()} (${today >= yesterday ? `⬆️ ${(today - yesterday).toLocaleString()}` : `⬇️ ${(yesterday - today).toLocaleString()}`})`;
+    return `${today.toLocaleString()} (${(today >= yesterday) ? `⬆️ ${(today - yesterday).toLocaleString()}` : `⬇️ ${(yesterday - today).toLocaleString()}`})`;
 }
 
 module.exports = {

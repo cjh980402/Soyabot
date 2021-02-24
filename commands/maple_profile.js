@@ -24,7 +24,7 @@ module.exports = {
         }
 
         const rank = Maple.Rank();
-        const rankString = rank[2] == "-위" ? " " : `월드 ${rank[2]} (전체 ${rank[3]})`;
+        const rankString = (rank[2] == "-위") ? " " : `월드 ${rank[2]} (전체 ${rank[3]})`;
         const murung = Maple.Murung();
         const union = Maple.Union();
         const seed = Maple.Seed();

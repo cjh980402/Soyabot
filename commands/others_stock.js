@@ -56,17 +56,17 @@ module.exports = {
                 const changeAmount = nowData.result.areas[0].datas[0].cv / 100; // 숫자값
                 const changeRate = nowData.result.areas[0].datas[0].cr;
 
-                const minPrice = data.eq(identifer == "FUT" ? 3 : 1).text().trim() || "0";
-                const maxPrice = data.eq(identifer == "FUT" ? 2 : 0).text().trim() || "0";
-                const amount = data.eq(identifer == "FUT" ? 4 : 2).text().trim() || "0";
-                const totalPrice = data.eq(identifer == "FUT" ? 5 : 3).text().trim();
-                const min_52weeks = data.eq(identifer == "FUT" ? 7 : 5).text().trim() || "0";
-                const max_52weeks = data.eq(identifer == "FUT" ? 6 : 4).text().trim() || "0";
+                const minPrice = data.eq((identifer == "FUT") ? 3 : 1).text().trim() || "0";
+                const maxPrice = data.eq((identifer == "FUT") ? 2 : 0).text().trim() || "0";
+                const amount = data.eq((identifer == "FUT") ? 4 : 2).text().trim() || "0";
+                const totalPrice = data.eq((identifer == "FUT") ? 5 : 3).text().trim();
+                const min_52weeks = data.eq((identifer == "FUT") ? 7 : 5).text().trim() || "0";
+                const max_52weeks = data.eq((identifer == "FUT") ? 6 : 4).text().trim() || "0";
 
                 await cmd(`python3 ./util/make_stock_info.py ${code} ${chartURL} "${name} (${code}) ${type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                 // 파이썬 스크립트 실행
 
-                stockEmbed.addField(identifer == "FUT" ? '**약정수량**' : '**거래량**', amount, true)
+                stockEmbed.addField((identifer == "FUT") ? '**약정수량**' : '**거래량**', amount, true)
                     .addField('**거래대금**', totalPrice, true)
                     .addField('**개인**', trendData.eq(0).find("span").eq(0).text(), true)
                     .addField('**외국인**', trendData.eq(0).find("span").eq(1).text(), true)
@@ -89,7 +89,7 @@ module.exports = {
 
                     const nowPrice = parse(".price_wrp > .stock_price").text();
                     const changeRate = +parse(".price_wrp .rate").text();
-                    const changeAmount = (changeRate >= 0 ? 1 : -1) * +parse(".price_wrp .gap_price > .price").text().replace(/,/g, "");
+                    const changeAmount = ((changeRate >= 0) ? 1 : -1) * +parse(".price_wrp .gap_price > .price").text().replace(/,/g, "");
 
                     const minPrice = data.eq(4).text().trim() || "0";
                     const maxPrice = data.eq(1).text().trim() || "0";
