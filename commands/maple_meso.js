@@ -118,8 +118,8 @@ module.exports = {
             .setURL("https://talk.gamemarket.kr/maple/graph")
             .setColor("#FF9899")
             .setImage(await mesoChart.getShortUrl())
-            .addField("**메소마켓**", `${market[14][serverList[server]]}메포`)
-            .addField("**무통거래**", `${direct[14][serverList[server]]}원`);
+            .addField("**메소마켓**", `${market[market.length - 1][serverList[server]]}메포`)
+            .addField("**무통거래**", `${direct[direct.length - 1][serverList[server]]}원`);
 
         return message.channel.send(mesoEmbed);
     }
