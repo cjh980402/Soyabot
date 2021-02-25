@@ -63,20 +63,20 @@ function recommendFood() {
 }
 
 function choiceVS(msg) {
-    const choice = msg.split(/vs/i);
-    const nospace = [];
-    for (let i in choice) {
-        choice[i] = choice[i].trim();
-        if (choice[i] == '') {
+    const splitVS = msg.split(/vs/i);
+    const afterReplace = [];
+    for (let i in splitVS) {
+        splitVS[i] = splitVS[i].trim();
+        if (splitVS[i] == '') {
             return '빈 항목이 존재합니다.';
         }
-        nospace.push(choice[i].replace(/[\s`'"~.,;:*+-=!?^$@%&{}()<>/|[\]\\]/g, '').replace('조아', '좋아').replace('시러', '싫어'));
+        afterReplace.push(splitVS[i].replace(/[\s`'"~.,;:*+=!?^$@%&{}()<>/|[\-\]\\]/g, '').replace('조아', '좋아').replace('시러', '싫어'));
     }
-    for (let i = choice.length - 1, ind; i >= choice.length / 2; i--) {
-        ind = nospace.indexOf(nospace[i]);
-        if (ind != i && (nospace[i] != '' || choice[ind] == choice[i])) {
-            return `"${choice[i]}" 항목이 중복입니다.`;
+    for (let i = splitVS.length - 1, ind; i >= splitVS.length / 2; i--) {
+        ind = afterReplace.indexOf(afterReplace[i]);
+        if (ind != i && (afterReplace[i] != '' || splitVS[ind] == splitVS[i])) {
+            return `"${splitVS[i]}" 항목이 중복입니다.`;
         }
     }
-    return choice[Math.floor(Math.random() * choice.length)];
+    return splitVS[Math.floor(Math.random() * splitVS.length)];
 }
