@@ -9,8 +9,11 @@ height = 180 * math.ceil(count / 2)
 image = Image.new("RGB", (360, height), "WHITE") # 흰 정사각형 배경 이미지 생성
 
 for i in range(count): # 2 ~ 1+argv[1]: 이미지 주소
-    char_img = Image.open(requests.get(sys.argv[2 + i], stream = True).raw) # url -> Image
-    image.paste(char_img, (180 * (i % 2), -20 + 180 * (i // 2)), mask = char_img) # 투명 배경때문에 mask를 붙여넣을 이미지로 지정
+    try:
+        char_img = Image.open(requests.get(sys.argv[2 + i], stream = True).raw) # url -> Image
+        image.paste(char_img, (180 * (i % 2), -20 + 180 * (i // 2)), mask = char_img) # 투명 배경때문에 mask를 붙여넣을 이미지로 지정
+    except:
+        pass
 
 drawer = ImageDraw.Draw(image)
 font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 12)
