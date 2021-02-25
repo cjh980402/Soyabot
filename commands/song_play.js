@@ -74,24 +74,24 @@ module.exports = {
         }
 
         if (serverQueue) {
-            serverQueue.textChannel = message.channel;
+            serverQueue._textChannel = message.channel;
             serverQueue.songs.push(song);
             return message.channel.send(`✅ ${message.author}가 **${song.title}**를 대기열에 추가했습니다.`);
         }
 
         const queueConstruct = {
-            textChannel: message.channel,
+            _textChannel: message.channel,
             channel, // channel이란 property를 설정함과 동시에 값은 channel 변수의 값
             connection: null,
             songs: [song],
             loop: false,
             volume: DEFAULT_VOLUME ?? 100,
             playing: true,
-            get TextChannel() { // 채널이 삭제되는 경우를 대비해서 getter를 설정
-                if (!client.channels.cache.get(this.textChannel.id)) { // 해당하는 채널이 삭제된 경우
-                    this.textChannel = message.guild.channels.cache.filter((v) => v.type == 'text').first();
+            get textChannel() { // 채널이 삭제되는 경우를 대비해서 getter를 설정
+                if (!client.channels.cache.get(this._textChannel.id)) { // 해당하는 채널이 삭제된 경우
+                    this._textChannel = message.guild.channels.cache.filter((v) => v.type == 'text').first();
                 }
-                return this.textChannel;
+                return this._textChannel;
             }
         };
 
