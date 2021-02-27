@@ -90,13 +90,19 @@ module.exports = {
             }
             catch (e) { } // 시간 초과돼도 에러 throw 안하게 catch를 해줌
             if (i == die) {
-                return message.channel.send(`🔫 ${gameUser[i % gameUser.length]}님이 사망하셨습니다......\n한 판 더 하실?`);
+                const dieUser = message.guild.member(gameUser[i % gameUser.length]);
+                if (dieUser) {
+                    return message.channel.send(`🔫 ${dieUser}님이 사망하셨습니다......\n한 판 더 하실?`);
+                }
+                else {
+                    return message.channel.send("사망한 유저가 방에서 나가서 게임이 자동으로 종료됩니다.");
+                }
             }
             else {
                 const nextUser = message.guild.member(gameUser[(i + 1) % gameUser.length]);
                 if (nextUser) {
                     await message.channel.send(`🔫 철컥 (${bullet - (i + 1)}발 남음)`);
-                    await message.channel.send(`다음 차례는 ${gameUser[(i + 1) % gameUser.length]}님입니다.`);
+                    await message.channel.send(`다음 차례는 ${nextUser}님입니다.`);
                 }
                 else {
                     return message.channel.send("다음 차례 유저가 방에서 나가서 게임이 자동으로 종료됩니다.");
