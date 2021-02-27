@@ -9,6 +9,7 @@ const { botNotice, replyRoomID } = require('./bot_control.js');
 const { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, startTestPatch, stopTestPatch, startFlag, stopFlag } = require('./maple_auto_notice');
 
 module.exports.adminChat = async function (message) {
+    debugFunc(message);
     const fullContent = await message.fullContent;
     if (fullContent.startsWith(">")) { // 노드 코드 실행 후 출력
         const funcBody = fullContent.substr(1).trim().split('\n'); // 긴 코드 테스트를 위해 fullContent 이용
@@ -71,6 +72,10 @@ module.exports.initClient = async function () {
     startTest(); // 테섭 자동 알림 기능
     startTestPatch(); // 테섭 패치 감지 기능
     startFlag(); // 플래그 5분 전 알림
+}
+
+function debugFunc(message) {
+    // 특정 기능 디버깅할 때 내용을 바꿔서 테스트 해주면 됨
 }
 
 Object.defineProperty(Discord.Message.prototype, "fullContent", {
