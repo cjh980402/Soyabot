@@ -28,7 +28,7 @@ module.exports = {
         const gender = args.shift()[0];
         const goalface = (faceList[gender] ?? []).findIndex((v) => v.replace(/\s+/, '').includes(args.join('')));
         if (goalface == -1) {
-            return chat.reply(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         // gender은 성별, goalface는 목표 성형의 인덱스
         // random은 0이상 1미만
