@@ -40,7 +40,7 @@ module.exports = {
             list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 성형의 인덱스 저장, now 뒤에 더하는 이유는 최근 성형 제외 목적
         }
 
-        rslt += `수행 횟수: ${list.length}회$\n\n진행 과정`;
+        rslt += `수행 횟수: ${list.length}회\n\n진행 과정`;
         list.forEach((v, i) => rslt += `\n${i + 1}번째: ${faceList[gender][v]}`);
         return message.channel.send(rslt);
     }
