@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageAttachment } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const mapleModule = require("../util/maple_parsing");
 
 module.exports = {
@@ -27,13 +27,11 @@ module.exports = {
             return message.channel.send(`[${Maple.Name}]\n코디 정보가 없습니다.`);
         }
         else {
-            const attachment = new MessageAttachment(Maple.userImg(), 'coordi.png');
             const coordiEmbed = new MessageEmbed()
                 .setTitle(`**${Maple.Name}님의 코디**`)
                 .setColor("#FF9899")
-                .attachFiles(attachment)
                 .setURL(Maple.GGURL)
-                .setImage('attachment://coordi.png')
+                .setImage(Maple.userImg())
                 .addField('**헤어**', coordi[1], true)
                 .addField('**성형**', coordi[2], true)
                 .addField('**모자**', coordi[0], true)

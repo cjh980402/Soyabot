@@ -1,21 +1,7 @@
-const probTable = {
-    "남": {
-        "살구 얼굴": 17,
-        "창백한 뭐래 얼굴": 17,
-        "아기사슴 얼굴": 17,
-        "헤헤 얼굴": 17,
-        "도도한 얼굴": 17,
-        "슈가 얼굴": 17
-    },
-    "여": {
-        "살구 얼굴": 17,
-        "창백한 뭐래 얼굴": 17,
-        "아기사슴 얼굴": 17,
-        "헤헤 얼굴": 17,
-        "소심한 얼굴": 17,
-        "슈가 얼굴": 17
-    }
-}
+const faceList = {
+    "남": ["살구 얼굴", "창백한 뭐래 얼굴", "아기사슴 얼굴", "헤헤 얼굴", "도도한 얼굴", "슈가 얼굴"],
+    "여": ["살구 얼굴", "창백한 뭐래 얼굴", "아기사슴 얼굴", "헤헤 얼굴", "소심한 얼굴", "슈가 얼굴"]
+} // 성형은 모두 동일 확률이므로 배열을 이용
 
 module.exports = {
     usage: `${client.prefix}성형 (성별) (목표 성형 이름)`,
@@ -27,12 +13,12 @@ module.exports = {
     async execute(message, args) {
         if (args.length == 1 && (args[0] == '확률' || args[0] == 'ㅎㄹ')) {
             let rslt = '<로얄 성형 확률>\n\n- 남자 성형';
-            for (let key in probTable["남"]) {
-                rslt += `\n${key}: ${probTable["남"][key]}%`;
+            for (let face of faceList["남"]) {
+                rslt += `\n${face}: 17%`;
             }
             rslt += '\n\n- 여자 성형';
-            for (let key in probTable["여"]) {
-                rslt += `\n${key}: ${probTable["여"][key]}%`;
+            for (let face of faceList["여"]) {
+                rslt += `\n${face}: 17%`;
             }
             return message.channel.send(rslt);
         }
@@ -40,40 +26,22 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const gender = args.shift()[0];
-        const goalface = Object.keys(probTable[gender] ?? {}).find((v) => v.replace(/\s+/, '').includes(args.join('')));
-        if (!goalface) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        const goalface = (faceList[gender] ?? []).findIndex((v) => v.replace(/\s+/, '').includes(args.join('')));
+        if (goalface == -1) {
+            return chat.reply(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
-        // gender은 성별, goalface는 목표 성형 이름
+        // gender은 성별, goalface는 목표 성형의 인덱스
         // random은 0이상 1미만
-        const list = []; // 진행 과정 담을 배열
-        let rslt = `로얄 성형 (목표: ${goalface}) 결과\n\n`;
-        const probSum = Object.values(probTable[gender]).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
+        const list = []; // 진행 과정 담을 배열 (인덱스 저장)
+        let rslt = `로얄 성형 (목표: ${faceList[gender][goalface]}) 결과\n\n`;
 
-        for (let nowface = '', proptemp = 0; nowface != goalface;) {
-            const now = Math.floor(Math.random() * (probSum - proptemp) + 1);
-            let sum = 0;
-            for (let key in probTable[gender]) {
-                sum += probTable[gender][key];
-                if (now <= sum) {
-                    if (nowface) {
-                        probTable[gender][nowface] = proptemp; // 원래 확률값 복원
-                    }
-                    nowface = key;
-                    list.push(nowface); // 현재 뜬 성형 저장
-                    if (nowface != goalface) {
-                        proptemp = probTable[gender][nowface]; // 원래 값 저장
-                        probTable[gender][nowface] = 0; // 현재 성형의 확률을 0으로 수정 (중복방지)
-                    }
-                    break;
-                }
-            }
+        while (list[list.length - 1] != goalface) { // 목표 성형을 띄웠으면 종료
+            const now = Math.floor(Math.random() * (faceList[gender].length - +(list.length > 0)));
+            list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 성형의 인덱스 저장, now 뒤에 더하는 이유는 최근 성형 제외 목적
         }
 
-        rslt += `수행 횟수: ${list.length}회\n\n진행 과정`;
-        for (let i in list) {
-            rslt += `\n${+i + 1}번째: ${list[i]}`;
-        }
+        rslt += `수행 횟수: ${list.length}회$\n\n진행 과정`;
+        list.forEach((v, i) => rslt += `\n${i + 1}번째: ${faceList[gender][v]}`);
         return message.channel.send(rslt);
     }
 };

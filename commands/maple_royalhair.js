@@ -50,30 +50,23 @@ module.exports = {
         let rslt = `로얄 헤어 (목표: ${goalhair}) 결과\n\n`;
         const probSum = Object.values(probTable[gender]).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
 
-        for (let nowhair = '', proptemp = 0; nowhair != goalhair;) {
-            const now = Math.floor(Math.random() * (probSum - proptemp) + 1);
+        while (list[list.length - 1] != goalhair) { // 목표헤어를 띄웠으면 종료
+            const now = Math.floor(Math.random() * (probSum - (probTable[gender][list[list.length - 1]] ?? 0)) + 1);
             let sum = 0;
             for (let key in probTable[gender]) {
+                if (key == list[list.length - 1]) { // 현재와 같은 헤어는 계산에서 제외
+                    continue;
+                }
                 sum += probTable[gender][key];
                 if (now <= sum) {
-                    if (nowhair) {
-                        probTable[gender][nowhair] = proptemp; // 원래 확률값 복원
-                    }
-                    nowhair = key;
-                    list.push(nowhair); // 현재 뜬 헤어 저장
-                    if (nowhair != goalhair) {
-                        proptemp = probTable[gender][nowhair]; // 원래 값 저장
-                        probTable[gender][nowhair] = 0; // 현재 헤어의 확률을 0으로 수정 (중복방지)
-                    }
+                    list.push(key); // 현재 뜬 헤어 저장
                     break;
                 }
             }
         }
 
         rslt += `수행 횟수: ${list.length}회\n\n진행 과정`;
-        for (let i in list) {
-            rslt += `\n${+i + 1}번째: ${list[i]}`;
-        }
+        list.forEach((v, i) => rslt += `\n${i + 1}번째: ${v}`);
         return message.channel.send(rslt);
     }
 };

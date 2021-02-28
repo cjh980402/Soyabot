@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageAttachment } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const mapleModule = require("../util/maple_parsing");
 const scoreGrade = [
     [0, "메린이"],
@@ -68,13 +68,11 @@ module.exports = {
             }
         }
 
-        const attachment = new MessageAttachment(Maple.userImg(), 'scouter.png');
         const scouterEmbed = new MessageEmbed()
             .setTitle(`**${Maple.Name}님의 측정결과**`)
             .setColor("#FF9899")
-            .attachFiles(attachment)
             .setURL(Maple.GGURL)
-            .setImage('attachment://scouter.png')
+            .setImage(Maple.userImg())
             .addField('**직업**', job, true)
             .addField('**유니온**', union.toLocaleString(), true)
             .addField('**레벨**', level, true)

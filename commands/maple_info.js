@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageAttachment } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const mapleModule = require("../util/maple_parsing");
 const { levelTable } = require("../util/soyabot_const.json");
 
@@ -35,13 +35,11 @@ module.exports = {
         const char_seed = Maple.Seed(); // 1: 층수, 2: 클리어 시간
         const char_rank = Maple.Rank(); // 종합, 월드, 직업(월드), 직업(전체)
 
-        const attachment = new MessageAttachment(Maple.userImg(), 'info.png');
         const infoEmbed = new MessageEmbed()
             .setTitle(`**${Maple.Name}님의 정보**`)
             .setColor("#FF9899")
-            .attachFiles(attachment)
             .setURL(Maple.GGURL)
-            .setImage('attachment://info.png')
+            .setImage(Maple.userImg())
             .addField('**레벨**', (char_lv < 300) ? `${char_lv} (${char_percent}%)` : char_lv, true)
             .addField('**직업**', char_job, true)
             .addField('**길드**', char_guild || '-', true)

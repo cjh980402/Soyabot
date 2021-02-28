@@ -80,7 +80,7 @@ module.exports = {
                 .setThumbnail("http://140.238.26.231:8170/image/hosting/mohw.png")
                 .setColor("#FF9899")
                 .setURL("http://ncov.mohw.go.kr")
-                .setImage(await coronaChart.getShortUrl())
+                .setImage(coronaChart.getUrl())
                 .addField('**확진 환자**', `${countData.TotalCase} (${calcIncrease(todaySum)})`)
                 .addField('**격리 해제**', `${countData.TotalRecovered} (${calcIncrease(todayRecover)})`)
                 .addField('**격리 중**', `${countData.NowCase} (${calcIncrease(todayCase)})`)
