@@ -76,8 +76,7 @@ module.exports = {
             .addField('**직업**', job, true)
             .addField('**레벨**', level, true)
             .addField('**유니온**', union.toLocaleString(), true)
-            .addField('**무릉 기록**', `${murungfl}층`, true)
-            .addField('**기록 시간**', `${min}분 ${sec}초`, true)
+            .addField('**무릉 기록**', murung ? `${murungfl}층 (${min}분 ${sec}초)` : "-", true)
             .addField('**측정 결과**', `${grade}! (${score}점)`);
 
         return message.channel.send(scouterEmbed);
