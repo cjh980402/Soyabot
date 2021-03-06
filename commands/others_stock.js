@@ -28,7 +28,7 @@ module.exports = {
             return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const type = (args.length > 1 && Object.keys(chartType).includes(args[args.length - 1])) ? args.pop() : "일봉"; // 차트 종류
+        const type = (args.length > 1 && chartType[args[args.length - 1]]) ? args.pop() : "일봉"; // 차트 종류
         const search = args.join(" ").toLowerCase();
         const searchRslt = (await (await fetch(`https://ac.finance.naver.com/ac?q=${encodeURI(search)}&t_koreng=1&st=111&r_lt=111`)).json()).items[0];
 
@@ -48,7 +48,7 @@ module.exports = {
             if (stockfind[2][0] == "국내지수") { // 국내 지수
                 const parse = cheerio.load(await (await fetch(`https://m.stock.naver.com/sise/siseIndex.nhn?code=${identifer}`)).text());
                 const data = parse(".total_list > li > span");
-                const nowData = (await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_INDEX%3A${identifer}`)).json());
+                const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_INDEX%3A${identifer}`)).json();
                 const trendData = parse(".ct_box.dmst_trend .trend_lst");
 
                 const chartURL = getChartImage(identifer, type);
@@ -74,11 +74,11 @@ module.exports = {
 
                 const up = trendData.eq(2).find("span").eq(0).text();
                 if (up) {
-                    stockEmbed.addField('**상승**', up, true)
+                    stockEmbed.addField('**상승**', up, true);
                 }
                 const down = trendData.eq(2).find("span").eq(2).text();
                 if (down) {
-                    stockEmbed.addField('**하락**', down, true)
+                    stockEmbed.addField('**하락**', down, true);
                 }
             }
             else if (stockfind[2][0] == "해외지수") { // 해외 지수
@@ -118,7 +118,7 @@ module.exports = {
             else if (stockfind[3][0].startsWith('/item/main')) { // 국내 주식
                 const parse = cheerio.load(await (await fetch(`https://m.stock.naver.com/api/html/item/getOverallInfo.nhn?code=${identifer}`)).text());
                 const data = parse(".total_list > li > span");
-                const nowData = (await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_ITEM%3A${identifer}`)).json());
+                const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_ITEM%3A${identifer}`)).json();
 
                 const chartURL = getChartImage(identifer, type);
                 const beforePrice = nowData.result.areas[0].datas[0].pcv; // 숫자값
@@ -149,7 +149,7 @@ module.exports = {
                     .addField('**배당금**', data.eq(17).text().trim(), true);
             }
             else { // 해외 주식
-                const data = (await (await fetch(`https://api.stock.naver.com/stock/${identifer}/basic`)).json());
+                const data = await (await fetch(`https://api.stock.naver.com/stock/${identifer}/basic`)).json();
 
                 const chartURL = getChartImage(identifer, type, true, true);
                 const nowPrice = data.closePrice;
