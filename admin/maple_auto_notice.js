@@ -14,21 +14,21 @@ module.exports.startNotice = function () {
             try {
                 const data = cheerio.load(await (await fetch("https://maplestory.nexon.com/News/Notice")).text())('.news_board li > p');
 
-                let description = "";
+                const notice = [];
                 for (let i = 0; i < data.length; i++) {
                     const rslt = await db.get(`SELECT * FROM maplenotice WHERE title = ?`, [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                     if (!rslt || +/\d+/.exec(rslt.url) < +/\d+/.exec(url)) { // 제목이 다르거나, 같은 경우는 최신 공지인 경우
                         await db.replace('maplenotice', { title: data.eq(i).text().trim(), url: url }); // 제목이 겹치는 경우 때문에 replace를 이용
                         // 중복방지 위해 db에 삽입
-                        description += `${data.eq(i).find('img').attr('alt')} [${data.eq(i).text().trim()}](${url})\n\n`;
+                        notice.push(`${data.eq(i).find('img').attr('alt')} [${data.eq(i).text().trim()}](${url})`);
                     }
                 }
 
-                if (description.length > 0) {
+                if (notice.length > 0) {
                     const noticeEmbed = new MessageEmbed()
                         .setTitle("**메이플 공지사항**")
-                        .setDescription(description.trimEnd())
+                        .setDescription(notice.join("\n\n"))
                         .setColor("#FF9899")
                         .setTimestamp();
 
@@ -55,21 +55,21 @@ module.exports.startUpdate = function () {
             try {
                 const data = cheerio.load(await (await fetch("https://maplestory.nexon.com/News/Update")).text())('.update_board li > p');
 
-                let description = "";
+                const update = [];
                 for (let i = 0; i < data.length; i++) {
                     const rslt = await db.get(`SELECT * FROM mapleupdate WHERE title = ?`, [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                     if (!rslt || +/\d+/.exec(rslt.url) < +/\d+/.exec(url)) { // 제목이 다르거나, 같은 경우는 최신 공지인 경우
                         await db.replace('mapleupdate', { title: data.eq(i).text().trim(), url: url });
                         // 중복방지 위해 db에 삽입
-                        description += `[패치] [${data.eq(i).text().trim()}](${url})\n\n`;
+                        update.push(`[패치] [${data.eq(i).text().trim()}](${url})`);
                     }
                 }
 
-                if (description.length > 0) {
+                if (update.length > 0) {
                     const noticeEmbed = new MessageEmbed()
                         .setTitle("**메이플 업데이트**")
-                        .setDescription(description.trimEnd())
+                        .setDescription(update.join("\n\n"))
                         .setColor("#FF9899")
                         .setTimestamp();
 
@@ -96,7 +96,7 @@ module.exports.startTest = function () {
             try {
                 const data = cheerio.load(await (await fetch("https://maplestory.nexon.com/Testworld/Totalnotice")).text())('.news_board li > p');
 
-                let description = "";
+                const test = [];
                 for (let i = 0; i < data.length; i++) {
                     const rslt = await db.get(`SELECT * FROM mapletest WHERE title = ?`, [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
@@ -105,14 +105,14 @@ module.exports.startTest = function () {
                         // 중복방지 위해 db에 삽입
                         const picurl = data.eq(i).find('img').attr('src');
                         const type = picurl.endsWith("1.png") ? "[공지]" : (picurl.endsWith("2.png") ? "[GM]" : (picurl.endsWith("3.png") ? "[점검]" : "[패치]"));
-                        description += `${type} [${data.eq(i).text().trim()}](${url})\n\n`;
+                        test.push(`${type} [${data.eq(i).text().trim()}](${url})`);
                     }
                 }
 
-                if (description.length > 0) {
+                if (test.length > 0) {
                     const noticeEmbed = new MessageEmbed()
                         .setTitle("**메이플 테스트월드 공지**")
-                        .setDescription(description.trimEnd())
+                        .setDescription(test.join("\n\n"))
                         .setColor("#FF9899")
                         .setTimestamp();
 

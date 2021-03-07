@@ -26,20 +26,14 @@ async function farm_sex(monster) { // 몬스터 조합식
         return data.error;
     }
     else {
-        let rslt = "";
-        data.forEach((v) => {
+        return data.map((v) => {
             if (v.type == "child") { // 결과가 monster인 경우
-                rslt += `${v.child}(${v.c_grade}): ${v.c_effect}${(v.c_effect_value == "+0") ? "" : ` ${v.c_effect_value}`}\n`;
-                rslt += `↳${v.mom} (${v.m_species} ${v.m_grade})\n`;
-                rslt += `↳${v.dad} (${v.d_species} ${v.d_grade})\n\n`;
+                return `${v.child}(${v.c_grade}): ${v.c_effect}${(v.c_effect_value == "+0") ? "" : ` ${v.c_effect_value}`}\n↳${v.mom} (${v.m_species} ${v.m_grade})\n↳${v.dad} (${v.d_species} ${v.d_grade})`;
             }
             else if (v.type == "parents") { // monster가 재료인 경우
-                rslt += `↱${v.mom} (${v.m_species} ${v.m_grade})\n`;
-                rslt += `↱${v.dad} (${v.d_species} ${v.d_grade})\n`;
-                rslt += `${v.child}(${v.c_grade}): ${v.c_effect}${(v.c_effect_value == "+0") ? "" : ` ${v.c_effect_value}`}\n\n`;
+                return `↱${v.mom} (${v.m_species} ${v.m_grade})\n↱${v.dad} (${v.d_species} ${v.d_grade})\n${v.child}(${v.c_grade}): ${v.c_effect}${(v.c_effect_value == "+0") ? "" : ` ${v.c_effect_value}`}`;
             }
-        });
-        return rslt.trimEnd();
+        }).join("\n\n");
     }
 }
 

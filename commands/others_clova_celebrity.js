@@ -29,8 +29,7 @@ async function clova_celebrity(url) {
         return `사진 분석에 실패하였습니다.\n${/\((.+)\)/.exec(data.errorMessage)[1]}`;
     }
 
-    let rslt = "";
-    rslt = `닮은 유명인 수: ${data.info.faceCount}`;
+    let rslt = `닮은 유명인 수: ${data.info.faceCount}`;
     data.faces.forEach((person) => {
         rslt += `\n이름: ${person.celebrity.value} (신뢰도: ${(person.celebrity.confidence * 100).toFixed(2)}%)`;
     });

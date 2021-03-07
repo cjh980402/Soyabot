@@ -1,15 +1,15 @@
 const { MessageEmbed } = require("discord.js");
 
-function generateQueueEmbed(message, queue) {
+function generateQueueEmbed(message, songs) {
     const embeds = [];
-    for (let i = 0; i < queue.length; i += 8) {
-        const current = queue.slice(i, i + 8);
+    for (let i = 0; i < songs.length; i += 8) {
+        const current = songs.slice(i, i + 8);
         const info = current.map((track, j) => `${i + j + 1}. [${track.title}](${track.url})`).join("\n\n");
         const embed = new MessageEmbed()
             .setTitle(`**${client.user.username} 음악 대기열**`)
             .setThumbnail(message.guild.iconURL())
             .setColor("#FF9899")
-            .setDescription(`**현재 재생 중인 노래 - [${queue[0].title}](${queue[0].url})**\n\n${info}`)
+            .setDescription(`**현재 재생 중인 노래 - [${songs[0].title}](${songs[0].url})**\n\n${info}`)
             .setTimestamp();
         embeds.push(embed);
     }

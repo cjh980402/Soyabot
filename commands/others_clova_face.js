@@ -29,19 +29,18 @@ async function clova_face(url) {
         return `사진 분석에 실패하였습니다.\n${/\((.+)\)/.exec(data.errorMessage)[1]}`;
     }
 
-    let rslt = "";
-    rslt = `감지된 얼굴 수: ${data.info.faceCount}\n`;
+    let rslt = `감지된 얼굴 수: ${data.info.faceCount}`;
     data.faces.forEach((person, i) => {
-        rslt += `${i + 1}번째 얼굴 분석  (X = ${person.roi.x}, Y = ${person.roi.y})\n`;
+        rslt += `\n\n${i + 1}번째 얼굴 분석  (X = ${person.roi.x}, Y = ${person.roi.y})\n`;
         rslt += `성별: ${person.gender.value} (신뢰도: ${(person.gender.confidence * 100).toFixed(2)}%)\n`;
         rslt += `나이: ${person.age.value} (신뢰도: ${(person.age.confidence * 100).toFixed(2)}%)\n`;
         rslt += `감정: ${person.emotion.value} (신뢰도: ${(person.emotion.confidence * 100).toFixed(2)}%)\n`;
-        rslt += `포즈: ${person.pose.value} (신뢰도: ${(person.pose.confidence * 100).toFixed(2)}%)\n\n`;
+        rslt += `포즈 : ${person.pose.value} (신뢰도: ${(person.pose.confidence * 100).toFixed(2)}%)`;
     });
     if (data.faces.length > 0) {
-        rslt += "위치 기준점(X = 0, Y = 0): 좌측상단";
+        rslt += "\n\n위치 기준점(X = 0, Y = 0): 좌측상단";
     }
-    return rslt.trimEnd();
+    return rslt;
 }
 
 function getMessageImage(message) {
