@@ -137,8 +137,9 @@ module.exports = {
         }
         if (args[0] == '확률' || args[0] == 'ㅎㄹ') {
             let rslt = `<골드애플 확률>`;
-            for (let key in probTable)
+            for (let key in probTable) {
                 rslt += `\n${key}: ${probTable[key] / 100000}%`;
+            }
             return message.channel.send(rslt, { split: true });
         }
 

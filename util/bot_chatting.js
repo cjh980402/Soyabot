@@ -65,7 +65,7 @@ function recommendFood() {
 function choiceVS(msg) {
     const splitVS = msg.split(/vs/i);
     const afterReplace = [];
-    for (let i in splitVS) {
+    for (let i = 0; i < splitVS.length; i++) {
         splitVS[i] = splitVS[i].trim();
         if (splitVS[i] == '') {
             return '빈 항목이 존재합니다.';

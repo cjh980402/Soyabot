@@ -13,13 +13,9 @@ module.exports = {
     async execute(message, args) {
         if (args.length == 1 && (args[0] == '확률' || args[0] == 'ㅎㄹ')) {
             let rslt = '<로얄 성형 확률>\n\n- 남자 성형';
-            for (let face of faceList["남"]) {
-                rslt += `\n${face}: 17%`;
-            }
+            faceList["남"].forEach((v) => rslt += `\n${v}: 17%`);
             rslt += '\n\n- 여자 성형';
-            for (let face of faceList["여"]) {
-                rslt += `\n${face}: 17%`;
-            }
+            faceList["여"].forEach((v) => rslt += `\n${v}: 17%`);
             return message.channel.send(rslt);
         }
         if (args.length < 2) {

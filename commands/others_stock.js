@@ -63,7 +63,7 @@ module.exports = {
                 const min_52weeks = data.eq((identifer == "FUT") ? 7 : 5).text().trim() || "0";
                 const max_52weeks = data.eq((identifer == "FUT") ? 6 : 4).text().trim() || "0";
 
-                await cmd(`python3 ./util/make_stock_info.py ${code} ${chartURL} "${name} (${code}) ${type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
+                await cmd(`python3 ./util/make_stock_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                 // 파이썬 스크립트 실행
 
                 stockEmbed.addField((identifer == "FUT") ? '**약정수량**' : '**거래량**', amount, true)
@@ -96,7 +96,7 @@ module.exports = {
                     const min_52weeks = data.eq(5).text().trim() || "0";
                     const max_52weeks = data.eq(2).text().trim() || "0";
 
-                    await cmd(`python3 ./util/make_stock_info.py ${code} ${chartURL} "${name} (${code}) ${type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
+                    await cmd(`python3 ./util/make_stock_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                     // 파이썬 스크립트 실행
                 }
                 else {
@@ -111,7 +111,7 @@ module.exports = {
                     const min_52weeks = data.stockItemTotalInfos[5].value;
                     const max_52weeks = data.stockItemTotalInfos[4].value;
 
-                    await cmd(`python3 ./util/make_stock_info.py ${code} ${chartURL} "${name} (${code}) ${type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
+                    await cmd(`python3 ./util/make_stock_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                     // 파이썬 스크립트 실행
                 }
             }
@@ -134,7 +134,7 @@ module.exports = {
                 const min_52weeks = data.eq(9).contents().first().text().trim() || "0";
                 const max_52weeks = data.eq(8).contents().first().text().trim() || "0";
 
-                await cmd(`python3 ./util/make_stock_info.py ${code} ${chartURL} "${name} (${code}) ${type}" 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
+                await cmd(`python3 ./util/make_stock_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                 // 파이썬 스크립트 실행
 
                 stockEmbed.addField('**거래량**', amount, true)
@@ -164,7 +164,7 @@ module.exports = {
                 const min_52weeks = data.stockItemTotalInfos[9].value;
                 const max_52weeks = data.stockItemTotalInfos[8].value;
 
-                await cmd(`python3 ./util/make_stock_info.py ${code} ${chartURL} "${name} (${code}) ${type}" ${data.currencyType.name} ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
+                await cmd(`python3 ./util/make_stock_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" ${data.currencyType.name} ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                 // 파이썬 스크립트 실행
 
                 stockEmbed.addField('**거래량**', amount, true)
