@@ -28,15 +28,15 @@ module.exports = {
 
         if (parse("resultCode").text() == "00") {
             const coronaEmbed = new MessageEmbed()
-                .setTitle(`**${new Date(parse("createDt").eq(0).text()).toLocaleString()} 기준**`)
+                .setTitle(`**${new Date(parse("createDt").eq(0).text()).toLocaleDateString()} 00시 기준**`)
                 .setThumbnail("http://140.238.26.231:8170/image/hosting/mohw.png")
                 .setColor("#FF9899")
                 .setURL("http://ncov.mohw.go.kr")
                 .addField('**확진 환자**', calcIncrease(parse, "decideCnt"))
-                .addField('**검사 중**', calcIncrease(parse, "examCnt"))
                 .addField('**격리 해제**', calcIncrease(parse, "clearCnt"))
                 .addField('**격리 중**', calcIncrease(parse, "careCnt"))
-                .addField('**사망자**', calcIncrease(parse, "deathCnt"));
+                .addField('**사망자**', calcIncrease(parse, "deathCnt"))
+                .addField('**검사 중**', calcIncrease(parse, "examCnt"));
 
             return message.channel.send(coronaEmbed);
         }

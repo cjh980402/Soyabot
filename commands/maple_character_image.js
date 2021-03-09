@@ -5,7 +5,7 @@ module.exports = {
     command: ["이미지", "ㅇㅁㅈ"],
     description: "- 해당 캐릭터의 배경 없는 이미지를 출력합니다.",
     type: ["메이플"],
-    async execute(message) {
+    async execute(message, args) {
         if (args.length != 1) {
             return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
