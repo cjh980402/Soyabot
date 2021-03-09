@@ -40,6 +40,4 @@ module.exports = {
         }
         return message.channel.send(lyricsEmbed);
     }
-};csEmbed);
-    }
 };
