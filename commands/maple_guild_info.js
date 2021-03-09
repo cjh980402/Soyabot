@@ -51,7 +51,7 @@ module.exports = {
             return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const guildURL = `https://maple.gg/guild/${serverEngName[args[0]]}/${encodeURI(args[1])}`;
+        const guildURL = `https://maple.gg/guild/${serverEngName[args[0]]}/${encodeURIComponent(args[1])}`;
         const isLatest = await updateGuild(guildURL);
         const parse = cheerio.load(await (await fetch(`${guildURL}/members?sort=level`)).text());
         if (parse('div.alert.alert-warning.mt-3').length != 0) {

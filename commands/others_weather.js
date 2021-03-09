@@ -27,7 +27,7 @@ module.exports = {
     type: ["기타"],
     async execute(message, args) {
         const search = (args.length > 0) ? args.join(" ") : "동대문구 전농동";
-        const searchRslt = (await (await fetch(`https://ac.weather.naver.com/ac?q_enc=utf-8&r_format=json&r_enc=utf-8&r_lt=1&st=1&q=${encodeURI(search)}`)).json()).items[0];
+        const searchRslt = (await (await fetch(`https://ac.weather.naver.com/ac?q_enc=utf-8&r_format=json&r_enc=utf-8&r_lt=1&st=1&q=${encodeURIComponent(search)}`)).json()).items[0];
         let targetLocal;
         if (!searchRslt?.length) {
             return message.channel.send("검색된 지역이 없습니다.");

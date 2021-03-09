@@ -90,8 +90,8 @@ class NormalItem {
         let startNodest = 100; // 파괴방지 구간
         let afterSaleRate = 1; // 할인 후 가격 비율
 
-        const sucprob = (this.strcat ? 1050 : 1000) * probTable[this.star][0]; // 백분율 -> 십만분율 변환, 스타캐치는 곱적용 5%
-        let destprob = (100000 - sucprob) * (1000 * probTable[this.star][1]) / 100000; // 파괴확률 = 조건부 확률, 백분율 -> 십만분율 변환
+        const sucprob = (this.strcat ? 1050 : 1000) * probTable[this.star][0]; // 백분율 → 십만분율 변환, 스타캐치는 곱적용 5%
+        let destprob = (100000 - sucprob) * (1000 * probTable[this.star][1]) / 100000; // 파괴확률 = 조건부 확률, 백분율 → 십만분율 변환
 
         if (this.nodest == 1) {
             startNodest = 12;

@@ -162,7 +162,7 @@ module.exports.stopTestPatch = function () {
 }
 
 module.exports.startFlag = function () {
-    const flagtime = [11, 18, 20]; // 12, 19, 21시에 시작 -> 5분전에 알림
+    const flagtime = [11, 18, 20]; // 12, 19, 21시에 시작 → 5분전에 알림
     const now = new Date();
     for (let i = 0; i < flagTimer.length; i++) {
         if (!flagTimer[i]) {

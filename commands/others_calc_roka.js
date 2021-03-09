@@ -8,7 +8,7 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const date = /^(\d{2})(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/.exec(args[0]);
-        // 올바른 YYMMDD 형식인지 확인하는 정규식 -> 인덱스 1: 연도, 2: 월, 3: 일
+        // 올바른 YYMMDD 형식인지 확인하는 정규식 → 인덱스 1: 연도, 2: 월, 3: 일
         if (!date) {
             return message.channel.send("잘못된 형식의 날짜를 입력하였습니다. YYMMDD 형식으로 입대일을 입력해주세요.");
         }

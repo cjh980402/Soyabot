@@ -8,7 +8,7 @@ const server = app.listen(8170, () => {
 
 app.get('/image/:category/:picName', async (req, res) => { // 이미지 경로
     try {
-        console.log(`익스프레스 접속 경로\n${decodeURIComponent(req.path)}`); // request의 원본 경로
+        console.log(`익스프레스 접속 경로\n${decodeURIComponent(req.originalUrl)}`); // request의 원본 경로
         console.log(`익스프레스 하위 속성\n${req.params.$}\n${req.query.$}`); // 라우팅 하위 경로와 쿼리에 해당하는 부분
         res.end(await readFile(`./pictures/${req.params.category}/${req.params.picName}`));
     }
@@ -19,7 +19,7 @@ app.get('/image/:category/:picName', async (req, res) => { // 이미지 경로
 
 app.get('/:name', async (req, res) => { // 그 외 경로
     try {
-        console.log(`익스프레스 접속 경로\n${decodeURIComponent(req.path)}`); // request의 원본 경로
+        console.log(`익스프레스 접속 경로\n${decodeURIComponent(req.originalUrl)}`); // request의 원본 경로
         console.log(`익스프레스 하위 속성\n${req.params.$}\n${req.query.$}`); // 라우팅 하위 경로와 쿼리에 해당하는 부분
         res.end(await readFile('./htmls/default.html'));
     }
@@ -30,7 +30,7 @@ app.get('/:name', async (req, res) => { // 그 외 경로
 
 app.get('/', async (req, res) => { // 메인 화면
     try {
-        console.log(`익스프레스 접속 경로\n${decodeURIComponent(req.path)}`); // request의 원본 경로
+        console.log(`익스프레스 접속 경로\n${decodeURIComponent(req.originalUrl)}`); // request의 원본 경로
         console.log(`익스프레스 하위 속성\n${req.params.$}\n${req.query.$}`); // 라우팅 하위 경로와 쿼리에 해당하는 부분
         res.end(await readFile('./htmls/default.html'));
     }

@@ -2,7 +2,7 @@ module.exports = {
     usage: `${client.prefix}방무 (몬스터의 방어율) (현재 방무) (추가 방무1) (추가 방무2) ...`,
     command: ["방무", "ㅂㅁ"],
     description: `- 실방무와 딜량을 계산합니다. 추가 방무가 음수면 해당 수치를 원래 방무에서 제거합니다.
-예) 방어율 250% 몬스터에게 현재 방무 90%, 추가 방무 20%, 제거할 방무 10% -> ${client.prefix}방무 250 90 20 -10`,
+예) 방어율 250% 몬스터에게 현재 방무 90%, 추가 방무 20%, 제거할 방무 10% → ${client.prefix}방무 250 90 20 -10`,
     type: ["메이플"],
     async execute(message, args) {
         if (args.length < 2) {

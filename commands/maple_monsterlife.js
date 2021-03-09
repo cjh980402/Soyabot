@@ -43,7 +43,7 @@ async function farm_add(end_date, user, monster) { // 농장 추가
     }
     else { // 날짜 설정
         const date = end_date.match(/^(\d{2})(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/);
-        // 올바른 YYMMDD 형식인지 확인하는 정규식 -> 인덱스 1: 연도, 2: 월, 3: 일
+        // 올바른 YYMMDD 형식인지 확인하는 정규식 → 인덱스 1: 연도, 2: 월, 3: 일
         if (!date) {
             return '잘못된 형식의 날짜를 입력하였습니다. YYMMDD 형식으로 끝나는 날짜를 입력해주세요.';
         }
