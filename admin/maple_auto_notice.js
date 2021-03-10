@@ -170,7 +170,7 @@ module.exports.startFlag = function () {
             if (now > flagDate) {
                 flagDate.setDate(now.getDate() + 1); // 플래그 시간 지났으면 다음 날 플래그로 알림 설정
             }
-            setTimeout(async () => {
+            flagTimer[i] = setTimeout(async () => {
                 botNotice(`${flagtime[i] + 1}시 플래그를 준비하세요!`, "flag");
                 // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
                 flagTimer[i] = setInterval(botNotice, 86400000, `${flagtime[i] + 1}시 플래그를 준비하세요!`, "flag"); // 24시간 주기
@@ -182,7 +182,7 @@ module.exports.startFlag = function () {
 module.exports.stopFlag = function () {
     for (let i = 0; i < flagTimer.length; i++) {
         if (flagTimer[i]) {
-            clearInterval(flagTimer[i]);
+            clearInterval(flagTimer[i]); // setInterval 실행되기 전 setTimeout도 취소 가능
             flagTimer[i] = null;
         }
     }
