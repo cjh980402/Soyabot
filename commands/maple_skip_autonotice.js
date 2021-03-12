@@ -19,7 +19,7 @@ module.exports = {
         if (!noticematch[args[0]]) {
             const notice = [];
             for (let i in noticematch) {
-                if (await db.get(`SELECT * FROM ${noticematch[i]}skip WHERE channelid = ?`, [String(chat.Channel.Id)])) { // 현재 꺼짐
+                if (await db.get(`SELECT * FROM ${noticematch[i]}skip WHERE channelid = ?`, [message.guild.id])) { // 현재 꺼짐
                     notice.push(`${i} 자동알림: OFF`);
                 }
                 else {
