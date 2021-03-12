@@ -47,7 +47,7 @@ module.exports = {
             return client.commands.find((cmd) => cmd.command.includes("play")).execute(message, args);
         }
 
-        let playlist = null, videos = [];
+        let playlist = null, videos = null;
 
         if (scVideo) {
             playlist = await scdl.getSetInfo(`https://soundcloud.com/${scVideo}`, SOUNDCLOUD_CLIENT_ID);
