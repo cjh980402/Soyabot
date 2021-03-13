@@ -1,6 +1,6 @@
 const ytdl = require("ytdl-core");
 const scdl = require("soundcloud-downloader").default;
-const { replyAdmin } = require('../admin/bot_control');
+const { sleep, replyAdmin } = require('../admin/bot_control');
 const { STAY_TIME, DEFAULT_VOLUME, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
 const { canModifyQueue } = require("../util/SoyabotUtil");
 
@@ -8,7 +8,7 @@ module.exports.play = async function (song, guild) {
     const queue = client.queue.get(guild.id);
 
     if (!song) {
-        deleteQueue();
+        client.queue.delete(guild.id);
         setTimeout(() => { // 종료 후 새로운 음악 기능이 수행 중이면 나가지 않음
             const newQueue = client.queue.get(guild.id);
             if (!newQueue && guild.me.voice.channel) {
@@ -49,21 +49,12 @@ module.exports.play = async function (song, guild) {
         queue.connection.once("disconnect", () => client.queue.delete(guild.id)); // 연결 끊기면 자동으로 큐를 삭제하는 리스너 등록
     }
 
-    const playingMessage = await queue.textChannel.send(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
-    const filter = (reaction, user) => user.id != client.user.id;
-    const collector = playingMessage.createReactionCollector(filter, {
-        time: (song.duration > 0) ? song.duration * 1000 : 600000
-    });
-
-    collector.once("end", async () => {
-        const find = await db.get("SELECT * FROM pruningskip WHERE channelid = ?", [guild.id]);
-        if (!find && playingMessage && !playingMessage.deleted) {
-            playingMessage.delete({ timeout: 1500 });
-        }
-    });
-
+    let collector = null;
     queue.connection.play(stream, { type: streamType, volume: queue.volume / 100 })
         .once("finish", async () => {
+            while (!collector) {
+                await sleep(500);
+            }
             collector.stop();
             if (queue.loop) {
                 queue.songs.push(queue.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣음 -> 루프 발생
@@ -74,6 +65,9 @@ module.exports.play = async function (song, guild) {
             module.exports.play(queue.songs[0], guild); // 재귀적으로 다음 곡 재생
         })
         .once("error", async (e) => {
+            while (!collector) {
+                await sleep(500);
+            }
             collector.stop();
             queue.textChannel.send(e.message.startsWith("input stream") ? "재생할 수 없는 동영상입니다." : "에러로그가 전송되었습니다.");
             replyAdmin(`노래 재생 에러\nsong 객체: ${song.$}\n에러 내용: ${e}\n${e.stack ?? e.$}`);
@@ -81,6 +75,7 @@ module.exports.play = async function (song, guild) {
             module.exports.play(queue.songs[0], guild);
         });
 
+    const playingMessage = await queue.textChannel.send(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
     try {
         await playingMessage.react("⏯");
         await playingMessage.react("⏭");
@@ -91,8 +86,13 @@ module.exports.play = async function (song, guild) {
         await playingMessage.react("⏹");
     }
     catch (e) {
-        // queue.textChannel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
+        queue.textChannel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
     }
+
+    const filter = (reaction, user) => user.id != client.user.id;
+    collector = playingMessage.createReactionCollector(filter, {
+        time: (song.duration > 0) ? song.duration * 1000 : 600000
+    });
 
     collector.on("collect", async (reaction, user) => {
         try {
@@ -157,6 +157,13 @@ module.exports.play = async function (song, guild) {
         }
         catch (e) {
             return queue.textChannel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
+        }
+    });
+
+    collector.once("end", async () => {
+        const find = await db.get("SELECT * FROM pruningskip WHERE channelid = ?", [guild.id]);
+        if (!find && playingMessage && !playingMessage.deleted) {
+            playingMessage.delete({ timeout: 1000 });
         }
     });
 }
