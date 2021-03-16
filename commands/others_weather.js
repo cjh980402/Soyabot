@@ -49,7 +49,7 @@ module.exports = {
 
         const parse = cheerio.load(await (await fetch(`https://weather.naver.com/today/${targetLocal[1][0]}`)).text());
         const nowWeather = parse(".weather_area");
-        const weather = [`현재 날씨\n\n현재온도: ${nowWeather.find(".current").contents()[1].data}° (${nowWeather.find(".summary > .weather").text()})`, "날씨 예보\n"]
+        const weather = [`현재 날씨\n\n현재온도: ${nowWeather.find(".current").contents()[1].data}° (${nowWeather.find(".summary > .weather").text()})`, "날씨 예보\n"];
 
         const summaryTerm = nowWeather.find(".summary_list > .term");
         const summaryDesc = nowWeather.find(".summary_list > .desc");
