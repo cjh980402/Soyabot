@@ -49,17 +49,17 @@ module.exports = {
 
         const parse = cheerio.load(await (await fetch(`https://weather.naver.com/today/${targetLocal[1][0]}`)).text());
         const nowWeather = parse(".weather_area");
-        let weather1 = `현재 날씨\n\n현재온도: ${nowWeather.find(".current").contents()[1].data}° (${nowWeather.find(".summary > .weather").text()})`;
+        const weather = [`현재 날씨\n\n현재온도: ${nowWeather.find(".current").contents()[1].data}° (${nowWeather.find(".summary > .weather").text()})`, "날씨 예보\n"]
 
         const summaryTerm = nowWeather.find(".summary_list > .term");
         const summaryDesc = nowWeather.find(".summary_list > .desc");
         for (let i = 0; i < summaryTerm.length; i++) {
-            weather1 += `${i % 2 ? "│" : "\n"}${summaryTerm.eq(i).text()}: ${summaryDesc.eq(i).text()}`;
+            weather[0] += `${i % 2 ? "│" : "\n"}${summaryTerm.eq(i).text()}: ${summaryDesc.eq(i).text()}`;
         }
 
         const todayInfo = parse(".today_chart_list .item_inner");
         for (let i = 0; i < todayInfo.length; i++) {
-            weather1 += `${i % 2 ? "│" : "\n"}${todayInfo.eq(i).find(".ttl").text()}: ${todayInfo.eq(i).find(".level_text").text()}`;
+            weather[0] += `${i % 2 ? "│" : "\n"}${todayInfo.eq(i).find(".ttl").text()}: ${todayInfo.eq(i).find(".level_text").text()}`;
         }
 
         const weather = parse(".time_list > .item_time");
@@ -69,18 +69,17 @@ module.exports = {
         const rain = rainData.find('.data');
         const humidity = parse('div[data-name="humidity"] .row_graph > .data');
         const wind = parse('div[data-name="wind"] .row_graph > .data');
-        let rainSpan = 1, weather2 = "날씨 예보\n";
 
-        for (let i = 0, j = 0; i < weather.length - 1; i++) {
+        for (let i = 0, j = 0, rainSpan = 1; i < weather.length - 1; i++) {
             rainSpan--;
-            weather2 += `\n${weather.eq(i).find(".time").text()}: ${weather.eq(i).attr("data-tmpr")}° (${weather.eq(i).attr("data-wetr-txt")})│${rainName}: ${rain.eq(j).text().trim()}${rainUnit}│습도: ${humidity.eq(i).text().trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
+            weather[1] += `\n${weather.eq(i).find(".time").text()}: ${weather.eq(i).attr("data-tmpr")}° (${weather.eq(i).attr("data-wetr-txt")})│${rainName}: ${rain.eq(j).text().trim()}${rainUnit}│습도: ${humidity.eq(i).text().trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
             if (rainSpan == 0) {
                 rainSpan = +(rain.eq(++j).attr("colspan") ?? 1);
             }
         }
 
         let currentPage = 0;
-        const embeds = generateWeatherEmbed(targetLocal[0][0], [weather1, weather2]);
+        const embeds = generateWeatherEmbed(targetLocal[0][0], weather);
         const weatherEmbed = await message.channel.send(
             `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
             embeds[currentPage]
