@@ -2,13 +2,13 @@ const { MessageEmbed } = require("discord.js");
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 
-function generateWeatherEmbed(local, weather) {
+function generateWeatherEmbed(local, weatherDesc) {
     const embeds = [];
-    for (let i = 0; i < weather.length; i++) {
+    for (let i = 0; i < weatherDesc.length; i++) {
         const embed = new MessageEmbed()
             .setTitle(`**${local}**`)
             .setColor("#FF9899")
-            .setDescription(weather[i])
+            .setDescription(weatherDesc[i])
             .setTimestamp();
 
         if (embed.description.length > 2048) {
@@ -49,17 +49,17 @@ module.exports = {
 
         const parse = cheerio.load(await (await fetch(`https://weather.naver.com/today/${targetLocal[1][0]}`)).text());
         const nowWeather = parse(".weather_area");
-        const weather = [`현재 날씨\n\n현재온도: ${nowWeather.find(".current").contents()[1].data}° (${nowWeather.find(".summary > .weather").text()})`, "날씨 예보\n"];
+        const weatherDesc = [`현재 날씨\n\n현재온도: ${nowWeather.find(".current").contents()[1].data}° (${nowWeather.find(".summary > .weather").text()})`, "날씨 예보\n"];
 
         const summaryTerm = nowWeather.find(".summary_list > .term");
         const summaryDesc = nowWeather.find(".summary_list > .desc");
         for (let i = 0; i < summaryTerm.length; i++) {
-            weather[0] += `${i % 2 ? "│" : "\n"}${summaryTerm.eq(i).text()}: ${summaryDesc.eq(i).text()}`;
+            weatherDesc[0] += `${i % 2 ? "│" : "\n"}${summaryTerm.eq(i).text()}: ${summaryDesc.eq(i).text()}`;
         }
 
         const todayInfo = parse(".today_chart_list .item_inner");
         for (let i = 0; i < todayInfo.length; i++) {
-            weather[0] += `${i % 2 ? "│" : "\n"}${todayInfo.eq(i).find(".ttl").text()}: ${todayInfo.eq(i).find(".level_text").text()}`;
+            weatherDesc[0] += `${i % 2 ? "│" : "\n"}${todayInfo.eq(i).find(".ttl").text()}: ${todayInfo.eq(i).find(".level_text").text()}`;
         }
 
         const weather = parse(".time_list > .item_time");
@@ -72,7 +72,7 @@ module.exports = {
 
         for (let i = 0, j = 0, rainSpan = 1; i < weather.length - 1; i++) {
             rainSpan--;
-            weather[1] += `\n${weather.eq(i).find(".time").text()}: ${weather.eq(i).attr("data-tmpr")}° (${weather.eq(i).attr("data-wetr-txt")})│${rainName}: ${rain.eq(j).text().trim()}${rainUnit}│습도: ${humidity.eq(i).text().trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
+            weatherDesc[1] += `\n${weather.eq(i).find(".time").text()}: ${weather.eq(i).attr("data-tmpr")}° (${weather.eq(i).attr("data-wetr-txt")})│${rainName}: ${rain.eq(j).text().trim()}${rainUnit}│습도: ${humidity.eq(i).text().trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
             if (rainSpan == 0) {
                 rainSpan = +(rain.eq(++j).attr("colspan") ?? 1);
             }
