@@ -54,12 +54,12 @@ module.exports = {
         const summaryTerm = nowWeather.find(".summary_list > .term");
         const summaryDesc = nowWeather.find(".summary_list > .desc");
         for (let i = 0; i < summaryTerm.length; i++) {
-            weather1 += `${i % 2 ? " | " : "\n"}${summaryTerm.eq(i).text()}: ${summaryDesc.eq(i).text()}`;
+            weather1 += `${i % 2 ? "│" : "\n"}${summaryTerm.eq(i).text()}: ${summaryDesc.eq(i).text()}`;
         }
 
         const todayInfo = parse(".today_chart_list .item_inner");
         for (let i = 0; i < todayInfo.length; i++) {
-            weather1 += `${i % 2 ? " | " : "\n"}${todayInfo.eq(i).find(".ttl").text()}: ${todayInfo.eq(i).find(".level_text").text()}`;
+            weather1 += `${i % 2 ? "│" : "\n"}${todayInfo.eq(i).find(".ttl").text()}: ${todayInfo.eq(i).find(".level_text").text()}`;
         }
 
         const weather = parse(".time_list > .item_time");
@@ -73,7 +73,7 @@ module.exports = {
 
         for (let i = 0, j = 0; i < weather.length - 1; i++) {
             rainSpan--;
-            weather2 += `\n${weather.eq(i).find(".time").text()}: ${weather.eq(i).attr("data-tmpr")}° (${weather.eq(i).attr("data-wetr-txt")}) | ${rainName}: ${rain.eq(j).text().trim()}${rainUnit} | 습도: ${humidity.eq(i).text().trim()}% | 풍속: ${wind.eq(i).text().trim()}㎧`;
+            weather2 += `\n${weather.eq(i).find(".time").text()}: ${weather.eq(i).attr("data-tmpr")}° (${weather.eq(i).attr("data-wetr-txt")})│${rainName}: ${rain.eq(j).text().trim()}${rainUnit}│습도: ${humidity.eq(i).text().trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
             if (rainSpan == 0) {
                 rainSpan = +(rain.eq(++j).attr("colspan") ?? 1);
             }

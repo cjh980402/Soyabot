@@ -7,7 +7,7 @@ const ytsr = require('ytsr');
 const scdl = require("soundcloud-downloader").default;
 
 module.exports = {
-    usage: `${client.prefix}play (YouTube 주소 | Soundcloud 주소 | 영상 제목)`,
+    usage: `${client.prefix}play (YouTube 주소│Soundcloud 주소│영상 제목)`,
     command: ["play", "p", "노래"],
     description: "- YouTube나 Soundcloud를 통해 노래를 재생합니다.",
     type: ["음악"],
