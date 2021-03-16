@@ -79,7 +79,7 @@ module.exports = {
         }
 
         let currentPage = 0;
-        const embeds = generateWeatherEmbed(targetLocal[0][0], weather);
+        const embeds = generateWeatherEmbed(targetLocal[0][0], weatherDesc);
         const weatherEmbed = await message.channel.send(
             `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
             embeds[currentPage]
