@@ -52,7 +52,7 @@ module.exports = {
                 const trendData = parse(".ct_box.dmst_trend .trend_lst");
 
                 const chartURL = getChartImage(identifer, type);
-                const nowPrice = nowData.result.areas[0].datas[0].nv / 100; // 숫자값
+                const nowPrice = nowData.result.areas[0].datas[0].nv / 100;
                 const changeAmount = nowData.result.areas[0].datas[0].cv / 100; // 숫자값
                 const changeRate = nowData.result.areas[0].datas[0].cr;
                 const isFUT = identifer == "FUT";
@@ -104,8 +104,8 @@ module.exports = {
                 const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_ITEM%3A${identifer}`)).json();
 
                 const chartURL = getChartImage(identifer, type);
-                const beforePrice = nowData.result.areas[0].datas[0].pcv; // 숫자값
-                const nowPrice = nowData.result.areas[0].datas[0].nv; // 숫자값
+                const beforePrice = nowData.result.areas[0].datas[0].pcv;
+                const nowPrice = nowData.result.areas[0].datas[0].nv;
                 const changeAmount = nowPrice - beforePrice; // 숫자값
                 const changeRate = (changeAmount / beforePrice * 100).toFixed(2);
 
@@ -136,7 +136,7 @@ module.exports = {
 
                 const chartURL = getChartImage(identifer, type, true, true);
                 const nowPrice = data.closePrice;
-                const changeAmount = data.compareToPreviousClosePrice.replace(/,/g, "");;
+                const changeAmount = data.compareToPreviousClosePrice.replace(/,/g, ""); // 숫자값
                 const changeRate = data.fluctuationsRatio;
 
                 const minPrice = data.stockItemTotalInfos[3].value;
