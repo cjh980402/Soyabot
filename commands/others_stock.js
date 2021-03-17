@@ -55,18 +55,19 @@ module.exports = {
                 const nowPrice = nowData.result.areas[0].datas[0].nv / 100; // 숫자값
                 const changeAmount = nowData.result.areas[0].datas[0].cv / 100; // 숫자값
                 const changeRate = nowData.result.areas[0].datas[0].cr;
+                const isFUT = identifer == "FUT";
 
-                const minPrice = data.eq((identifer == "FUT") ? 3 : 1).text().trim() || "0";
-                const maxPrice = data.eq((identifer == "FUT") ? 2 : 0).text().trim() || "0";
-                const amount = data.eq((identifer == "FUT") ? 4 : 2).text().trim() || "0";
-                const totalPrice = data.eq((identifer == "FUT") ? 5 : 3).text().trim();
-                const min_52weeks = data.eq((identifer == "FUT") ? 7 : 5).text().trim() || "0";
-                const max_52weeks = data.eq((identifer == "FUT") ? 6 : 4).text().trim() || "0";
+                const minPrice = data.eq(isFUT ? 3 : 1).text().trim() || "0";
+                const maxPrice = data.eq(isFUT ? 2 : 0).text().trim() || "0";
+                const amount = data.eq(isFUT ? 4 : 2).text().trim() || "0";
+                const totalPrice = data.eq(isFUT ? 5 : 3).text().trim();
+                const min_52weeks = data.eq(isFUT ? 7 : 5).text().trim() || "0";
+                const max_52weeks = data.eq(isFUT ? 6 : 4).text().trim() || "0";
 
                 await cmd(`python3 ./util/make_stock_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                 // 파이썬 스크립트 실행
 
-                stockEmbed.addField((identifer == "FUT") ? '**약정수량**' : '**거래량**', amount, true)
+                stockEmbed.addField(isFUT ? '**약정수량**' : '**거래량**', amount, true)
                     .addField('**거래대금**', totalPrice, true)
                     .addField('**개인**', trendData.eq(0).find("span").eq(0).text(), true)
                     .addField('**외국인**', trendData.eq(0).find("span").eq(1).text(), true)
@@ -82,38 +83,20 @@ module.exports = {
                 }
             }
             else if (stockfind[2][0] == "해외지수") { // 해외 지수
+                const data = (await (await fetch(`https://api.stock.naver.com/index/${identifer}/basic`)).json());
+
                 const chartURL = getChartImage(identifer, type, true);
-                if (stockfind[3][0].startsWith('/world/sise')) {
-                    const parse = cheerio.load(await (await fetch(`https://m.stock.naver.com/world/item.nhn?symbol=${identifer}`)).text());
-                    const data = parse(".total_lst > li > span");
+                const nowPrice = data.closePrice;
+                const changeAmount = data.compareToPreviousClosePrice.replace(/,/g, "");
+                const changeRate = data.fluctuationsRatio;
 
-                    const nowPrice = parse(".price_wrp > .stock_price").text();
-                    const changeRate = +parse(".price_wrp .rate").text();
-                    const changeAmount = ((changeRate >= 0) ? 1 : -1) * +parse(".price_wrp .gap_price > .price").text().replace(/,/g, "");
+                const minPrice = data.stockItemTotalInfos[3].value;
+                const maxPrice = data.stockItemTotalInfos[2].value;
+                const min_52weeks = data.stockItemTotalInfos[5].value;
+                const max_52weeks = data.stockItemTotalInfos[4].value;
 
-                    const minPrice = data.eq(4).text().trim() || "0";
-                    const maxPrice = data.eq(1).text().trim() || "0";
-                    const min_52weeks = data.eq(5).text().trim() || "0";
-                    const max_52weeks = data.eq(2).text().trim() || "0";
-
-                    await cmd(`python3 ./util/make_stock_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
-                    // 파이썬 스크립트 실행
-                }
-                else {
-                    const data = (await (await fetch(`https://api.stock.naver.com/index/${identifer}/basic`)).json());
-
-                    const nowPrice = data.closePrice;
-                    const changeAmount = data.compareToPreviousClosePrice.replace(/,/g, "");
-                    const changeRate = data.fluctuationsRatio;
-
-                    const minPrice = data.stockItemTotalInfos[3].value;
-                    const maxPrice = data.stockItemTotalInfos[2].value;
-                    const min_52weeks = data.stockItemTotalInfos[5].value;
-                    const max_52weeks = data.stockItemTotalInfos[4].value;
-
-                    await cmd(`python3 ./util/make_stock_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
-                    // 파이썬 스크립트 실행
-                }
+                await cmd(`python3 ./util/make_stock_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
+                // 파이썬 스크립트 실행
             }
             else if (stockfind[3][0].startsWith('/item/main')) { // 국내 주식
                 const parse = cheerio.load(await (await fetch(`https://m.stock.naver.com/api/html/item/getOverallInfo.nhn?code=${identifer}`)).text());

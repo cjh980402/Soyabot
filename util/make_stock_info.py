@@ -11,19 +11,25 @@ def stock_info(img: Image):
     font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 32)
     drawer.text((20, 18), msg, (0, 0, 0), font)
 
-    tempString = f"{abs(float(sys.argv[6])):,.2f}".replace(".00", "")
+    changeAmount = float(sys.argv[6]) # argv[6]는 변화량
+    amountString = f"{abs(changeAmount):,.2f}".replace(".00", "")
     msg = f"현재: {sys.argv[5]}{sys.argv[4]}" # argv[5]은 현재 가격, argv[4]는 화폐 단위
     font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 28)
     w, h = drawer.textsize(msg, font) # 텍스트의 사이즈를 반환
 
-    if float(sys.argv[6]) >= 0: # argv[6]는 변화량
+    if changeAmount > 0: # 상승
         drawer.text((638 - w, 60), msg, (255, 100, 100), font) # 텍스트가 우측에서 20만큼의 여백을 가짐
-        msg = f"▲{tempString}{sys.argv[4]} | {sys.argv[7]}%" # argv[7]는 변화율
+        msg = f"▲{amountString}{sys.argv[4]}│{sys.argv[7]}%" # argv[7]는 변화율
         font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 30)
         drawer.text((20, 80), msg, (255, 100, 100), font)
-    else:
+    elif changeAmount == 0: # 보합
+        drawer.text((638 - w, 60), msg, (120, 120, 120), font)
+        msg = f"{amountString}{sys.argv[4]}│{sys.argv[7]}%"
+        font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 30)
+        drawer.text((20, 80), msg, (120, 120, 120), font)
+    else: # 하락
         drawer.text((638 - w, 60), msg, (100, 100, 255), font)
-        msg = f"▼{tempString}{sys.argv[4]} | {sys.argv[7]}%"
+        msg = f"▼{amountString}{sys.argv[4]}│{sys.argv[7]}%"
         font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 30)
         drawer.text((20, 80), msg, (100, 100, 255), font)
 
