@@ -12,7 +12,7 @@ def stock_info(img: Image):
     drawer.text((20, 18), msg, (0, 0, 0), font)
 
     changeAmount = float(sys.argv[6]) # argv[6]는 변화량
-    amountString = f"{abs(changeAmount):,.2f}".replace(".00", "")
+    amountString = f"{abs(changeAmount):,.2f}"
     msg = f"현재: {sys.argv[5]}{sys.argv[4]}" # argv[5]은 현재 가격, argv[4]는 화폐 단위
     font = ImageFont.truetype("./fonts/CookieRun Regular.ttf", 28)
     w, h = drawer.textsize(msg, font) # 텍스트의 사이즈를 반환
