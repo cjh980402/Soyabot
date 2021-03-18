@@ -36,7 +36,7 @@ module.exports = {
         const url = args[0];
         const search = args.join(" ");
         const scPattern = /^(https?:\/\/)?(www\.)?(m\.)?soundcloud\.(com|app)\/(.+)/i;
-        const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?youtube(\.googleapis|-nocookie)?\.com.*(v\/|v=|vi=|vi\/|e\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
+        const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?youtube(\.googleapis|-nocookie)?\.com.*(v\/|v=|vi=|vi\/|e\/|shorts\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
         const playlistPattern = /[&?]list=([\w-]+)/i;
         const scVideo = scPattern.exec(url)?.[5];
         let videoID = videoPattern.exec(url)?.[7];
