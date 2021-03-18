@@ -6,9 +6,10 @@ const { canModifyQueue } = require("../util/SoyabotUtil");
 
 module.exports.play = async function (song, guild) {
     const queue = client.queue.get(guild.id);
+    const deleteQueue = () => client.queue.delete(guild.id);
 
     if (!song) {
-        client.queue.delete(guild.id);
+        deleteQueue();
         setTimeout(() => { // 종료 후 새로운 음악 기능이 수행 중이면 나가지 않음
             const newQueue = client.queue.get(guild.id);
             if (!newQueue && guild.me.voice.channel) {
@@ -45,8 +46,8 @@ module.exports.play = async function (song, guild) {
         return queue.textChannel.send(`오류 발생: ${e.message ?? e}`);
     }
 
-    if (queue.connection.listenerCount("disconnect") == 1) { // 1개는 기본적으로 디스코드 내부에서 등록이 되어있기 때문
-        queue.connection.once("disconnect", () => client.queue.delete(guild.id)); // 연결 끊기면 자동으로 큐를 삭제하는 리스너 등록
+    if (queue.connection.rawListeners("disconnect").every((v) => v.name != "deleteQueue")) { // 리스너 중복 체크
+        queue.connection.on("disconnect", deleteQueue); // 연결 끊기면 자동으로 큐를 삭제하는 리스너 등록
     }
 
     let collector = null;
