@@ -1,9 +1,11 @@
 const { readFile } = require('fs').promises;
 const express = require('express');
 const app = express();
+const myPort = 8170;
 
-const server = app.listen(8170, () => {
-    console.log(`${server.address().port}번 port에 http server를 띄웠습니다.`);
+app.listen(myPort, () => {
+    app.locals.port = myPort;
+    console.log(`${app.locals.port}번 port에 http server를 띄웠습니다.`);
 });
 
 app.get('/image/:category/:picName', async (req, res) => { // 이미지 경로
@@ -39,4 +41,4 @@ app.get('/', async (req, res) => { // 메인 화면
     }
 });
 
-module.exports = server;
+module.exports = app;

@@ -8,7 +8,7 @@ const { adminChat, initClient } = require("./admin/admin_function");
 const { replyAdmin } = require('./admin/bot_control');
 const cachingMessage = require('./util/message_caching');
 const botChatting = require("./util/bot_chatting");
-const server = require("./util/express_server");
+const app = require("./util/express_server");
 const sqlite = require('./util/sqlite-handler');
 global.db = new sqlite('./db/soyabot_data.db'); // 여러 기능들에 의해 필수로 최상위 전역
 global.client = new Client({ disableMentions: "everyone", retryLimit: 3 }); // 네트워크 재요청 횟수 설정
@@ -31,7 +31,7 @@ client.on("ready", async () => {
         client.commands.push(require(`./commands/${file}`)); // 배열에 이름과 명령 객체를 push
     });
     client.user.setActivity(`${PREFIX}help and ${PREFIX}play`, { type: "LISTENING" });
-    replyAdmin(`소야봇이 작동 중입니다.\n${server.address().port}번 포트에서 http 서버가 작동 중입니다.`);
+    replyAdmin(`소야봇이 작동 중입니다.\n${app.locals.port}번 포트에서 http 서버가 작동 중입니다.`);
 });
 client.on("error", (e) => console.error(`에러 내용: ${e}\n${e.stack ?? e.$}`));
 client.on("warn", console.log);
