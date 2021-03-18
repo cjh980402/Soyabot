@@ -2,10 +2,10 @@ const { readFile } = require('fs').promises;
 const express = require('express');
 const app = express();
 const myPort = 8170;
+app.locals.port = myPort;
 
 app.listen(myPort, () => {
-    app.locals.port = myPort;
-    console.log(`${app.locals.port}번 port에 http server를 띄웠습니다.`);
+    console.log(`${myPort}번 port에 http server를 띄웠습니다.`);
 });
 
 app.get('/image/:category/:picName', async (req, res) => { // 이미지 경로
