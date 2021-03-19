@@ -26,7 +26,7 @@ module.exports = {
             const title = parse(".song_name").contents().last().text().trim();
             const is19 = parse(".song_name .bullet_icons.age_19.large").length;
             const artist = parse(".artist").eq(0).text().trim();
-            const lyrics = parse(".lyric").html()?.replace(/<!--.*-->/g, "").decodeHTML().trim();
+            const lyrics = parse(".lyric").contents().get().filter((v) => v.type == "text" || v.name == "br").map((v) => (v.type == "text") ? v.data : "\n").join("").trim(); // 멜론 사이트 소스 오타 대응
             lyricsEmbed.setTitle(`**"${title} - ${artist}"의 가사**`)
                 .setDescription(lyrics ?? `${is19 ? "연령 제한이 있는" : "등록된 가사가 없는"} 콘텐츠입니다.`);
         }
