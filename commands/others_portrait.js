@@ -12,14 +12,14 @@ module.exports = {
     type: ["기타"],
     async execute(message) {
         const imageURL = getMessageImage(message) ?? getMessageImage(message.channel.messages.cache.get(message.reference?.messageID));
-        if (imageURL && message.author.id == ADMIN_ID) {
+        if (!imageURL) {
+            return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
+        }
+        else if (message.author.id == ADMIN_ID) {
             await cmd(`python3 ./util/gl2face_portrait.py ${imageURL}`); // 파이썬 스크립트 실행
             return message.channel.send({
                 files: ["./pictures/portrait.png"]
             });
-        }
-        else {
-            return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
         }
     }
 };
