@@ -36,10 +36,10 @@ module.exports = {
             return message.channel.send("검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.");
         }
         else {
-            const stockfind = searchRslt.find((v) => v[1][0].toLowerCase() == search) ?? searchRslt[0]; // 내용과 일치하거나 첫번째 항목
+            const stockfind = searchRslt.find((v) => v[0][0].toLowerCase() == search || v[1][0].toLowerCase() == search) ?? searchRslt[0]; // 내용과 일치하거나 첫번째 항목
             const code = stockfind[0][0];
             const name = stockfind[1][0];
-            const identifer = stockfind[3][0].includes(stockfind[4][0]) ? stockfind[4][0] : stockfind[3][0].split("/")[4];
+            const identifer = stockfind[4][0];
 
             const stockEmbed = new MessageEmbed()
                 .setTitle(`**${name} (${code}) ${type}**`)
