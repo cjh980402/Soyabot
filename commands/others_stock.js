@@ -13,8 +13,19 @@ const chartType = {
     "10년": "area/year10"
 };
 
+const redirectURL = {
+    itemmain: "/item/index.nhn",
+    sisesise_index: "/sise/siseIndex.nhn",
+    worldsise: "/world/item.nhn"
+}
+
 function getChartImage(identifer, type, isWorld = false, isWorldItem = false) {
     return `https://ssl.pstatic.net/imgfinance/chart/mobile${isWorld ? "/world" : ""}${isWorldItem ? "/item" : ""}/${chartType[type]}/${identifer}_end.png?sidcode=${Date.now()}`;
+}
+
+function getRedirectURL(url) {
+    const afterRedirect = redirectURL[url.substring(0, url.indexOf(".nhn")).replace(/\//g, "")];
+    return afterRedirect ? url.replace(url.substring(0, url.indexOf("?")), afterRedirect) : url;
 }
 
 module.exports = {
@@ -39,12 +50,13 @@ module.exports = {
             const stockfind = searchRslt.find((v) => v[0][0].toLowerCase() == search || v[1][0].toLowerCase() == search) ?? searchRslt[0]; // 내용과 일치하거나 첫번째 항목
             const code = stockfind[0][0];
             const name = stockfind[1][0];
+            const link = getRedirectURL(stockfind[3][0]); // 리다이렉트 로직 반영
             const identifer = stockfind[4][0];
 
             const stockEmbed = new MessageEmbed()
                 .setTitle(`**${name} (${code}) ${type}**`)
                 .setColor("#FF9899")
-                .setURL(`https://m.stock.naver.com${stockfind[3][0]}`);
+                .setURL(`https://m.stock.naver.com${link}`);
             if (stockfind[2][0] == "국내지수") { // 국내 지수
                 const parse = cheerio.load(await (await fetch(`https://m.stock.naver.com/sise/siseIndex.nhn?code=${identifer}`)).text());
                 const data = parse(".total_list > li > span");
