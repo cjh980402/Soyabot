@@ -20,7 +20,7 @@ module.exports = {
         }
 
         try {
-            return message.channel.send(evaluate(inputExpression(args.join(" ").toLowerCase())));
+            return message.channel.send(String(evaluate(inputExpression(args.join(" ").toLowerCase()))));
         }
         catch (e) {
             return message.channel.send("올바르지 않은 수식입니다.");
