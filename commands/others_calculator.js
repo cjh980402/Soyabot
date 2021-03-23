@@ -3,6 +3,7 @@ const { evaluate } = require("mathjs");
 function inputExpression(str) {
     return str.replace(/×/g, "*")
         .replace(/÷/g, "/")
+        .replace(/°/g, "deg")
         .replace(/파이|π/g, "pi")
         .replace(/루트|√/g, "sqrt")
         .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (all) => `^(${all.split("").map((v) => "⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(v)).join("")})`);
