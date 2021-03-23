@@ -3,9 +3,9 @@ const { evaluate } = require("mathjs");
 function inputExpression(str) {
     return str.replace(/×/g, "*")
         .replace(/÷/g, "/")
+        .replace(/π/g, "pi")
         .replace(/°/g, "deg")
-        .replace(/파이|π/g, "pi")
-        .replace(/루트|√/g, "sqrt")
+        .replace(/√/g, "sqrt")
         .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (all) => `^(${all.split("").map((v) => "⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(v)).join("")})`);
 }
 
@@ -16,7 +16,7 @@ module.exports = {
     type: ["기타"],
     async execute(message, args) {
         if (args.length < 1) {
-            return chat.reply(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
         try {
