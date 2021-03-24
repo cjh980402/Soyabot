@@ -8,7 +8,8 @@ try:
     char_img = Image.open(requests.get(sys.argv[1], stream = True).raw).resize((565, 565)) # url -> Image
     image.paste(char_img, (514 - char_img.size[0]  // 2, 165), mask = char_img) # 투명 배경때문에 mask를 붙여넣을 이미지로 지정
 except:
-    pass
+    char_img = Image.open(requests.get("https://ssl.nx.com/s2/game/maplestory/renewal/common/no_char_img_180.png", stream = True).raw).resize((1010, 1010))
+    image.paste(char_img, (535 - char_img.size[0]  // 2, -120), mask = char_img)
 
 drawer = ImageDraw.Draw(image)
 
