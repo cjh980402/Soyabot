@@ -1,4 +1,12 @@
-const { evaluate } = require("mathjs");
+const { create, all } = require("mathjs");
+const math = create(all);
+
+math.import({
+    'import': function () { throw new Error('Function import is disabled') },
+    'createUnit': function () { throw new Error('Function createUnit is disabled') },
+    'evaluate': function () { throw new Error('Function evaluate is disabled') },
+    'parse': function () { throw new Error('Function parse is disabled') }
+}, { override: true }) // 일부 기능 사용을 제한한다.
 
 function inputExpression(str) {
     return str.replace(/×/g, "*")
@@ -20,7 +28,7 @@ module.exports = {
         }
 
         try {
-            return message.channel.send(String(evaluate(inputExpression(args.join(" ")))));
+            return message.channel.send(String(math.evaluate(inputExpression(args.join(" ")))));
         }
         catch (e) {
             return message.channel.send("올바르지 않은 수식입니다.");
