@@ -1,5 +1,6 @@
 const { create, all } = require("mathjs");
 const math = create(all);
+const limitedEvaluate = math.evaluate;
 
 math.import({
     import: function () { throw new Error('Function import is disabled') },
@@ -28,7 +29,7 @@ module.exports = {
         }
 
         try {
-            return message.channel.send(String(math.evaluate(inputExpression(args.join(" ")))));
+            return message.channel.send(String(limitedEvaluate(inputExpression(args.join(" ")))));
         }
         catch (e) {
             return message.channel.send("올바르지 않은 수식입니다.");
