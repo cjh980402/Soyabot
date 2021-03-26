@@ -30,11 +30,38 @@ client.on("ready", async () => {
     readdirSync("./commands").filter((file) => file.endsWith(".js")).forEach((file) => { // commands 폴더속 .js 파일 걸러내기
         client.commands.push(require(`./commands/${file}`)); // 배열에 이름과 명령 객체를 push
     });
-    client.user.setActivity(`${PREFIX}help and ${PREFIX}play`, { type: "LISTENING" });
+    client.user.setActivity(`${client.prefix}help and ${client.prefix}play`, { type: "LISTENING" });
+
+    /*client.commands.forEach((v) => {
+        if (!v.description) {
+            return;
+        }
+        const args = v.usage.match(/\(.+?\)/g);
+
+        const data = { name: v.command[0], description: v.description };
+        if (args?.length > 0) {
+            data.options = args.map((v) => ({ name: v.replace(/[\s()]/g, "").replace(/[^가-힣A-Za-z0-9_]/g, "_"), description: v, type: 3, required: true }));
+        }
+
+        client.api.applications(client.user.id).commands.post({ data });
+    });*/
+
     replyAdmin(`소야봇이 작동 중입니다.\n${app.locals.port}번 포트에서 http 서버가 작동 중입니다.`);
 });
 client.on("error", (e) => console.error(`에러 내용: ${e}\n${e.stack ?? e.$}`));
 client.on("warn", console.log);
+
+/*client.ws.on("INTERACTION_CREATE", async (interaction) => {
+    client.api.interactions(interaction.id, interaction.token).callback.post({
+        data: {
+            type: 4,
+            data: {
+                content: `<${interaction.data.name} 명령>`
+            }
+        }
+    })
+    client.commands.find((v) => v.command.includes(interaction.data.name))?.execute(client.channels.cache.get(interaction.channel_id).messages.cache.last(), interaction.data.options?.map((v) => v.value.trim()) ?? []);
+});*/
 
 client.on("message", async (message) => { // 각 메시지에 반응, 디스코드는 봇의 채팅도 이 이벤트에 들어옴
     let commandName;
@@ -51,12 +78,12 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
             await adminChat(message);
         }
 
-        const prefixRegex = new RegExp(`^\\s*(<@!?${client.user.id}>|${escapeRegex(PREFIX)})\\s*`); // 문자열로 정규식 생성하기 위해 생성자 이용
-        // 자기자신한테 하는 멘션 또는 PREFIX로 시작하는 명령어에 대응
+        const prefixRegex = new RegExp(`^\\s*(<@!?${client.user.id}>|${escapeRegex(client.prefix)})\\s*`); // 문자열로 정규식 생성하기 위해 생성자 이용
+        // 자기자신한테 하는 멘션 또는 client.prefix로 시작하는 명령어에 대응
         // message.content: 메시지 내용 텍스트
         // 멘션의 형태: <@${user.id}>, 인용의 형태: > ${내용}
         const matchedPrefix = prefixRegex.exec(message.content)?.[0]; // 정규식에 대응되는 명령어 접두어 부분을 탐색
-        if (!matchedPrefix) { // 멘션이나 PREFIX로 시작하지 않는 경우
+        if (!matchedPrefix) { // 멘션이나 client.prefix로 시작하지 않는 경우
             return botChatting(message); // 잡담 로직
         }
 
