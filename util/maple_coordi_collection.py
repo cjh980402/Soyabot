@@ -12,7 +12,7 @@ for i in range(count): # 2 ~ 1+argv[1]: 이미지 주소
     try:
         char_img = Image.open(requests.get(sys.argv[2 + i], stream = True).raw) # url -> Image
     except:
-        char_img = Image.open(requests.get("https://ssl.nx.com/s2/game/maplestory/renewal/common/no_char_img_180.png", stream = True).raw) # url -> Image
+        char_img = Image.open(requests.get("https://ssl.nx.com/s2/game/maplestory/renewal/common/no_char_img_180.png", stream = True).raw)
     image.paste(char_img, (180 * (i % 2), -20 + 180 * (i // 2)), mask = char_img) # 투명 배경때문에 mask를 붙여넣을 이미지로 지정
 
 drawer = ImageDraw.Draw(image)

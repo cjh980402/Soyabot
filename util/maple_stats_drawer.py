@@ -8,7 +8,7 @@ def draw_stats(img: Image, name: str):
     name_coord = (25, 47)
     drawer.text(name_coord, name, (255, 255, 255), ImageFont.truetype('./fonts/CookieRun Regular.ttf', 14))
 
-  # 스탯 배분 후 스탯 쓰기
+    # 스탯 배분 후 스탯 쓰기
     stats = [4, 4, 4, 4]
     for i in range(9):
         stats[randrange(4)] += 1

@@ -28,24 +28,26 @@ client.on("ready", async () => {
      * 모든 명령 import
      */
     readdirSync("./commands").filter((file) => file.endsWith(".js")).forEach((file) => { // commands 폴더속 .js 파일 걸러내기
-        client.commands.push(require(`./commands/${file}`)); // 배열에 이름과 명령 객체를 push
-    });
-    client.user.setActivity(`${client.prefix}help and ${client.prefix}play`, { type: "LISTENING" });
+        client.commands.push(require(`./commands/${file}`)); // 배열에 명령 객체를 push
+        
+        /*const cmd = require(`./commands/${file}`);
+        client.commands.push(cmd); // 배열에 명령 객체를 push
 
-    /*client.commands.forEach((v) => {
-        if (!v.description) {
+        if (!cmd.description) {
             return;
         }
-        const args = v.usage.match(/\(.+?\)/g);
 
-        const data = { name: v.command[0], description: v.description };
+        const args = cmd.usage.match(/\(.+?\)/g);
+        const data = { name: cmd.command[0], description: cmd.description.split("\n")[0] };
+
         if (args?.length > 0) {
             data.options = args.map((v) => ({ name: v.replace(/[\s()]/g, "").replace(/[^가-힣A-Za-z0-9_]/g, "_"), description: v, type: 3, required: true }));
         }
 
-        client.api.applications(client.user.id).commands.post({ data });
-    });*/
+        client.api.applications(client.user.id).commands.post({ data });*/
+    });
 
+    client.user.setActivity(`${client.prefix}help and ${client.prefix}play`, { type: "LISTENING" });
     replyAdmin(`소야봇이 작동 중입니다.\n${app.locals.port}번 포트에서 http 서버가 작동 중입니다.`);
 });
 client.on("error", (e) => console.error(`에러 내용: ${e}\n${e.stack ?? e.$}`));
