@@ -178,4 +178,6 @@ module.exports = {
             return message.channel.send(stockEmbed);
         }
     }
+};     }
+    }
 };

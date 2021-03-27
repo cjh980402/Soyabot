@@ -8,7 +8,7 @@ module.exports = {
     async execute(message, args) {
         const count = +(args[0] ?? 2);
         if (isNaN(count) || count < 2 || count > 6) {
-            message.reply("닉네임은 2 ~ 6 글자만 가능합니다.");
+            message.replyTo("닉네임은 2 ~ 6 글자만 가능합니다.");
         }
 
         let rslt = "";
@@ -16,6 +16,6 @@ module.exports = {
         for (let i = 0; i < count; i++) {
             rslt += list[Math.floor(Math.random() * list.length)];
         }
-        return message.reply(`${count}글자 닉네임 추천: ${rslt}`);
+        return message.replyTo(`${count}글자 닉네임 추천: ${rslt}`);
     }
 };

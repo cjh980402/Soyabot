@@ -35,21 +35,21 @@ module.exports = {
     type: ["음악"],
     async execute(message) {
         if (!message.guild) {
-            return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
+            return message.replyTo("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         }
 
         const { channel } = message.member.voice;
         const serverQueue = client.queue.get(message.guild.id);
         if (!channel || (serverQueue && channel != message.guild.me.voice.channel)) {
-            return message.reply(`같은 음성 채널에 참가해주세요! (${client.user})`);
+            return message.replyTo(`같은 음성 채널에 참가해주세요! (${client.user})`);
         }
 
         const permissions = channel.permissionsFor(client.user);
         if (!permissions.has("CONNECT")) {
-            return message.reply("권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.");
+            return message.replyTo("권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.");
         }
         if (!permissions.has("SPEAK")) {
-            return message.reply("이 음성 채널에서 말을 할 수 없습니다. 적절한 권한이 있는지 확인해야합니다.");
+            return message.replyTo("이 음성 채널에서 말을 할 수 없습니다. 적절한 권한이 있는지 확인해야합니다.");
         }
 
         let connection = null;

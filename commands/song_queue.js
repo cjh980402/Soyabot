@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed } = require("../util/discord.js-extend");
 
 function generateQueueEmbed(message, songs) {
     const embeds = [];
@@ -23,7 +23,7 @@ module.exports = {
     type: ["음악"],
     async execute(message) {
         if (!message.guild) {
-            return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
+            return message.replyTo("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         }
 
         const queue = client.queue.get(message.guild.id);

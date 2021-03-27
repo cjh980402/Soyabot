@@ -1,4 +1,4 @@
-const { Message } = require("discord.js");
+const { Message } = require("./discord.js-extend");
 
 module.exports = async function (message) {
     if (!(message instanceof Message && message.guild)) {

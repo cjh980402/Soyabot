@@ -17,10 +17,10 @@ module.exports = {
     type: ["기타"],
     async execute(message, args) {
         if (!message.guild) {
-            return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
+            return message.replyTo("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         }
         else if (message.guild.memberCount < 3) {
-            return message.reply("소야봇을 제외한 방의 인원이 2명 이상일 때 게임을 이용할 수 있습니다.");
+            return message.replyTo("소야봇을 제외한 방의 인원이 2명 이상일 때 게임을 이용할 수 있습니다.");
         }
         const bullet = (isNaN(args[0]) || +args[0] < 2 || +args[0] > 20) ? 6 : +args[0]; // 탄환 수 지정
         const gameUser = [message.member]; // 참가자 객체 배열

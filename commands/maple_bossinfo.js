@@ -1,5 +1,5 @@
 const { bossData } = require("../util/soyabot_const.json");
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed } = require("../util/discord.js-extend");
 
 module.exports = {
     usage: `${client.prefix}보스 (보스 이름) (보스 난이도)`,

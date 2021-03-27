@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed } = require("../util/discord.js-extend");
 const { botNotice, replyAdmin } = require('./bot_control.js');
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');

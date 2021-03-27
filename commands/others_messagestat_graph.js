@@ -1,4 +1,4 @@
-const { MessageAttachment } = require("discord.js");
+const { MessageAttachment } = require("../util/discord.js-extend");
 const { ADMIN_ID } = require("../soyabot_config.json");
 const QuickChart = require('quickchart-js');
 

@@ -3,16 +3,16 @@ module.exports = function (message) {
         return message.channel.send(`주사위 결과: ${Math.floor(Math.random() * (100) + 1)}`);
     }
     else if (/vs/i.test(message.content) && !/vsc/i.test(message.content)) {
-        return message.reply(choiceVS(message.content));
+        return message.replyTo(choiceVS(message.content));
     }
     else if (message.content.endsWith("확률")) {
-        return message.reply(`확률: ${Math.floor(Math.random() * 101)}%`);
+        return message.replyTo(`확률: ${Math.floor(Math.random() * 101)}%`);
     }
     else if (/뭐하지|ㅁㅎㅈ/i.test(message.content)) {
-        return message.reply(recommendWork());
+        return message.replyTo(recommendWork());
     }
     else if (/뭐먹지|ㅁㅁㅈ/i.test(message.content)) {
-        return message.reply(recommendFood());
+        return message.replyTo(recommendFood());
     }
     else if (message.content.includes(client.user.username)) {
         if (/바\s*보|멍\s*청\s*이/.test(message.content)) {

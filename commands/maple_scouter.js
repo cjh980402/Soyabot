@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed } = require("../util/discord.js-extend");
 const mapleModule = require("../util/maple_parsing");
 const scoreGrade = [
     [0, "메린이"],
