@@ -1,5 +1,5 @@
 const { cmd } = require('../admin/admin_function');
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed } = require("../util/discord.js-extend");
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 const chartType = {
@@ -177,7 +177,5 @@ module.exports = {
             stockEmbed.setImage(`http://140.238.26.231:8170/image/stock/${code}.png?time=${Date.now()}`);
             return message.channel.send(stockEmbed);
         }
-    }
-};     }
     }
 };

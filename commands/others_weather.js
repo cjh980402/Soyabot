@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed } = require("../util/discord.js-extend");
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 
@@ -117,7 +117,5 @@ module.exports = {
                 return message.channel.send("**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**");
             }
         });
-    }
-};   });
     }
 };
