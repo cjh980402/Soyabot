@@ -31,7 +31,7 @@ module.exports.adminChat = async function (message) {
     else if (message.channel.recipient == ADMIN_ID && message.reference) { // 건의 답변 기능
         const suggestRefer = message.channel.messages.cache.get(message.reference.messageID);
         const target = client.suggestionChat[suggestRefer?.content.split('\n')[0]];
-        target?.reply(message.content);
+        target?.replyTo(message.content);
         message.channel.send(target ? '건의 답변을 보냈습니다.' : '해당하는 건의의 정보가 존재하지 않습니다.');
     }
 }
