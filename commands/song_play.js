@@ -13,13 +13,13 @@ module.exports = {
     type: ["음악"],
     async execute(message, args) {
         if (!message.guild) {
-            return message.replyTo("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
+            return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
         }
 
         const { channel } = message.member.voice;
         const serverQueue = client.queue.get(message.guild.id);
         if (!channel || (serverQueue && channel != message.guild.me.voice.channel)) {
-            return message.replyTo(`같은 음성 채널에 참가해주세요! (${client.user})`);
+            return message.reply(`같은 음성 채널에 참가해주세요! (${client.user})`);
         }
         if (args.length < 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
@@ -27,10 +27,10 @@ module.exports = {
 
         const permissions = channel.permissionsFor(client.user);
         if (!permissions.has("CONNECT")) {
-            return message.replyTo("권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.");
+            return message.reply("권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.");
         }
         if (!permissions.has("SPEAK")) {
-            return message.replyTo("이 음성 채널에서 말을 할 수 없습니다. 적절한 권한이 있는지 확인해야합니다.");
+            return message.reply("이 음성 채널에서 말을 할 수 없습니다. 적절한 권한이 있는지 확인해야합니다.");
         }
 
         const url = args[0];
@@ -62,7 +62,7 @@ module.exports = {
                 videoID = filter && (await ytsr(filter, { limit: 1 })).items[0]?.id;
                 // videoID = (await youtube.searchVideos(search, 1, { part: "snippet" }))[0]?.id;
                 if (!videoID) {
-                    return message.replyTo("검색 내용에 해당하는 영상을 찾지 못했습니다.");
+                    return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");
                 }
             }
             const songInfo = await youtube.getVideoByID(videoID);

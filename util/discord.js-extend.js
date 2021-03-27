@@ -3,13 +3,6 @@ const util = require('util');
 const fetch = require("node-fetch");
 const { decodeHTML } = require("entities");
 
-Object.defineProperty(Discord.Message.prototype, "replyTo", {
-    value: async function (content, options = {}) {
-        options.replyTo = this.id;
-        return this.channel.send(content, options);
-    }
-});
-
 Object.defineProperty(Discord.Message.prototype, "fullContent", {
     get: async function () {
         if (this.type == "DEFAULT" && this.attachments.first()?.name == "message.txt") {

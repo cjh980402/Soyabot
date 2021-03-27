@@ -2,8 +2,6 @@ const Discord = require("../util/discord.js-extend"); // 디버깅용
 const util = require('util');
 const cp = require('child_process');
 const exec = util.promisify(cp.exec);
-const fetch = require("node-fetch");
-const { decodeHTML } = require("entities");
 const { ADMIN_ID } = require("../soyabot_config.json");
 const { botNotice, replyRoomID } = require('./bot_control.js');
 const { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, startTestPatch, stopTestPatch, startFlag, stopFlag } = require('./maple_auto_notice');
@@ -31,7 +29,7 @@ module.exports.adminChat = async function (message) {
     else if (message.channel.recipient == ADMIN_ID && message.reference) { // 건의 답변 기능
         const suggestRefer = message.channel.messages.cache.get(message.reference.messageID);
         const target = client.suggestionChat[suggestRefer?.content.split('\n')[0]];
-        target?.replyTo(message.content);
+        target?.reply(message.content);
         message.channel.send(target ? '건의 답변을 보냈습니다.' : '해당하는 건의의 정보가 존재하지 않습니다.');
     }
 }

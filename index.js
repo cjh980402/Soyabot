@@ -103,7 +103,7 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
         commandName = botModule.channelCool ? `${botModule.command[0]}_${message.channel.id}` : botModule.command[0];
 
         if (cooldowns.has(commandName)) { // 명령이 수행 중인 경우
-            return message.replyTo(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
+            return message.reply(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
         await (botModule.channelCool ? botModule.execute(message, args) : promiseTimeout(botModule.execute(message, args), 300000)); // 명령어 수행 부분
@@ -115,10 +115,10 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
             message.channel.send(`"${commandName.split("_")[0]}"의 입력 대기 시간이 초과되었습니다.`);
         }
         else if (e.message?.startsWith('메이플')) {
-            message.replyTo(e.message);
+            message.reply(e.message);
         }
         else {
-            message.replyTo("에러로그가 전송되었습니다.");
+            message.reply("에러로그가 전송되었습니다.");
             replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e.$}`);
         }
     }
