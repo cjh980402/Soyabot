@@ -1,4 +1,4 @@
-const Discord = require("../util/discord.js-extend");
+const Discord = require("discord.js");
 const util = require('util');
 const fetch = require("node-fetch");
 const { decodeHTML } = require("entities");
