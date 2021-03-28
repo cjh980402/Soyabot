@@ -47,8 +47,8 @@ module.exports = {
             targetLocal = searchRslt[+rslt.first().content - 1];
         }
 
-        const parse = cheerio.load(await (await fetch(`https://weather.naver.com/today/${targetLocal[1][0]}`)).text());
-        const nowWeather = parse(".weather_area");
+        const $ = cheerio.load(await (await fetch(`https://weather.naver.com/today/${targetLocal[1][0]}`)).text());
+        const nowWeather = $(".weather_area");
         const weatherDesc = [`현재 날씨\n\n현재온도: ${nowWeather.find(".current").contents()[1].data}° (${nowWeather.find(".summary > .weather").text()})`, "날씨 예보\n"];
 
         const summaryTerm = nowWeather.find(".summary_list > .term");
@@ -57,18 +57,18 @@ module.exports = {
             weatherDesc[0] += `${i % 2 ? "│" : "\n"}${summaryTerm.eq(i).text()}: ${summaryDesc.eq(i).text()}`;
         }
 
-        const todayInfo = parse(".today_chart_list .item_inner");
+        const todayInfo = $(".today_chart_list .item_inner");
         for (let i = 0; i < todayInfo.length; i++) {
             weatherDesc[0] += `${i % 2 ? "│" : "\n"}${todayInfo.eq(i).find(".ttl").text()}: ${todayInfo.eq(i).find(".level_text").text()}`;
         }
 
-        const weather = parse(".time_list > .item_time");
-        const rainData = parse('div[data-name="rain"] .row_graph').eq(0); // 가끔 적설량이 병기되는 경우에 대응
+        const weather = $(".time_list > .item_time");
+        const rainData = $('div[data-name="rain"] .row_graph').eq(0); // 가끔 적설량이 병기되는 경우에 대응
         const rainName = rainData.find('.blind').text();
         const rainUnit = (rainName == "적설량") ? "㎝" : "㎜";
         const rain = rainData.find('.data');
-        const humidity = parse('div[data-name="humidity"] .row_graph > .data');
-        const wind = parse('div[data-name="wind"] .row_graph > .data');
+        const humidity = $('div[data-name="humidity"] .row_graph > .data');
+        const wind = $('div[data-name="wind"] .row_graph > .data');
 
         for (let i = 0, j = 0, rainSpan = 1; i < weather.length - 1; i++) {
             rainSpan--;

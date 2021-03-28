@@ -22,11 +22,11 @@ module.exports = {
         const songId = songData.eq(0).attr("value") ?? lyricData.eq(0).attr("data-song-no");
 
         if (songId) {
-            const parse = cheerio.load(await (await fetch(`https://www.melon.com/song/detail.htm?songId=${songId}`)).text());
-            const title = parse(".song_name").contents().last().text().trim();
-            const is19 = parse(".song_name .bullet_icons.age_19.large").length;
-            const artist = parse(".artist").eq(0).text().trim();
-            const lyrics = parse(".lyric").contents().get().filter((v) => v.type == "text" || v.name == "br").map((v) => (v.type == "text") ? v.data : "\n").join("").trim(); // 멜론 사이트 소스 오타 대응
+            const $ = cheerio.load(await (await fetch(`https://www.melon.com/song/detail.htm?songId=${songId}`)).text());
+            const title = $(".song_name").contents().last().text().trim();
+            const is19 = $(".song_name .bullet_icons.age_19.large").length;
+            const artist = $(".artist").eq(0).text().trim();
+            const lyrics = $(".lyric").contents().get().filter((v) => v.type == "text" || v.name == "br").map((v) => (v.type == "text") ? v.data : "\n").join("").trim(); // 멜론 사이트 소스 오타 대응
             lyricsEmbed.setTitle(`**"${title} - ${artist}"의 가사**`)
                 .setDescription(lyrics || `${is19 ? "연령 제한이 있는" : "등록된 가사가 없는"} 콘텐츠입니다.`);
         }

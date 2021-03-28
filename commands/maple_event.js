@@ -25,11 +25,11 @@ module.exports = {
     description: '- 현재 진행 중인 이벤트를 알려줍니다.',
     type: ["메이플"],
     async execute(message) {
-        const parse = cheerio.load(await (await fetch("https://maplestory.nexon.com/News/Event")).text());
-        const eventdata = parse('.event_all_banner li dl');
-        const links = eventdata.find("dt a").map((i, v) => parse(v).attr("href"));
-        const names = eventdata.find("dt a").map((i, v) => parse(v).text());
-        const dates = eventdata.find("dd a").map((i, v) => parse(v).text());
+        const $ = cheerio.load(await (await fetch("https://maplestory.nexon.com/News/Event")).text());
+        const eventdata = $('.event_all_banner li dl');
+        const links = eventdata.find("dt a").map((i, v) => $(v).attr("href"));
+        const names = eventdata.find("dt a").map((i, v) => $(v).text());
+        const dates = eventdata.find("dd a").map((i, v) => $(v).text());
 
         if (links.length == 0) {
             return message.channel.send('현재 진행중인 이벤트가 없습니다.')

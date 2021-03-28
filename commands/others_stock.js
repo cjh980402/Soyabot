@@ -58,10 +58,10 @@ module.exports = {
                 .setColor("#FF9899")
                 .setURL(`https://m.stock.naver.com${link}`);
             if (stockfind[2][0] == "국내지수") { // 국내 지수
-                const parse = cheerio.load(await (await fetch(`https://m.stock.naver.com/sise/siseIndex.nhn?code=${identifer}`)).text());
-                const data = parse(".total_list > li > span");
+                const $ = cheerio.load(await (await fetch(`https://m.stock.naver.com/sise/siseIndex.nhn?code=${identifer}`)).text());
+                const data = $(".total_list > li > span");
                 const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_INDEX%3A${identifer}`)).json();
-                const trendData = parse(".ct_box.dmst_trend .trend_lst");
+                const trendData = $(".ct_box.dmst_trend .trend_lst");
 
                 const chartURL = getChartImage(identifer, type);
                 const nowPrice = nowData.result.areas[0].datas[0].nv / 100;
@@ -111,8 +111,8 @@ module.exports = {
                 // 파이썬 스크립트 실행
             }
             else if (stockfind[3][0].startsWith('/item/main')) { // 국내 주식
-                const parse = cheerio.load(await (await fetch(`https://m.stock.naver.com/api/html/item/getOverallInfo.nhn?code=${identifer}`)).text());
-                const data = parse(".total_list > li > span");
+                const $ = cheerio.load(await (await fetch(`https://m.stock.naver.com/api/html/item/getOverallInfo.nhn?code=${identifer}`)).text());
+                const data = $(".total_list > li > span");
                 const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_ITEM%3A${identifer}`)).json();
 
                 const chartURL = getChartImage(identifer, type);
