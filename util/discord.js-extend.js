@@ -30,13 +30,13 @@ Object.defineProperty(String.prototype, "hashCode", {
     }
 });
 
-Object.defineProperty(Object.prototype, "$i", { // util.inspect의 결과 출력
+Object.defineProperty(Object.prototype, "_i", { // util.inspect의 결과 출력
     value: function (dep = 2) {
         return util.inspect(this, { depth: dep });
     }
 });
 
-Object.defineProperty(Object.prototype, "$", { // 객체의 키와 값 출력
+Object.defineProperty(Object.prototype, "_p", { // 객체의 키와 값 출력
     get: function () {
         return Object.getOwnPropertyNames(this).map((v) => {
             try {
@@ -46,17 +46,16 @@ Object.defineProperty(Object.prototype, "$", { // 객체의 키와 값 출력
                 return `${v}: error`;
             }
         }).join("\n");
-    },
-    set: function () { }
+    }
 });
 
-Object.defineProperty(Object.prototype, "$k", { // 객체의 키만 출력
+Object.defineProperty(Object.prototype, "_k", { // 객체의 키만 출력
     get: function () {
         return Object.getOwnPropertyNames(this).join("\n");
     }
 });
 
-Object.defineProperty(Object.prototype, "$$", { // 상위 프로토타입의 키와 값 출력
+Object.defineProperty(Object.prototype, "__p", { // 상위 프로토타입의 키와 값 출력
     get: function () {
         return Object.getOwnPropertyNames(Object.getPrototypeOf(this)).map((v) => {
             try {
@@ -69,7 +68,7 @@ Object.defineProperty(Object.prototype, "$$", { // 상위 프로토타입의 키
     }
 });
 
-Object.defineProperty(Object.prototype, "$$k", { // 상위 프로토타입의 키만 출력
+Object.defineProperty(Object.prototype, "__k", { // 상위 프로토타입의 키만 출력
     get: function () {
         return Object.getOwnPropertyNames(Object.getPrototypeOf(this)).join("\n");
     }

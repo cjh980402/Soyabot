@@ -36,7 +36,7 @@ module.exports.startNotice = function () {
                 }
             }
             catch (e) {
-                replyAdmin(`자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack ?? e.$}`);
+                replyAdmin(`자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             }
         }, 120000);
     }
@@ -77,7 +77,7 @@ module.exports.startUpdate = function () {
                 }
             }
             catch (e) {
-                replyAdmin(`자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack ?? e.$}`);
+                replyAdmin(`자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             }
         }, 120000);
     }
@@ -120,7 +120,7 @@ module.exports.startTest = function () {
                 }
             }
             catch (e) {
-                replyAdmin(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack ?? e.$}`);
+                replyAdmin(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             }
         }, 120000);
     }
@@ -148,7 +148,7 @@ module.exports.startTestPatch = function () {
                 }
             }
             catch (e) {
-                replyAdmin(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack ?? e.$}`);
+                replyAdmin(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             }
         }, 120000);
     }

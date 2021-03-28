@@ -70,7 +70,7 @@ module.exports.play = async function (song, guild) {
             }
             collector.stop();
             queue.textChannel.send(e.message.startsWith("input stream") ? "재생할 수 없는 동영상입니다." : "에러로그가 전송되었습니다.");
-            replyAdmin(`노래 재생 에러\nsong 객체: ${song.$}\n에러 내용: ${e}\n${e.stack ?? e.$}`);
+            replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             queue.songs.shift();
             module.exports.play(queue.songs[0], guild);
         });

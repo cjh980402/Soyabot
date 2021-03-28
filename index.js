@@ -50,7 +50,7 @@ client.on("ready", async () => {
     client.user.setActivity(`${client.prefix}help and ${client.prefix}play`, { type: "LISTENING" });
     replyAdmin(`소야봇이 작동 중입니다.\n${app.locals.port}번 포트에서 http 서버가 작동 중입니다.`);
 });
-client.on("error", (e) => console.error(`에러 내용: ${e}\n${e.stack ?? e.$}`));
+client.on("error", (e) => console.error(`에러 내용: ${e}\n${e.stack ?? e._p}`));
 client.on("warn", console.log);
 
 /*client.ws.on("INTERACTION_CREATE", async (interaction) => {
@@ -119,7 +119,7 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
         }
         else {
             message.reply("에러로그가 전송되었습니다.");
-            replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e.$}`);
+            replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
         }
     }
     finally {
