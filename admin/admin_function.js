@@ -15,21 +15,21 @@ module.exports.adminChat = async function (message) {
         await message.channel.send(String(await eval(`(async () => {\n${funcBody.join('\n')}\n})()`)) || "empty message", { split: true });
         // eval의 내부가 async 함수의 리턴값이므로 await까지 해준다. send도 await하는 이유는 split 에러 대응
     }
-    else if (message.content.startsWith(")")) { // 콘솔 명령 실행 후 출력
-        await message.channel.send(await module.exports.cmd(message.content.substr(1).trim(), true) || "empty message", { split: true });
+    else if (fullContent.startsWith(")")) { // 콘솔 명령 실행 후 출력
+        await message.channel.send(await module.exports.cmd(fullContent.substr(1).trim(), true) || "empty message", { split: true });
         // send를 await하는 이유는 split 에러 대응
     }
-    else if (message.content.startsWith("*")) { // 원하는 방에 봇으로 채팅 전송
-        const room = message.content.split('*')[1];
-        if (room && message.content.startsWith(`*${room}* `)) {
-            const rslt = replyRoomID(room, message.content.replace(`*${room}* `, ''));
+    else if (fullContent.startsWith("*")) { // 원하는 방에 봇으로 채팅 전송
+        const room = fullContent.split('*')[1];
+        if (room && fullContent.startsWith(`*${room}* `)) {
+            const rslt = replyRoomID(room, fullContent.replace(`*${room}* `, ''));
             message.channel.send(rslt ? '채팅이 전송되었습니다.' : '존재하지 않는 방입니다.');
         }
     }
     else if (message.channel.recipient == ADMIN_ID && message.reference) { // 건의 답변 기능
         const suggestRefer = message.channel.messages.cache.get(message.reference.messageID);
         const target = client.suggestionChat[suggestRefer?.content.split('\n')[0]];
-        target?.reply(message.content);
+        target?.reply(fullContent);
         message.channel.send(target ? '건의 답변을 보냈습니다.' : '해당하는 건의의 정보가 존재하지 않습니다.');
     }
 }
