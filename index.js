@@ -64,7 +64,7 @@ client.on("warn", console.log);
     })
 
     const args = interaction.data.options?.map((v) => v.value.trim()) ?? [];
-    client.commands.find((cmd) => cmd.command.includes(interaction.data.name))?.execute(client.channels.cache.get(interaction.channel_id).messages.cache.last(), args);
+    client.commands.find((cmd) => cmd.command.includes(interaction.data.name))?.execute(메시지 객체 생성해서 넣기, args);
 });*/
 
 client.on("message", async (message) => { // 각 메시지에 반응, 디스코드는 봇의 채팅도 이 이벤트에 들어옴

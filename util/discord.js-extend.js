@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
-const util = require('util');
 const fetch = require("node-fetch");
 const { decodeHTML } = require("entities");
+const { inspect } = require("util");
 
 Object.defineProperty(Discord.Message.prototype, "fullContent", {
     get: async function () {
@@ -32,7 +32,7 @@ Object.defineProperty(String.prototype, "hashCode", {
 
 Object.defineProperty(Object.prototype, "_i", { // util.inspect의 결과 출력
     value: function (dep = 2) {
-        return util.inspect(this, { depth: dep });
+        return inspect(this, { depth: dep });
     }
 });
 
