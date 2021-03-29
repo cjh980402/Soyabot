@@ -103,7 +103,7 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
         commandName = botModule.channelCool ? `${botModule.command[0]}_${message.channel.id}` : botModule.command[0];
 
         if (cooldowns.has(commandName)) { // 명령이 수행 중인 경우
-            return message.reply(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
+            return message.channel.send(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
         await (botModule.channelCool ? botModule.execute(message, args) : promiseTimeout(botModule.execute(message, args), 300000)); // 명령어 수행 부분
