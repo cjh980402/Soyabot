@@ -39,7 +39,7 @@ module.exports.cmd = async function (_cmd, returnRslt = false) {
             return (await exec(_cmd)).stdout.replace(/\u001b\[\d\dm/g, "").trimEnd();
         }
         catch (e) {
-            return e.toString();
+            return String(e);
         }
     }
     else {
