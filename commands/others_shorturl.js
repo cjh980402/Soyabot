@@ -1,4 +1,4 @@
-const { clientId, clientSecret } = require('../soyabot_config.json');
+const { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } = require('../soyabot_config.json');
 const fetch = require('node-fetch');
 
 async function shortURL(url) {
@@ -7,8 +7,8 @@ async function shortURL(url) {
     const response = await fetch("https://openapi.naver.com/v1/util/shorturl", {
         method: 'POST',
         headers: {
-            "X-Naver-Client-Id": clientId,
-            "X-Naver-Client-Secret": clientSecret
+            "X-Naver-Client-Id": NAVER_CLIENT_ID,
+            "X-Naver-Client-Secret": NAVER_CLIENT_SECRET
         },
         body: params
     });

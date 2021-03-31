@@ -1,7 +1,7 @@
 const ytdl = require("ytdl-core");
 const scdl = require("soundcloud-downloader").default;
 const { sleep, replyAdmin } = require('../admin/bot_control');
-const { STAY_TIME, DEFAULT_VOLUME, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
+const { STAY_TIME, DEFAULT_VOLUME } = require("../soyabot_config.json");
 const { canModifyQueue } = require("../util/SoyabotUtil");
 
 module.exports.play = async function (song, guild) {
@@ -28,11 +28,11 @@ module.exports.play = async function (song, guild) {
         else if (song.url.includes("soundcloud.com")) {
             try {
                 streamType = "ogg/opus";
-                stream = await scdl.downloadFormat(song.url, scdl.FORMATS.OPUS, SOUNDCLOUD_CLIENT_ID);
+                stream = await scdl.downloadFormat(song.url, scdl.FORMATS.OPUS);
             }
             catch (e) {
                 streamType = "unknown";
-                stream = await scdl.downloadFormat(song.url, scdl.FORMATS.MP3, SOUNDCLOUD_CLIENT_ID);
+                stream = await scdl.downloadFormat(song.url, scdl.FORMATS.MP3);
             }
         }
     }

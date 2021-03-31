@@ -70,11 +70,11 @@ function choiceVS(msg) {
         if (splitVS[i] == '') {
             return '빈 항목이 존재합니다.';
         }
-        afterReplace.push(splitVS[i].replace(/[\s`'"~.,;:*+=!?^$@%&{}()<>/|[\-\]\\]/g, '').replace('조아', '좋아').replace('시러', '싫어'));
+        afterReplace.push(splitVS[i].replace(/[\s`'"~.,;:*+=!?^$@%&{}()<>/|[\]\\-]/g, '').replace('조아', '좋아').replace('시러', '싫어'));
     }
-    for (let i = splitVS.length - 1, ind; i >= splitVS.length / 2; i--) {
-        ind = afterReplace.indexOf(afterReplace[i]);
-        if (ind != i && (afterReplace[i] != '' || splitVS[ind] == splitVS[i])) {
+    for (let i = 0, otherInd; i < splitVS.length / 2; i++) {
+        otherInd = afterReplace.lastIndexOf(afterReplace[i]);
+        if (otherInd != i && (afterReplace[i] != '' || splitVS[otherInd] == splitVS[i])) {
             return `"${splitVS[i]}" 항목이 중복입니다.`;
         }
     }

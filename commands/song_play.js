@@ -1,6 +1,6 @@
 const { play } = require("../include/play");
 const { replyAdmin } = require('../admin/bot_control');
-const { DEFAULT_VOLUME, GOOGLE_API_KEY, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
+const { DEFAULT_VOLUME, GOOGLE_API_KEY } = require("../soyabot_config.json");
 const YouTubeAPI = require("simple-youtube-api");
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 const ytsr = require('ytsr');
@@ -49,7 +49,7 @@ module.exports = {
         let song = null;
 
         if (scVideo) {
-            const trackInfo = await scdl.getInfo(`https://soundcloud.com/${scVideo}`, SOUNDCLOUD_CLIENT_ID);
+            const trackInfo = await scdl.getInfo(`https://soundcloud.com/${scVideo}`);
             song = {
                 title: trackInfo.title,
                 url: trackInfo.permalink_url,

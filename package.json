@@ -34,7 +34,7 @@
     "quickchart-js": "^1.0.7",
     "sejong": "^0.2.3",
     "simple-youtube-api": "^5.2.1",
-    "soundcloud-downloader": "^0.2.4",
+    "soundcloud-downloader": "^1.0.0",
     "sqlite3": "^5.0.2",
     "string-progressbar": "^1.0.3",
     "ytdl-core": "^4.5.0",

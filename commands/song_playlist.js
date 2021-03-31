@@ -1,7 +1,7 @@
 const { MessageEmbed } = require("../util/discord.js-extend");
 const { play } = require("../include/play");
 const { replyAdmin } = require('../admin/bot_control');
-const { MAX_PLAYLIST_SIZE, DEFAULT_VOLUME, GOOGLE_API_KEY, SOUNDCLOUD_CLIENT_ID } = require("../soyabot_config.json");
+const { MAX_PLAYLIST_SIZE, DEFAULT_VOLUME, GOOGLE_API_KEY } = require("../soyabot_config.json");
 const YouTubeAPI = require("simple-youtube-api");
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 const ytsr = require('ytsr');
@@ -50,7 +50,7 @@ module.exports = {
         let playlist = null, videos = null;
 
         if (scVideo) {
-            playlist = await scdl.getSetInfo(`https://soundcloud.com/${scVideo}`, SOUNDCLOUD_CLIENT_ID);
+            playlist = await scdl.getSetInfo(`https://soundcloud.com/${scVideo}`);
             videos = playlist.tracks.slice(0, MAX_PLAYLIST_SIZE ?? 10).map((track) => ({
                 title: track.title,
                 url: track.permalink_url,
@@ -68,7 +68,7 @@ module.exports = {
             }
             playlist = await youtube.getPlaylistByID(playlistID, { part: "snippet" });
             videos = (await playlist.getVideos(MAX_PLAYLIST_SIZE ?? 10, { part: "snippet" }))
-                .filter((video) => (video.title != "Private video" && video.title != "Deleted video")) // 비공개 또는 삭제된 동영상 거르기
+                .filter((video) => !/(Private|Deleted) video/.test(video.title)) // 비공개 또는 삭제된 동영상 제외하기
                 .map((video) => ({
                     title: video.title.decodeHTML(),
                     url: video.url,
