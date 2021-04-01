@@ -48,7 +48,7 @@ client.on("ready", async () => {
     });
 
     client.user.setActivity(`${client.prefix}help and ${client.prefix}play`, { type: "LISTENING" });
-    replyAdmin(`소야봇이 작동 중입니다.\n${app.locals.port}번 포트에서 http 서버가 작동 중입니다.`);
+    replyAdmin(`${client.user.tag}이 작동 중입니다.\n${app.locals.port}번 포트에서 http 서버가 작동 중입니다.`);
 });
 client.on("error", (e) => console.error(`에러 내용: ${e}\n${e.stack ?? e._p}`));
 client.on("warn", console.log);
