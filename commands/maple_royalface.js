@@ -12,10 +12,7 @@ module.exports = {
     type: ["메이플"],
     async execute(message, args) {
         if (args.length == 1 && (args[0] == '확률' || args[0] == 'ㅎㄹ')) {
-            let rslt = '<로얄 성형 확률>\n\n- 남자 성형';
-            faceList["남"].forEach((v) => rslt += `\n${v}: 17%`);
-            rslt += '\n\n- 여자 성형';
-            faceList["여"].forEach((v) => rslt += `\n${v}: 17%`);
+            const rslt = `<로얄 성형 확률>\n\n- 남자 성형\n${faceList["남"].map((v) => `${v}: 17%`).join("\n")}\n\n- 여자 성형\n${faceList["여"].map((v) => `${v}: 17%`).join("\n")}`;
             return message.channel.send(rslt);
         }
         if (args.length < 2) {
@@ -29,15 +26,13 @@ module.exports = {
         // gender은 성별, goalface는 목표 성형의 인덱스
         // random은 0이상 1미만
         const list = []; // 진행 과정 담을 배열 (인덱스 저장)
-        let rslt = `로얄 성형 (목표: ${faceList[gender][goalface]}) 결과\n\n`;
 
         while (list[list.length - 1] != goalface) { // 목표 성형을 띄웠으면 종료
             const now = Math.floor(Math.random() * (faceList[gender].length - +(list.length > 0)));
             list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 성형의 인덱스 저장, now 뒤에 더하는 이유는 최근 성형 제외 목적
         }
 
-        rslt += `수행 횟수: ${list.length}회\n\n진행 과정`;
-        list.forEach((v, i) => rslt += `\n${i + 1}번째: ${faceList[gender][v]}`);
+        const rslt = `로얄 성형 (목표: ${faceList[gender][goalface]}) 결과\n\n수행 횟수: ${list.length}회\n\n진행 과정\n${list.map((v, i) => `${i + 1}번째: ${faceList[gender][v]}`).join("\n")}`;
         return message.channel.send(rslt);
     }
 };

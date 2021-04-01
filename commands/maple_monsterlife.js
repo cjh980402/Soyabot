@@ -93,14 +93,12 @@ async function farm_read(monster) { // 농장 목록
         return data.error;
     }
     else {
-        let rslt = `${monster} 보유 농장 목록\n`;
+        let rslt = `${monster} 보유 농장 목록\n\n`;
         if (data.farm_list.length) {
-            data.farm_list.forEach((v) => {
-                rslt += `\n${v[1] ?? "무한유지"}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})`; // 좋아요, 싫어요 값이 0일 때 null로 들어옴
-            });
+            rslt += `${data.farm_list.map((v) => `${v[1] ?? "무한유지"}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})`).join("\n")}`; // 좋아요, 싫어요 값이 0일 때 null로 들어옴
         }
         else {
-            rslt += "\n등록된 농장 정보가 없습니다.";
+            rslt += "등록된 농장 정보가 없습니다.";
         }
         return rslt;
     }
@@ -121,14 +119,12 @@ async function farm_info(user) { // 농장 정보
         return data.error;
     }
     else {
-        let rslt = `${user} 농장의 정보\n`;
+        let rslt = `${user} 농장의 정보\n\n`;
         if (data.monster_list.length) {
-            data.monster_list.forEach((v) => {
-                rslt += `\n${v[1] ?? "무한유지"}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})`; // 좋아요, 싫어요 값이 0일 때 null로 들어옴
-            });
+            rslt += `${data.monster_list.map((v) => `${v[1] ?? "무한유지"}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})`).join("\n")}`; // 좋아요, 싫어요 값이 0일 때 null로 들어옴
         }
         else {
-            rslt += "\n등록된 몬스터 정보가 없습니다.";
+            rslt += "등록된 몬스터 정보가 없습니다.";
         }
         return rslt;
     }

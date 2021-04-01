@@ -3,8 +3,7 @@ const { MessageEmbed } = require("../util/discord.js-extend");
 function generateQueueEmbed(message, songs) {
     const embeds = [];
     for (let i = 0; i < songs.length; i += 8) {
-        const current = songs.slice(i, i + 8);
-        const info = current.map((track, j) => `${i + j + 1}. [${track.title}](${track.url})`).join("\n\n");
+        const info = songs.slice(i, i + 8).map((track, j) => `${i + j + 1}. [${track.title}](${track.url})`).join("\n\n");
         const embed = new MessageEmbed()
             .setTitle(`**${client.user.username} 음악 대기열**`)
             .setThumbnail(message.guild.iconURL())

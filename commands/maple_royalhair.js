@@ -12,10 +12,7 @@ module.exports = {
     type: ["메이플"],
     async execute(message, args) {
         if (args.length == 1 && (args[0] == '확률' || args[0] == 'ㅎㄹ')) {
-            let rslt = '<로얄 헤어 확률>\n\n- 남자 헤어';
-            hairList["남"].forEach((v) => rslt += `\n${v}: 17%`);
-            rslt += '\n\n- 여자 헤어';
-            hairList["여"].forEach((v) => rslt += `\n${v}: 17%`);
+            const rslt = `<로얄 헤어 확률>\n\n- 남자 헤어\n${hairList["남"].map((v) => `${v}: 17%`).join("\n")}\n\n- 여자 헤어\n${hairList["여"].map((v) => `${v}: 17%`).join("\n")}`;
             return message.channel.send(rslt);
         }
         if (args.length < 2) {
@@ -29,15 +26,13 @@ module.exports = {
         // gender은 성별, goalhair는 목표 헤어의 인덱스
         // random은 0이상 1미만
         const list = []; // 진행 과정 담을 배열 (인덱스 저장)
-        let rslt = `로얄 헤어 (목표: ${hairList[gender][goalhair]}) 결과\n\n`;
 
         while (list[list.length - 1] != goalhair) { // 목표 헤어을 띄웠으면 종료
             const now = Math.floor(Math.random() * (hairList[gender].length - +(list.length > 0)));
             list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 헤어의 인덱스 저장, now 뒤에 더하는 이유는 최근 헤어 제외 목적
         }
 
-        rslt += `수행 횟수: ${list.length}회${"\u200b".repeat(500)}\n\n진행 과정`;
-        list.forEach((v, i) => rslt += `\n${i + 1}번째: ${hairList[gender][v]}`);
+        const rslt = `로얄 헤어 (목표: ${hairList[gender][goalhair]}) 결과\n\n수행 횟수: ${list.length}회\n\n진행 과정\n${list.map((v, i) => `${i + 1}번째: ${hairList[gender][v]}`).join("\n")}`;
         return message.channel.send(rslt);
     }
 };
