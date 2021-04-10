@@ -31,7 +31,7 @@ module.exports = {
             .setColor("#FF9899");
 
         const filter = (await ytsr.getFilters(search)).get("Type").get("Video").url;
-        const results = filter && (await ytsr(filter, { limit: 10 })).items;
+        const results = filter && (await ytsr(filter, { limit: 10 })).items.filter((v) => v.type == "video"); // 영상만 가져오기
         // const results = await youtube.searchVideos(search, 10);
         if (!results?.length) {
             return message.reply("검색 내용에 해당하는 영상을 찾지 못했습니다.");
@@ -51,7 +51,7 @@ module.exports = {
                 await client.commands.find((cmd) => cmd.command.includes("play")).execute(message, [resultsEmbed.fields[+song - 1].name]);
             }
 
-            message.channel.activeCollector = false;
+            delete message.channel.activeCollector;
             resultsMessage.delete();
             response.first().delete();
         }
@@ -62,7 +62,7 @@ module.exports = {
             else if (e.message == "Missing Permissions") {
                 message.channel.send("**권한이 없습니다 - [MANAGE_MESSAGES]**");
             }
-            message.channel.activeCollector = false;
+            delete message.channel.activeCollector;
             resultsMessage.delete();
         }
     }
