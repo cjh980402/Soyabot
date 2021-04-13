@@ -1,11 +1,11 @@
-const { MessageEmbed } = require("../util/discord.js-extend");
-const mapleModule = require("../util/maple_parsing");
+const { MessageEmbed } = require('../util/discord.js-extend');
+const mapleModule = require('../util/maple_parsing');
 
 module.exports = {
     usage: `${client.prefix}코디 (닉네임)`,
-    command: ["코디", "ㅋㄷ"],
-    description: "- 해당 캐릭터가 착용한 코디템과 헤어, 성형을 출력합니다.",
-    type: ["메이플"],
+    command: ['코디', 'ㅋㄷ'],
+    description: '- 해당 캐릭터가 착용한 코디템과 헤어, 성형을 출력합니다.',
+    type: ['메이플'],
     async execute(message, args) {
         if (args.length != 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
@@ -25,12 +25,10 @@ module.exports = {
         const coordi = Maple.Coordi();
         if (!coordi) {
             return message.channel.send(`[${Maple.Name}]\n코디 정보가 없습니다.`);
-        }
-        else {
+        } else {
             const coordiEmbed = new MessageEmbed()
                 .setTitle(`**${Maple.Name}님의 코디**`)
-                .setColor("#FF9899")
-                .setURL(Maple.GGURL)
+                .setColor('#FF9899').setURL(Maple.GGURL)
                 .setImage(Maple.userImg())
                 .addField('**헤어**', coordi[1], true)
                 .addField('**성형**', coordi[2], true)

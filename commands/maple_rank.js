@@ -1,10 +1,10 @@
-const mapleModule = require("../util/maple_parsing");
+const mapleModule = require('../util/maple_parsing');
 
 module.exports = {
     usage: `${client.prefix}랭킹 (닉네임)`,
-    command: ["랭킹", "ㄹㅋ"],
-    description: "- 캐릭터의 랭킹을 출력합니다.",
-    type: ["메이플"],
+    command: ['랭킹', 'ㄹㅋ'],
+    description: '- 캐릭터의 랭킹을 출력합니다.',
+    type: ['메이플'],
     async execute(message, args) {
         if (args.length != 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
@@ -24,8 +24,7 @@ module.exports = {
         const rank = Maple.Rank();
         if (!rank) {
             return message.channel.send(`[${Maple.Name}]\n랭킹 정보를 가져오지 못했습니다.`);
-        }
-        else {
+        } else {
             return message.channel.send(`[${Maple.Name}]\n종합 랭킹(전체): ${rank[0]}\n종합 랭킹(월드): ${rank[1]}\n직업 랭킹(전체): ${rank[3]}\n직업 랭킹(월드): ${rank[2]}`);
         }
     }

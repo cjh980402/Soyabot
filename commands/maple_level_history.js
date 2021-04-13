@@ -1,10 +1,10 @@
-const mapleModule = require("../util/maple_parsing");
+const mapleModule = require('../util/maple_parsing');
 
 module.exports = {
     usage: `${client.prefix}히스토리 (닉네임)`,
-    command: ["히스토리", "ㅎㅅㅌㄹ"],
-    description: "- 캐릭터의 레벨업 히스토리를 출력합니다.",
-    type: ["메이플"],
+    command: ['히스토리', 'ㅎㅅㅌㄹ'],
+    description: '- 캐릭터의 레벨업 히스토리를 출력합니다.',
+    type: ['메이플'],
     async execute(message, args) {
         if (args.length != 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
@@ -24,8 +24,7 @@ module.exports = {
         const data = Maple.LevelHistory();
         if (!data) {
             return message.channel.send(`[${Maple.Name}]\n레벨 히스토리를 가져오지 못했습니다.`);
-        }
-        else {
+        } else {
             const len = data[0].length;
             let rslt = `[${Maple.Name}]`;
             for (let i = 1; i < len; i++) {

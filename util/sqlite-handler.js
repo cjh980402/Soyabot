@@ -1,7 +1,8 @@
 const sqlite3 = require('sqlite3').verbose();
 const { inspect } = require('util');
 
-class SQLiteHandler { // sqlite3을 프로미스화 한 클래스
+class SQLiteHandler {
+    // sqlite3을 프로미스화 한 클래스
     constructor(db) {
         this.db = new sqlite3.Database(db);
     }
@@ -20,13 +21,13 @@ class SQLiteHandler { // sqlite3을 프로미스화 한 클래스
     }
 
     toString() {
-        return Object.getOwnPropertyNames(SQLiteHandler.prototype).join("\n");
+        return Object.getOwnPropertyNames(SQLiteHandler.prototype).join('\n');
     }
 
     insert(table, obj) {
         const k = Object.keys(obj);
         const v = Object.values(obj);
-        const stmt = `INSERT INTO ${table} (${k.join(",")}) VALUES (?${",?".repeat(k.length - 1)})`;
+        const stmt = `INSERT INTO ${table} (${k.join(',')}) VALUES (?${',?'.repeat(k.length - 1)})`;
         console.log(stmt);
         return this.run(stmt, v);
     }
@@ -34,21 +35,21 @@ class SQLiteHandler { // sqlite3을 프로미스화 한 클래스
     replace(table, obj) {
         const k = Object.keys(obj);
         const v = Object.values(obj);
-        const stmt = `REPLACE INTO ${table} (${k.join(",")}) VALUES (?${",?".repeat(k.length - 1)})`;
+        const stmt = `REPLACE INTO ${table} (${k.join(',')}) VALUES (?${',?'.repeat(k.length - 1)})`;
         console.log(stmt);
         return this.run(stmt, v);
     }
 
     run(sql, params = []) {
         return new Promise((resolve, reject) => {
-            this.db.run(sql, params, function (err) { // db 멤버의 값을 받아야 하는 콜백이므로 function 사용
+            this.db.run(sql, params, function (err) {
+                // db 멤버의 값을 받아야 하는 콜백이므로 function 사용
                 if (err) {
                     reject(err);
-                }
-                else {
+                } else {
                     resolve({ lastId: this.lastId, changes: this.changes });
                 }
-            })
+            });
         });
     }
 
@@ -57,11 +58,10 @@ class SQLiteHandler { // sqlite3을 프로미스화 한 클래스
             this.db.get(sql, params, (err, row) => {
                 if (err) {
                     reject(err);
-                }
-                else {
+                } else {
                     resolve(row);
                 }
-            })
+            });
         });
     }
 
@@ -70,11 +70,10 @@ class SQLiteHandler { // sqlite3을 프로미스화 한 클래스
             this.db.all(sql, params, (err, rows) => {
                 if (err) {
                     reject(err);
-                }
-                else {
+                } else {
                     resolve(rows);
                 }
-            })
+            });
         });
     }
 }

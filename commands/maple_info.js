@@ -1,12 +1,12 @@
-const { MessageEmbed } = require("../util/discord.js-extend");
-const mapleModule = require("../util/maple_parsing");
-const { levelTable } = require("../util/soyabot_const.json");
+const { MessageEmbed } = require('../util/discord.js-extend');
+const mapleModule = require('../util/maple_parsing');
+const { levelTable } = require('../util/soyabot_const.json');
 
 module.exports = {
     usage: `${client.prefix}정보 (닉네임)`,
-    command: ["정보", "ㅈㅂ"],
-    description: "- 해당 캐릭터의 전체적인 정보를 출력합니다.",
-    type: ["메이플"],
+    command: ['정보', 'ㅈㅂ'],
+    description: '- 해당 캐릭터의 전체적인 정보를 출력합니다.',
+    type: ['메이플'],
     async execute(message, args) {
         if (args.length != 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
@@ -27,7 +27,7 @@ module.exports = {
         const char_union = await Maple.homeUnion(); // 유니온 레벨, 전투력, 수급량
         const char_lv = level[0]; // 레벨
         const char_ex = level[1];
-        const char_percent = (char_ex / (levelTable[char_lv] - levelTable[char_lv - 1]) * 100).toFixed(3); // 경험치 퍼센트
+        const char_percent = ((char_ex / (levelTable[char_lv] - levelTable[char_lv - 1])) * 100).toFixed(3); // 경험치 퍼센트
         const char_job = level[4]; // 직업
         const char_guild = level[3]; // 길드
         const char_popul = level[2]; // 인기도
@@ -37,10 +37,10 @@ module.exports = {
 
         const infoEmbed = new MessageEmbed()
             .setTitle(`**${Maple.Name}님의 정보**`)
-            .setColor("#FF9899")
+            .setColor('#FF9899')
             .setURL(Maple.GGURL)
             .setImage(Maple.userImg())
-            .addField('**레벨**', (char_lv < 300) ? `${char_lv} (${char_percent}%)` : char_lv, true)
+            .addField('**레벨**', char_lv < 300 ? `${char_lv} (${char_percent}%)` : char_lv, true)
             .addField('**직업**', char_job, true)
             .addField('**길드**', char_guild || '-', true)
             .addField('**인기도**', char_popul.toLocaleString(), true)
@@ -48,7 +48,8 @@ module.exports = {
         if (char_union) {
             infoEmbed.addField('유니온 코인', `1일 ${char_union[2]}개 획득`, true);
         }
-        infoEmbed.addField('**무릉 기록**', char_murung ? `${char_murung[1]} (${char_murung[2]})` : '-', true)
+        infoEmbed
+            .addField('**무릉 기록**', char_murung ? `${char_murung[1]} (${char_murung[2]})` : '-', true)
             .addField('**시드 기록**', char_seed ? `${char_seed[1]} (${char_seed[2]})` : '-', true)
             .addField('**종합 랭킹**', char_rank ? `전체: ${char_rank[0]}\n월드: ${char_rank[1]}` : '-', true)
             .addField('**직업 랭킹**', char_rank ? `전체: ${char_rank[3]}\n월드: ${char_rank[2]}` : '-', true);

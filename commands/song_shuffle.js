@@ -1,18 +1,18 @@
-const { canModifyQueue } = require("../util/SoyabotUtil");
+const { canModifyQueue } = require('../util/SoyabotUtil');
 
 module.exports = {
     usage: `${client.prefix}shuffle`,
-    command: ["shuffle", "shf"],
-    description: "- 대기열 순서를 랜덤하게 섞어줍니다.",
-    type: ["음악"],
+    command: ['shuffle', 'shf'],
+    description: '- 대기열 순서를 랜덤하게 섞어줍니다.',
+    type: ['음악'],
     async execute(message) {
         if (!message.guild) {
-            return message.reply("사용이 불가능한 채널입니다."); // 그룹톡 여부 체크
+            return message.reply('사용이 불가능한 채널입니다.'); // 그룹톡 여부 체크
         }
-        
+
         const queue = client.queue.get(message.guild.id);
         if (!queue?.connection.dispatcher) {
-            return message.reply("재생 중인 노래가 없습니다.");
+            return message.reply('재생 중인 노래가 없습니다.');
         }
         if (!canModifyQueue(message.member)) {
             return message.reply(`같은 음성 채널에 참가해주세요! (${client.user})`);

@@ -1,35 +1,36 @@
 /**
  * 모듈 import
  */
-const { Client, Collection } = require("./util/discord.js-extend");
-const { readdirSync } = require("fs");
-const { TOKEN, PREFIX, ADMIN_ID } = require("./soyabot_config.json");
-const { adminChat, initClient } = require("./admin/admin_function");
+const { Client, Collection } = require('./util/discord.js-extend');
+const { readdirSync } = require('fs');
+const { TOKEN, PREFIX, ADMIN_ID } = require('./soyabot_config.json');
+const { adminChat, initClient } = require('./admin/admin_function');
 const { replyAdmin } = require('./admin/bot_control');
 const cachingMessage = require('./util/message_caching');
-const botChatting = require("./util/bot_chatting");
-const app = require("./util/express_server");
+const botChatting = require('./util/bot_chatting');
+const app = require('./util/express_server');
 const sqlite = require('./util/sqlite-handler');
 global.db = new sqlite('./db/soyabot_data.db'); // 여러 기능들에 의해 필수로 최상위 전역
-global.client = new Client({ disableMentions: "everyone", retryLimit: 3 }); // 네트워크 재요청 횟수 설정
+global.client = new Client({ disableMentions: 'everyone', retryLimit: 3 }); // 네트워크 재요청 횟수 설정
 client.login(TOKEN);
 client.commands = []; // 명령어 객체 저장할 배열
 client.queue = new Map(); // 음악기능 정보 저장용
 client.prefix = PREFIX;
 const cooldowns = new Set(); // 중복 명령 방지할 set
-const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // 정규식 내부에서 일부 특수 문자를 그대로 취급하기 위해 사용자 입력을 이스케이프로 치환하는 함수
+const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // 정규식 내부에서 일부 특수 문자를 그대로 취급하기 위해 사용자 입력을 이스케이프로 치환하는 함수
 const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((resolve) => setTimeout(resolve, ms))]);
 /**
  * 클라이언트 이벤트
  */
-client.on("ready", async () => {
+client.on('ready', async () => {
     await initClient(); // 클라이언트 초기 세팅 함수
     /**
      * 모든 명령 import
      */
-    readdirSync("./commands").filter((file) => file.endsWith(".js")).forEach((file) => { // commands 폴더속 .js 파일 걸러내기
+    readdirSync('./commands').filter((file) => file.endsWith('.js')).forEach((file) => {
+        // commands 폴더속 .js 파일 걸러내기
         client.commands.push(require(`./commands/${file}`)); // 배열에 명령 객체를 push
-        
+
         /*const cmd = require(`./commands/${file}`);
         client.commands.push(cmd); // 배열에 명령 객체를 push
 
@@ -47,11 +48,11 @@ client.on("ready", async () => {
         client.api.applications(client.user.id).commands.post({ data });*/
     });
 
-    client.user.setActivity(`${client.prefix}help and ${client.prefix}play`, { type: "LISTENING" });
+    client.user.setActivity(`${client.prefix}help and ${client.prefix}play`, { type: 'LISTENING' });
     replyAdmin(`${client.user.tag}이 작동 중입니다.\n${app.locals.port}번 포트에서 http 서버가 작동 중입니다.`);
 });
-client.on("error", (e) => console.error(`에러 내용: ${e}\n${e.stack ?? e._p}`));
-client.on("warn", console.log);
+client.on('error', (e) => console.error(`에러 내용: ${e}\n${e.stack ?? e._p}`));
+client.on('warn', console.log);
 
 /*client.ws.on("INTERACTION_CREATE", async (interaction) => {
     client.api.interactions(interaction.id, interaction.token).callback.post({
@@ -67,18 +68,21 @@ client.on("warn", console.log);
     client.commands.find((cmd) => cmd.command.includes(interaction.data.name))?.execute(메시지 객체 생성해서 넣기, args);
 });*/
 
-client.on("message", async (message) => { // 각 메시지에 반응, 디스코드는 봇의 채팅도 이 이벤트에 들어옴
+client.on('message', async (message) => {
+    // 각 메시지에 반응, 디스코드는 봇의 채팅도 이 이벤트에 들어옴
     let commandName;
     try {
         console.log(`(${new Date().toLocaleString()}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username}: ${message.content}\n`);
-        if (message.author.bot) { // 봇 여부 체크
+        if (message.author.bot) {
+            // 봇 여부 체크
             return;
         }
         const permissions = message.channel.permissionsFor?.(client.user);
-        if (permissions && (!permissions.has("VIEW_CHANNEL") || !permissions.has("SEND_MESSAGES"))) {
+        if (permissions && (!permissions.has('VIEW_CHANNEL') || !permissions.has('SEND_MESSAGES'))) {
             return; // 기본 권한이 없는 채널이므로 바로 종료
         }
-        if (message.author.id == ADMIN_ID) { // 관리자 여부 체크
+        if (message.author.id == ADMIN_ID) {
+            // 관리자 여부 체크
             await adminChat(message);
         }
 
@@ -87,7 +91,8 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
         // message.content: 메시지 내용 텍스트
         // 멘션의 형태: <@${user.id}>, 인용의 형태: > ${내용}
         const matchedPrefix = prefixRegex.exec(message.content)?.[0]; // 정규식에 대응되는 명령어 접두어 부분을 탐색
-        if (!matchedPrefix) { // 멘션이나 client.prefix로 시작하지 않는 경우
+        if (!matchedPrefix) {
+            // 멘션이나 client.prefix로 시작하지 않는 경우
             return botChatting(message); // 잡담 로직
         }
 
@@ -102,60 +107,61 @@ client.on("message", async (message) => { // 각 메시지에 반응, 디스코�
 
         commandName = botModule.channelCool ? `${botModule.command[0]}_${message.channel.id}` : botModule.command[0];
 
-        if (cooldowns.has(commandName)) { // 명령이 수행 중인 경우
+        if (cooldowns.has(commandName)) {
+            // 명령이 수행 중인 경우
             return message.channel.send(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
         await (botModule.channelCool ? botModule.execute(message, args) : promiseTimeout(botModule.execute(message, args), 300000)); // 명령어 수행 부분
         cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
-    }
-    catch (e) {
+    } catch (e) {
         cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
-        if (e instanceof Collection) { // awaitMessages에서 시간초과한 경우
-            message.channel.send(`"${commandName.split("_")[0]}"의 입력 대기 시간이 초과되었습니다.`);
-        }
-        else if (e.message?.startsWith('메이플')) {
+        if (e instanceof Collection) {
+            // awaitMessages에서 시간초과한 경우
+            message.channel.send(`"${commandName.split('_')[0]}"의 입력 대기 시간이 초과되었습니다.`);
+        } else if (e.message?.startsWith('메이플')) {
             message.reply(e.message);
-        }
-        else {
-            message.reply("에러로그가 전송되었습니다.");
+        } else {
+            message.reply('에러로그가 전송되었습니다.');
             replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
         }
-    }
-    finally {
+    } finally {
         await cachingMessage(message); // 들어오는 채팅 항상 캐싱
     }
 });
 
-client.on("voiceStateUpdate", (oldState, newState) => { // 유저 음성채팅 상태 변경 이벤트
+client.on('voiceStateUpdate', (oldState, newState) => {
+    // 유저 음성채팅 상태 변경 이벤트
     const oldVoice = oldState.channel;
     const newVoice = newState.channel;
     if (oldVoice != newVoice) {
-        console.log(!oldVoice ? "User joined!" : (!newVoice ? "User left!" : "User switched channels!"));
+        console.log(!oldVoice ? 'User joined!' : !newVoice ? 'User left!' : 'User switched channels!');
 
         if (newVoice) {
             const newQueue = client.queue.get(newVoice.guild.id);
             if (newQueue?.connection && !newQueue.playing && newVoice == newQueue.channel && newVoice.members.size == 2) {
                 newQueue.connection.dispatcher?.resume();
-                newQueue.textChannel.send("대기열을 다시 재생합니다.");
+                newQueue.textChannel.send('대기열을 다시 재생합니다.');
                 newQueue.playing = true;
             }
         }
 
         if (oldVoice) {
             const oldQueue = client.queue.get(oldVoice.guild.id);
-            if (oldQueue?.connection && oldVoice == oldQueue.channel && oldVoice.members.size == 1) { // 봇만 음성 채널에 있는 경우
+            if (oldQueue?.connection && oldVoice == oldQueue.channel && oldVoice.members.size == 1) {
+                // 봇만 음성 채널에 있는 경우
                 if (oldQueue.playing) {
                     oldQueue.connection.dispatcher?.pause(true);
-                    oldQueue.textChannel.send("모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.");
+                    oldQueue.textChannel.send('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
                     oldQueue.playing = false;
                 }
                 setTimeout(() => {
                     const queue = client.queue.get(oldVoice.guild.id);
-                    if (queue?.connection && oldVoice == queue.channel && oldVoice.members.size == 1) { // 5분이 지나도 봇만 음성 채널에 있는 경우
+                    if (queue?.connection && oldVoice == queue.channel && oldVoice.members.size == 1) {
+                        // 5분이 지나도 봇만 음성 채널에 있는 경우
                         queue.songs = [];
                         queue.connection.dispatcher?.end();
-                        queue.textChannel.send("5분 동안 소야봇이 비활성화 되어 대기열을 끝냅니다.");
+                        queue.textChannel.send('5분 동안 소야봇이 비활성화 되어 대기열을 끝냅니다.');
                     }
                 }, 300000);
             }

@@ -1,105 +1,103 @@
 const { cmd } = require('../admin/admin_function');
-const { MessageEmbed } = require("../util/discord.js-extend");
+const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 const chartType = {
-    "일봉": "candle/day",
-    "주봉": "candle/week",
-    "월봉": "candle/month",
-    "1일": "day",
-    "3개월": "area/month3",
-    "1년": "area/year",
-    "3년": "area/year3",
-    "10년": "area/year10"
+    '일봉': 'candle/day',
+    '주봉': 'candle/week',
+    '월봉': 'candle/month',
+    '1일': 'day',
+    '3개월': 'area/month3',
+    '1년': 'area/year',
+    '3년': 'area/year3',
+    '10년': 'area/year10'
 };
 
 const redirectURL = {
-    itemmain: "/item/index.nhn",
-    sisesise_index: "/sise/siseIndex.nhn",
-    worldsise: "/world/item.nhn"
-}
+    itemmain: '/item/index.nhn',
+    sisesise_index: '/sise/siseIndex.nhn',
+    worldsise: '/world/item.nhn'
+};
 
 function getChartImage(identifer, type, isWorld = false, isWorldItem = false) {
-    return `https://ssl.pstatic.net/imgfinance/chart/mobile${isWorld ? "/world" : ""}${isWorldItem ? "/item" : ""}/${chartType[type]}/${identifer}_end.png?sidcode=${Date.now()}`;
+    return `https://ssl.pstatic.net/imgfinance/chart/mobile${isWorld ? '/world' : ''}${isWorldItem ? '/item' : ''}/${chartType[type]}/${identifer}_end.png?sidcode=${Date.now()}`;
 }
 
 function getRedirectURL(url) {
-    const afterRedirect = redirectURL[url.substring(0, url.indexOf(".nhn")).replace(/\//g, "")];
-    return afterRedirect ? url.replace(url.substring(0, url.indexOf("?")), afterRedirect) : url;
+    const afterRedirect = redirectURL[url.substring(0, url.indexOf('.nhn')).replace(/\//g, '')];
+    return afterRedirect ? url.replace(url.substring(0, url.indexOf('?')), afterRedirect) : url;
 }
 
 module.exports = {
     usage: `${client.prefix}주식정보 (검색 내용) (차트 종류)`,
-    command: ["주식정보", "ㅈㅅㅈㅂ"],
+    command: ['주식정보', 'ㅈㅅㅈㅂ'],
     description: `- 검색 내용에 해당하는 주식의 정보를 보여줍니다.
-- (차트 종류): ${Object.keys(chartType).join(", ")} 입력가능 (생략 시 일봉으로 적용)`,
-    type: ["기타"],
+- (차트 종류): ${Object.keys(chartType).join(', ')} 입력가능 (생략 시 일봉으로 적용)`,
+    type: ['기타'],
     async execute(message, args) {
         if (args.length < 1) {
             return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const type = (args.length > 1 && chartType[args[args.length - 1]]) ? args.pop() : "일봉"; // 차트 종류
-        const search = args.join(" ").toLowerCase();
+        const type = args.length > 1 && chartType[args[args.length - 1]] ? args.pop() : '일봉'; // 차트 종류
+        const search = args.join(' ').toLowerCase();
         const searchRslt = (await (await fetch(`https://ac.finance.naver.com/ac?q=${encodeURI(search)}&t_koreng=1&st=111&r_lt=111`)).json()).items[0];
 
         if (!searchRslt?.length) {
-            return message.channel.send("검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.");
-        }
-        else {
+            return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
+        } else {
             const stockfind = searchRslt.find((v) => v[0][0].toLowerCase() == search || v[1][0].toLowerCase() == search) ?? searchRslt[0]; // 내용과 일치하거나 첫번째 항목
             const code = stockfind[0][0];
             const name = stockfind[1][0];
             const link = getRedirectURL(stockfind[3][0]); // 리다이렉트 로직 반영
             const identifer = stockfind[4][0];
 
-            const stockEmbed = new MessageEmbed()
-                .setTitle(`**${name} (${code}) ${type}**`)
-                .setColor("#FF9899")
-                .setURL(`https://m.stock.naver.com${link}`);
-            if (stockfind[2][0] == "국내지수") { // 국내 지수
+            const stockEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9899').setURL(`https://m.stock.naver.com${link}`);
+            if (stockfind[2][0] == '국내지수') {
+                // 국내 지수
                 const $ = cheerio.load(await (await fetch(`https://m.stock.naver.com/sise/siseIndex.nhn?code=${identifer}`)).text());
-                const data = $(".total_list > li > span");
+                const data = $('.total_list > li > span');
                 const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_INDEX%3A${identifer}`)).json();
-                const trendData = $(".ct_box.dmst_trend .trend_lst");
+                const trendData = $('.ct_box.dmst_trend .trend_lst');
 
                 const chartURL = getChartImage(identifer, type);
                 const nowPrice = nowData.result.areas[0].datas[0].nv / 100;
                 const changeAmount = nowData.result.areas[0].datas[0].cv / 100; // 숫자값
                 const changeRate = nowData.result.areas[0].datas[0].cr;
-                const isFUT = identifer == "FUT";
+                const isFUT = identifer == 'FUT';
 
-                const minPrice = data.eq(isFUT ? 3 : 1).text().trim() || "0";
-                const maxPrice = data.eq(isFUT ? 2 : 0).text().trim() || "0";
-                const amount = data.eq(isFUT ? 4 : 2).text().trim() || "0";
+                const minPrice = data.eq(isFUT ? 3 : 1).text().trim() || '0';
+                const maxPrice = data.eq(isFUT ? 2 : 0).text().trim() || '0';
+                const amount = data.eq(isFUT ? 4 : 2).text().trim() || '0';
                 const totalPrice = data.eq(isFUT ? 5 : 3).text().trim();
-                const min_52weeks = data.eq(isFUT ? 7 : 5).text().trim() || "0";
-                const max_52weeks = data.eq(isFUT ? 6 : 4).text().trim() || "0";
+                const min_52weeks = data.eq(isFUT ? 7 : 5).text().trim() || '0';
+                const max_52weeks = data.eq(isFUT ? 6 : 4).text().trim() || '0';
 
                 await cmd(`python3 ./util/make_stock_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                 // 파이썬 스크립트 실행
 
-                stockEmbed.addField(isFUT ? '**약정수량**' : '**거래량**', amount, true)
+                stockEmbed
+                    .addField(isFUT ? '**약정수량**' : '**거래량**', amount, true)
                     .addField('**거래대금**', totalPrice, true)
-                    .addField('**개인**', trendData.eq(0).find("span").eq(0).text(), true)
-                    .addField('**외국인**', trendData.eq(0).find("span").eq(1).text(), true)
-                    .addField('**기관**', trendData.eq(0).find("span").eq(2).text(), true);
+                    .addField('**개인**', trendData.eq(0).find('span').eq(0).text(), true)
+                    .addField('**외국인**', trendData.eq(0).find('span').eq(1).text(), true)
+                    .addField('**기관**', trendData.eq(0).find('span').eq(2).text(), true);
 
-                const up = trendData.eq(2).find("span").eq(0).text();
+                const up = trendData.eq(2).find('span').eq(0).text();
                 if (up) {
                     stockEmbed.addField('**상승**', up, true);
                 }
-                const down = trendData.eq(2).find("span").eq(2).text();
+                const down = trendData.eq(2).find('span').eq(2).text();
                 if (down) {
                     stockEmbed.addField('**하락**', down, true);
                 }
-            }
-            else if (stockfind[2][0] == "해외지수") { // 해외 지수
-                const data = (await (await fetch(`https://api.stock.naver.com/index/${identifer}/basic`)).json());
+            } else if (stockfind[2][0] == '해외지수') {
+                // 해외 지수
+                const data = await (await fetch(`https://api.stock.naver.com/index/${identifer}/basic`)).json();
 
                 const chartURL = getChartImage(identifer, type, true);
                 const nowPrice = data.closePrice;
-                const changeAmount = data.compareToPreviousClosePrice.replace(/,/g, "");
+                const changeAmount = data.compareToPreviousClosePrice.replace(/,/g, '');
                 const changeRate = data.fluctuationsRatio;
 
                 const minPrice = data.stockItemTotalInfos[3].value;
@@ -109,46 +107,37 @@ module.exports = {
 
                 await cmd(`python3 ./util/make_stock_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" "" ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                 // 파이썬 스크립트 실행
-            }
-            else if (stockfind[3][0].startsWith('/item/main')) { // 국내 주식
+            } else if (stockfind[3][0].startsWith('/item/main')) {
+                // 국내 주식
                 const $ = cheerio.load(await (await fetch(`https://m.stock.naver.com/api/html/item/getOverallInfo.nhn?code=${identifer}`)).text());
-                const data = $(".total_list > li > span");
+                const data = $('.total_list > li > span');
                 const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_ITEM%3A${identifer}`)).json();
 
                 const chartURL = getChartImage(identifer, type);
                 const beforePrice = nowData.result.areas[0].datas[0].pcv;
                 const nowPrice = nowData.result.areas[0].datas[0].nv;
                 const changeAmount = nowPrice - beforePrice; // 숫자값
-                const changeRate = (changeAmount / beforePrice * 100).toFixed(2);
+                const changeRate = ((changeAmount / beforePrice) * 100).toFixed(2);
 
-                const minPrice = data.eq(3).text().trim() || "0";
-                const maxPrice = data.eq(2).text().trim() || "0";
-                const amount = data.eq(4).text().trim() || "0";
+                const minPrice = data.eq(3).text().trim() || '0';
+                const maxPrice = data.eq(2).text().trim() || '0';
+                const amount = data.eq(4).text().trim() || '0';
                 const totalPrice = data.eq(5).text().trim();
                 const capitalization = data.eq(6).text().trim();
-                const min_52weeks = data.eq(9).contents().first().text().trim() || "0";
-                const max_52weeks = data.eq(8).contents().first().text().trim() || "0";
+                const min_52weeks = data.eq(9).contents().first().text().trim() || '0';
+                const max_52weeks = data.eq(8).contents().first().text().trim() || '0';
 
                 await cmd(`python3 ./util/make_stock_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                 // 파이썬 스크립트 실행
 
-                stockEmbed.addField('**거래량**', amount, true)
-                    .addField('**거래대금**', `${totalPrice}원`, true)
-                    .addField('**시가총액**', `${capitalization}원`, true)
-                    .addField('**외인소진율**', data.eq(7).text().trim(), true)
-                    .addField('**PER**', data.eq(10).text().trim(), true)
-                    .addField('**EPS**', data.eq(11).text().trim(), true)
-                    .addField('**PBR**', data.eq(14).text().trim(), true)
-                    .addField('**BPS**', data.eq(15).text().trim(), true)
-                    .addField('**배당률**', data.eq(16).text().trim(), true)
-                    .addField('**배당금**', data.eq(17).text().trim(), true);
-            }
-            else { // 해외 주식
+                stockEmbed.addField('**거래량**', amount, true).addField('**거래대금**', `${totalPrice}원`, true).addField('**시가총액**', `${capitalization}원`, true).addField('**외인소진율**', data.eq(7).text().trim(), true).addField('**PER**', data.eq(10).text().trim(), true).addField('**EPS**', data.eq(11).text().trim(), true).addField('**PBR**', data.eq(14).text().trim(), true).addField('**BPS**', data.eq(15).text().trim(), true).addField('**배당률**', data.eq(16).text().trim(), true).addField('**배당금**', data.eq(17).text().trim(), true);
+            } else {
+                // 해외 주식
                 const data = await (await fetch(`https://api.stock.naver.com/stock/${identifer}/basic`)).json();
 
                 const chartURL = getChartImage(identifer, type, true, true);
                 const nowPrice = data.closePrice;
-                const changeAmount = data.compareToPreviousClosePrice.replace(/,/g, ""); // 숫자값
+                const changeAmount = data.compareToPreviousClosePrice.replace(/,/g, ''); // 숫자값
                 const changeRate = data.fluctuationsRatio;
 
                 const minPrice = data.stockItemTotalInfos[3].value;
@@ -162,7 +151,8 @@ module.exports = {
                 await cmd(`python3 ./util/make_stock_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" ${data.currencyType.name} ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                 // 파이썬 스크립트 실행
 
-                stockEmbed.addField('**거래량**', amount, true)
+                stockEmbed
+                    .addField('**거래량**', amount, true)
                     .addField('**거래대금**', `${totalPrice}${data.currencyType.name}`, true)
                     .addField('**시가총액**', `${capitalization}${data.currencyType.name}`, true)
                     .addField('**업종**', data.stockItemTotalInfos[7].value, true)

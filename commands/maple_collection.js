@@ -1,11 +1,11 @@
 const { cmd } = require('../admin/admin_function');
-const mapleModule = require("../util/maple_parsing");
+const mapleModule = require('../util/maple_parsing');
 
 module.exports = {
     usage: `${client.prefix}컬렉션 (닉네임)`,
-    command: ["컬렉션", "ㅋㄹㅅ", "ㅋㄽ"],
-    description: "- 캐릭터의 메이플 gg 코디 컬렉션을 출력합니다.",
-    type: ["메이플"],
+    command: ['컬렉션', 'ㅋㄹㅅ', 'ㅋㄽ'],
+    description: '- 캐릭터의 메이플 gg 코디 컬렉션을 출력합니다.',
+    type: ['메이플'],
     async execute(message, args) {
         if (args.length != 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
@@ -25,11 +25,10 @@ module.exports = {
         const collection = Maple.Collection();
         if (!collection) {
             return message.channel.send(`${Maple.Name}님의 코디 컬렉션을 가져오지 못하였습니다.`);
-        }
-        else {
-            await cmd(`python3 ./util/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(" ")} ${collection[1].join(" ")}`);
+        } else {
+            await cmd(`python3 ./util/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(' ')} ${collection[1].join(' ')}`);
             return message.channel.send(`${Maple.Name}님의 코디 컬렉션`, {
-                files: ["./pictures/collection.png"]
+                files: ['./pictures/collection.png']
             });
         }
     }

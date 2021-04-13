@@ -1,10 +1,10 @@
-const mapleModule = require("../util/maple_parsing");
+const mapleModule = require('../util/maple_parsing');
 
 module.exports = {
     usage: `${client.prefix}시드 (닉네임)`,
-    command: ["시드", "ㅅㄷ"],
-    description: "캐릭터의 직업, 시드 최고기록, 시간을 출력합니다.",
-    type: ["메이플"],
+    command: ['시드', 'ㅅㄷ'],
+    description: '캐릭터의 직업, 시드 최고기록, 시간을 출력합니다.',
+    type: ['메이플'],
     async execute(message, args) {
         if (args.length != 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
@@ -24,8 +24,7 @@ module.exports = {
         const seed = Maple.Seed();
         if (!seed) {
             return message.channel.send(`[${Maple.Name}]\n기록이 없습니다.`);
-        }
-        else {
+        } else {
             return message.channel.send(`[${Maple.Name}]\n${seed[0]}\n기록: ${seed[1]}\n시간: ${seed[2]}\n날짜: ${seed[3]}`);
         }
     }

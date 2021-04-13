@@ -2,16 +2,16 @@ const list = '가각간갇갈갉갊감갑값갓갔강갖갗같갚갛개객갠갤
 
 module.exports = {
     usage: `${client.prefix}녜힁 (글자 수)`,
-    command: ["녜힁", "ㄴㅎ", "ㄶ"],
-    description: "- 메이플스토리 닉네임을 추천합니다. (2 ~ 6글자)",
-    type: ["메이플"],
+    command: ['녜힁', 'ㄴㅎ', 'ㄶ'],
+    description: '- 메이플스토리 닉네임을 추천합니다. (2 ~ 6글자)',
+    type: ['메이플'],
     async execute(message, args) {
         const count = +(args[0] ?? 2);
         if (isNaN(count) || count < 2 || count > 6) {
-            message.reply("닉네임은 2 ~ 6 글자만 가능합니다.");
+            message.reply('닉네임은 2 ~ 6 글자만 가능합니다.');
         }
 
-        let rslt = "";
+        let rslt = '';
 
         for (let i = 0; i < count; i++) {
             rslt += list[Math.floor(Math.random() * list.length)];

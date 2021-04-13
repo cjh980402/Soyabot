@@ -61,28 +61,30 @@ const probTable = [
 ];
 
 function Pool(startlev, endlev) {
-    let rslt = "", cnt = 0;
+    let rslt = '',
+        cnt = 0;
 
     for (let lev = startlev; lev < endlev; cnt++) {
         const now = Math.floor(Math.random() * 100 + 1);
-        let sum = 0, i = 0;
+        let sum = 0,
+            i = 0;
         for (i = 0; i < 10; i++) {
             sum += probTable[lev - 141][i];
             if (now <= sum) {
                 break;
             }
         }
-        rslt += `${lev}레벨 → ${lev += i + 1}레벨 (${i + 1}레벨 상승)\n`;
+        rslt += `${lev}레벨 → ${(lev += i + 1)}레벨 (${i + 1}레벨 상승)\n`;
     }
     return `${rslt}총 ${cnt}개의 익성비를 소모`;
 }
 
 module.exports = {
     usage: `${client.prefix}익성비 (시작 레벨) (목표 레벨)`,
-    command: ["익성비", "ㅇㅅㅂ", "풀장", "ㅍㅈ"],
+    command: ['익성비', 'ㅇㅅㅂ', '풀장', 'ㅍㅈ'],
     description: `- 시작 레벨 ~ 목표 레벨의 익성비 시뮬레이션을 수행합니다.
 - 참고. ${client.prefix}익성비 확률 (시작 레벨)`,
-    type: ["메이플"],
+    type: ['메이플'],
     async execute(message, args) {
         if (args.length != 2) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
@@ -100,7 +102,8 @@ module.exports = {
             return message.channel.send(rslt);
         }
 
-        const startlev = +args[0], endlev = +args[1];
+        const startlev = +args[0],
+            endlev = +args[1];
         if (isNaN(startlev) || startlev < 141 || startlev > 199) {
             return message.channel.send('141 ~ 199 범위의 시작 레벨을 입력해주세요.');
         }

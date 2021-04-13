@@ -1,26 +1,26 @@
-const { MessageEmbed } = require("../util/discord.js-extend");
-const mapleModule = require("../util/maple_parsing");
+const { MessageEmbed } = require('../util/discord.js-extend');
+const mapleModule = require('../util/maple_parsing');
 const scoreGrade = [
-    [0, "메린이"],
-    [300, "무자본 평균"],
-    [350, "메른이"],
-    [400, "메벤 평균"],
-    [450, "경손실 따질 스펙"],
-    [500, "메덕"],
-    [550, "현생보다도 메이플"],
-    [600, "메생살이"],
-    [650, "초월자"],
-    [Infinity, ""]
+    [0, '메린이'],
+    [300, '무자본 평균'],
+    [350, '메른이'],
+    [400, '메벤 평균'],
+    [450, '경손실 따질 스펙'],
+    [500, '메덕'],
+    [550, '현생보다도 메이플'],
+    [600, '메생살이'],
+    [650, '초월자'],
+    [Infinity, '']
 ];
 
 module.exports = {
     usage: `${client.prefix}스카우터 (닉네임)`,
-    command: ["스카우터", "ㅅㅋㅇㅌ"],
-    description: "- 정해진 조건으로 해당 캐릭터의 점수를 평가합니다. 닉네임을 생략시에는 기준 점수표를 보여줍니다.",
-    type: ["메이플"],
+    command: ['스카우터', 'ㅅㅋㅇㅌ'],
+    description: '- 정해진 조건으로 해당 캐릭터의 점수를 평가합니다. 닉네임을 생략시에는 기준 점수표를 보여줍니다.',
+    type: ['메이플'],
     async execute(message, args) {
         if (args.length != 1) {
-            let rslt = "스카우터 기준 점수표";
+            let rslt = '스카우터 기준 점수표';
             for (let i = 0; i < scoreGrade.length - 2; i++) {
                 rslt += `\n${scoreGrade[i][0]} ~ ${scoreGrade[i + 1][0] - 1}점: ${scoreGrade[i][1]}`;
             }
@@ -52,14 +52,13 @@ module.exports = {
             min = 0;
             sec = 0;
             time = 900;
-        }
-        else {
+        } else {
             murungfl = +/\d+/.exec(murung[1]);
             [min, sec] = murung[2].match(/\d+/g).map((v) => +v);
             time = min * 60 + sec;
         }
 
-        const score = Math.floor(level - ((level >= 275) ? 50 : 100) + (murungfl + 1 - time / 900) * ((murungfl >= 45) ? 4 : 3) + (union / ((union >= 8000) ? 32 : 40)));
+        const score = Math.floor(level - (level >= 275 ? 50 : 100) + (murungfl + 1 - time / 900) * (murungfl >= 45 ? 4 : 3) + union / (union >= 8000 ? 32 : 40));
         let grade;
         for (let i = 0; i < scoreGrade.length - 1; i++) {
             if (scoreGrade[i][0] <= score && score < scoreGrade[i + 1][0]) {
@@ -70,13 +69,13 @@ module.exports = {
 
         const scouterEmbed = new MessageEmbed()
             .setTitle(`**${Maple.Name}님의 측정결과**`)
-            .setColor("#FF9899")
+            .setColor('#FF9899')
             .setURL(Maple.GGURL)
             .setImage(Maple.userImg())
             .addField('**직업**', job, true)
             .addField('**레벨**', level, true)
             .addField('**유니온**', union.toLocaleString(), true)
-            .addField('**무릉 기록**', murung ? `${murungfl}층 (${min}분 ${sec}초)` : "-", true)
+            .addField('**무릉 기록**', murung ? `${murungfl}층 (${min}분 ${sec}초)` : '-', true)
             .addField('**측정 결과**', `${grade}! (${score}점)`);
 
         return message.channel.send(scouterEmbed);
