@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
-const cheerio = require('cheerio');
+const { load } = require('cheerio');
 
 module.exports = {
     usage: `${client.prefix}lyrics (노래 제목)`,
@@ -15,12 +15,12 @@ module.exports = {
         }
 
         const lyricsEmbed = new MessageEmbed().setColor('#FF9899').setTimestamp();
-        const songData = cheerio.load(await (await fetch(`https://www.melon.com/search/song/index.htm?q=${encodeURI(search)}`)).text())('input[name="input_check"]'); // length가 검색 결과 수
-        const lyricData = cheerio.load(await (await fetch(`https://www.melon.com/search/lyric/index.htm?q=${encodeURI(search)}`)).text())('.list_lyric .cntt_lyric .btn.btn_icon_detail'); // length가 검색 결과 수
+        const songData = load(await (await fetch(`https://www.melon.com/search/song/index.htm?q=${encodeURI(search)}`)).text())('input[name="input_check"]'); // length가 검색 결과 수
+        const lyricData = load(await (await fetch(`https://www.melon.com/search/lyric/index.htm?q=${encodeURI(search)}`)).text())('.list_lyric .cntt_lyric .btn.btn_icon_detail'); // length가 검색 결과 수
         const songId = songData.eq(0).attr('value') ?? lyricData.eq(0).attr('data-song-no');
 
         if (songId) {
-            const $ = cheerio.load(await (await fetch(`https://www.melon.com/song/detail.htm?songId=${songId}`)).text());
+            const $ = load(await (await fetch(`https://www.melon.com/song/detail.htm?songId=${songId}`)).text());
             const title = $('.song_name').contents().last().text().trim();
             const is19 = $('.song_name .bullet_icons.age_19.large').length;
             const artist = $('.artist').eq(0).text().trim();

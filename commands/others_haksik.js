@@ -1,5 +1,5 @@
-const cheerio = require('cheerio');
 const fetch = require('node-fetch');
+const { load } = require('cheerio');
 
 module.exports = {
     usage: `${client.prefix}학식 (요일)`,
@@ -15,7 +15,7 @@ module.exports = {
             return message.channel.send('지원하지 않는 요일입니다.');
         }
 
-        const data = cheerio.load(await (await fetch('https://www.uos.ac.kr/food/placeList.do')).text())('#week tr');
+        const data = load(await (await fetch('https://www.uos.ac.kr/food/placeList.do')).text())('#week tr');
         if (data.length >= 3) {
             // 하루 이상의 학식 데이터가 존재
             for (let i = 0; i < data.length; i += 3) {

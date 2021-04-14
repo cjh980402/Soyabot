@@ -1,7 +1,7 @@
 const { cmd } = require('../admin/admin_function');
 const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
-const cheerio = require('cheerio');
+const { load } = require('cheerio');
 const chartType = {
     '1일': 'd',
     '1주': 'w',
@@ -28,7 +28,7 @@ module.exports = {
         const type = args.length > 1 && chartType[args[args.length - 1]] ? args.pop() : '1일'; // 차트 종류
         const search = args.join(' ').toLowerCase();
         const coinLink = `https://search.daum.net/search?w=tot&DA=EMA&q=${encodeURIComponent(search)}&rtmaxcoll=EMA`;
-        const searchRslt = cheerio.load(await (await fetch(coinLink)).text())('div[disp-attr="EMA"]');
+        const searchRslt = load(await (await fetch(coinLink)).text())('div[disp-attr="EMA"]');
 
         if (!searchRslt.length) {
             return message.channel.send('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');

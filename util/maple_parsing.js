@@ -1,12 +1,12 @@
-const cheerio = require('cheerio');
 const fetch = require('node-fetch');
+const { load } = require('cheerio');
 
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function linkParse(link) {
-    return cheerio.load(await (await fetch(link)).text());
+    return load(await (await fetch(link)).text());
 }
 
 async function linkJSON(link) {

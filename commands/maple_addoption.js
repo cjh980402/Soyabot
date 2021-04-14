@@ -26,9 +26,7 @@ module.exports = {
     type: ['메이플'],
     async execute(message, args) {
         if (picmatch[args[0]]) {
-            return message.channel.send(`${args[0]} 무기의 추옵표`, {
-                files: [`./pictures/add_option/${picmatch[args[0]]}.png`]
-            });
+            return message.channel.send(`${args[0]} 무기의 추옵표`, { files: [`./pictures/add_option/${picmatch[args[0]]}.png`] });
         } else {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }

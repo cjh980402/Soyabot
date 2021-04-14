@@ -96,8 +96,6 @@ module.exports = {
             .setBackgroundColor('white');
 
         const attachment = new MessageAttachment(await messageChart.toBinary(), 'graph.png');
-        return message.channel.send({
-            files: [attachment]
-        });
+        return message.channel.send({ files: [attachment] });
     }
 };

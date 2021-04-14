@@ -1,7 +1,7 @@
 const { OPEN_API_KEY } = require('../soyabot_config.json');
 const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
-const cheerio = require('cheerio');
+const { load } = require('cheerio');
 
 function calcIncrease($, selector) {
     const today = +$(selector).eq(0).text();
@@ -24,7 +24,7 @@ module.exports = {
         params.append('numOfRows', '10');
         params.append('startCreateDt', `${startday.getFullYear()}${String(startday.getMonth() + 1).padStart(2, '0')}${String(startday.getDate()).padStart(2, '0')}`);
         params.append('endCreateDt', `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`);
-        const $ = cheerio.load(await (await fetch(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?${params}`)).text(), { xmlMode: true });
+        const $ = load(await (await fetch(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?${params}`)).text(), { xmlMode: true });
 
         if ($('resultCode').text() == '00') {
             const coronaEmbed = new MessageEmbed()

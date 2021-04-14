@@ -8,9 +8,7 @@ module.exports = {
     async execute(message) {
         const nickname = message.member?.nickname ?? message.author.username;
         await cmd(`python3 ./util/maple_stats_drawer.py "${nickname.replace(/["`]/g, '\\$&')}"`);
-        const dice = await message.channel.send(`${nickname}님의 스탯`, {
-            files: ['./pictures/dice_result.png']
-        });
+        const dice = await message.channel.send(`${nickname}님의 스탯`, { files: ['./pictures/dice_result.png'] });
         await dice.react('🔁');
 
         const filter = (reaction, user) => reaction.emoji.name == '🔁' && message.author.id == user.id;

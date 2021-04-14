@@ -1,7 +1,7 @@
 const { cmd } = require('../admin/admin_function');
 const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
-const cheerio = require('cheerio');
+const { load } = require('cheerio');
 const chartType = {
     '일봉': 'candle/day',
     '주봉': 'candle/week',
@@ -55,7 +55,7 @@ module.exports = {
             const stockEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9899').setURL(`https://m.stock.naver.com${link}`);
             if (stockfind[2][0] == '국내지수') {
                 // 국내 지수
-                const $ = cheerio.load(await (await fetch(`https://m.stock.naver.com/sise/siseIndex.nhn?code=${identifer}`)).text());
+                const $ = load(await (await fetch(`https://m.stock.naver.com/sise/siseIndex.nhn?code=${identifer}`)).text());
                 const data = $('.total_list > li > span');
                 const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_INDEX%3A${identifer}`)).json();
                 const trendData = $('.ct_box.dmst_trend .trend_lst');
@@ -109,7 +109,7 @@ module.exports = {
                 // 파이썬 스크립트 실행
             } else if (stockfind[3][0].startsWith('/item/main')) {
                 // 국내 주식
-                const $ = cheerio.load(await (await fetch(`https://m.stock.naver.com/api/html/item/getOverallInfo.nhn?code=${identifer}`)).text());
+                const $ = load(await (await fetch(`https://m.stock.naver.com/api/html/item/getOverallInfo.nhn?code=${identifer}`)).text());
                 const data = $('.total_list > li > span');
                 const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_ITEM%3A${identifer}`)).json();
 

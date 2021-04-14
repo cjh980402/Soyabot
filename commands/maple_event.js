@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
-const cheerio = require('cheerio');
+const { load } = require('cheerio');
 
 function generateEventEmbed(links, names, dates) {
     const embeds = [];
@@ -21,7 +21,7 @@ module.exports = {
     description: '- 현재 진행 중인 이벤트를 알려줍니다.',
     type: ['메이플'],
     async execute(message) {
-        const $ = cheerio.load(await (await fetch('https://maplestory.nexon.com/News/Event')).text());
+        const $ = load(await (await fetch('https://maplestory.nexon.com/News/Event')).text());
         const eventdata = $('.event_all_banner li dl');
         const links = eventdata.find('dt a').map((i, v) => $(v).attr('href'));
         const names = eventdata.find('dt a').map((i, v) => $(v).text());

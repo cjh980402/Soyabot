@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const cheerio = require('cheerio');
+const { load } = require('cheerio');
 
 module.exports = {
     usage: `${client.prefix}썬데이`,
@@ -7,7 +7,7 @@ module.exports = {
     description: '- 현재 진행 (예정) 중인 썬데이 메이플을 공지합니다.',
     type: ['메이플'],
     async execute(message) {
-        const $ = cheerio.load(await (await fetch('https://maplestory.nexon.com/News/Event')).text());
+        const $ = load(await (await fetch('https://maplestory.nexon.com/News/Event')).text());
         const eventdata = $('.event_all_banner li dl');
         const sunday = eventdata.find('dt a').filter((i, v) => /^썬데이\s*메이플$/.test($(v).text())).attr('href');
         if (!sunday) {
@@ -15,10 +15,8 @@ module.exports = {
         }
 
         const sundayTitle = `${eventdata.find('dd a').filter((i, v) => $(v).attr('href') == sunday).text().substr(0, 14)}의 썬데이 메이플`;
-        const imgLink = cheerio.load(await (await fetch(`https://maplestory.nexon.com${sunday}`)).text())('img[alt="썬데이 메이플!"]').attr('src');
+        const imgLink = load(await (await fetch(`https://maplestory.nexon.com${sunday}`)).text())('img[alt="썬데이 메이플!"]').attr('src');
 
-        return message.channel.send(sundayTitle, {
-            files: [imgLink]
-        });
+        return message.channel.send(sundayTitle, { files: [imgLink] });
     }
 };

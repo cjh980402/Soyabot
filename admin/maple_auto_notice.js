@@ -1,7 +1,7 @@
 const { MessageEmbed } = require('../util/discord.js-extend');
 const { botNotice, replyAdmin } = require('./bot_control.js');
 const fetch = require('node-fetch');
-const cheerio = require('cheerio');
+const { load } = require('cheerio');
 let noticeTimer = null;
 let updateTimer = null;
 let testTimer = null;
@@ -12,7 +12,7 @@ module.exports.startNotice = function () {
     if (!noticeTimer) {
         noticeTimer = setInterval(async () => {
             try {
-                const data = cheerio.load(await (await fetch('https://maplestory.nexon.com/News/Notice')).text())('.news_board li > p');
+                const data = load(await (await fetch('https://maplestory.nexon.com/News/Notice')).text())('.news_board li > p');
 
                 const notice = [];
                 for (let i = 0; i < data.length; i++) {
@@ -49,7 +49,7 @@ module.exports.startUpdate = function () {
     if (!updateTimer) {
         updateTimer = setInterval(async () => {
             try {
-                const data = cheerio.load(await (await fetch('https://maplestory.nexon.com/News/Update')).text())('.update_board li > p');
+                const data = load(await (await fetch('https://maplestory.nexon.com/News/Update')).text())('.update_board li > p');
 
                 const update = [];
                 for (let i = 0; i < data.length; i++) {
@@ -86,7 +86,7 @@ module.exports.startTest = function () {
     if (!testTimer) {
         testTimer = setInterval(async () => {
             try {
-                const data = cheerio.load(await (await fetch('https://maplestory.nexon.com/Testworld/Totalnotice')).text())('.news_board li > p');
+                const data = load(await (await fetch('https://maplestory.nexon.com/Testworld/Totalnotice')).text())('.news_board li > p');
 
                 const test = [];
                 for (let i = 0; i < data.length; i++) {

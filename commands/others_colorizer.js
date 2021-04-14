@@ -16,12 +16,8 @@ module.exports = {
         if (!imageURL) {
             return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
         } else {
-            const resp = await deepai.callStandardApi('colorizer', {
-                image: imageURL
-            });
-            return message.channel.send({
-                files: [resp.output_url]
-            });
+            const resp = await deepai.callStandardApi('colorizer', { image: imageURL });
+            return message.channel.send({ files: [resp.output_url] });
         }
     }
 };

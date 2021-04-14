@@ -17,12 +17,8 @@ module.exports = {
             return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
         } else {
             try {
-                const resp = await deepai.callStandardApi('toonify', {
-                    image: imageURL
-                });
-                message.channel.send({
-                    files: [resp.output_url]
-                });
+                const resp = await deepai.callStandardApi('toonify', { image: imageURL });
+                message.channel.send({ files: [resp.output_url] });
             } catch (e) {
                 if (e.response?.status == 400) {
                     message.channel.send('사진에서 적절한 대상 인물을 찾지 못했습니다.');

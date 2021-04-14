@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const cheerio = require('cheerio');
+const { load } = require('cheerio');
 const mapleModule = require('../util/maple_parsing');
 const { sleep } = require('../admin/bot_control');
 const serverEngName = {
@@ -51,7 +51,7 @@ module.exports = {
 
         const guildURL = `https://maple.gg/guild/${serverEngName[args[0]]}/${encodeURIComponent(args[1])}`;
         const isLatest = await updateGuild(guildURL);
-        const $ = cheerio.load(await (await fetch(`${guildURL}/members?sort=level`)).text());
+        const $ = load(await (await fetch(`${guildURL}/members?sort=level`)).text());
         if ($('div.alert.alert-warning.mt-3').length != 0) {
             throw new Error('메이플 GG 서버가 점검 중입니다.');
         } else if (/Bad Gateway|Error/.test($('title').text()) || $('div.flex-center.position-ref.full-height').length != 0) {

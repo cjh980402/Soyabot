@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
-const cheerio = require('cheerio');
+const { load } = require('cheerio');
 
 function generateWeatherEmbed(local, weatherDesc) {
     const embeds = [];
@@ -41,7 +41,7 @@ module.exports = {
             targetLocal = searchRslt[+rslt.first().content - 1];
         }
 
-        const $ = cheerio.load(await (await fetch(`https://weather.naver.com/today/${targetLocal[1][0]}`)).text());
+        const $ = load(await (await fetch(`https://weather.naver.com/today/${targetLocal[1][0]}`)).text());
         const nowWeather = $('.weather_area');
         const weatherDesc = [`현재 날씨\n\n현재온도: ${nowWeather.find('.current').contents()[1].data}° (${nowWeather.find('.summary > .weather').text()})`, '날씨 예보\n'];
 
