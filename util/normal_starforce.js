@@ -1,18 +1,42 @@
-const probTable = [[95, 0], [90, 0], [85, 0], [85, 0], [80, 0], [75, 0], [70, 0], [65, 0], [60, 0], [55, 0], [50, 0], [45, 0], [40, 1], [35, 2], [30, 2], [30, 3], [30, 3], [30, 3], [30, 3], [30, 3], [30, 10], [30, 10], [3, 20], [2, 30], [1, 40]];
-// 확률을 백분율 수치로 저장       
+const probTable = [
+    [95, 0],
+    [90, 0],
+    [85, 0],
+    [85, 0],
+    [80, 0],
+    [75, 0],
+    [70, 0],
+    [65, 0],
+    [60, 0],
+    [55, 0],
+    [50, 0],
+    [45, 0],
+    [40, 1],
+    [35, 2],
+    [30, 2],
+    [30, 3],
+    [30, 3],
+    [30, 3],
+    [30, 3],
+    [30, 3],
+    [30, 10],
+    [30, 10],
+    [3, 20],
+    [2, 30],
+    [1, 40]
+];
+// 확률을 백분율 수치로 저장
 
 function meso(star, lev) {
     let temp = 0;
     if (star >= 15) {
         temp = Math.pow(star * 1 + 1, 2.7) / 200.0;
-    }
-    else if (star >= 10) {
+    } else if (star >= 10) {
         temp = Math.pow(star * 1 + 1, 2.7) / 400.0;
-    }
-    else {
+    } else {
         temp = (star * 1 + 1) / 25.0;
     }
-    return (Math.round((1000 + Math.pow(lev, 3) * temp) / 100.0) * 100); // 십의자리에서 반올림
+    return Math.round((1000 + Math.pow(lev, 3) * temp) / 100.0) * 100; // 십의자리에서 반올림
 }
 
 class NormalItem {
@@ -36,40 +60,35 @@ class NormalItem {
     doingStarforce(data) {
         const len = data.length;
         if (!data.every((v) => !isNaN(v)) || len < 3 || len > 6) {
-            return "잘못된 형식입니다.";
-        }
-        else if (data[2] == 25) {
-            return "과부하 방지를 위해 24성까지로 제한합니다.";
+            return '잘못된 형식입니다.';
+        } else if (data[2] == 25) {
+            return '과부하 방지를 위해 24성까지로 제한합니다.';
         }
 
         this.lev = data[0]; // 아이템 렙제
         if (this.lev < 98 || this.lev > 200) {
-            return "레벨 제한을 다시 입력해주세요.";
+            return '레벨 제한을 다시 입력해주세요.';
         }
         if (this.lev >= 138) {
             this.limit = 25;
-        }
-        else if (this.lev >= 128) {
+        } else if (this.lev >= 128) {
             this.limit = 20;
-        }
-        else if (this.lev >= 118) {
+        } else if (this.lev >= 118) {
             this.limit = 15;
-        }
-        else if (this.lev >= 108) {
+        } else if (this.lev >= 108) {
             this.limit = 10;
-        }
-        else if (this.lev >= 98) {
+        } else if (this.lev >= 98) {
             this.limit = 8;
         }
 
         this.initial = data[1]; // 강화 시작 수치
         if (this.initial < 0 || this.initial > this.limit) {
-            return "강화 시작 수치를 다시 입력해주세요.";
+            return '강화 시작 수치를 다시 입력해주세요.';
         }
 
         this.goal = data[2]; // 강화 목표 수치
         if (this.goal < this.initial || this.goal > this.limit) {
-            return "강화 목표 수치를 다시 입력해주세요.";
+            return '강화 목표 수치를 다시 입력해주세요.';
         }
 
         this.starcat = +(data[3] == 1); // 스타캐치 여부: 적용 = 1, 미적용 = 그 외
@@ -91,54 +110,59 @@ class NormalItem {
         let afterSaleRate = 1; // 할인 후 가격 비율
 
         const sucprob = (this.strcat ? 1050 : 1000) * probTable[this.star][0]; // 백분율 → 십만분율 변환, 스타캐치는 곱적용 5%
-        let destprob = (100000 - sucprob) * (1000 * probTable[this.star][1]) / 100000; // 파괴확률 = 조건부 확률, 백분율 → 십만분율 변환
+        let destprob = ((100000 - sucprob) * (1000 * probTable[this.star][1])) / 100000; // 파괴확률 = 조건부 확률, 백분율 → 십만분율 변환
 
         if (this.nodest == 1) {
             startNodest = 12;
-        }
-        else if (this.nodest == 2) {
+        } else if (this.nodest == 2) {
             startNodest = 15;
         }
-        if (this.event == 1) { // 30퍼 세일
+        if (this.event == 1) {
+            // 30퍼 세일
             afterSaleRate = 0.7;
         }
 
-        if (this.checkdown == -2) { // 찬스타임
+        if (this.checkdown == -2) {
+            // 찬스타임
             this.chance++;
             this.star++;
             this.checkdown = 0;
             this.sum += afterSaleRate * meso(this.star, this.lev);
             return;
         }
-        if (this.event == 2 && this.star < 20 && this.star % 5 == 0) { // 100퍼 이벤
+        if (this.event == 2 && this.star < 20 && this.star % 5 == 0) {
+            // 100퍼 이벤
             this.star++;
             this.checkdown = 0;
             this.sum += afterSaleRate * meso(this.star, this.lev);
             return;
         }
 
-        if (this.star >= startNodest && this.star <= 16) { // 파괴방지
+        if (this.star >= startNodest && this.star <= 16) {
+            // 파괴방지
             this.sum += (1 + afterSaleRate) * meso(this.star, this.lev);
             destprob = 0;
-        }
-        else { // 일반적인 경우
+        } else {
+            // 일반적인 경우
             this.sum += afterSaleRate * meso(this.star, this.lev);
         }
 
         this.sum = Math.round(this.sum);
         const i = Math.random() * 100000;
 
-        if (i < sucprob) { // 성공
-            this.star += (this.event == 3 && this.star <= 10) ? 2 : 1; // 1 + 1 이벤이면 2단계 상승
+        if (i < sucprob) {
+            // 성공
+            this.star += this.event == 3 && this.star <= 10 ? 2 : 1; // 1 + 1 이벤이면 2단계 상승
             this.checkdown = 0;
-        }
-        else if (i < sucprob + destprob) { // 파괴
+        } else if (i < sucprob + destprob) {
+            // 파괴
             this.star = 12;
             this.dest++;
             this.checkdown = 0;
-        }
-        else { // 실패
-            if (this.star > 10 && this.star % 5) { // 10성 이하와, 5의 배수구간은 완충 구간
+        } else {
+            // 실패
+            if (this.star > 10 && this.star % 5) {
+                // 10성 이하와, 5의 배수구간은 완충 구간
                 this.star--;
                 this.checkdown--;
             }

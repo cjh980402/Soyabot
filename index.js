@@ -39,10 +39,10 @@ client.on('ready', async () => {
         }
 
         const args = cmd.usage.match(/\(.+?\)/g);
-        const data = { name: cmd.command[0], description: cmd.description.split("\n")[0] };
+        const data = { name: cmd.command[0], description: cmd.description.split('\n')[0] };
 
         if (args?.length > 0) {
-            data.options = args.map((v) => ({ name: v.replace(/[\s()]/g, "").replace(/[^가-힣A-Za-z0-9_]/g, "_"), description: v, type: 3, required: true }));
+            data.options = args.map((v) => ({ name: v.replace(/[\s()]/g, '').replace(/[^가-힣A-Za-z0-9_]/g, '_'), description: v, type: 3, required: true }));
         }
 
         client.api.applications(client.user.id).commands.post({ data });*/
@@ -54,7 +54,7 @@ client.on('ready', async () => {
 client.on('error', (e) => console.error(`에러 내용: ${e}\n${e.stack ?? e._p}`));
 client.on('warn', console.log);
 
-/*client.ws.on("INTERACTION_CREATE", async (interaction) => {
+/*client.ws.on('INTERACTION_CREATE', async (interaction) => {
     client.api.interactions(interaction.id, interaction.token).callback.post({
         data: {
             type: 4,
@@ -62,10 +62,10 @@ client.on('warn', console.log);
                 content: `<${interaction.data.name} 명령>`
             }
         }
-    })
+    });
 
     const args = interaction.data.options?.map((v) => v.value.trim()) ?? [];
-    client.commands.find((cmd) => cmd.command.includes(interaction.data.name))?.execute(메시지 객체 생성해서 넣기, args);
+    client.commands.find((cmd) => cmd.command.includes(interaction.data.name))?.execute(새 메시지 객체, args);
 });*/
 
 client.on('message', async (message) => {
