@@ -114,7 +114,7 @@ module.exports = {
                 const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_ITEM%3A${identifer}`)).json();
 
                 const chartURL = getChartImage(identifer, type);
-                const beforePrice = nowData.result.areas[0].datas[0].pcv;
+                const beforePrice = nowData.result.areas[0].datas[0].sv;
                 const nowPrice = nowData.result.areas[0].datas[0].nv;
                 const changeAmount = nowPrice - beforePrice; // 숫자값
                 const changeRate = ((changeAmount / beforePrice) * 100).toFixed(2);
