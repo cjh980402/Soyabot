@@ -19,7 +19,7 @@ module.exports.adminChat = async function (message) {
         // 콘솔 명령 실행 후 출력
         message.channel.send((await module.exports.cmd(fullContent.substr(1).trim(), true)) || 'empty message', { split: { char: '' } });
     } else if (fullContent.startsWith('*')) {
-        // 원하는 방에 봇으로 채팅 전송 (채팅방 ID 이용)
+        // 원하는 방에 봇으로 채팅 전송 (텍스트 채널 ID 이용)
         const room = fullContent.split('*')[1];
         if (room && fullContent.startsWith(`*${room}* `)) {
             const rslt = replyRoomID(room, fullContent.replace(`*${room}* `, ''));

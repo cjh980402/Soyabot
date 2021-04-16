@@ -16,11 +16,14 @@ module.exports = {
             targetInfo = message.member;
         } else if (message.mentions.users.size > 0) {
             targetInfo = message.guild.member(message.mentions.users.first());
+            if (!targetInfo) {
+                return message.channel.send('서버에 존재하지 않는 사람입니다.');
+            }
         } else {
             const targetNick = message.content.substr(message.content.indexOf(args[0])).trim();
             targetInfo = message.guild.members.cache.filter((v) => (v.nickname ?? v.user.username).includes(targetNick));
             if (targetInfo.size == 0) {
-                return message.channel.send('채팅방에 존재하지 않는 사람입니다.');
+                return message.channel.send('서버에 존재하지 않는 사람입니다.');
             } else if (targetInfo.size == 1) {
                 targetInfo = targetInfo.first();
             } else {
@@ -38,9 +41,9 @@ module.exports = {
 
         const messagestat = await db.get(`SELECT * FROM messagedb WHERE channelsenderid = ?`, [`${message.guild.id} ${targetInfo.user.id}`]);
         if (messagestat) {
-            return message.channel.send(`${targetInfo.nickname || targetInfo.user.username}의 최근 채팅\n채팅 내용: ${messagestat.lastmessage}\n${new Date(messagestat.lasttime).toLocaleString()}`);
+            return message.channel.send(`${targetInfo.nickname ?? targetInfo.user.username}의 최근 채팅\n채팅 내용: ${messagestat.lastmessage}\n${new Date(messagestat.lasttime).toLocaleString()}`);
         } else {
-            return message.channel.send(`${targetInfo.nickname || targetInfo.user.username}의 채팅기록이 없습니다.`);
+            return message.channel.send(`${targetInfo.nickname ?? targetInfo.user.username}의 채팅기록이 없습니다.`);
         }
     }
 };

@@ -24,7 +24,8 @@ module.exports = {
         for (let gameChatType = 0; ; ) {
             await message.channel.awaitMessages(
                 (msg) => {
-                    if (gameRegExp[0].test(msg.content.trim())) {
+                    const trimContent = msg.content.trim();
+                    if (gameRegExp[0].test(trimContent)) {
                         if (gameUser.includes(msg.member)) {
                             msg.channel.send('이미 참가하셨습니다.');
                             return false;
@@ -34,19 +35,19 @@ module.exports = {
                             msg.channel.send(`게임에 참가하셨습니다.\n현재 참가자 (${gameUser.length}명): ${gameUser.map((v) => v.nickname ?? v.user.username).join(', ')}`);
                             return true;
                         }
-                    } else if (gameRegExp[1].test(msg.content.trim())) {
+                    } else if (gameRegExp[1].test(trimContent)) {
                         if (gameUser.includes(msg.member) && gameUser.length > 1) {
                             gameChatType = 2;
                             msg.channel.send('러시안룰렛을 시작합니다.');
                             return true;
                         } else if (gameUser.includes(msg.member)) {
-                            msg.channel.send('최소 2명 이상의 참가자가 있어야 시작할 수 있습니다.');
+                            msg.channel.send('2명 이상의 참가자가 있어야 시작할 수 있습니다.');
                             return false;
                         } else {
                             msg.channel.send('게임에 참가한 사람만 시작할 수 있습니다.');
                             return false;
                         }
-                    } else if (gameRegExp[2].test(msg.content.trim())) {
+                    } else if (gameRegExp[2].test(trimContent)) {
                         if (gameUser.includes(msg.member)) {
                             gameChatType = 3;
                             msg.channel.send('게임을 종료합니다.');
