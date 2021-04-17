@@ -1,4 +1,4 @@
-const mapleModule = require('../util/maple_parsing');
+const { MapleUser } = require('../util/maple_parsing');
 const { levelTable } = require('../util/soyabot_const.json');
 
 function numKoreanUnit(num) {
@@ -25,16 +25,16 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const Maple = new mapleModule(args[0]);
-        const level = await Maple.homeLevel();
+        const mapleUserInfo = new MapleUser(args[0]);
+        const level = await mapleUserInfo.homeLevel();
         if (!level) {
-            return message.channel.send(`[${Maple.Name}]\n존재하지 않는 캐릭터입니다.`);
+            return message.channel.send(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
 
         const char_lv = level[0];
         const char_ex = level[1];
 
-        let rslt = `[${Maple.Name}]\n직업: ${level[4]}\n현재: Lv.${char_lv}`;
+        let rslt = `[${mapleUserInfo.Name}]\n직업: ${level[4]}\n현재: Lv.${char_lv}`;
         if (char_lv < 300) {
             const sumExp = levelTable[char_lv - 1] + char_ex;
             const percentage = ((char_ex / (levelTable[char_lv] - levelTable[char_lv - 1])) * 100).toFixed(3);

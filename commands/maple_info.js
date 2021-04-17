@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('../util/discord.js-extend');
-const mapleModule = require('../util/maple_parsing');
+const { MapleUser } = require('../util/maple_parsing');
 const { levelTable } = require('../util/soyabot_const.json');
 
 module.exports = {
@@ -12,34 +12,34 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const Maple = new mapleModule(args[0]);
-        const level = await Maple.homeLevel();
+        const mapleUserInfo = new MapleUser(args[0]);
+        const level = await mapleUserInfo.homeLevel();
         if (!level) {
-            return message.channel.send(`[${Maple.Name}]\n존재하지 않는 캐릭터입니다.`);
+            return message.channel.send(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
-        if (!(await Maple.isLatest())) {
+        if (!(await mapleUserInfo.isLatest())) {
             message.channel.send('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
-            if (!(await Maple.updateGG())) {
+            if (!(await mapleUserInfo.updateGG())) {
                 message.channel.send('제한시간 내에 갱신 작업을 실패하였습니다.');
             }
         }
 
-        const char_union = await Maple.homeUnion(); // 유니온 레벨, 전투력, 수급량
+        const char_union = await mapleUserInfo.homeUnion(); // 유니온 레벨, 전투력, 수급량
         const char_lv = level[0]; // 레벨
         const char_ex = level[1];
         const char_percent = ((char_ex / (levelTable[char_lv] - levelTable[char_lv - 1])) * 100).toFixed(3); // 경험치 퍼센트
         const char_job = level[4]; // 직업
         const char_guild = level[3]; // 길드
         const char_popul = level[2]; // 인기도
-        const char_murung = Maple.Murung(); // 1: 층수, 2: 클리어 시간
-        const char_seed = Maple.Seed(); // 1: 층수, 2: 클리어 시간
-        const char_rank = Maple.Rank(); // 종합, 월드, 직업(월드), 직업(전체)
+        const char_murung = mapleUserInfo.Murung(); // 1: 층수, 2: 클리어 시간
+        const char_seed = mapleUserInfo.Seed(); // 1: 층수, 2: 클리어 시간
+        const char_rank = mapleUserInfo.Rank(); // 종합, 월드, 직업(월드), 직업(전체)
 
         const infoEmbed = new MessageEmbed()
-            .setTitle(`**${Maple.Name}님의 정보**`)
+            .setTitle(`**${mapleUserInfo.Name}님의 정보**`)
             .setColor('#FF9899')
-            .setURL(Maple.GGURL)
-            .setImage(Maple.userImg())
+            .setURL(mapleUserInfo.GGURL)
+            .setImage(mapleUserInfo.userImg())
             .addField('**레벨**', char_lv < 300 ? `${char_lv} (${char_percent}%)` : char_lv, true)
             .addField('**직업**', char_job, true)
             .addField('**길드**', char_guild || '-', true)

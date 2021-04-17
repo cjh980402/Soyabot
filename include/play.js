@@ -4,6 +4,37 @@ const { sleep, replyAdmin } = require('../admin/bot_control');
 const { STAY_TIME, DEFAULT_VOLUME } = require('../soyabot_config.json');
 const { canModifyQueue } = require('../util/SoyabotUtil');
 
+module.exports.QueueElement = class {
+    #textChannel;
+    channel;
+    songs;
+    connection = null;
+    loop = false;
+    volume = DEFAULT_VOLUME ?? 100;
+    playing = true;
+
+    constructor(textChannel, voiceChannel, songs) {
+        this.#textChannel = textChannel;
+        this.channel = voiceChannel;
+        this.songs = songs;
+    }
+
+    get textChannel() {
+        if (!client.channels.cache.get(this.#textChannel.id)) {
+            // 해당하는 채널이 삭제된 경우
+            this.#textChannel = this.#textChannel.guild.channels.cache.filter((v) => v.type == 'text').first();
+        }
+        return this.#textChannel;
+    }
+
+    set textChannel(value) {
+        if (client.channels.cache.get(value.id)) {
+            // 해당하는 채널이 존재하는 경우
+            this.#textChannel = value;
+        }
+    }
+};
+
 module.exports.play = async function (song, guild) {
     const queue = client.queue.get(guild.id);
 

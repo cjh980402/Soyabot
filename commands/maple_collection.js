@@ -1,5 +1,5 @@
 const { cmd } = require('../admin/admin_function');
-const mapleModule = require('../util/maple_parsing');
+const { MapleUser } = require('../util/maple_parsing');
 
 module.exports = {
     usage: `${client.prefix}컬렉션 (닉네임)`,
@@ -11,23 +11,23 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const Maple = new mapleModule(args[0]);
-        if (!(await Maple.homeLevel())) {
+        const mapleUserInfo = new MapleUser(args[0]);
+        if (!(await mapleUserInfo.homeLevel())) {
             return message.channel.send(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);
         }
-        if (!(await Maple.isLatest())) {
+        if (!(await mapleUserInfo.isLatest())) {
             message.channel.send('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
-            if (!(await Maple.updateGG())) {
+            if (!(await mapleUserInfo.updateGG())) {
                 message.channel.send('제한시간 내에 갱신 작업을 실패하였습니다.');
             }
         }
 
-        const collection = Maple.Collection();
+        const collection = mapleUserInfo.Collection();
         if (!collection) {
-            return message.channel.send(`${Maple.Name}님의 코디 컬렉션을 가져오지 못하였습니다.`);
+            return message.channel.send(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못하였습니다.`);
         } else {
             await cmd(`python3 ./util/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(' ')} ${collection[1].join(' ')}`);
-            return message.channel.send(`${Maple.Name}님의 코디 컬렉션`, { files: ['./pictures/collection.png'] });
+            return message.channel.send(`${mapleUserInfo.Name}님의 코디 컬렉션`, { files: ['./pictures/collection.png'] });
         }
     }
 };

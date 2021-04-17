@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('../util/discord.js-extend');
-const mapleModule = require('../util/maple_parsing');
+const { MapleUser } = require('../util/maple_parsing');
 const scoreGrade = [
     [0, '메린이'],
     [300, '무자본 평균'],
@@ -28,25 +28,25 @@ module.exports = {
             return message.channel.send(rslt);
         }
 
-        const Maple = new mapleModule(args[0]);
-        const union = (await Maple.homeUnion())?.[0];
+        const mapleUserInfo = new MapleUser(args[0]);
+        const union = (await mapleUserInfo.homeUnion())?.[0];
         if (!union) {
-            return message.channel.send(`[${Maple.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
+            return message.channel.send(`[${mapleUserInfo.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
         }
 
-        if (!(await Maple.isLatest())) {
+        if (!(await mapleUserInfo.isLatest())) {
             message.channel.send('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
-            if (!(await Maple.updateGG())) {
+            if (!(await mapleUserInfo.updateGG())) {
                 message.channel.send('제한시간 내에 갱신 작업을 실패하였습니다.');
             }
         }
 
-        const level = Maple.Level();
-        const job = Maple.Job();
+        const level = mapleUserInfo.Level();
+        const job = mapleUserInfo.Job();
 
         let murungfl, time, min, sec;
 
-        const murung = Maple.Murung();
+        const murung = mapleUserInfo.Murung();
         if (!murung) {
             murungfl = 0;
             min = 0;
@@ -68,10 +68,10 @@ module.exports = {
         }
 
         const scouterEmbed = new MessageEmbed()
-            .setTitle(`**${Maple.Name}님의 측정결과**`)
+            .setTitle(`**${mapleUserInfo.Name}님의 측정결과**`)
             .setColor('#FF9899')
-            .setURL(Maple.GGURL)
-            .setImage(Maple.userImg())
+            .setURL(mapleUserInfo.GGURL)
+            .setImage(mapleUserInfo.userImg())
             .addField('**직업**', job, true)
             .addField('**레벨**', level, true)
             .addField('**유니온**', union.toLocaleString(), true)

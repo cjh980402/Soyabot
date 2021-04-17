@@ -1,6 +1,6 @@
-const { play } = require('../include/play');
+const { QueueElement, play } = require('../include/play');
 const { replyAdmin } = require('../admin/bot_control');
-const { DEFAULT_VOLUME, GOOGLE_API_KEY } = require('../soyabot_config.json');
+const { GOOGLE_API_KEY } = require('../soyabot_config.json');
 const YouTubeAPI = require('simple-youtube-api');
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 const ytsr = require('ytsr');
@@ -73,28 +73,12 @@ module.exports = {
         }
 
         if (serverQueue) {
-            serverQueue._textChannel = message.channel;
+            serverQueue.textChannel = message.channel;
             serverQueue.songs.push(song);
             return message.channel.send(`✅ ${message.author}가 **${song.title}**를 대기열에 추가했습니다.`);
         }
 
-        const queueConstruct = {
-            _textChannel: message.channel,
-            channel, // channel이란 property를 설정함과 동시에 값은 channel 변수의 값
-            connection: null,
-            songs: [song],
-            loop: false,
-            volume: DEFAULT_VOLUME ?? 100,
-            playing: true,
-            get textChannel() {
-                // 채널이 삭제되는 경우를 대비해서 getter를 설정
-                if (!client.channels.cache.get(this._textChannel.id)) {
-                    // 해당하는 채널이 삭제된 경우
-                    this._textChannel = message.guild.channels.cache.filter((v) => v.type == 'text').first();
-                }
-                return this._textChannel;
-            }
-        };
+        const queueConstruct = new QueueElement(message.channel, channel, [song]);
 
         try {
             queueConstruct.connection = await channel.join();

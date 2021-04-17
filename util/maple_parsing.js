@@ -14,51 +14,56 @@ async function linkJSON(link) {
 }
 
 class MapleUser {
+    // private property
+    #name;
+    #ggURL;
+    #homeLevelURL;
+    #homeUnionURL;
+    #ggData = null;
+    #homeLevelData = null;
+    #homeUnionData = null;
     // 생성자
     constructor(name) {
-        this.name = name;
-        this.ggURL = `https://maple.gg/u/${encodeURIComponent(name)}`; // encodeURIComponent는 한글 주소의 경우 필수
-        this.homeLevelURL = `https://maplestory.nexon.com/Ranking/World/Total?c=${encodeURIComponent(name)}`; // 초기값은 일반 서버
-        this.homeUnionURL = `https://maplestory.nexon.com/Ranking/Union?c=${encodeURIComponent(name)}`;
-        this.ggData = null;
-        this.homeLevelData = null;
-        this.homeUnionData = null;
+        this.#name = name;
+        this.#ggURL = `https://maple.gg/u/${encodeURIComponent(name)}`; // encodeURIComponent는 한글 주소의 경우 필수
+        this.#homeLevelURL = `https://maplestory.nexon.com/Ranking/World/Total?c=${encodeURIComponent(name)}`; // 초기값은 일반 서버
+        this.#homeUnionURL = `https://maplestory.nexon.com/Ranking/Union?c=${encodeURIComponent(name)}`;
     }
     // getter
     get Name() {
-        return this.name;
+        return this.#name;
     }
 
     get GGURL() {
-        return this.ggURL;
+        return this.#ggURL;
     }
 
     get HomeURL() {
-        return this.homeLevelURL;
+        return this.#homeLevelURL;
     }
     // 메소드
     async homeLevel() {
-        const len = this.name.length + (this.name.match(/[가-힣]/g)?.length ?? 0);
-        this.homeLevelData = await linkParse(this.homeLevelURL);
-        if (this.homeLevelData('img[alt="메이플스토리 서비스 점검중!"]').length != 0) {
+        const len = this.#name.length + (this.#name.match(/[가-힣]/g)?.length ?? 0);
+        this.#homeLevelData = await linkParse(this.#homeLevelURL);
+        if (this.#homeLevelData('img[alt="메이플스토리 서비스 점검중!"]').length != 0) {
             throw new Error('메이플 공식 홈페이지가 서비스 점검 중입니다.');
         }
 
-        if (this.homeLevelData('tr[class]').length != 10) {
-            this.homeLevelURL += '&w=254'; // 리부트 서버 목록
-            this.homeLevelData = await linkParse(this.homeLevelURL);
+        if (this.#homeLevelData('tr[class]').length != 10) {
+            this.#homeLevelURL += '&w=254'; // 리부트 서버 목록
+            this.#homeLevelData = await linkParse(this.#homeLevelURL);
         }
-        if (len < 1 || len > 12 || this.homeLevelData('tr[class]').length != 10) {
+        if (len < 1 || len > 12 || this.#homeLevelData('tr[class]').length != 10) {
             return null; // 없는 캐릭터
         }
 
-        let data = this.homeLevelData('.search_com_chk > td');
+        let data = this.#homeLevelData('.search_com_chk > td');
         if (data.length == 0) {
-            const nickList = this.homeLevelData('tr[class] > td.left > dl > dt > a'); // 순위 리스트의 닉네임
+            const nickList = this.#homeLevelData('tr[class] > td.left > dl > dt > a'); // 순위 리스트의 닉네임
             for (let i = 0; i < 10; i++) {
-                if (this.name.toLowerCase() == nickList.eq(i).text().toLowerCase()) {
-                    this.name = nickList.eq(i).text(); // 대소문자 정확한 이름으로 갱신
-                    data = this.homeLevelData('tr[class]').eq(i).find('td');
+                if (this.#name.toLowerCase() == nickList.eq(i).text().toLowerCase()) {
+                    this.#name = nickList.eq(i).text(); // 대소문자 정확한 이름으로 갱신
+                    data = this.#homeLevelData('tr[class]').eq(i).find('td');
                     break;
                 }
             }
@@ -77,23 +82,23 @@ class MapleUser {
     }
 
     async homeUnion() {
-        const len = this.name.length + (this.name.match(/[가-힣]/g)?.length ?? 0);
-        this.homeUnionData = await linkParse(this.homeUnionURL);
-        if (this.homeUnionData('img[alt="메이플스토리 서비스 점검중!"]').length != 0) {
+        const len = this.#name.length + (this.#name.match(/[가-힣]/g)?.length ?? 0);
+        this.#homeUnionData = await linkParse(this.#homeUnionURL);
+        if (this.#homeUnionData('img[alt="메이플스토리 서비스 점검중!"]').length != 0) {
             throw new Error('메이플 공식 홈페이지가 서비스 점검 중입니다.');
         }
 
-        if (len < 1 || len > 12 || this.homeUnionData('tr').length != 12) {
+        if (len < 1 || len > 12 || this.#homeUnionData('tr').length != 12) {
             return null; // 유니온 기록이 없음
         }
 
-        let data = this.homeUnionData('.search_com_chk > td');
+        let data = this.#homeUnionData('.search_com_chk > td');
         if (data.length == 0) {
-            const nickList = this.homeUnionData('tr > td.left > dl > dt > a'); // 순위 리스트의 닉네임
+            const nickList = this.#homeUnionData('tr > td.left > dl > dt > a'); // 순위 리스트의 닉네임
             for (let i = 0; i < 10; i++) {
-                if (this.name.toLowerCase() == nickList.eq(i).text().toLowerCase()) {
-                    this.name = nickList.eq(i).text(); // 대소문자 정확한 이름으로 갱신
-                    data = this.homeUnionData('tr').eq(i + 2).find('td');
+                if (this.#name.toLowerCase() == nickList.eq(i).text().toLowerCase()) {
+                    this.#name = nickList.eq(i).text(); // 대소문자 정확한 이름으로 갱신
+                    data = this.#homeUnionData('tr').eq(i + 2).find('td');
                     break;
                 }
             }
@@ -111,14 +116,14 @@ class MapleUser {
     }
 
     async isLatest() {
-        this.ggData = await linkParse(this.ggURL); // this.ggData는 함수
-        if (this.ggData('div.alert.alert-warning.mt-3').length != 0) {
+        this.#ggData = await linkParse(this.#ggURL); // this.#ggData는 함수
+        if (this.#ggData('div.alert.alert-warning.mt-3').length != 0) {
             throw new Error('메이플 GG 서버가 점검 중입니다.');
-        } else if (/Bad Gateway|Error/.test(this.ggData('title').text()) || this.ggData('div.flex-center.position-ref.full-height').length != 0) {
+        } else if (/Bad Gateway|Error/.test(this.#ggData('title').text()) || this.#ggData('div.flex-center.position-ref.full-height').length != 0) {
             throw new Error('메이플 GG 서버에 에러가 발생했습니다.');
         }
 
-        if (this.ggData('.d-block.font-weight-light').text().replace(/\s+/g, '') != '마지막업데이트:오늘' || this.ggData('.container.mt-5.text-center > h3').text() == '검색결과가 없습니다.') {
+        if (this.#ggData('.d-block.font-weight-light').text().replace(/\s+/g, '') != '마지막업데이트:오늘' || this.#ggData('.container.mt-5.text-center > h3').text() == '검색결과가 없습니다.') {
             return false;
         } else {
             return true;
@@ -129,9 +134,9 @@ class MapleUser {
         const start = Date.now();
         while (1) {
             try {
-                const rslt = await linkJSON(`${this.ggURL}/sync`);
+                const rslt = await linkJSON(`${this.#ggURL}/sync`);
                 if (!rslt.error && rslt.done) {
-                    this.ggData = await linkParse(this.ggURL);
+                    this.#ggData = await linkParse(this.#ggURL);
                     return true; // 갱신성공
                 }
             } catch (e) {
@@ -145,7 +150,7 @@ class MapleUser {
     }
 
     Murung() {
-        const murung = this.ggData('.col-lg-3.col-6.mt-3.px-1').eq(0); // murung은 cheerio객체
+        const murung = this.#ggData('.col-lg-3.col-6.mt-3.px-1').eq(0); // murung은 cheerio객체
         const nomurung = murung.find('.user-summary-no-data').length; // 0이면 기록 있고 1이면 기록 없음
         if (murung.length == 0 || nomurung) {
             return null;
@@ -160,7 +165,7 @@ class MapleUser {
     }
 
     Seed() {
-        const seed = this.ggData('.col-lg-3.col-6.mt-3.px-1').eq(1);
+        const seed = this.#ggData('.col-lg-3.col-6.mt-3.px-1').eq(1);
         const noseed = seed.find('.user-summary-no-data').length; // 0이면 기록 있고 1이면 기록 없음
         if (seed.length == 0 || noseed) {
             return null;
@@ -175,7 +180,7 @@ class MapleUser {
     }
 
     Union() {
-        const union = this.ggData('.col-lg-3.col-6.mt-3.px-1').eq(2);
+        const union = this.#ggData('.col-lg-3.col-6.mt-3.px-1').eq(2);
         const nounion = union.find('.user-summary-no-data').length; // 0이면 기록 있고 1이면 기록 없음
         if (union.length == 0 || nounion) {
             return null;
@@ -190,7 +195,7 @@ class MapleUser {
     }
 
     Achieve() {
-        const achieve = this.ggData('.col-lg-3.col-6.mt-3.px-1').eq(3);
+        const achieve = this.#ggData('.col-lg-3.col-6.mt-3.px-1').eq(3);
         const noachieve = achieve.find('.user-summary-no-data').length; // 0이면 기록 있고 1이면 기록 없음
         if (achieve.length == 0 || noachieve) {
             return null;
@@ -205,7 +210,7 @@ class MapleUser {
     }
 
     Rank() {
-        const rank = this.ggData('.col-lg-2.col-md-4.col-sm-4.col-6.mt-3 > span');
+        const rank = this.#ggData('.col-lg-2.col-md-4.col-sm-4.col-6.mt-3 > span');
         if (rank.length == 0) {
             return null;
         }
@@ -218,7 +223,7 @@ class MapleUser {
     }
 
     Coordi() {
-        const coordi = this.ggData('.character-coord__item-name');
+        const coordi = this.#ggData('.character-coord__item-name');
         if (coordi.length == 0) {
             return null;
         }
@@ -231,7 +236,7 @@ class MapleUser {
     }
 
     LevelHistory() {
-        const data = this.ggData('body > script').filter((i, v) => /\[\[.+\]\]/.test(this.ggData(v).html()));
+        const data = this.#ggData('body > script').filter((i, v) => /\[\[.+\]\]/.test(this.#ggData(v).html()));
         if (data.length == 0) {
             return null;
         }
@@ -240,7 +245,7 @@ class MapleUser {
     }
 
     MurungHistory() {
-        const data = this.ggData('.text-center.px-2.font-size-14.align-middle');
+        const data = this.#ggData('.text-center.px-2.font-size-14.align-middle');
         if (data.length == 0) {
             return null;
         }
@@ -255,7 +260,7 @@ class MapleUser {
     }
 
     Collection() {
-        const collection = this.ggData('section.box.mt-3 .avatar-collection-item.col-lg-2.col-md-4.col-6');
+        const collection = this.#ggData('section.box.mt-3 .avatar-collection-item.col-lg-2.col-md-4.col-6');
         if (collection.length == 0) {
             return null;
         }
@@ -270,33 +275,106 @@ class MapleUser {
     }
 
     Level() {
-        return this.ggData('.user-summary-item').eq(0).text().substr(3);
+        return this.#ggData('.user-summary-item').eq(0).text().substr(3);
     }
 
     Job() {
-        return this.ggData('.user-summary-item').eq(1).text();
+        return this.#ggData('.user-summary-item').eq(1).text();
     }
 
     Popularity() {
-        return this.ggData('.user-summary-item > span').eq(1).text();
+        return this.#ggData('.user-summary-item > span').eq(1).text();
     }
 
     userImg(full = true) {
-        const img = this.ggData('meta[property="og:image"]').attr('content');
+        const img = this.#ggData('meta[property="og:image"]').attr('content');
         return full ? img?.replace('Character/', 'Character/180/') : img;
     }
 
     serverImg() {
-        return this.ggData('div.col-lg-8 > h3 > img.align-middle').attr('src');
+        return this.#ggData('div.col-lg-8 > h3 > img.align-middle').attr('src');
     }
 
     serverName() {
-        return this.ggData('div.col-lg-8 > h3 > img.align-middle').attr('alt');
+        return this.#ggData('div.col-lg-8 > h3 > img.align-middle').attr('alt');
     }
 
     lastActiveDay() {
-        return (this.ggData('.col-6.col-md-8.col-lg-6 .font-size-12.text-white').text().replace(/(\d+)\s+/, '$1') || '마지막 활동일: 알 수 없음');
+        return (this.#ggData('.col-6.col-md-8.col-lg-6 .font-size-12.text-white').text().replace(/(\d+)\s+/, '$1') || '마지막 활동일: 알 수 없음');
     }
 }
 
-module.exports = MapleUser;
+module.exports.MapleUser = MapleUser;
+
+class MapleGuild {
+    // private property
+    #server;
+    #name;
+    #ggURL;
+    #ggData = null;
+    #memberData = null;
+    // 생성자
+    constructor(server, name) {
+        this.#server = server;
+        this.#name = name;
+        this.#ggURL = `https://maple.gg/guild/${server}/${encodeURIComponent(name)}`; // encodeURIComponent는 한글 주소의 경우 필수
+    }
+    // getter
+    get Server() {
+        return this.#server;
+    }
+
+    get Name() {
+        return this.#name;
+    }
+
+    get MemberCount() {
+        return this.#memberData?.length ?? 0;
+    }
+    // 메소드
+    async isLatest() {
+        const updateResult = await this.#updateGuild();
+        this.#ggData = await linkParse(`${this.#ggURL}/members?sort=level`); // this.#ggData는 함수
+        if (this.#ggData('div.alert.alert-warning.mt-3').length != 0) {
+            throw new Error('메이플 GG 서버가 점검 중입니다.');
+        } else if (/Bad Gateway|Error/.test(this.#ggData('title').text()) || this.#ggData('div.flex-center.position-ref.full-height').length != 0) {
+            throw new Error('메이플 GG 서버에 에러가 발생했습니다.');
+        }
+
+        this.#memberData = this.#ggData('.pt-2.bg-white.rounded.border.font-size-0.line-height-1');
+        return updateResult;
+    }
+
+    async memberDataList() {
+        const rslt = [];
+        const memberList = this.#memberData.map((i, v) => new MapleUser(this.#ggData(v).find('.mb-2 a').eq(1).text()));
+        const updateRslt = await Promise.all(memberList.map(async (i, v) => (await v.isLatest()) || (await v.updateGG())));
+        for (let i = 0; i < this.MemberCount; i++) {
+            rslt.push(`[갱신 ${updateRslt[i] ? '성공' : '실패'}] ${this.#memberData.eq(i).find('header > span').text() || '길드원'}: ${memberList[i].Name}, ${memberList[i].Job()} / Lv.${memberList[i].Level()}, 유니온: ${memberList[i].Union()?.[0].toLocaleString() ?? '-'}, 무릉: ${memberList[i].Murung()?.[1] ?? '-'} (${memberList[i].lastActiveDay()})`);
+        }
+
+        return rslt;
+    }
+
+    async #updateGuild() {
+        const start = Date.now();
+        while (1) {
+            try {
+                const rslt = await linkJSON(`${this.#ggURL}/sync`);
+                if (rslt.done) {
+                    return true; // 갱신성공
+                } else if (rslt.error) {
+                    return false; // 갱신실패
+                }
+            } catch (e) {
+                return false; // 갱신실패
+            }
+            if (Date.now() - start >= 20000) {
+                return false; // 20초가 지나도 갱신 못했으면 갱신실패 판정
+            }
+            await sleep(100);
+        }
+    }
+}
+
+module.exports.MapleGuild = MapleGuild;
