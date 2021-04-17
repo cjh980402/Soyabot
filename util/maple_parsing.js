@@ -13,7 +13,7 @@ async function linkJSON(link) {
     return (await fetch(link)).json();
 }
 
-class MapleUser {
+module.exports.MapleUser = class {
     // private property
     #name;
     #ggURL;
@@ -302,11 +302,9 @@ class MapleUser {
     lastActiveDay() {
         return (this.#ggData('.col-6.col-md-8.col-lg-6 .font-size-12.text-white').text().replace(/(\d+)\s+/, '$1') || '마지막 활동일: 알 수 없음');
     }
-}
+};
 
-module.exports.MapleUser = MapleUser;
-
-class MapleGuild {
+module.exports.MapleGuild = class {
     // private property
     #server;
     #name;
@@ -347,7 +345,7 @@ class MapleGuild {
 
     async memberDataList() {
         const rslt = [];
-        const memberList = this.#memberData.map((i, v) => new MapleUser(this.#ggData(v).find('.mb-2 a').eq(1).text()));
+        const memberList = this.#memberData.map((i, v) => new module.exports.MapleUser(this.#ggData(v).find('.mb-2 a').eq(1).text()));
         const updateRslt = await Promise.all(memberList.map(async (i, v) => (await v.isLatest()) || (await v.updateGG())));
         for (let i = 0; i < this.MemberCount; i++) {
             rslt.push(`[갱신 ${updateRslt[i] ? '성공' : '실패'}] ${this.#memberData.eq(i).find('header > span').text() || '길드원'}: ${memberList[i].Name}, ${memberList[i].Job()} / Lv.${memberList[i].Level()}, 유니온: ${memberList[i].Union()?.[0].toLocaleString() ?? '-'}, 무릉: ${memberList[i].Murung()?.[1] ?? '-'} (${memberList[i].lastActiveDay()})`);
@@ -376,5 +374,3 @@ class MapleGuild {
         }
     }
 }
-
-module.exports.MapleGuild = MapleGuild;

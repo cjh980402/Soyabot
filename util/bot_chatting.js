@@ -1,38 +1,3 @@
-module.exports = function (message) {
-    if (message.content == '주사위') {
-        return message.channel.send(`주사위 결과: ${Math.floor(Math.random() * 100 + 1)}`);
-    } else if (/vs/i.test(message.content) && !/vsc/i.test(message.content)) {
-        return message.reply(choiceVS(message.content));
-    } else if (message.content.endsWith('확률')) {
-        return message.reply(`확률: ${Math.floor(Math.random() * 101)}%`);
-    } else if (/뭐하지|ㅁㅎㅈ/i.test(message.content)) {
-        return message.reply(recommendWork());
-    } else if (/뭐먹지|ㅁㅁㅈ/i.test(message.content)) {
-        return message.reply(recommendFood());
-    } else if (message.content.includes(client.user.username)) {
-        if (/바\s*보|멍\s*청\s*이/.test(message.content)) {
-            return message.channel.send('🤔');
-        }
-        const cmd = Math.floor(Math.random() * 5);
-        if (cmd == 0) {
-            return message.channel.send('ㅋㅋㅋ');
-        } else if (cmd == 1) {
-            return message.channel.send('제로조아');
-        } else if (cmd == 2) {
-            return message.channel.send('헤비...');
-        } else if (cmd == 3) {
-            return message.channel.send('이노시스 조아');
-        } else {
-            return message.channel.send(`'${message.member?.nickname ?? message.author.username}'님이 ${client.user.username}을 불렀습니다.`);
-        }
-    } else if (message.content.includes('ㅊㅊㅊㅊ')) {
-        const cmd = Math.floor(Math.random() * 3);
-        if (cmd == 0) {
-            return message.channel.send('👍');
-        }
-    }
-};
-
 function recommendWork() {
     const worklist = ['메이플스토리', '제로 육성', '현금술', '본캐 275 달성', '유니온 8천 달성', '보스 먹자', '보스 솔플', '여로 일퀘', // 메이플 할 일
         '츄츄 일퀘', '드림브레이커', '스피릿 세이비어', '모라스 일퀘', '에스페라 일퀘', '스타포스', '템펙업', '코펙업', '젬펙업', '마을에서 점프하기',
@@ -72,3 +37,38 @@ function choiceVS(msg) {
     }
     return splitVS[Math.floor(Math.random() * splitVS.length)];
 }
+
+module.exports = function (message) {
+    if (message.content == '주사위') {
+        return message.channel.send(`주사위 결과: ${Math.floor(Math.random() * 100 + 1)}`);
+    } else if (/vs/i.test(message.content) && !/vsc/i.test(message.content)) {
+        return message.reply(choiceVS(message.content));
+    } else if (message.content.endsWith('확률')) {
+        return message.reply(`확률: ${Math.floor(Math.random() * 101)}%`);
+    } else if (/뭐하지|ㅁㅎㅈ/i.test(message.content)) {
+        return message.reply(recommendWork());
+    } else if (/뭐먹지|ㅁㅁㅈ/i.test(message.content)) {
+        return message.reply(recommendFood());
+    } else if (message.content.includes(client.user.username)) {
+        if (/바\s*보|멍\s*청\s*이/.test(message.content)) {
+            return message.channel.send('🤔');
+        }
+        const cmd = Math.floor(Math.random() * 5);
+        if (cmd == 0) {
+            return message.channel.send('ㅋㅋㅋ');
+        } else if (cmd == 1) {
+            return message.channel.send('제로조아');
+        } else if (cmd == 2) {
+            return message.channel.send('헤비...');
+        } else if (cmd == 3) {
+            return message.channel.send('이노시스 조아');
+        } else {
+            return message.channel.send(`'${message.member?.nickname ?? message.author.username}'님이 ${client.user.username}을 불렀습니다.`);
+        }
+    } else if (message.content.includes('ㅊㅊㅊㅊ')) {
+        const cmd = Math.floor(Math.random() * 3);
+        if (cmd == 0) {
+            return message.channel.send('👍');
+        }
+    }
+};
