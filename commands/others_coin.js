@@ -28,7 +28,7 @@ module.exports = {
         const type = args.length > 1 && chartType[args[args.length - 1]] ? args.pop() : '1일'; // 차트 종류
         const search = args.join(' ').toLowerCase();
         const coinLink = `https://search.daum.net/search?w=tot&DA=EMA&q=${encodeURIComponent(search)}&rtmaxcoll=EMA`;
-        const searchRslt = load(await (await fetch(coinLink)).text())('div[disp-attr="EMA"]');
+        const searchRslt = load(await (await fetch(coinLink)).text())('div[disp-attr="EMA"] .graph_quote');
 
         if (!searchRslt.length) {
             return message.channel.send('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
