@@ -65,7 +65,7 @@ class SuperialItem {
     }
 
     #starforce() {
-        const sucprob = (this.#strcat ? 1050 : 1000) * probTable[this.#star][0]; // 백분율 → 십만분율 변환, 스타캐치는 곱적용 5%
+        const sucprob = (this.#starcat ? 1050 : 1000) * probTable[this.#star][0]; // 백분율 → 십만분율 변환, 스타캐치는 곱적용 5%
         const destprob = ((100000 - sucprob) * (1000 * probTable[this.#star][1])) / 100000; // 파괴확률 = 조건부 확률, 백분율 → 십만분율 변환
 
         this.#sum += meso(this.#lev); // 항상 고정비용
