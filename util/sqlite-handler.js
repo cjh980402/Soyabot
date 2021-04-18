@@ -3,12 +3,13 @@ const { inspect } = require('util');
 
 class SQLiteHandler {
     // sqlite3을 프로미스화 한 클래스
+    #db;
     constructor(db) {
-        this.db = new sqlite3.Database(db);
+        this.#db = new sqlite3.Database(db);
     }
 
     get raw() {
-        return this.db;
+        return this.#db;
     }
 
     get tableList() {
@@ -42,7 +43,7 @@ class SQLiteHandler {
 
     run(sql, params = []) {
         return new Promise((resolve, reject) => {
-            this.db.run(sql, params, function (err) {
+            this.#db.run(sql, params, function (err) {
                 // db 멤버의 값을 받아야 하는 콜백이므로 function 사용
                 if (err) {
                     reject(err);
@@ -55,7 +56,7 @@ class SQLiteHandler {
 
     get(sql, params = []) {
         return new Promise((resolve, reject) => {
-            this.db.get(sql, params, (err, row) => {
+            this.#db.get(sql, params, (err, row) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -67,7 +68,7 @@ class SQLiteHandler {
 
     all(sql, params = []) {
         return new Promise((resolve, reject) => {
-            this.db.all(sql, params, (err, rows) => {
+            this.#db.all(sql, params, (err, rows) => {
                 if (err) {
                     reject(err);
                 } else {

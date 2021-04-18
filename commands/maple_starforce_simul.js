@@ -1,4 +1,4 @@
-const normalitem = require('../util/normal_starforce');
+const NormalItem = require('../util/normal_starforce');
 
 module.exports = {
     usage: `${client.prefix}스타포스시뮬 A B C D E F`,
@@ -19,7 +19,7 @@ module.exports = {
         if (!args[0]) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
-        const result = new normalitem();
+        const result = new NormalItem();
         return message.channel.send(result.doingStarforce(args.map((v) => +v)));
     }
 };

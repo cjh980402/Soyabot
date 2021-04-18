@@ -1,4 +1,4 @@
-const superialitem = require('../util/superial_starforce');
+const SuperialItem = require('../util/superial_starforce');
 
 module.exports = {
     usage: `${client.prefix}타일런트시뮬 A B C`,
@@ -11,7 +11,7 @@ module.exports = {
         if (!args[0]) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
-        const result = new superialitem();
+        const result = new SuperialItem();
         return message.channel.send(result.doingStarforce(args.map((v) => +v)));
     }
 };
