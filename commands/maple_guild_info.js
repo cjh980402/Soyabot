@@ -23,7 +23,7 @@ module.exports = {
     type: ['메이플'],
     async execute(message, args) {
         if (args.length != 2 || !serverEngName[args[0]]) {
-            return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
         const mapleGuildInfo = new MapleGuild(serverEngName[args[0]], args[1]);

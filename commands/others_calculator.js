@@ -37,7 +37,7 @@ module.exports = {
     type: ['기타'],
     async execute(message, args) {
         if (args.length < 1) {
-            return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
         try {

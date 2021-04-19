@@ -23,7 +23,7 @@ module.exports = {
     type: ['메이플'],
     async execute(message, args) {
         if (args.length != 1 || !serverList[args[0]]) {
-            return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const response = await fetch('https://commapi.gamemarket.kr/comm/graph', {
             method: 'POST',
