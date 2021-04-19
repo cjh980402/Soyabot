@@ -16,7 +16,7 @@ module.exports = {
             return message.channel.send('1 ~ 20 범위의 시작 레벨을 입력해주세요.');
         }
         if (isNaN(endlev) || endlev < startlev || endlev > 20) {
-            return message.channel.send('시작레벨 ~ 20 범위의 목표 레벨을 입력해주세요.');
+            return message.channel.send('시작 레벨 ~ 20 범위의 목표 레벨을 입력해주세요.');
         }
 
         let total_req1 = 0,

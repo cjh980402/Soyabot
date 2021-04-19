@@ -1,19 +1,6 @@
 const { MapleUser } = require('../util/maple_parsing');
 const { levelTable } = require('../util/soyabot_const.json');
 
-function numKoreanUnit(num) {
-    // 숫자 값에 한글 단위를 붙이는 함수
-    const unit = ['경', '조', '억', '만', ''];
-    const rslt = [];
-    for (let i = 0, unitNum = 10000000000000000; i < unit.length; num %= unitNum, unitNum /= 10000, i++) {
-        const tmp = Math.floor(num / unitNum);
-        if (tmp > 0) {
-            rslt.push(`${tmp}${unit[i]}`);
-        }
-    }
-    return rslt;
-}
-
 module.exports = {
     usage: `${client.prefix}레벨 (닉네임)`,
     command: ['레벨', 'ㄹㅂ', 'ㄼ'],
@@ -40,11 +27,11 @@ module.exports = {
             const percentage = ((char_ex / (levelTable[char_lv] - levelTable[char_lv - 1])) * 100).toFixed(3);
             rslt += ` (${percentage}%)`;
 
-            const req_300 = numKoreanUnit(levelTable[299] - sumExp).slice(0, 2).join(' ');
+            const req_300 = (levelTable[299] - sumExp).toKoreanUnit(2);
             if (char_lv < 275) {
-                const req_275 = numKoreanUnit(levelTable[274] - sumExp).slice(0, 2).join(' ');
+                const req_275 = (levelTable[274] - sumExp).toKoreanUnit(2);
                 if (char_lv < 250) {
-                    const req_250 = numKoreanUnit(levelTable[249] - sumExp).slice(0, 2).join(' ');
+                    const req_250 = (levelTable[249] - sumExp).toKoreanUnit(2);
                     rslt += `\n잔여량 (~250): ${req_250}\n진행률 (~250): ${((sumExp / levelTable[249]) * 100).toFixed(3)}%`;
                 }
                 rslt += `\n잔여량 (~275): ${req_275}\n진행률 (~275): ${((sumExp / levelTable[274]) * 100).toFixed(3)}%`;

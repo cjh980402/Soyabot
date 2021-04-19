@@ -1,3 +1,4 @@
+const { levelTable } = require('../util/soyabot_const.json');
 const probTable = [
     [5, 5, 5, 5, 5, 5, 10, 20, 20, 20],
     [5, 5, 5, 5, 5, 10, 10, 20, 20, 15],
@@ -60,7 +61,7 @@ const probTable = [
     [100, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
 
-function Pool(startlev, endlev) {
+function extremePotion(startlev, endlev) {
     let rslt = '',
         cnt = 0;
 
@@ -83,18 +84,19 @@ module.exports = {
     usage: `${client.prefix}익성비 (시작 레벨) (목표 레벨)`,
     command: ['익성비', 'ㅇㅅㅂ', '풀장', 'ㅍㅈ'],
     description: `- 시작 레벨 ~ 목표 레벨의 익성비 시뮬레이션을 수행합니다.
+- 200레벨 이상의 경우 시작 레벨만 입력해주세요.
 - 참고. ${client.prefix}익성비 확률 (시작 레벨)`,
     type: ['메이플'],
     async execute(message, args) {
-        if (args.length != 2) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        if (args.length != 1 && args.length != 2) {
+            return message.channel.send(`${this.usage}\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
         if (args[0] == '확률' || args[0] == 'ㅎㄹ') {
             const startlev = +args[1];
             let rslt = `<${startlev}레벨 기준 확률>`;
             if (isNaN(startlev) || startlev < 141 || startlev > 199) {
-                return message.channel.send('141 ~ 199 범위의 시작 레벨을 입력해주세요.');
+                return message.channel.send('141 ~ 199 범위의 기준 레벨을 입력해주세요.');
             }
             for (let i = 0; i < 10; i++) {
                 rslt += `\n${i + 1} 레벨업 확률: ${probTable[startlev - 141][i]}%`;
@@ -102,14 +104,23 @@ module.exports = {
             return message.channel.send(rslt);
         }
 
-        const startlev = +args[0],
-            endlev = +args[1];
-        if (isNaN(startlev) || startlev < 141 || startlev > 199) {
-            return message.channel.send('141 ~ 199 범위의 시작 레벨을 입력해주세요.');
+        const startlev = +args[0];
+        if (args.length == 2) {
+            const endlev = +args[1];
+            if (isNaN(startlev) || startlev < 141 || startlev > 199) {
+                return message.channel.send('141 ~ 199 범위의 시작 레벨을 입력해주세요.');
+            }
+            if (isNaN(endlev) || endlev < startlev || endlev > 200) {
+                return message.channel.send('시작 레벨 ~ 200 범위의 목표 레벨을 입력해주세요.');
+            }
+            return message.channel.send(extremePotion(startlev, endlev));
+        } else {
+            if (isNaN(startlev) || startlev < 200 || startlev > 299) {
+                return message.channel.send('200 ~ 299 범위의 시작 레벨을 입력해주세요.');
+            }
+            const exp199 = levelTable[199] - levelTable[198];
+            const expNow = levelTable[startlev] - levelTable[startlev - 1];
+            return message.channel.send(`Lv.${startlev} 익성비 효과\n경험치: ${((exp199 / expNow) * 100).toFixed(3)}%`);
         }
-        if (isNaN(endlev) || endlev < startlev || endlev > 200) {
-            return message.channel.send('시작레벨 ~ 200 범위의 목표 레벨을 입력해주세요.');
-        }
-        return message.channel.send(Pool(startlev, endlev));
     }
 };

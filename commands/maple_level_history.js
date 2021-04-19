@@ -2,8 +2,8 @@ const { MapleUser } = require('../util/maple_parsing');
 
 module.exports = {
     usage: `${client.prefix}히스토리 (닉네임)`,
-    command: ['히스토리', 'ㅎㅅㅌㄹ'],
-    description: '- 캐릭터의 레벨업 히스토리를 출력합니다.',
+    command: ['히스토리', 'ㅎㅅㅌㄹ', '레벨히스토리', 'ㄹㅂㅎㅅㅌㄹ', 'ㄼㅎㅅㅌㄹ'],
+    description: '- 캐릭터의 레벨업 내역을 보여줍니다.',
     type: ['메이플'],
     async execute(message, args) {
         if (args.length != 1) {

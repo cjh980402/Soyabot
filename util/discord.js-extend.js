@@ -13,6 +13,22 @@ Object.defineProperty(Discord.Message.prototype, 'fullContent', {
     }
 });
 
+Object.defineProperty(Number.prototype, 'toKoreanUnit', {
+    value: function (count = 5) {
+        // count는 출력할 단위의 개수
+        const unit = ['경', '조', '억', '만', ''];
+        const rslt = [];
+        let num = +this; // 현재 Number 값의 복사본
+        for (let i = 0, unitNum = 10000000000000000; i < unit.length; num %= unitNum, unitNum /= 10000, i++) {
+            const tmp = Math.floor(num / unitNum);
+            if (tmp > 0 && rslt.length < count) {
+                rslt.push(`${tmp}${unit[i]}`);
+            }
+        }
+        return rslt.join(' ') || '0';
+    }
+});
+
 Object.defineProperty(String.prototype, 'decodeHTML', {
     value: function () {
         return decodeHTML(this).replace(/<br>/gi, '\n');
