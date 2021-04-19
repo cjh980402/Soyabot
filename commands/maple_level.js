@@ -27,11 +27,11 @@ module.exports = {
             const percentage = ((char_ex / (levelTable[char_lv] - levelTable[char_lv - 1])) * 100).toFixed(3);
             rslt += ` (${percentage}%)`;
 
-            const req_300 = (levelTable[299] - sumExp).toKoreanUnit(2);
+            const req_300 = (levelTable[299] - sumExp).toUnitString(2);
             if (char_lv < 275) {
-                const req_275 = (levelTable[274] - sumExp).toKoreanUnit(2);
+                const req_275 = (levelTable[274] - sumExp).toUnitString(2);
                 if (char_lv < 250) {
-                    const req_250 = (levelTable[249] - sumExp).toKoreanUnit(2);
+                    const req_250 = (levelTable[249] - sumExp).toUnitString(2);
                     rslt += `\n잔여량 (~250): ${req_250}\n진행률 (~250): ${((sumExp / levelTable[249]) * 100).toFixed(3)}%`;
                 }
                 rslt += `\n잔여량 (~275): ${req_275}\n진행률 (~275): ${((sumExp / levelTable[274]) * 100).toFixed(3)}%`;

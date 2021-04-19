@@ -13,16 +13,20 @@ Object.defineProperty(Discord.Message.prototype, 'fullContent', {
     }
 });
 
-Object.defineProperty(Number.prototype, 'toKoreanUnit', {
-    value: function (count = 5) {
+Object.defineProperty(Number.prototype, 'toUnitString', {
+    value: function (count = 5, locale) {
         // count는 출력할 단위의 개수
-        const unit = ['경', '조', '억', '만', ''];
+        const localeUnitNames = { 'ko-KR': ['경', '조', '억', '만', ''], 'en-US': ['Trillion', 'Billion', 'Million', 'Thousand', ''] };
+        const localeUnitStd = { 'ko-KR': [10000000000000000, 10000], 'en-US': [1000000000000, 1000] };
         const rslt = [];
         let num = +this; // 현재 Number 값의 복사본
-        for (let i = 0, unitNum = 10000000000000000; i < unit.length; num %= unitNum, unitNum /= 10000, i++) {
+
+        const unitName = localeUnitNames[locale] ?? localeUnitNames['ko-KR'];
+        const unitStd = localeUnitStd[locale] ?? localeUnitStd['ko-KR'];
+        for (let i = 0, unitNum = unitStd[0]; i < unitName.length; num %= unitNum, unitNum /= unitStd[1], i++) {
             const tmp = Math.floor(num / unitNum);
             if (tmp > 0 && rslt.length < count) {
-                rslt.push(`${tmp}${unit[i]}`);
+                rslt.push(`${tmp}${unitName[i]}`);
             }
         }
         return rslt.join(' ') || '0';
