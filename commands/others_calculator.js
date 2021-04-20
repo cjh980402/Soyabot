@@ -27,6 +27,7 @@ function inputExpression(str) {
         .replace(/π/g, 'pi')
         .replace(/°/g, 'deg')
         .replace(/√/g, 'sqrt')
+        .replace(/\*\*/g, '^')
         .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (all) => `^(${all.split('').map((v) => '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(v)).join('')})`);
 }
 
