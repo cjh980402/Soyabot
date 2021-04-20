@@ -15,11 +15,11 @@ module.exports = {
             } else {
                 const sourceCode = message.content.substr(message.content.indexOf(args[0])).trim();
                 await writeFile(`./other_source/cpp_source.cpp`, sourceCode);
-                const compile = await cmd('g++ -o ./other_source/cpp_result ./other_source/cpp_source.cpp', true);
+                const compile = await cmd('g++ -o ./other_source/cpp_result.out ./other_source/cpp_source.cpp', true);
                 if (compile) {
                     return message.channel.send(compile); // 컴파일 에러 출력
                 }
-                proc = spawn('./other_source/cpp_result');
+                proc = spawn('./other_source/cpp_result.out');
                 proc.stderr.on('data', (data) => {
                     message.channel.send(String(data), { split: { char: '' } });
                 });

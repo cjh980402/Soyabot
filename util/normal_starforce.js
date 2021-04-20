@@ -28,15 +28,15 @@ const probTable = [
 // 확률을 백분율 수치로 저장
 
 function meso(star, lev) {
-    let temp = 0;
+    let coefficient = 0;
     if (star >= 15) {
-        temp = Math.pow(star * 1 + 1, 2.7) / 200.0;
+        coefficient = Math.pow(star + 1, 2.7) / 200;
     } else if (star >= 10) {
-        temp = Math.pow(star * 1 + 1, 2.7) / 400.0;
+        coefficient = Math.pow(star + 1, 2.7) / 400;
     } else {
-        temp = (star * 1 + 1) / 25.0;
+        coefficient = (star + 1) / 25;
     }
-    return Math.round((1000 + Math.pow(lev, 3) * temp) / 100.0) * 100; // 십의자리에서 반올림
+    return Math.round((1000 + Math.pow(lev, 3) * coefficient) / 100) * 100; // 십의자리에서 반올림
 }
 
 class NormalItem {

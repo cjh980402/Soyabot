@@ -11,9 +11,9 @@ function timeKoreanUnit(num) {
     ];
     const rslt = [];
     for (let i = 0; i < unit.length; num %= unit[i][1], i++) {
-        const tmp = Math.floor(num / unit[i][1]);
-        if (tmp > 0) {
-            rslt.push(`${tmp}${unit[i][0]}`);
+        const quotient = Math.floor(num / unit[i][1]);
+        if (quotient > 0) {
+            rslt.push(`${quotient}${unit[i][0]}`);
         }
     }
     return rslt;
