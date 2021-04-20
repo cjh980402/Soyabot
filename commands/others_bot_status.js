@@ -16,7 +16,7 @@ function timeKoreanUnit(num) {
             rslt.push(`${quotient}${unit[i][0]}`);
         }
     }
-    return rslt;
+    return rslt.join(' ') || '0초';
 }
 
 module.exports = {
@@ -33,6 +33,6 @@ module.exports = {
             memory = 100 - Math.round((OS.freemem() / OS.totalmem()) * 100);
         }
 
-        return message.channel.send(`작동 시간: ${timeKoreanUnit(Math.floor(client.uptime / 1000)).join(' ')}\n메모리 사용량: ${memory}%`);
+        return message.channel.send(`작동 시간: ${timeKoreanUnit(Math.floor(client.uptime / 1000))}\n메모리 사용량: ${memory}%`);
     }
 };

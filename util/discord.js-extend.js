@@ -17,22 +17,10 @@ Object.defineProperty(Number.prototype, 'toLocaleUnitString', {
     value: function (locales = Intl.NumberFormat().resolvedOptions().locale, count = 5) {
         // locales는 출력할 형식의 로케일, count는 출력할 단위의 개수
         const localeUnits = {
-            'ko-KR': [
-                ['경', '조', '억', '만', ''],
-                [10000000000000000, 10000]
-            ],
-            'ja-JP': [
-                ['京', '兆', '億', '万', ''],
-                [10000000000000000, 10000]
-            ],
-            'zh-CN': [
-                ['京', '兆', '亿', '万', ''],
-                [10000000000000000, 10000]
-            ],
-            'en-US': [
-                ['Trillion', 'Billion', 'Million', 'Thousand', ''],
-                [1000000000000, 1000]
-            ]
+            'ko-KR': [['경', '조', '억', '만', ''], 10000],
+            'ja-JP': [['京', '兆', '億', '万', ''], 10000],
+            'zh-CN': [['京', '兆', '亿', '万', ''], 10000],
+            'en-US': [['Trillion', 'Billion', 'Million', 'Thousand', ''], 1000]
         };
 
         if (!localeUnits[locales]) {
@@ -42,7 +30,7 @@ Object.defineProperty(Number.prototype, 'toLocaleUnitString', {
         const unitStd = localeUnits[locales][1];
         const rslt = [];
 
-        for (let i = 0, unitNum = unitStd[0], num = +this; i < unitName.length; num %= unitNum, unitNum /= unitStd[1], i++) {
+        for (let i = 0, unitNum = Math.pow(unitStd, unitName.length - 1), num = +this; i < unitName.length; num %= unitNum, unitNum /= unitStd, i++) {
             const quotient = Math.floor(num / unitNum);
             if (quotient > 0 && rslt.length < count) {
                 rslt.push(`${quotient}${unitName[i]}`);

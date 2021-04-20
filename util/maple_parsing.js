@@ -253,7 +253,7 @@ module.exports.MapleUser = class {
         const date = [],
             murung = [];
         for (let i = 0; i < data.length; i += 6) {
-            date.push(data.eq(i).find('span').text() + data.eq(i).find('b').text()); // 날짜
+            date.push(`${data.eq(i).find('span').text()}${data.eq(i).find('b').text()}`); // 날짜
             murung.push(`${data.eq(i + 1).find('h5').text()} (${data.eq(i + 1).find('span').text()})`); // 무릉 기록
         }
         return [date, murung];
