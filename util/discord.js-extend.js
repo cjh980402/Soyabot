@@ -21,8 +21,8 @@ Object.defineProperty(Number.prototype, 'toLocaleUnitString', {
             'ja-JP': [['京', '兆', '億', '万', ''], 10000],
             'zh-CN': [['京', '兆', '亿', '万', ''], 10000],
             'en-US': [['Trillion', 'Billion', 'Million', 'Thousand', ''], 1000],
-            'IEC': [['Ti', 'Gi', 'Mi', 'Ki'], 1024],
-            'SI': [['T', 'G', 'M', 'k'], 1000]
+            'IEC': [['Ti', 'Gi', 'Mi', 'Ki', ''], 1024],
+            'SI': [['T', 'G', 'M', 'k', ''], 1000]
         };
 
         if (!localeUnits[locales]) {
