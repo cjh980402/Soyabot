@@ -9,6 +9,7 @@ const { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, s
 module.exports.adminChat = async function (message) {
     debugFunc(message);
     const fullContent = await message.fullContent;
+    const room = /^\*(.+)\*\s/.exec(fullContent)?.[1];
     if (fullContent.startsWith('>')) {
         // 노드 코드 실행 후 출력
         const funcBody = fullContent.substr(1).trim().split('\n'); // 긴 코드 테스트를 위해 fullContent 이용
@@ -18,13 +19,10 @@ module.exports.adminChat = async function (message) {
     } else if (fullContent.startsWith(')')) {
         // 콘솔 명령 실행 후 출력
         message.channel.send((await module.exports.cmd(fullContent.substr(1).trim(), true)) || 'empty message', { split: { char: '' } });
-    } else if (fullContent.startsWith('*')) {
+    } else if (room) {
         // 원하는 방에 봇으로 채팅 전송 (텍스트 채널 ID 이용)
-        const room = fullContent.split('*')[1];
-        if (room && fullContent.startsWith(`*${room}* `)) {
-            const rslt = replyRoomID(room, fullContent.replace(`*${room}* `, ''));
-            message.channel.send(rslt ? '채팅이 전송되었습니다.' : '존재하지 않는 방입니다.');
-        }
+        const rslt = replyRoomID(room, fullContent.substr(room.length + 3));
+        message.channel.send(rslt ? '채팅이 전송되었습니다.' : '존재하지 않는 방입니다.');
     } else if (message.channel.recipient == ADMIN_ID && message.reference) {
         // 건의 답변 기능
         const suggestRefer = message.channel.messages.cache.get(message.reference.messageID);
