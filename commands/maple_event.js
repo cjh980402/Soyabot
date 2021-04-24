@@ -38,7 +38,7 @@ module.exports = {
                     await eventEmbed.react('⬅️');
                     await eventEmbed.react('⏹');
                     await eventEmbed.react('➡️');
-                } catch (e) {
+                } catch {
                     return message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
                 }
                 const filter = (reaction, user) => message.author.id == user.id;
@@ -58,7 +58,7 @@ module.exports = {
                         } else if (reaction.emoji.name == '⏹') {
                             collector.stop();
                         }
-                    } catch (e) {
+                    } catch {
                         return message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
                     }
                 });

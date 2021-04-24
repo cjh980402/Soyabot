@@ -139,7 +139,7 @@ module.exports.MapleUser = class {
                     this.#ggData = await linkParse(this.#ggURL);
                     return true; // 갱신성공
                 }
-            } catch (e) {
+            } catch {
                 return false; // 갱신실패
             }
             if (Date.now() - start >= 20000) {
@@ -364,7 +364,7 @@ module.exports.MapleGuild = class {
                 } else if (rslt.error) {
                     return false; // 갱신실패
                 }
-            } catch (e) {
+            } catch {
                 return false; // 갱신실패
             }
             if (Date.now() - start >= 20000) {

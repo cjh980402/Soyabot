@@ -78,7 +78,7 @@ module.exports = {
         for (let i = 0; i < bullet; i++) {
             try {
                 await message.channel.awaitMessages((msg) => msg.member == gameUser[i % gameUser.length] && gameRegExp[3].test(msg.content.trim()), { max: 1, time: 60000, errors: ['time'] });
-            } catch (e) {} // 시간 초과돼도 에러 throw 안하게 catch를 해줌
+            } catch {} // 시간 초과돼도 에러 throw 안하게 catch를 해줌
             if (i == die) {
                 const dieUser = message.guild.member(gameUser[i % gameUser.length]);
                 if (dieUser) {

@@ -26,12 +26,14 @@ module.exports = {
             total_meso3 = 0;
         for (let i = startlev; i < endlev; i++) {
             total_req1 += i * i + 11; // 요구량 = i^2 + 11
-            total_req2 += i < 11 ? 9 * i * i + 20 * i : 0; // 요구량 = 9i^2 + 20i
             total_meso1 += 2370000 + 7130000 * i; // 여로 심볼
             total_meso2 += 12440000 + 6600000 * i; // 여로 제외 아케인
-            total_meso3 += i < 11 ? 96900000 + 88500000 * i : 0; // 어센틱 심볼
+            if (i < 11) {
+                total_req2 += 9 * i * i + 20 * i; // 요구량 = 9i^2 + 20i
+                total_meso3 += 96900000 + 88500000 * i; // 어센틱 심볼
+            }
         }
 
-        return message.channel.send(`아케인 심볼 ${startlev}레벨에서 ${endlev}레벨\n요구량: ${total_req1}\n여로: ${total_meso1.toLocaleString()}메소\n여로 제외: ${total_meso2.toLocaleString()}메소\n\n어센틱 심볼 ${Math.min(11, startlev)}레벨에서 ${Math.min(11, endlev)}레벨\n요구량: ${total_req2}\n세르니움: ${total_meso3.toLocaleString()}메소`);
+        return message.channel.send(`아케인 심볼 Lv.${startlev} → Lv.${endlev}\n요구량: ${total_req1}\n여로: ${total_meso1.toLocaleString()}메소\n여로 제외: ${total_meso2.toLocaleString()}메소\n\n어센틱 심볼 Lv.${Math.min(11, startlev)} → Lv.${Math.min(11, endlev)}\n요구량: ${total_req2}\n어센틱 심볼: ${total_meso3.toLocaleString()}메소`);
     }
 };

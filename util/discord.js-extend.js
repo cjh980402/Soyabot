@@ -71,7 +71,7 @@ Object.defineProperty(Object.prototype, '_p', {
         return Object.getOwnPropertyNames(this).map((v) => {
             try {
                 return `${v}: ${this[v]}`;
-            } catch (e) {
+            } catch {
                 return `${v}: error`;
             }
         }).join('\n');
@@ -91,7 +91,7 @@ Object.defineProperty(Object.prototype, '__p', {
         return Object.getOwnPropertyNames(Object.getPrototypeOf(this)).map((v) => {
             try {
                 return `${v}: ${this[v]}`;
-            } catch (e) {
+            } catch {
                 return `${v}: error`;
             }
         }).join('\n');

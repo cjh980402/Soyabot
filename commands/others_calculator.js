@@ -43,7 +43,7 @@ module.exports = {
 
         try {
             return message.channel.send(String(limitedEvaluate(inputExpression(args.join(' ')))) || 'empty result');
-        } catch (e) {
+        } catch {
             return message.channel.send('올바르지 않은 수식입니다.');
         }
     }

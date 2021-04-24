@@ -14,7 +14,7 @@ app.get('/image/:category/:picName', async (req, res) => {
         console.log(`익스프레스 접속 경로\n${decodeURIComponent(req.originalUrl)}`); // request의 원본 경로
         console.log(`익스프레스 하위 속성\n${req.params._p}\n${req.query._p}`); // 라우팅 하위 경로와 쿼리에 해당하는 부분
         res.end(await readFile(`./pictures/${req.params.category}/${req.params.picName}`));
-    } catch (e) {
+    } catch {
         res.end('400 Bad Request');
     }
 });
@@ -25,7 +25,7 @@ app.get('/:name', async (req, res) => {
         console.log(`익스프레스 접속 경로\n${decodeURIComponent(req.originalUrl)}`); // request의 원본 경로
         console.log(`익스프레스 하위 속성\n${req.params._p}\n${req.query._p}`); // 라우팅 하위 경로와 쿼리에 해당하는 부분
         res.end(await readFile('./htmls/default.html'));
-    } catch (e) {
+    } catch {
         res.end('400 Bad Request');
     }
 });
@@ -36,7 +36,7 @@ app.get('/', async (req, res) => {
         console.log(`익스프레스 접속 경로\n${decodeURIComponent(req.originalUrl)}`); // request의 원본 경로
         console.log(`익스프레스 하위 속성\n${req.params._p}\n${req.query._p}`); // 라우팅 하위 경로와 쿼리에 해당하는 부분
         res.end(await readFile('./htmls/default.html'));
-    } catch (e) {
+    } catch {
         res.end('400 Bad Request');
     }
 });

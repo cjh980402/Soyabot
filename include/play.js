@@ -61,7 +61,7 @@ module.exports.play = async function (song, guild) {
             try {
                 streamType = 'ogg/opus';
                 stream = await scdl.downloadFormat(song.url, scdl.FORMATS.OPUS);
-            } catch (e) {
+            } catch {
                 streamType = 'unknown';
                 stream = await scdl.downloadFormat(song.url, scdl.FORMATS.MP3);
             }
@@ -115,7 +115,7 @@ module.exports.play = async function (song, guild) {
         await playingMessage.react('🔊');
         await playingMessage.react('🔁');
         await playingMessage.react('⏹');
-    } catch (e) {
+    } catch {
         queue.textChannel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
     }
 
@@ -182,7 +182,7 @@ module.exports.play = async function (song, guild) {
                     collector.stop();
                     break;
             }
-        } catch (e) {
+        } catch {
             return queue.textChannel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
         }
     });
