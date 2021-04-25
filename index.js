@@ -24,9 +24,10 @@ client.login(TOKEN).then(async () => {
     /**
      * 모든 명령 import
      */
-    readdirSync('./commands').filter((file) => file.endsWith('.js')).forEach((file) => {
-        // commands 폴더속 .js 파일 걸러내기
-        client.commands.push(require(`./commands/${file}`)); // 배열에 명령 객체를 push
+    readdirSync('./commands').forEach((file) => {
+        if (file.endsWith('.js')) {
+            client.commands.push(require(`./commands/${file}`)); // 걸러낸 js파일의 명령 객체를 배열에 push
+        }
     });
 });
 /**

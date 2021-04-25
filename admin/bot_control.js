@@ -24,7 +24,3 @@ module.exports.replyAdmin = function (str) {
     admin?.send(str, { split: { char: '' } }); // 관리자에게 DM으로 보냄
     return admin;
 };
-
-module.exports.sleep = function (ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-};

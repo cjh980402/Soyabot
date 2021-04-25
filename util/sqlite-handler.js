@@ -4,6 +4,7 @@ const { inspect } = require('util');
 class SQLiteHandler {
     // sqlite3을 프로미스화 한 클래스
     #db;
+
     constructor(db) {
         this.#db = new sqlite3.Database(db);
     }
@@ -44,11 +45,11 @@ class SQLiteHandler {
     run(sql, params = []) {
         return new Promise((resolve, reject) => {
             this.#db.run(sql, params, function (err) {
-                // db 멤버의 값을 받아야 하는 콜백이므로 function 사용
+                // #db 멤버의 this에 접근하는 콜백이므로 function 사용
                 if (err) {
                     reject(err);
                 } else {
-                    resolve({ lastId: this.lastId, changes: this.changes });
+                    resolve({ lastID: this.lastID, changes: this.changes });
                 }
             });
         });
