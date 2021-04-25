@@ -1,7 +1,7 @@
 /**
  * 모듈 import
  */
-const { Client, Collection } = require('./util/discord.js-extend');
+const { Client, Collection } = require('./util/discord.js-extend'); // 제일 처음에 import 해야하는 모듈
 const { readdirSync } = require('fs');
 const { TOKEN, PREFIX, ADMIN_ID } = require('./soyabot_config.json');
 const { adminChat, initClient } = require('./admin/admin_function');
