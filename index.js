@@ -12,17 +12,14 @@ const app = require('./util/express_server');
 const sqlite = require('./util/sqlite-handler');
 global.db = new sqlite('./db/soyabot_data.db'); // 여러 기능들에 의해 필수로 최상위 전역
 global.client = new Client({ disableMentions: 'everyone', retryLimit: 3 }); // 네트워크 재요청 횟수 설정
-client.login(TOKEN);
 client.commands = []; // 명령어 객체 저장할 배열
 client.queue = new Map(); // 음악기능 정보 저장용
 client.prefix = PREFIX;
 const cooldowns = new Set(); // 중복 명령 방지할 set
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // 정규식 내부에서 일부 특수 문자를 그대로 취급하기 위해 사용자 입력을 이스케이프로 치환하는 함수
 const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((resolve) => setTimeout(resolve, ms))]);
-/**
- * 클라이언트 이벤트
- */
-client.on('ready', async () => {
+
+client.login(TOKEN).then(async () => {
     await initClient(); // 클라이언트 초기 세팅 함수
     /**
      * 모든 명령 import
@@ -30,43 +27,19 @@ client.on('ready', async () => {
     readdirSync('./commands').filter((file) => file.endsWith('.js')).forEach((file) => {
         // commands 폴더속 .js 파일 걸러내기
         client.commands.push(require(`./commands/${file}`)); // 배열에 명령 객체를 push
-
-        /*const cmd = require(`./commands/${file}`);
-        client.commands.push(cmd); // 배열에 명령 객체를 push
-
-        if (!cmd.description) {
-            return;
-        }
-
-        const args = cmd.usage.match(/\(.+?\)/g);
-        const data = { name: cmd.command[0], description: cmd.description.split('\n')[0] };
-
-        if (args?.length > 0) {
-            data.options = args.map((v) => ({ name: v.replace(/[\s()]/g, '').replace(/[^가-힣A-Za-z0-9_]/g, '_'), description: v, type: 3, required: true }));
-        }
-
-        client.api.applications(client.user.id).commands.post({ data });*/
     });
-
+});
+/**
+ * 클라이언트 이벤트
+ */
+client.on('ready', async () => {
     client.user.setActivity(`${client.prefix}help and ${client.prefix}play`, { type: 'LISTENING' });
     replyAdmin(`${client.user.tag}이 작동 중입니다.\n${app.locals.port}번 포트에서 http 서버가 작동 중입니다.`);
 });
-client.on('error', (e) => console.error(`에러 내용: ${e}\n${e.stack ?? e._p}`));
+
+client.on('error', (e) => console.error(`클라이언트 에러 발생\n에러 내용: ${e}\n${e.stack ?? e._p}`));
+
 client.on('warn', console.log);
-
-/*client.ws.on('INTERACTION_CREATE', async (interaction) => {
-    client.api.interactions(interaction.id, interaction.token).callback.post({
-        data: {
-            type: 4,
-            data: {
-                content: `<${interaction.data.name} 명령>`
-            }
-        }
-    });
-
-    const args = interaction.data.options?.map((v) => v.value.trim()) ?? [];
-    client.commands.find((cmd) => cmd.command.includes(interaction.data.name))?.execute(새 메시지 객체, args);
-});*/
 
 client.on('message', async (message) => {
     // 각 메시지에 반응, 디스코드는 봇의 채팅도 이 이벤트에 들어옴
