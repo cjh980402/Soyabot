@@ -108,40 +108,44 @@ client.on('message', async (message) => {
 });
 
 client.on('voiceStateUpdate', (oldState, newState) => {
-    // 유저 음성채팅 상태 변경 이벤트
-    const oldVoice = oldState.channel;
-    const newVoice = newState.channel;
-    if (oldVoice != newVoice) {
-        console.log(!oldVoice ? 'User joined!' : !newVoice ? 'User left!' : 'User switched channels!');
+    try {
+        // 유저 음성채팅 상태 변경 이벤트
+        const oldVoice = oldState.channel;
+        const newVoice = newState.channel;
+        if (oldVoice != newVoice) {
+            console.log(!oldVoice ? 'User joined!' : !newVoice ? 'User left!' : 'User switched channels!');
 
-        if (newVoice) {
-            const newQueue = client.queue.get(newVoice.guild.id);
-            if (newQueue?.connection && !newQueue.playing && newVoice == newQueue.channel && newVoice.members.size == 2) {
-                newQueue.connection.dispatcher?.resume();
-                newQueue.textChannel.send('대기열을 다시 재생합니다.');
-                newQueue.playing = true;
-            }
-        }
-
-        if (oldVoice) {
-            const oldQueue = client.queue.get(oldVoice.guild.id);
-            if (oldQueue?.connection && oldVoice == oldQueue.channel && oldVoice.members.size == 1) {
-                // 봇만 음성 채널에 있는 경우
-                if (oldQueue.playing) {
-                    oldQueue.connection.dispatcher?.pause(true);
-                    oldQueue.textChannel.send('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
-                    oldQueue.playing = false;
+            if (newVoice) {
+                const newQueue = client.queue.get(newVoice.guild.id);
+                if (newQueue?.connection && !newQueue.playing && newVoice == newQueue.channel && newVoice.members.size == 2) {
+                    newQueue.connection.dispatcher?.resume();
+                    newQueue.textChannel.send('대기열을 다시 재생합니다.');
+                    newQueue.playing = true;
                 }
-                setTimeout(() => {
-                    const queue = client.queue.get(oldVoice.guild.id);
-                    if (queue?.connection && oldVoice == queue.channel && oldVoice.members.size == 1) {
-                        // 5분이 지나도 봇만 음성 채널에 있는 경우
-                        queue.songs = [];
-                        queue.connection.dispatcher?.end();
-                        queue.textChannel.send('5분 동안 소야봇이 비활성화 되어 대기열을 끝냅니다.');
+            }
+
+            if (oldVoice) {
+                const oldQueue = client.queue.get(oldVoice.guild.id);
+                if (oldQueue?.connection && oldVoice == oldQueue.channel && oldVoice.members.size == 1) {
+                    // 봇만 음성 채널에 있는 경우
+                    if (oldQueue.playing) {
+                        oldQueue.connection.dispatcher?.pause(true);
+                        oldQueue.textChannel.send('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
+                        oldQueue.playing = false;
                     }
-                }, 300000);
+                    setTimeout(() => {
+                        const queue = client.queue.get(oldVoice.guild.id);
+                        if (queue?.connection && oldVoice == queue.channel && oldVoice.members.size == 1) {
+                            // 5분이 지나도 봇만 음성 채널에 있는 경우
+                            queue.songs = [];
+                            queue.connection.dispatcher?.end();
+                            queue.textChannel.send('5분 동안 소야봇이 비활성화 되어 대기열을 끝냅니다.');
+                        }
+                    }, 300000);
+                }
             }
         }
+    } catch (e) {
+        replyAdmin(`[oldState]\n${oldState._p}\n[newState]\n${newState._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
     }
 });
