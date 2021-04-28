@@ -1,7 +1,7 @@
 const { ADMIN_ID } = require('../soyabot_config.json');
 
 module.exports.botNotice = async function (data, type = null) {
-    const skiplist = type ? (await db.all(`select channelid from ${type}skip`)).map((v) => v.channelid) : [];
+    const skiplist = type ? (await db.all(`SELECT channelid FROM ${type}skip`)).map((v) => v.channelid) : [];
     // type이 null(전체 알림)인 경우는 예외리스트는 없음
     client.guilds.cache.filter((v) => !skiplist.includes(v.id)).forEach((v) => {
         const guildText = v.channels.cache.filter((v) => v.type == 'text');

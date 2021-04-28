@@ -16,7 +16,7 @@ module.exports.startNotice = function () {
 
                 const notice = [];
                 for (let i = 0; i < data.length; i++) {
-                    const rslt = await db.get(`SELECT * FROM maplenotice WHERE title = ?`, [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
+                    const rslt = await db.get('SELECT * FROM maplenotice WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                     if (!rslt || +/\d+/.exec(rslt.url) < +/\d+/.exec(url)) {
                         // 제목이 다르거나, 같은 경우는 최신 공지인 경우
@@ -53,7 +53,7 @@ module.exports.startUpdate = function () {
 
                 const update = [];
                 for (let i = 0; i < data.length; i++) {
-                    const rslt = await db.get(`SELECT * FROM mapleupdate WHERE title = ?`, [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
+                    const rslt = await db.get('SELECT * FROM mapleupdate WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                     if (!rslt || +/\d+/.exec(rslt.url) < +/\d+/.exec(url)) {
                         // 제목이 다르거나, 같은 경우는 최신 공지인 경우
@@ -90,7 +90,7 @@ module.exports.startTest = function () {
 
                 const test = [];
                 for (let i = 0; i < data.length; i++) {
-                    const rslt = await db.get(`SELECT * FROM mapletest WHERE title = ?`, [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
+                    const rslt = await db.get('SELECT * FROM mapletest WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                     if (!rslt || +/\d+/.exec(rslt.url) < +/\d+/.exec(url)) {
                         // 제목이 다르거나, 같은 경우는 최신 공지인 경우

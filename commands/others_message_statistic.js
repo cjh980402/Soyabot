@@ -40,7 +40,7 @@ module.exports = {
             }
         }
 
-        const messagestat = await db.get(`SELECT * FROM messagedb WHERE channelsenderid = ?`, [`${message.guild.id} ${targetInfo.user.id}`]);
+        const messagestat = await db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [`${message.guild.id} ${targetInfo.user.id}`]);
         if (messagestat) {
             return message.channel.send(`[${targetInfo.nickname ?? targetInfo.user.username}]
 채팅 건수: ${messagestat.messagecnt.toLocaleString()}

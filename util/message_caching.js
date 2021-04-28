@@ -4,7 +4,7 @@ module.exports = async function (message) {
     if (!(message instanceof Message && message.guild)) {
         return;
     }
-    const messagestat = await db.get(`SELECT * FROM messagedb WHERE channelsenderid = ?`, [`${message.guild.id} ${message.author.id}`]);
+    const messagestat = await db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [`${message.guild.id} ${message.author.id}`]);
     await db.replace('messagedb', {
         channelsenderid: `${message.guild.id} ${message.author.id}`,
         messagecnt: (messagestat?.messagecnt ?? 0) + 1,

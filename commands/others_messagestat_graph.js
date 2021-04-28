@@ -15,7 +15,7 @@ module.exports = {
             return message.channel.send('사용이 불가능한 채널입니다.');
         }
 
-        const roommessage = (await db.all(`SELECT * FROM messagedb WHERE channelsenderid LIKE ?`, [`${targetChannel.id}%`]))
+        const roommessage = (await db.all('SELECT * FROM messagedb WHERE channelsenderid LIKE ?', [`${targetChannel.id}%`]))
             .filter((v) => {
                 const member = targetChannel.members.cache.get(v.channelsenderid.split(' ')[1]);
                 return member && (args[0] != '-봇' || !member.user.bot);
