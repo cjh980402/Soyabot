@@ -4,7 +4,7 @@
 const { Client, Collection } = require('./util/discord.js-extend'); // 제일 처음에 import 해야하는 모듈
 const { readdirSync } = require('fs');
 const { TOKEN, PREFIX, ADMIN_ID } = require('./soyabot_config.json');
-const { adminChat, initClient } = require('./admin/admin_function');
+const { adminChat, initClient, cmd } = require('./admin/admin_function');
 const { replyAdmin } = require('./admin/bot_control');
 const cachingMessage = require('./util/message_caching');
 const botChatting = require('./util/bot_chatting');
@@ -33,14 +33,17 @@ client.login(TOKEN).then(async () => {
 /**
  * 클라이언트 이벤트
  */
+client.on('warn', console.log);
+
 client.on('ready', async () => {
     client.user.setActivity(`${client.prefix}help and ${client.prefix}play`, { type: 'LISTENING' });
     replyAdmin(`${client.user.tag}이 작동 중입니다.\n${app.locals.port}번 포트에서 http 서버가 작동 중입니다.`);
 });
 
-client.on('error', (e) => console.error(`클라이언트 에러 발생\n에러 내용: ${e}\n${e.stack ?? e._p}`));
-
-client.on('warn', console.log);
+client.on('error', (e) => {
+    console.error(`클라이언트 에러 발생\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+    setTimeout(cmd, 30000, 'npm restart'); // 바로 재가동하면 에러가 반복될 수 있으므로 30초 후 실행을 한다
+});
 
 client.on('message', async (message) => {
     // 각 메시지에 반응, 디스코드는 봇의 채팅도 이 이벤트에 들어옴

@@ -41,6 +41,8 @@
     "ytsr": "^3.4.1"
   },
   "scripts": {
-    "start": "forever start -o ./log/out.log -e ./log/err.log index.js"
+    "start": "forever start -o ./log/out.log -e ./log/err.log index.js",
+    "stop": "forever stop index.js",
+    "restart": "forever restart index.js"
   }
 }
