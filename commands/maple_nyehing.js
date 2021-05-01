@@ -8,7 +8,7 @@ module.exports = {
     async execute(message, args) {
         const count = +(args[0] ?? 2);
         if (isNaN(count) || count < 2 || count > 6) {
-            message.reply('닉네임은 2 ~ 6 글자만 가능합니다.');
+            return message.reply('닉네임은 2 ~ 6 글자만 가능합니다.');
         }
 
         let rslt = '';
