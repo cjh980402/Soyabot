@@ -49,36 +49,32 @@ module.exports = {
         let songInfo = null,
             song = null;
 
-        if (scVideo) {
-            const trackInfo = await scdl.getInfo(`https://soundcloud.com/${scVideo}`);
-            song = {
-                title: trackInfo.title,
-                url: trackInfo.permalink_url,
-                duration: Math.ceil(trackInfo.duration / 1000)
-            };
-        } else {
-            if (!videoID) {
-                const filter = (await ytsr.getFilters(search)).get('Type').get('Video').url;
-                videoID = filter && (await ytsr(filter, { limit: 1 })).items[0]?.id;
-                // videoID = (await youtube.searchVideos(search, 1, { part: "snippet" }))[0]?.id;
+        try {
+            if (scVideo) {
+                songInfo = await scdl.getInfo(`https://soundcloud.com/${scVideo}`);
+                song = {
+                    title: songInfo.title,
+                    url: songInfo.permalink_url,
+                    duration: Math.ceil(songInfo.duration / 1000)
+                };
+            } else {
                 if (!videoID) {
-                    return message.reply('검색 내용에 해당하는 영상을 찾지 못했습니다.');
+                    const filter = (await ytsr.getFilters(search)).get('Type').get('Video').url;
+                    videoID = filter && (await ytsr(filter, { limit: 1 })).items[0]?.id;
+                    // videoID = (await youtube.searchVideos(search, 1, { part: "snippet" }))[0]?.id;
+                    if (!videoID) {
+                        return message.reply('검색 내용에 해당하는 영상을 찾지 못했습니다.');
+                    }
                 }
-            }
-            try {
                 songInfo = await youtube.getVideoByID(videoID);
-            } catch (e) {
-                if (e.message == 'resource youtube#videoListResponse not found') {
-                    return message.reply('재생할 수 없는 영상입니다.');
-                } else {
-                    throw e;
-                }
+                song = {
+                    title: songInfo.title.decodeHTML(),
+                    url: songInfo.url,
+                    duration: songInfo.durationSeconds
+                };
             }
-            song = {
-                title: songInfo.title.decodeHTML(),
-                url: songInfo.url,
-                duration: songInfo.durationSeconds
-            };
+        } catch {
+            return message.reply('재생할 수 없는 영상입니다.');
         }
 
         if (serverQueue) {

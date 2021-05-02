@@ -50,38 +50,34 @@ module.exports = {
         let playlist = null,
             videos = null;
 
-        if (scVideo) {
-            playlist = await scdl.getSetInfo(`https://soundcloud.com/${scVideo}`);
-            videos = playlist.tracks.slice(0, MAX_PLAYLIST_SIZE ?? 10).map((track) => ({
-                title: track.title,
-                url: track.permalink_url,
-                duration: Math.ceil(track.duration / 1000)
-            }));
-        } else {
-            if (!playlistID) {
-                const filter = (await ytsr.getFilters(search)).get('Type').get('Playlist').url;
-                playlistID = filter && (await ytsr(filter, { limit: 1 })).items[0]?.playlistID;
-                // playlistID = (await youtube.searchPlaylists(search, 1, { part: "snippet" }))[0]?.id;
-                if (!playlistID) {
-                    return message.reply('검색 내용에 해당하는 재생목록을 찾지 못했습니다.');
-                }
-            }
-            try {
-                playlist = await youtube.getPlaylistByID(playlistID, { part: 'snippet' });
-            } catch (e) {
-                if (e.message == 'resource youtube#playlistListResponse not found') {
-                    return message.reply('재생할 수 없는 재생목록입니다.');
-                } else {
-                    throw e;
-                }
-            }
-            videos = (await playlist.getVideos(MAX_PLAYLIST_SIZE ?? 10, { part: 'snippet' }))
-                .filter((video) => !/(Private|Deleted) video/.test(video.title)) // 비공개 또는 삭제된 영상 제외하기
-                .map((video) => ({
-                    title: video.title.decodeHTML(),
-                    url: video.url,
-                    duration: video.durationSeconds
+        try {
+            if (scVideo) {
+                playlist = await scdl.getSetInfo(`https://soundcloud.com/${scVideo}`);
+                videos = playlist.tracks.slice(0, MAX_PLAYLIST_SIZE ?? 10).map((track) => ({
+                    title: track.title,
+                    url: track.permalink_url,
+                    duration: Math.ceil(track.duration / 1000)
                 }));
+            } else {
+                if (!playlistID) {
+                    const filter = (await ytsr.getFilters(search)).get('Type').get('Playlist').url;
+                    playlistID = filter && (await ytsr(filter, { limit: 1 })).items[0]?.playlistID;
+                    // playlistID = (await youtube.searchPlaylists(search, 1, { part: "snippet" }))[0]?.id;
+                    if (!playlistID) {
+                        return message.reply('검색 내용에 해당하는 재생목록을 찾지 못했습니다.');
+                    }
+                }
+                playlist = await youtube.getPlaylistByID(playlistID, { part: 'snippet' });
+                videos = (await playlist.getVideos(MAX_PLAYLIST_SIZE ?? 10, { part: 'snippet' }))
+                    .filter((video) => !/(Private|Deleted) video/.test(video.title)) // 비공개 또는 삭제된 영상 제외하기
+                    .map((video) => ({
+                        title: video.title.decodeHTML(),
+                        url: video.url,
+                        duration: video.durationSeconds
+                    }));
+            }
+        } catch {
+            return message.reply('재생할 수 없는 재생목록입니다.');
         }
 
         const playlistEmbed = new MessageEmbed()
