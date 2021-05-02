@@ -6,6 +6,9 @@ const YouTubeAPI = require('simple-youtube-api');
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 const ytsr = require('ytsr');
 const scdl = require('soundcloud-downloader').default;
+const scPattern = /^(https?:\/\/)?(www\.)?(m\.)?soundcloud\.(com|app)\/(.+)/i;
+const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?youtube(\.googleapis|-nocookie)?\.com.*(v\/|v=|vi=|vi\/|e\/|shorts\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
+const playlistPattern = /[&?]list=([\w-]+)/i;
 
 module.exports = {
     usage: `${client.prefix}playlist (재생목록 주소│재생목록 제목)`,
@@ -36,13 +39,10 @@ module.exports = {
 
         const url = args[0];
         const search = args.join(' ');
-        const scPattern = /^(https?:\/\/)?(www\.)?(m\.)?soundcloud\.(com|app)\/(.+)/i;
-        const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?youtube(\.googleapis|-nocookie)?\.com.*(v\/|v=|vi=|vi\/|e\/|shorts\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
-        const playlistPattern = /[&?]list=([\w-]+)/i;
         const scVideo = scPattern.exec(url)?.[5];
         let playlistID = playlistPattern.exec(url)?.[1];
 
-        // 영상 주소가 주어진 경우는 영상을 실행
+        // 영상 주소가 주어진 경우는 영상 기능을 실행
         if ((!playlistID && videoPattern.test(url)) || (scVideo && !url.includes('/sets/'))) {
             return client.commands.find((cmd) => cmd.command.includes('play')).execute(message, args);
         }
@@ -66,9 +66,17 @@ module.exports = {
                     return message.reply('검색 내용에 해당하는 재생목록을 찾지 못했습니다.');
                 }
             }
-            playlist = await youtube.getPlaylistByID(playlistID, { part: 'snippet' });
+            try {
+                playlist = await youtube.getPlaylistByID(playlistID, { part: 'snippet' });
+            } catch (e) {
+                if (e.message == 'resource youtube#playlistListResponse not found') {
+                    return message.reply('재생할 수 없는 재생목록입니다.');
+                } else {
+                    throw e;
+                }
+            }
             videos = (await playlist.getVideos(MAX_PLAYLIST_SIZE ?? 10, { part: 'snippet' }))
-                .filter((video) => !/(Private|Deleted) video/.test(video.title)) // 비공개 또는 삭제된 동영상 제외하기
+                .filter((video) => !/(Private|Deleted) video/.test(video.title)) // 비공개 또는 삭제된 영상 제외하기
                 .map((video) => ({
                     title: video.title.decodeHTML(),
                     url: video.url,

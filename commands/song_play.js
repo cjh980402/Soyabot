@@ -5,6 +5,9 @@ const YouTubeAPI = require('simple-youtube-api');
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 const ytsr = require('ytsr');
 const scdl = require('soundcloud-downloader').default;
+const scPattern = /^(https?:\/\/)?(www\.)?(m\.)?soundcloud\.(com|app)\/(.+)/i;
+const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?youtube(\.googleapis|-nocookie)?\.com.*(v\/|v=|vi=|vi\/|e\/|shorts\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
+const playlistPattern = /[&?]list=([\w-]+)/i;
 
 module.exports = {
     usage: `${client.prefix}play (영상 주소│영상 제목)`,
@@ -35,18 +38,16 @@ module.exports = {
 
         const url = args[0];
         const search = args.join(' ');
-        const scPattern = /^(https?:\/\/)?(www\.)?(m\.)?soundcloud\.(com|app)\/(.+)/i;
-        const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?youtube(\.googleapis|-nocookie)?\.com.*(v\/|v=|vi=|vi\/|e\/|shorts\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
-        const playlistPattern = /[&?]list=([\w-]+)/i;
         const scVideo = scPattern.exec(url)?.[5];
         let videoID = videoPattern.exec(url)?.[7];
 
-        // 재생목록 주소가 주어진 경우는 재생목록을 실행
+        // 재생목록 주소가 주어진 경우는 재생목록 기능을 실행
         if ((!videoID && playlistPattern.test(url)) || (scVideo && url.includes('/sets/'))) {
             return client.commands.find((cmd) => cmd.command.includes('playlist')).execute(message, args);
         }
 
-        let song = null;
+        let songInfo = null,
+            song = null;
 
         if (scVideo) {
             const trackInfo = await scdl.getInfo(`https://soundcloud.com/${scVideo}`);
@@ -64,7 +65,15 @@ module.exports = {
                     return message.reply('검색 내용에 해당하는 영상을 찾지 못했습니다.');
                 }
             }
-            const songInfo = await youtube.getVideoByID(videoID);
+            try {
+                songInfo = await youtube.getVideoByID(videoID);
+            } catch (e) {
+                if (e.message == 'resource youtube#videoListResponse not found') {
+                    return message.reply('재생할 수 없는 영상입니다.');
+                } else {
+                    throw e;
+                }
+            }
             song = {
                 title: songInfo.title.decodeHTML(),
                 url: songInfo.url,
