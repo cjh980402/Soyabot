@@ -46,7 +46,7 @@ module.exports = {
             .addField('**인기도**', char_popul.toLocaleString(), true)
             .addField('**유니온 정보**', char_union ? `레벨: ${char_union[0].toLocaleString()}\n전투력: ${char_union[1].toLocaleString()}` : '-', true);
         if (char_union) {
-            infoEmbed.addField('유니온 코인', `1일 ${char_union[2]}개 획득`, true);
+            infoEmbed.addField('**유니온 코인**', `1일 ${char_union[2]}개 획득`, true);
         }
         infoEmbed
             .addField('**무릉 기록**', char_murung ? `${char_murung[1]} (${char_murung[2]})` : '-', true)

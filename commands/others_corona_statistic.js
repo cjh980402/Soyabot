@@ -135,7 +135,6 @@ module.exports = {
                         currentPage = (currentPage - 1 + embeds.length) % embeds.length;
                         coronaEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
                     } else if (reaction.emoji.name == '⏹') {
-                        collector.removeAllListeners('collect');
                         collector.stop();
                     }
                 } catch {

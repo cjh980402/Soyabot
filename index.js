@@ -108,8 +108,8 @@ client.on('message', async (message) => {
 });
 
 client.on('voiceStateUpdate', (oldState, newState) => {
+    // 유저 음성채팅 상태 변경 이벤트
     try {
-        // 유저 음성채팅 상태 변경 이벤트
         const oldVoice = oldState.channel;
         const newVoice = newState.channel;
         if (oldVoice != newVoice) {

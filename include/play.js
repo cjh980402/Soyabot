@@ -87,7 +87,6 @@ module.exports.play = async function (song, guild) {
             while (!collector) {
                 await sleep(500);
             }
-            collector.removeAllListeners('collect');
             collector.stop();
             if (queue.loop) {
                 queue.songs.push(queue.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣음 -> 루프 발생
@@ -100,7 +99,6 @@ module.exports.play = async function (song, guild) {
             while (!collector) {
                 await sleep(500);
             }
-            collector.removeAllListeners('collect');
             collector.stop();
             queue.textChannel.send(e.message.startsWith('input stream') ? '재생할 수 없는 동영상입니다.' : '에러로그가 전송되었습니다.');
             replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
@@ -130,7 +128,6 @@ module.exports.play = async function (song, guild) {
         try {
             await reaction.users.remove(user);
             if (!queue?.connection.dispatcher) {
-                collector.removeAllListeners('collect');
                 return collector.stop();
             }
             if (!canModifyQueue(guild.member(user))) {
@@ -152,7 +149,6 @@ module.exports.play = async function (song, guild) {
                     queue.playing = true;
                     queue.connection.dispatcher.end();
                     queue.textChannel.send(`${user} ⏭ 노래를 건너뛰었습니다.`);
-                    collector.removeAllListeners('collect');
                     collector.stop();
                     break;
                 case '🔇':
@@ -183,7 +179,6 @@ module.exports.play = async function (song, guild) {
                         console.error(e);
                         queue.connection.disconnect();
                     }
-                    collector.removeAllListeners('collect');
                     collector.stop();
                     break;
             }

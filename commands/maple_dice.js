@@ -15,7 +15,6 @@ module.exports = {
         const collector = dice.createReactionCollector(filter, { time: 60000 });
 
         collector.on('collect', async (reaction, user) => {
-            collector.removeAllListeners('collect');
             collector.stop();
             dice.delete({ timeout: 1000 });
             await this.execute(message);
