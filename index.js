@@ -33,6 +33,7 @@ const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((reso
         });
     } catch (e) {
         console.error(`로그인 에러 발생\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+        await cmd('npm stop');
     }
 })();
 /**
