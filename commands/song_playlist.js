@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('../util/discord.js-extend');
-const { QueueElement, play } = require('../include/play');
+const { QueueElement, play } = require('../util/music_play');
 const { replyAdmin } = require('../admin/bot_control');
 const { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } = require('../soyabot_config.json');
 const YouTubeAPI = require('simple-youtube-api');

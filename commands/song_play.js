@@ -1,4 +1,4 @@
-const { QueueElement, play } = require('../include/play');
+const { QueueElement, play } = require('../util/music_play');
 const { replyAdmin } = require('../admin/bot_control');
 const { GOOGLE_API_KEY } = require('../soyabot_config.json');
 const YouTubeAPI = require('simple-youtube-api');
