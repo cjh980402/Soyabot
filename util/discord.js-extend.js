@@ -69,13 +69,15 @@ Object.defineProperty(Object.prototype, '_i', {
 Object.defineProperty(Object.prototype, '_p', {
     // 객체의 키와 값 출력
     get: function () {
-        return Object.getOwnPropertyNames(this).map((v) => {
-            try {
-                return `${v}: ${this[v]}`;
-            } catch {
-                return `${v}: error`;
-            }
-        }).join('\n');
+        return Object.getOwnPropertyNames(this)
+            .map((v) => {
+                try {
+                    return `${v}: ${this[v]}`;
+                } catch {
+                    return `${v}: error`;
+                }
+            })
+            .join('\n');
     }
 });
 
@@ -89,13 +91,15 @@ Object.defineProperty(Object.prototype, '_k', {
 Object.defineProperty(Object.prototype, '__p', {
     // 상위 프로토타입의 키와 값 출력
     get: function () {
-        return Object.getOwnPropertyNames(Object.getPrototypeOf(this)).map((v) => {
-            try {
-                return `${v}: ${this[v]}`;
-            } catch {
-                return `${v}: error`;
-            }
-        }).join('\n');
+        return Object.getOwnPropertyNames(Object.getPrototypeOf(this))
+            .map((v) => {
+                try {
+                    return `${v}: ${this[v]}`;
+                } catch {
+                    return `${v}: error`;
+                }
+            })
+            .join('\n');
     }
 });
 

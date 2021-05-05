@@ -19,17 +19,22 @@ const cooldowns = new Set(); // 중복 명령 방지할 set
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // 정규식 내부에서 일부 특수 문자를 그대로 취급하기 위해 사용자 입력을 이스케이프로 치환하는 함수
 const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((resolve) => setTimeout(resolve, ms))]);
 
-client.login(TOKEN).then(async () => {
-    await initClient(); // 클라이언트 초기 세팅 함수
-    /**
-     * 모든 명령 import
-     */
-    readdirSync('./commands').forEach((file) => {
-        if (file.endsWith('.js')) {
-            client.commands.push(require(`./commands/${file}`)); // 걸러낸 js파일의 명령 객체를 배열에 push
-        }
-    });
-});
+(async () => {
+    try {
+        await client.login(TOKEN);
+        await initClient(); // 클라이언트 초기 세팅 함수
+        /**
+         * 모든 명령 import
+         */
+        readdirSync('./commands').forEach((file) => {
+            if (file.endsWith('.js')) {
+                client.commands.push(require(`./commands/${file}`)); // 걸러낸 js파일의 명령 객체를 배열에 push
+            }
+        });
+    } catch (e) {
+        console.error(`로그인 에러 발생\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+    }
+})();
 /**
  * 클라이언트 이벤트
  */
