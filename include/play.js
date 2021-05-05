@@ -22,7 +22,7 @@ module.exports.QueueElement = class {
     get textChannel() {
         if (!client.channels.cache.get(this.#textChannel.id)) {
             // 해당하는 채널이 삭제된 경우
-            this.#textChannel = this.#textChannel.guild.channels.cache.filter((v) => v.type == 'text').first();
+            this.#textChannel = this.#textChannel.guild.channels.cache.find((v) => v.type == 'text');
         }
         return this.#textChannel;
     }
