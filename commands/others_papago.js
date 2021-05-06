@@ -18,7 +18,7 @@ async function tran(source, target, text) {
     return data.message?.result.translatedText ?? '번역에 실패하였습니다.';
 }
 
-function checklan(src, tar) {
+function checkLan(src, tar) {
     if (
         (src == 'ko' && tar == 'en') ||
         (src == 'ko' && tar == 'ja') ||
@@ -61,15 +61,15 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        if (!checklan(args[0], args[1]) && !checklan(args[1], args[0])) {
+        if (!checkLan(args[0], args[1]) && !checkLan(args[1], args[0])) {
             return message.channel.send(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 "${this.usage}"입니다.\n언어의 형식은 ${client.prefix}파파고 목록을 확인해주세요.`);
         }
 
-        const msg = message.content.substr(message.content.indexOf(args[2])).trim();
-        if (msg.length > 1000) {
+        const text = message.content.substr(message.content.indexOf(args[2])).trim();
+        if (text.length > 1000) {
             return message.channel.send('1000자를 초과하는 내용은 번역하지 않습니다.');
         } else {
-            return message.channel.send(await tran(args[0], args[1], msg));
+            return message.channel.send(await tran(args[0], args[1], text));
         }
     }
 };

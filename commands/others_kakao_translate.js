@@ -34,8 +34,8 @@ async function tran(source, target, text) {
         },
         body: params
     });
-    const data = await response.json();
-    return data.translated_text?.join('\n') ?? '번역에 실패하였습니다.';
+    const data = await response.json(); // 번역 성공 시 translated_text에 문단(문장의 배열)의 배열이 들어옴
+    return data.translated_text?.map((v) => v.join(' ')).join('\n') ?? '번역에 실패하였습니다.';
 }
 
 function findLangCode(src, tar) {
@@ -68,11 +68,11 @@ module.exports = {
             return message.channel.send(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 "${this.usage}"입니다.\n언어의 목록은 ${client.prefix}번역 목록을 확인해주세요.`);
         }
 
-        const msg = message.content.substr(message.content.indexOf(args[1])).trim();
-        if (msg.length > 5000) {
+        const text = message.content.substr(message.content.indexOf(args[1])).trim();
+        if (text.length > 5000) {
             return message.channel.send('5000자를 초과하는 내용은 번역하지 않습니다.');
         } else {
-            return message.channel.send(await tran(langCode[0], langCode[1], msg));
+            return message.channel.send(await tran(langCode[0], langCode[1], text));
         }
     }
 };
