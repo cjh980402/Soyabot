@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@discordjs/opus": "^0.5.0",
-    "cheerio": "^1.0.0-rc.6",
+    "cheerio": "^1.0.0-rc.9",
     "deepai": "^1.0.17",
     "discord.js": "^12.5.3",
     "entities": "^2.2.0",
