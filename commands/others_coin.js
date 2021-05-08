@@ -14,6 +14,22 @@ function getChartImage(code, type) {
     return `https://imagechart.upbit.com/${chartType[type]}/${code}.png`;
 }
 
+async function getCoinBinancePrice(code) {
+    const binance = await (await fetch('https://api.binance.com/api/v1/ticker/allPrices')).json();
+    const coinName = `${code}USDT`;
+    for (let i = 0; i < binance.length; i++) {
+        if (coinName == binance[i].symbol) {
+            return +binance[i].price;
+        }
+    }
+    return -1; // 바이낸스 미상장인 경우
+}
+
+async function usdToKRW(usd) {
+    const usdData = await (await fetch('https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD')).json();
+    return usd * usdData[0].basePrice;
+}
+
 module.exports = {
     usage: `${client.prefix}코인정보 (검색 내용) (차트 종류)`,
     command: ['코인정보', 'ㅋㅇㅈㅂ'],
@@ -38,7 +54,6 @@ module.exports = {
 
             const chartURL = getChartImage(code, type);
             const nowPrice = searchRslt.find('.currency_value').contents().first().text();
-            const currencyType = searchRslt.find('.currency_value .screen_out').text();
             const changeType = searchRslt.find('.ico_rwdt.ico_stock').text(); // 상승, 보합, 하락
             const changeString = searchRslt.find('.rate_value').text();
 
@@ -47,10 +62,19 @@ module.exports = {
             const maxPrice = todayData.eq(0).text();
             const amount = todayData.eq(2).text();
 
-            await cmd(`python3 ./util/make_coin_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" ${currencyType} ${nowPrice} ${changeType} "${changeString}" ${minPrice} ${maxPrice}`);
+            await cmd(`python3 ./util/make_coin_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" 원 ${nowPrice} ${changeType} "${changeString}" ${minPrice} ${maxPrice}`);
             // 파이썬 스크립트 실행
 
-            const coinEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9899').setURL(coinLink).setImage(`http://140.238.26.231:8170/image/coin/${code}.png?time=${Date.now()}`).addField('**거래대금**', `${amount}${currencyType}`, true);
+            const coinEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9899').setURL(coinLink).setImage(`http://140.238.26.231:8170/image/coin/${code}.png?time=${Date.now()}`).addField('**거래대금**', `${amount}원`, true);
+
+            const binancePrice = await getCoinBinancePrice(code);
+            if (binancePrice != -1) {
+                const binanceKRW = await usdToKRW(binancePrice);
+                const upbitKRW = +nowPrice.replace(/,/g, '');
+                const kimPre = upbitKRW - binanceKRW;
+                const kimPrePercent = 100 * (kimPre / binanceKRW);
+                coinEmbed.addField('**바이낸스**', `${binancePrice.toLocaleString()}$\n${binanceKRW.toLocaleString()}원`, true).addField('**김프**', ` ${kimPre.toLocaleString()}원 (${kimPrePercent.toLocaleString()}%)`, true);
+            }
 
             return message.channel.send(coinEmbed);
         }
