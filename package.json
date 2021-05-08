@@ -36,7 +36,7 @@
     "simple-youtube-api": "^5.2.1",
     "soundcloud-downloader": "^1.0.0",
     "sqlite3": "^5.0.2",
-    "string-progressbar": "^1.0.3",
+    "string-progressbar": "^1.0.4",
     "ytdl-core": "^4.7.0",
     "ytsr": "^3.5.0"
   },

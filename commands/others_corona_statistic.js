@@ -48,6 +48,7 @@ module.exports = {
                                 // 데이터 값 표시
                                 formatter: (value, context) => `${context.chart.data.labels[context.dataIndex]}\n${value}%`,
                                 color: 'black',
+                                textAlign: 'center',
                                 display: true,
                                 font: {
                                     size: 22

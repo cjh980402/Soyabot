@@ -21,19 +21,20 @@ module.exports = {
             })
             .sort((a, b) => b.messagecnt - a.messagecnt)
             .slice(0, 180); // 내림차순
-        const usercolor = roommessage.map((v) => {
-            const color = v.channelsenderid.split(' ')[1].hashCode() & 0xffffff;
-            let r = (color >> 16) & 0xff;
-            let g = (color >> 8) & 0xff;
-            let b = color & 0xff;
-            if (r >= 0xc8 && g >= 0xc8 && b >= 0xc8) {
-                // 흰 색에 가까운 경우 어둡게 처리
-                r %= 0xc8;
-                g %= 0xc8;
-                b %= 0xc8;
-            }
-            return `rgba(${r}, ${g}, ${b}`;
-        });
+        const usercolor = (alpha) =>
+            roommessage.map((v) => {
+                const color = v.channelsenderid.split(' ')[1].hashCode() & 0xffffff;
+                let r = (color >> 16) & 0xff;
+                let g = (color >> 8) & 0xff;
+                let b = color & 0xff;
+                if (r >= 0xc8 && g >= 0xc8 && b >= 0xc8) {
+                    // 흰 색에 가까운 경우 어둡게 처리
+                    r %= 0xc8;
+                    g %= 0xc8;
+                    b %= 0xc8;
+                }
+                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            });
         const height = Math.min(3000, 1200 + 20 * roommessage.length);
         const size = Math.min(40, Math.floor((0.85 * (height - 120 - 3 * (roommessage.length + 1))) / roommessage.length));
         const messageChart = new QuickChart();
@@ -49,8 +50,8 @@ module.exports = {
                         {
                             label: '채팅량',
                             data: roommessage.map((v) => v.messagecnt),
-                            backgroundColor: usercolor.map((v) => `${v}, 0.5)`),
-                            borderColor: usercolor.map((v) => `${v}, 1)`),
+                            backgroundColor: usercolor(0.5),
+                            borderColor: usercolor(1),
                             borderWidth: 4,
                             maxBarThickness: 120
                         }
