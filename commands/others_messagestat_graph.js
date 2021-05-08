@@ -22,7 +22,7 @@ module.exports = {
             })
             .sort((a, b) => b.lettercnt / b.messagecnt - a.lettercnt / a.messagecnt)
             .slice(0, 180); // 내림차순
-        const usercolor = (alpha) =>
+        const usercolor = (a) =>
             roommessage.map((v) => {
                 const color = v.channelsenderid.split(' ')[1].hashCode() & 0xffffff;
                 let r = (color >> 16) & 0xff;
@@ -34,7 +34,7 @@ module.exports = {
                     g %= 0xc8;
                     b %= 0xc8;
                 }
-                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                return `rgba(${r}, ${g}, ${b}, ${a})`;
             });
         const height = Math.min(3000, 1200 + 20 * roommessage.length);
         const size = Math.min(40, Math.floor((0.85 * (height - 120 - 3 * (roommessage.length + 1))) / roommessage.length));
