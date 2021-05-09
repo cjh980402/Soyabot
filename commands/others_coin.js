@@ -1,7 +1,6 @@
 const { cmd } = require('../admin/admin_function');
 const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
-const { load } = require('cheerio');
 const chartType = {
     '1일': 'd',
     '1주': 'w',
@@ -42,25 +41,29 @@ module.exports = {
         }
 
         const type = args.length > 1 && chartType[args[args.length - 1]] ? args.pop() : '1일'; // 차트 종류
-        const search = args.join(' ').toLowerCase();
+        const search = args.join(' ').toUpperCase();
         const coinLink = `https://search.daum.net/search?w=tot&DA=EMA&q=${encodeURIComponent(search)}&rtmaxcoll=EMA`;
-        const searchRslt = load(await (await fetch(coinLink)).text())('div[disp-attr="EMA"] .graph_quote');
+        const searchList = await (await fetch('https://api.upbit.com/v1/market/all')).json();
+        const searchRslt = searchList.find((v) => {
+            const [currency, code] = v.market.split('-');
+            return currency == 'KRW' && (code.includes(search) || v.korean_name.includes(search) || v.english_name.toUpperCase().includes(search));
+        });
 
-        if (!searchRslt.length) {
+        if (!searchRslt) {
             return message.channel.send('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
         } else {
-            const name = searchRslt.find('.tit_currency').text();
-            const code = searchRslt.find('.tit_sub').text();
+            const name = searchRslt.korean_name;
+            const code = searchRslt.market.split('-')[1];
 
+            const todayData = (await (await fetch(`https://api.upbit.com/v1/ticker?markets=${searchRslt.market}`)).json())[0];
             const chartURL = getChartImage(code, type);
-            const nowPrice = searchRslt.find('.currency_value').contents().first().text();
-            const changeType = searchRslt.find('.ico_rwdt.ico_stock').text(); // 상승, 보합, 하락
-            const changeString = searchRslt.find('.rate_value').text();
+            const nowPrice = todayData.trade_price.toLocaleString();
+            const changeType = todayData.change; // RISE, EVEN, FALL
+            const changeString = `${todayData.change_price.toLocaleString()} (${(100 * todayData.signed_change_rate).toFixed(2)}%)`;
 
-            const todayData = searchRslt.find('.list_stock dd');
-            const minPrice = todayData.eq(1).text();
-            const maxPrice = todayData.eq(0).text();
-            const amount = todayData.eq(2).text();
+            const minPrice = todayData.low_price.toLocaleString();
+            const maxPrice = todayData.high_price.toLocaleString();
+            const amount = todayData.acc_trade_price_24h.toLocaleUnitString('ko-KR', 2);
 
             await cmd(`python3 ./util/make_coin_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" 원 ${nowPrice} ${changeType} "${changeString}" ${minPrice} ${maxPrice}`);
             // 파이썬 스크립트 실행
@@ -70,8 +73,7 @@ module.exports = {
             const binancePrice = await getCoinBinancePrice(code);
             if (binancePrice != -1) {
                 const binanceKRW = await usdToKRW(binancePrice);
-                const upbitKRW = +nowPrice.replace(/,/g, '');
-                const kimPre = upbitKRW - binanceKRW;
+                const kimPre = todayData.trade_price - binanceKRW;
                 const kimPrePercent = 100 * (kimPre / binanceKRW);
                 coinEmbed.addField('**바이낸스**', `${binancePrice.toLocaleString()}$\n${binanceKRW.toLocaleString()}원`, true).addField('**김프**', ` ${kimPre.toLocaleString()}원 (${kimPrePercent.toLocaleString()}%)`, true);
             }

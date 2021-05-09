@@ -11,15 +11,15 @@ def coin_info(img: Image):
     font = ImageFont.truetype('./fonts/CookieRun Regular.ttf', 59)
     drawer.text((37, 33), msg, (0, 0, 0), font)
 
-    if sys.argv[6] == '상승': # argv[6]는 변화 종류
+    if sys.argv[6] == 'RISE': # argv[6]는 변화 종류
         msg = f'{sys.argv[5]}{sys.argv[4]}  ▲{sys.argv[7]}' # argv[5]은 현재 가격, argv[4]는 화폐 단위, argv[7]는 변화량
         font = ImageFont.truetype('./fonts/CookieRun Regular.ttf', 56)
         drawer.text((37, 148), msg, (255, 100, 100), font)
-    elif sys.argv[6] == '보합':
+    elif sys.argv[6] == 'EVEN':
         msg = f'{sys.argv[5]}{sys.argv[4]}  {sys.argv[7]}'
         font = ImageFont.truetype('./fonts/CookieRun Regular.ttf', 56)
         drawer.text((37, 148), msg, (120, 120, 120), font)
-    else: # 하락
+    else: # FALL
         msg = f'{sys.argv[5]}{sys.argv[4]}  ▼{sys.argv[7]}'
         font = ImageFont.truetype('./fonts/CookieRun Regular.ttf', 56)
         drawer.text((37, 148), msg, (100, 100, 255), font)
