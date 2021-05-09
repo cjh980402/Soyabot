@@ -117,7 +117,7 @@ module.exports = {
                 const beforePrice = nowData.result.areas[0].datas[0].sv;
                 const nowPrice = nowData.result.areas[0].datas[0].nv;
                 const changeAmount = nowPrice - beforePrice; // 숫자값
-                const changeRate = ((changeAmount / beforePrice) * 100).toFixed(2);
+                const changeRate = (100 * (changeAmount / beforePrice)).toFixed(2);
 
                 const minPrice = data.eq(3).text().trim() || '0';
                 const maxPrice = data.eq(2).text().trim() || '0';

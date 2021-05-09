@@ -75,7 +75,7 @@ module.exports = {
                 const binanceKRW = await usdToKRW(binancePrice);
                 const kimPre = todayData.trade_price - binanceKRW;
                 const kimPrePercent = 100 * (kimPre / binanceKRW);
-                coinEmbed.addField('**바이낸스**', `${binancePrice.toLocaleString()}$\n${binanceKRW.toLocaleString()}원`, true).addField('**김프**', ` ${kimPre.toLocaleString()}원 (${kimPrePercent.toLocaleString()}%)`, true);
+                coinEmbed.addField('**바이낸스**', `${binancePrice.toLocaleString()}$\n${binanceKRW.toLocaleString()}원`, true).addField('**김프**', ` ${kimPre.toLocaleString()}원 (${kimPrePercent.toFixed(2)}%)`, true);
             }
 
             return message.channel.send(coinEmbed);
