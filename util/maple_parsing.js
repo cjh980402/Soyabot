@@ -343,20 +343,12 @@ module.exports.MapleGuild = class {
         return updateResult;
     }
 
-    async memberDataList(divideSize = 70) {
+    async memberDataList() {
         const rslt = [];
-        const memberList = this.#memberData.map((i, v) => new module.exports.MapleUser(this.#ggData(v).find('.mb-2 a').eq(1).text())).get();
-        const divideMemberList = [];
-        for (let pos = 0; pos < this.MemberCount; pos += divideSize) {
-            divideMemberList.push(memberList.slice(pos, pos + divideSize));
-        }
-        const updateRslt = [];
-        for (let i = 0; i < divideMemberList.length; i++) {
-            updateRslt.push(await Promise.all(divideMemberList[i].map(async (v) => (await v.isLatest()) || (await v.updateGG()))));
-        }
+        const memberList = this.#memberData.map((i, v) => new module.exports.MapleUser(this.#ggData(v).find('.mb-2 a').eq(1).text()));
+        const updateRslt = await Promise.all(memberList.map(async (i, v) => (await v.isLatest()) || (await v.updateGG())));
         for (let i = 0; i < this.MemberCount; i++) {
-            const mod = i % divideSize;
-            rslt.push(`[갱신 ${updateRslt[(i - mod) / divideSize][mod] ? '성공' : '실패'}] ${this.#memberData.eq(i).find('header > span').text() || '길드원'}: ${memberList[i].Name}, ${memberList[i].Job()} / Lv.${memberList[i].Level()}, 유니온: ${memberList[i].Union()?.[0].toLocaleString() ?? '-'}, 무릉: ${memberList[i].Murung()?.[1] ?? '-'} (${memberList[i].lastActiveDay()})`);
+            rslt.push(`[갱신 ${updateRslt[i] ? '성공' : '실패'}] ${this.#memberData.eq(i).find('header > span').text() || '길드원'}: ${memberList[i].Name}, ${memberList[i].Job()} / Lv.${memberList[i].Level()}, 유니온: ${memberList[i].Union()?.[0].toLocaleString() ?? '-'}, 무릉: ${memberList[i].Murung()?.[1] ?? '-'} (${memberList[i].lastActiveDay()})`);
         }
 
         return rslt;
