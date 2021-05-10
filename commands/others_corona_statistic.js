@@ -1,7 +1,8 @@
+const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 const { CORONA_API_KEY } = require('../soyabot_config.json');
 const { MessageEmbed } = require('../util/discord.js-extend');
+const { writeFile } = require('fs').promises;
 const fetch = require('node-fetch');
-const QuickChart = require('quickchart-js');
 
 function calcIncrease(data) {
     return `${data >= 0 ? `⬆️ ${data.toLocaleString()}` : `⬇️ ${(-data).toLocaleString()}`}`;
@@ -28,69 +29,75 @@ module.exports = {
             ];
             const updateDate = /\((.+)\)/.exec(countData.updateTime)[1];
 
-            const coronaChart = new QuickChart();
-            coronaChart
-                .setConfig({
-                    type: 'doughnut', // 도넛 모양 차트
-                    data: {
-                        labels: rateData[0],
-                        datasets: [
-                            {
-                                label: '지역별 비율',
-                                data: rateData[1],
-                                backgroundColor: colorData(rateData[0])
-                            }
-                        ]
-                    },
-                    options: {
-                        plugins: {
-                            datalabels: {
-                                // 데이터 값 표시
-                                formatter: (value, context) => `${context.chart.data.labels[context.dataIndex]}\n${value}%`,
-                                color: 'black',
-                                textAlign: 'center',
-                                display: true,
-                                font: {
-                                    size: 22
-                                }
-                            },
-                            doughnutlabel: {
-                                labels: [
-                                    {
-                                        text: '확진 환자 지역별 비율',
-                                        font: {
-                                            size: 25,
-                                            weight: 'bold'
-                                        }
-                                    },
-                                    {
-                                        text: `(${updateDate})`,
-                                        font: {
-                                            size: 25,
-                                            weight: 'bold'
-                                        }
-                                    }
-                                ]
+            const coronaChart = new ChartJSNodeCanvas({
+                width: 600,
+                height: 600,
+                plugins: {
+                    requireLegacy: ['chartjs-plugin-datalabels', 'chartjs-plugin-doughnutlabel']
+                },
+                chartCallback: (ChartJS) => {
+                    ChartJS.defaults.global.defaultFontFamily = 'NanumBarunGothic';
+                }
+            });
+            const config = {
+                type: 'doughnut', // 도넛 모양 차트
+                data: {
+                    labels: rateData[0],
+                    datasets: [
+                        {
+                            label: '지역별 비율',
+                            data: rateData[1],
+                            backgroundColor: colorData(rateData[0])
+                        }
+                    ]
+                },
+                options: {
+                    plugins: {
+                        datalabels: {
+                            // 데이터 값 표시
+                            formatter: (value, context) => `${context.chart.data.labels[context.dataIndex]}\n${value}%`,
+                            color: 'black',
+                            textAlign: 'center',
+                            display: true,
+                            font: {
+                                size: 22
                             }
                         },
-                        legend: { display: false }
-                    }
-                })
-                .setWidth(600)
-                .setHeight(600)
-                .setBackgroundColor('white');
+                        doughnutlabel: {
+                            labels: [
+                                {
+                                    text: '확진 환자 지역별 비율',
+                                    font: {
+                                        size: 25,
+                                        weight: 'bold'
+                                    }
+                                },
+                                {
+                                    text: `(${updateDate})`,
+                                    font: {
+                                        size: 25,
+                                        weight: 'bold'
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    legend: { display: false }
+                }
+            };
 
             const todayRecover = +countData.TodayRecovered;
             const todayCase = +countData.TotalCaseBefore;
             const todayDeath = +countData.TodayDeath;
             const todaySum = todayRecover + todayCase + todayDeath;
+            await writeFile('./pictures/chart/corona.png', await coronaChart.renderToBuffer(config));
 
             const corona1 = new MessageEmbed()
                 .setTitle(`**${updateDate}**`)
-                .setThumbnail('http://140.238.26.231:8170/image/hosting/mohw.png')
+                .setThumbnail(`http://${client.botDomain}/image/hosting/mohw.png`)
                 .setColor('#FF9899')
                 .setURL('http://ncov.mohw.go.kr')
-                .setImage(coronaChart.getUrl())
+                .setImage(`http://${client.botDomain}/image/chart/corona.png?time=${Date.now()}`)
                 .addField('**확진 환자**', `${countData.TotalCase} (${calcIncrease(todaySum)})`)
                 .addField('**격리 해제**', `${countData.TotalRecovered} (${calcIncrease(todayRecover)})`)
                 .addField('**격리 중**', `${countData.NowCase} (${calcIncrease(todayCase)})`)
@@ -104,7 +111,7 @@ module.exports = {
                 .map((v) => `${v.countryName}: ${v.totalCase} (국내: ⬆️ ${v.newCcase}, 해외: ⬆️ ${v.newFcase})`);
             const corona2 = new MessageEmbed()
                 .setTitle('**지역별 확진 환자 현황**')
-                .setThumbnail('http://140.238.26.231:8170/image/hosting/mohw.png')
+                .setThumbnail(`http://${client.botDomain}/image/hosting/mohw.png`)
                 .setColor('#FF9899')
                 .setURL('http://ncov.mohw.go.kr')
                 .setDescription(`${rslt.shift()}\n\n${rslt.join('\n')}`)

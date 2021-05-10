@@ -23,6 +23,7 @@ const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((reso
     try {
         await client.login(TOKEN);
         await initClient(); // 클라이언트 초기 세팅 함수
+        client.botDomain = `${await cmd('curl ifconfig.me', true)}:${app.locals.port}`;
         /**
          * 모든 명령 import
          */

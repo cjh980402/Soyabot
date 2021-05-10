@@ -1,6 +1,6 @@
+const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 const { MessageAttachment } = require('../util/discord.js-extend');
 const { ADMIN_ID } = require('../soyabot_config.json');
-const QuickChart = require('quickchart-js');
 
 module.exports = {
     usage: `${client.prefix}채팅량그래프 (옵션)`,
@@ -37,66 +37,87 @@ module.exports = {
             });
         const height = Math.min(3000, 1200 + 20 * roommessage.length);
         const size = Math.min(40, Math.floor((0.85 * (height - 120 - 3 * (roommessage.length + 1))) / roommessage.length));
-        const messageChart = new QuickChart();
-        messageChart
-            .setConfig({
-                type: 'horizontalBar',
-                data: {
-                    labels: roommessage.map((v) => {
-                        const member = targetChannel.members.cache.get(v.channelsenderid.split(' ')[1]);
-                        return member.nickname ?? member.user.username;
-                    }),
-                    datasets: [
+        const messageChart = new ChartJSNodeCanvas({
+            width: 2000,
+            height,
+            plugins: {
+                requireLegacy: ['chartjs-plugin-datalabels']
+            },
+            chartCallback: (ChartJS) => {
+                ChartJS.defaults.global.defaultFontFamily = 'NanumBarunGothic, unifont, OpenSansEmoji';
+            }
+        });
+        const config = {
+            type: 'horizontalBar',
+            data: {
+                labels: roommessage.map((v) => {
+                    const member = targetChannel.members.cache.get(v.channelsenderid.split(' ')[1]);
+                    return member.nickname ?? member.user.username;
+                }),
+                datasets: [
+                    {
+                        label: '채팅량',
+                        data: roommessage.map((v) => v.messagecnt),
+                        backgroundColor: usercolor(0.5),
+                        borderColor: usercolor(1),
+                        borderWidth: 4,
+                        maxBarThickness: 120
+                    }
+                ]
+            },
+            options: {
+                plugins: {
+                    datalabels: {
+                        // 데이터 값 표시
+                        color: 'black',
+                        display: true,
+                        anchor: 'end',
+                        align: 'end',
+                        font: {
+                            size: size
+                        }
+                    }
+                },
+                scales: {
+                    xAxes: [
                         {
-                            label: '채팅량',
-                            data: roommessage.map((v) => v.messagecnt),
-                            backgroundColor: usercolor(0.5),
-                            borderColor: usercolor(1),
-                            borderWidth: 4,
-                            maxBarThickness: 120
+                            gridLines: { lineWidth: 3 },
+                            ticks: { fontSize: 30, beginAtZero: true }
+                        }
+                    ], // X축 0부터 시작하게 하는 옵션
+                    yAxes: [
+                        {
+                            gridLines: { lineWidth: 3 },
+                            ticks: { fontSize: size }
                         }
                     ]
                 },
-                options: {
-                    plugins: {
-                        datalabels: {
-                            // 데이터 값 표시
-                            color: 'black',
-                            display: true,
-                            anchor: 'end',
-                            align: 'end',
-                            font: {
-                                size: size
-                            }
-                        }
-                    },
-                    scales: {
-                        xAxes: [
-                            {
-                                gridLines: { lineWidth: 3 },
-                                ticks: { fontSize: 30, beginAtZero: true }
-                            }
-                        ], // X축 0부터 시작하게 하는 옵션
-                        yAxes: [
-                            {
-                                gridLines: { lineWidth: 3 },
-                                ticks: { fontSize: size }
-                            }
-                        ]
-                    },
-                    title: {
-                        display: true,
-                        fontSize: 35,
-                        text: `${targetChannel.name} 방의 채팅량 그래프`
-                    },
-                    legend: { display: false }
+                title: {
+                    display: true,
+                    fontSize: 35,
+                    text: `${targetChannel.name} 방의 채팅량 그래프`
+                },
+                legend: { display: false }
+            },
+            plugins: [
+                {
+                    id: 'custom_canvas_background_color',
+                    beforeDraw: (chart) => {
+                        const ctx = chart.canvas.getContext('2d');
+                        ctx.save();
+                        ctx.globalCompositeOperation = 'destination-over';
+                        ctx.fillStyle = 'white';
+                        ctx.fillRect(0, 0, chart.width, chart.height);
+                        ctx.restore();
+                    }
                 }
-            })
-            .setWidth(2000)
-            .setHeight(height)
-            .setBackgroundColor('white');
+            ]
+        };
 
-        const attachment = new MessageAttachment(await messageChart.toBinary(), 'graph.png');
+        messageChart.registerFont('./fonts/unifont.ttf', { family: 'unifont' });
+        messageChart.registerFont('./fonts/OpenSansEmoji.ttf', { family: 'OpenSansEmoji' });
+
+        const attachment = new MessageAttachment(await messageChart.renderToBuffer(config), 'chart.png');
         return message.channel.send({ files: [attachment] });
     }
 };

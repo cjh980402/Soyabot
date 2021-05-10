@@ -1,6 +1,7 @@
+const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
-const QuickChart = require('quickchart-js');
+const { writeFile } = require('fs').promises;
 const serverList = {
     스카니아: 'server1',
     베라: 'server2',
@@ -44,87 +45,109 @@ module.exports = {
         // 각각 배열, 길이는 15, 앞에서부터 과거 날짜
         const server = args[0];
 
-        const mesoChart = new QuickChart();
-        mesoChart
-            .setConfig({
-                type: 'line',
-                data: {
-                    labels: market.map((v) => new Date(v.reg_date).toLocaleDateString().substr(6)),
-                    datasets: [
+        const mesoChart = new ChartJSNodeCanvas({
+            width: 1200,
+            height: 975,
+            plugins: {
+                requireLegacy: ['chartjs-plugin-datalabels']
+            },
+            chartCallback: (ChartJS) => {
+                ChartJS.defaults.global.defaultFontFamily = 'NanumBarunGothic';
+            }
+        });
+        const config = {
+            type: 'line',
+            data: {
+                labels: market.map((v) => new Date(v.reg_date).toLocaleDateString().substr(6)),
+                datasets: [
+                    {
+                        label: '메소마켓(메포)',
+                        data: market.map((v) => v[serverList[server]]),
+                        lineTension: 0.4,
+                        fill: false,
+                        borderColor: 'rgb(153, 102, 255)',
+                        borderWidth: 6,
+                        pointRadius: 6
+                    },
+                    {
+                        label: '무통거래(원)',
+                        data: direct.map((v) => v[serverList[server]]),
+                        lineTension: 0.4,
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        borderWidth: 6,
+                        pointRadius: 6
+                    }
+                ]
+            },
+            options: {
+                plugins: {
+                    datalabels: {
+                        // 데이터 값 표시
+                        color: 'black',
+                        display: true,
+                        anchor: 'end',
+                        align: 'end',
+                        font: {
+                            size: 23
+                        }
+                    }
+                },
+                scales: {
+                    xAxes: [
                         {
-                            label: '메소마켓(메포)',
-                            data: market.map((v) => v[serverList[server]]),
-                            lineTension: 0.4,
-                            fill: false,
-                            borderWidth: 6,
-                            pointRadius: 6
-                        },
+                            gridLines: {
+                                lineWidth: 3
+                            },
+                            ticks: {
+                                fontSize: 23
+                            }
+                        }
+                    ],
+                    yAxes: [
                         {
-                            label: '무통거래(원)',
-                            data: direct.map((v) => v[serverList[server]]),
-                            lineTension: 0.4,
-                            fill: false,
-                            borderWidth: 6,
-                            pointRadius: 6
+                            gridLines: {
+                                lineWidth: 3
+                            },
+                            ticks: {
+                                fontSize: 23
+                            }
                         }
                     ]
                 },
-                options: {
-                    plugins: {
-                        datalabels: {
-                            // 데이터 값 표시
-                            color: 'black',
-                            display: true,
-                            anchor: 'end',
-                            align: 'end',
-                            font: {
-                                size: 23
-                            }
-                        }
-                    },
-                    scales: {
-                        xAxes: [
-                            {
-                                gridLines: {
-                                    lineWidth: 3
-                                },
-                                ticks: {
-                                    fontSize: 23
-                                }
-                            }
-                        ],
-                        yAxes: [
-                            {
-                                gridLines: {
-                                    lineWidth: 3
-                                },
-                                ticks: {
-                                    fontSize: 23
-                                }
-                            }
-                        ]
-                    },
-                    title: {
-                        display: true,
-                        fontSize: 26,
-                        text: `${server} 서버 메소시세`
-                    },
-                    legend: {
-                        labels: {
-                            fontSize: 23
-                        }
+                title: {
+                    display: true,
+                    fontSize: 26,
+                    text: `${server} 서버 메소시세`
+                },
+                legend: {
+                    labels: {
+                        fontSize: 23
                     }
                 }
-            })
-            .setWidth(1200)
-            .setHeight(975)
-            .setBackgroundColor('white');
+            },
+            plugins: [
+                {
+                    id: 'custom_canvas_background_color',
+                    beforeDraw: (chart) => {
+                        const ctx = chart.canvas.getContext('2d');
+                        ctx.save();
+                        ctx.globalCompositeOperation = 'destination-over';
+                        ctx.fillStyle = 'white';
+                        ctx.fillRect(0, 0, chart.width, chart.height);
+                        ctx.restore();
+                    }
+                }
+            ]
+        };
+
+        await writeFile(`./pictures/chart/meso_${serverList[server]}.png`, await mesoChart.renderToBuffer(config));
 
         const mesoEmbed = new MessageEmbed()
             .setTitle(`**${server} 서버 메소 시세**`)
             .setURL('https://talk.gamemarket.kr/maple/graph')
             .setColor('#FF9899')
-            .setImage(mesoChart.getUrl())
+            .setImage(`http://${client.botDomain}/image/chart/meso_${serverList[server]}.png?time=${Date.now()}`)
             .addField('**메소마켓**', `${market[market.length - 1][serverList[server]]}메포`)
             .addField('**무통거래**', `${direct[direct.length - 1][serverList[server]]}원`);
 

@@ -29,7 +29,7 @@ module.exports = {
         if ($('resultCode').text() == '00') {
             const coronaEmbed = new MessageEmbed()
                 .setTitle(`**${new Date($('createDt').eq(0).text()).toLocaleDateString()} 00시 기준**`)
-                .setThumbnail('http://140.238.26.231:8170/image/hosting/mohw.png')
+                .setThumbnail(`http://${client.botDomain}/image/hosting/mohw.png`)
                 .setColor('#FF9899')
                 .setURL('http://ncov.mohw.go.kr')
                 .addField('**확진 환자**', calcIncrease($, 'decideCnt'))

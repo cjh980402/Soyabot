@@ -68,7 +68,7 @@ module.exports = {
             await cmd(`python3 ./util/make_coin_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" 원 ${nowPrice} ${changeType} "${changeString}" ${minPrice} ${maxPrice}`);
             // 파이썬 스크립트 실행
 
-            const coinEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9899').setURL(coinLink).setImage(`http://140.238.26.231:8170/image/coin/${code}.png?time=${Date.now()}`).addField('**거래대금**', `${amount}원`, true);
+            const coinEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9899').setURL(coinLink).setImage(`http://${client.botDomain}/image/coin/${code}.png?time=${Date.now()}`).addField('**거래대금**', `${amount}원`, true);
 
             const binancePrice = await getCoinBinancePrice(code);
             if (binancePrice != -1) {

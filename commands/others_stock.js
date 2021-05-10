@@ -164,7 +164,7 @@ module.exports = {
                     .addField('**배당금**', data.stockItemTotalInfos[14].value, true);
             }
 
-            stockEmbed.setImage(`http://140.238.26.231:8170/image/stock/${code}.png?time=${Date.now()}`);
+            stockEmbed.setImage(`http://${client.botDomain}/image/stock/${code}.png?time=${Date.now()}`);
             return message.channel.send(stockEmbed);
         }
     }
