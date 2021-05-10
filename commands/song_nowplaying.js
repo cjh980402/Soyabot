@@ -1,4 +1,4 @@
-const createBar = require('string-progressbar');
+const progressbar = require('string-progressbar');
 const { MessageEmbed } = require('../util/discord.js-extend');
 
 module.exports = {
@@ -22,7 +22,7 @@ module.exports = {
         const nowPlaying = new MessageEmbed().setTitle('**현재 재생 중인 노래**').setDescription(`${song.title}\n${song.url}`).setColor('#FF9899').setAuthor(client.user.username);
 
         if (song.duration > 0) {
-            nowPlaying.addField('\u200b', `${new Date(seek * 1000).toISOString().substr(11, 8)}[${createBar(song.duration == 0 ? seek : song.duration, seek, 20)[0]}]${song.duration == 0 ? ' ◉ LIVE' : new Date(song.duration * 1000).toISOString().substr(11, 8)}`, false);
+            nowPlaying.addField('\u200b', `${new Date(seek * 1000).toISOString().substr(11, 8)}[${progressbar.splitbar(song.duration || seek, seek, { size: 20 })[0]}]${song.duration == 0 ? ' ◉ LIVE' : new Date(song.duration * 1000).toISOString().substr(11, 8)}`, false);
             nowPlaying.setFooter(`남은 시간: ${new Date(left * 1000).toISOString().substr(11, 8)}`);
         }
 
