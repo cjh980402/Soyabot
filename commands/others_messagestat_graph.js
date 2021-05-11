@@ -1,4 +1,4 @@
-const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
+const { renderMessageChart } = require('../util/chartjs_rendering');
 const { MessageAttachment } = require('../util/discord.js-extend');
 const { ADMIN_ID } = require('../soyabot_config.json');
 
@@ -38,16 +38,6 @@ module.exports = {
             });
         const height = Math.min(3000, 1200 + 20 * roommessage.length);
         const size = Math.min(40, Math.floor((0.85 * (height - 120 - 3 * (roommessage.length + 1))) / roommessage.length));
-        const messageChart = new ChartJSNodeCanvas({
-            width: 2000,
-            height,
-            plugins: {
-                requireLegacy: ['chartjs-plugin-datalabels']
-            },
-            chartCallback: (ChartJS) => {
-                ChartJS.defaults.global.defaultFontFamily = 'NanumBarunGothic, unifont, OpenSansEmoji';
-            }
-        });
         const config = {
             type: 'horizontalBar',
             data: {
@@ -115,10 +105,7 @@ module.exports = {
             ]
         };
 
-        messageChart.registerFont('./fonts/unifont.ttf', { family: 'unifont' });
-        messageChart.registerFont('./fonts/OpenSansEmoji.ttf', { family: 'OpenSansEmoji' });
-
-        const attachment = new MessageAttachment(await messageChart.renderToBuffer(config), 'chart.png');
+        const attachment = new MessageAttachment(await renderMessageChart(config, height), 'chart.png');
         return message.channel.send({ files: [attachment] });
     }
 };

@@ -1,4 +1,4 @@
-const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
+const { renderCoronaChart } = require('../util/chartjs_rendering');
 const { CORONA_API_KEY } = require('../soyabot_config.json');
 const { MessageEmbed } = require('../util/discord.js-extend');
 const { writeFile } = require('fs').promises;
@@ -29,16 +29,6 @@ module.exports = {
             ];
             const updateDate = /\((.+)\)/.exec(countData.updateTime)[1];
 
-            const coronaChart = new ChartJSNodeCanvas({
-                width: 600,
-                height: 600,
-                plugins: {
-                    requireLegacy: ['chartjs-plugin-datalabels', 'chartjs-plugin-doughnutlabel']
-                },
-                chartCallback: (ChartJS) => {
-                    ChartJS.defaults.global.defaultFontFamily = 'NanumBarunGothic';
-                }
-            });
             const config = {
                 type: 'doughnut', // 도넛 모양 차트
                 data: {
@@ -103,7 +93,7 @@ module.exports = {
             const todayCase = +countData.TotalCaseBefore;
             const todayDeath = +countData.TodayDeath;
             const todaySum = todayRecover + todayCase + todayDeath;
-            await writeFile('./pictures/chart/corona.png', await coronaChart.renderToBuffer(config));
+            await writeFile('./pictures/chart/corona.png', await renderCoronaChart(config));
 
             const corona1 = new MessageEmbed()
                 .setTitle(`**${updateDate}**`)

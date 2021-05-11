@@ -1,4 +1,4 @@
-const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
+const { renderMesoChart } = require('../util/chartjs_rendering');
 const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
 const { writeFile } = require('fs').promises;
@@ -45,16 +45,6 @@ module.exports = {
         // 각각 배열, 길이는 15, 앞에서부터 과거 날짜
         const server = args[0];
 
-        const mesoChart = new ChartJSNodeCanvas({
-            width: 1200,
-            height: 975,
-            plugins: {
-                requireLegacy: ['chartjs-plugin-datalabels']
-            },
-            chartCallback: (ChartJS) => {
-                ChartJS.defaults.global.defaultFontFamily = 'NanumBarunGothic';
-            }
-        });
         const config = {
             type: 'line',
             data: {
@@ -141,7 +131,7 @@ module.exports = {
             ]
         };
 
-        await writeFile(`./pictures/chart/meso_${serverList[server]}.png`, await mesoChart.renderToBuffer(config));
+        await writeFile(`./pictures/chart/meso_${serverList[server]}.png`, await renderMesoChart(config));
 
         const mesoEmbed = new MessageEmbed()
             .setTitle(`**${server} 서버 메소 시세**`)
