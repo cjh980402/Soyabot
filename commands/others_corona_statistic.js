@@ -1,4 +1,4 @@
-const { renderCoronaChart } = require('../util/chartjs_rendering');
+const renderChart = require('../util/chartjs_rendering');
 const { CORONA_API_KEY } = require('../soyabot_config.json');
 const { MessageEmbed } = require('../util/discord.js-extend');
 const { writeFile } = require('fs').promises;
@@ -49,9 +49,7 @@ module.exports = {
                             color: 'black',
                             textAlign: 'center',
                             display: true,
-                            font: {
-                                size: 22
-                            }
+                            font: { size: 22 }
                         },
                         doughnutlabel: {
                             labels: [
@@ -73,27 +71,14 @@ module.exports = {
                         }
                     },
                     legend: { display: false }
-                },
-                plugins: [
-                    {
-                        id: 'custom_canvas_background_color',
-                        beforeDraw: (chart) => {
-                            const ctx = chart.canvas.getContext('2d');
-                            ctx.save();
-                            ctx.globalCompositeOperation = 'destination-over';
-                            ctx.fillStyle = 'white';
-                            ctx.fillRect(0, 0, chart.width, chart.height);
-                            ctx.restore();
-                        }
-                    }
-                ]
+                }
             };
 
             const todayRecover = +countData.TodayRecovered;
             const todayCase = +countData.TotalCaseBefore;
             const todayDeath = +countData.TodayDeath;
             const todaySum = todayRecover + todayCase + todayDeath;
-            await writeFile('./pictures/chart/corona.png', await renderCoronaChart(config));
+            await writeFile('./pictures/chart/corona.png', await renderChart(config, 600, 600));
 
             const corona1 = new MessageEmbed()
                 .setTitle(`**${updateDate}**`)

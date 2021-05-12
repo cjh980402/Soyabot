@@ -1,4 +1,4 @@
-const { renderMesoChart } = require('../util/chartjs_rendering');
+const renderChart = require('../util/chartjs_rendering');
 const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
 const { writeFile } = require('fs').promises;
@@ -78,30 +78,20 @@ module.exports = {
                         display: true,
                         anchor: 'end',
                         align: 'end',
-                        font: {
-                            size: 23
-                        }
+                        font: { size: 23 }
                     }
                 },
                 scales: {
                     xAxes: [
                         {
-                            gridLines: {
-                                lineWidth: 3
-                            },
-                            ticks: {
-                                fontSize: 23
-                            }
+                            gridLines: { lineWidth: 3 },
+                            ticks: { fontSize: 23 }
                         }
                     ],
                     yAxes: [
                         {
-                            gridLines: {
-                                lineWidth: 3
-                            },
-                            ticks: {
-                                fontSize: 23
-                            }
+                            gridLines: { lineWidth: 3 },
+                            ticks: { fontSize: 23 }
                         }
                     ]
                 },
@@ -111,27 +101,12 @@ module.exports = {
                     text: `${server} 서버 메소시세`
                 },
                 legend: {
-                    labels: {
-                        fontSize: 23
-                    }
+                    labels: { fontSize: 23 }
                 }
-            },
-            plugins: [
-                {
-                    id: 'custom_canvas_background_color',
-                    beforeDraw: (chart) => {
-                        const ctx = chart.canvas.getContext('2d');
-                        ctx.save();
-                        ctx.globalCompositeOperation = 'destination-over';
-                        ctx.fillStyle = 'white';
-                        ctx.fillRect(0, 0, chart.width, chart.height);
-                        ctx.restore();
-                    }
-                }
-            ]
+            }
         };
 
-        await writeFile(`./pictures/chart/meso_${serverList[server]}.png`, await renderMesoChart(config));
+        await writeFile(`./pictures/chart/meso_${serverList[server]}.png`, await renderChart(config, 1200, 975));
 
         const mesoEmbed = new MessageEmbed()
             .setTitle(`**${server} 서버 메소 시세**`)

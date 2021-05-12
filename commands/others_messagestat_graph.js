@@ -1,4 +1,4 @@
-const { renderMessageChart } = require('../util/chartjs_rendering');
+const renderChart = require('../util/chartjs_rendering');
 const { MessageAttachment } = require('../util/discord.js-extend');
 const { ADMIN_ID } = require('../soyabot_config.json');
 
@@ -64,16 +64,17 @@ module.exports = {
                         display: true,
                         anchor: 'end',
                         align: 'end',
-                        font: {
-                            size: size
-                        }
+                        font: { size }
                     }
                 },
                 scales: {
                     xAxes: [
                         {
                             gridLines: { lineWidth: 3 },
-                            ticks: { fontSize: 30, beginAtZero: true }
+                            ticks: {
+                                fontSize: 30,
+                                beginAtZero: true
+                            }
                         }
                     ], // X축 0부터 시작하게 하는 옵션
                     yAxes: [
@@ -89,23 +90,10 @@ module.exports = {
                     text: `${targetChannel.name} 방의 채팅지수 그래프`
                 },
                 legend: { display: false }
-            },
-            plugins: [
-                {
-                    id: 'custom_canvas_background_color',
-                    beforeDraw: (chart) => {
-                        const ctx = chart.canvas.getContext('2d');
-                        ctx.save();
-                        ctx.globalCompositeOperation = 'destination-over';
-                        ctx.fillStyle = 'white';
-                        ctx.fillRect(0, 0, chart.width, chart.height);
-                        ctx.restore();
-                    }
-                }
-            ]
+            }
         };
 
-        const attachment = new MessageAttachment(await renderMessageChart(config, height), 'chart.png');
+        const attachment = new MessageAttachment(await renderChart(config, 2000, height), 'chart.png');
         return message.channel.send({ files: [attachment] });
     }
 };
