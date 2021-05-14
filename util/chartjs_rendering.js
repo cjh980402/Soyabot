@@ -7,11 +7,11 @@ const chartCanvas = new ChartJSNodeCanvas({
         requireLegacy: ['chartjs-plugin-datalabels', 'chartjs-plugin-doughnutlabel']
     },
     chartCallback: (ChartJS) => {
-        ChartJS.defaults.global.defaultFontFamily = 'NanumBarunGothic, unifont, OpenSansEmoji';
+        ChartJS.defaults.global.defaultFontFamily = 'NanumBarunGothic, Symbola, CODE2000';
     }
 });
-chartCanvas.registerFont('./fonts/unifont.ttf', { family: 'unifont' });
-chartCanvas.registerFont('./fonts/OpenSansEmoji.ttf', { family: 'OpenSansEmoji' });
+chartCanvas.registerFont('./fonts/Symbola.ttf', { family: 'Symbola' });
+chartCanvas.registerFont('./fonts/CODE2000.ttf', { family: 'CODE2000' });
 
 module.exports = function (configuration, width, height, color = 'white') {
     chartCanvas._width = width; // 차트의 너비 변경

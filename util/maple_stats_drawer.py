@@ -6,7 +6,7 @@ def draw_stats(img: Image, name: str):
     drawer = ImageDraw.Draw(img)
     # 이름 쓰기
     name_coord = (25, 47)
-    drawer.text(name_coord, name, (255, 255, 255), ImageFont.truetype('./fonts/CookieRun Regular.ttf', 14))
+    drawer.text(name_coord, name, (255, 255, 255), ImageFont.truetype('./fonts/HANDotum.ttf', 14))
 
     # 스탯 배분 후 스탯 쓰기
     stats = [4, 4, 4, 4]
@@ -14,7 +14,7 @@ def draw_stats(img: Image, name: str):
         stats[randrange(4)] += 1
     for i, stat in enumerate(stats):
         stat_coord = (60, 105 + i * 20)
-        drawer.text(stat_coord, str(stat), (0, 0, 0), ImageFont.truetype('./fonts/CookieRun Regular.ttf', 12))
+        drawer.text(stat_coord, str(stat), (0, 0, 0), ImageFont.truetype('./fonts/HANDotum.ttf', 12))
     return img
 
 draw_stats(Image.open('./pictures/character_dice.png'), sys.argv[1]).save('./pictures/dice_result.png')
