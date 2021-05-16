@@ -65,7 +65,7 @@ module.exports = {
             const maxPrice = todayData.high_price.toLocaleString();
             const amount = todayData.acc_trade_price_24h.toLocaleUnitString('ko-KR', 2);
 
-            await cmd(`python3 ./util/make_coin_info.py "${code}" ${chartURL} "${name} (${code}) ${type}" 원 ${nowPrice} ${changeType} "${changeString}" ${minPrice} ${maxPrice}`);
+            await cmd(`python3 ./util/make_coin_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice} ${changeType} '${changeString}' ${minPrice} ${maxPrice}`);
             // 파이썬 스크립트 실행
 
             const coinEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9899').setURL(coinLink).setImage(`http://${client.botDomain}/image/coin/${code}.png?time=${Date.now()}`).addField('**거래대금**', `${amount}원`, true);
