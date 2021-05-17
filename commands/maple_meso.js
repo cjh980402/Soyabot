@@ -57,6 +57,7 @@ module.exports = {
                         fill: false,
                         borderColor: 'rgb(153, 102, 255)',
                         borderWidth: 6,
+                        pointBackgroundColor: 'rgb(153, 102, 255)',
                         pointRadius: 6
                     },
                     {
@@ -66,6 +67,7 @@ module.exports = {
                         fill: false,
                         borderColor: 'rgb(75, 192, 192)',
                         borderWidth: 6,
+                        pointBackgroundColor: 'rgb(75, 192, 192)',
                         pointRadius: 6
                     }
                 ]
