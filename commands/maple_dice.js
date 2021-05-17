@@ -15,10 +15,10 @@ module.exports = {
         const filter = (reaction, user) => reaction.emoji.name == '🔁' && message.author.id == user.id;
         const collector = dice.createReactionCollector(filter, { time: 60000 });
 
-        collector.on('collect', async (reaction, user) => {
+        collector.once('collect', (reaction, user) => {
             collector.stop();
             dice.delete({ timeout: 1000 });
-            await this.execute(message);
+            this.execute(message);
         });
     }
 };
