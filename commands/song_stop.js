@@ -19,7 +19,12 @@ module.exports = {
         }
 
         queue.songs = [];
-        queue.connection.dispatcher.end();
+        try {
+            queue.connection.dispatcher.end();
+        } catch (e) {
+            console.error(e);
+            queue.connection.disconnect();
+        }
         return message.channel.send(`${message.author} ⏹ 노래를 정지했습니다.`);
     }
 };
