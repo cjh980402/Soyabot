@@ -1,13 +1,13 @@
 const { MessageEmbed } = require('../util/discord.js-extend');
 
-function generateQueueEmbed(message, songs) {
+function generateQueueEmbed(thumbnail, songs) {
     const embeds = [];
     for (let i = 0; i < songs.length; i += 8) {
         const info = songs
             .slice(i, i + 8)
             .map((track, j) => `${i + j + 1}. [${track.title}](${track.url})`)
             .join('\n\n');
-        const embed = new MessageEmbed().setTitle(`**${client.user.username} 음악 대기열**`).setThumbnail(message.guild.iconURL()).setColor('#FF9899').setDescription(`**현재 재생 중인 노래 - [${songs[0].title}](${songs[0].url})**\n\n${info}`).setTimestamp();
+        const embed = new MessageEmbed().setTitle(`**${client.user.username} 음악 대기열**`).setThumbnail(thumbnail).setColor('#FF9899').setDescription(`**현재 재생 중인 노래 - [${songs[0].title}](${songs[0].url})**\n\n${info}`).setTimestamp();
         embeds.push(embed);
     }
     return embeds;
@@ -28,7 +28,7 @@ module.exports = {
             return message.channel.send('재생 중인 노래가 없습니다.');
         }
         let currentPage = 0;
-        const embeds = generateQueueEmbed(message, queue.songs);
+        const embeds = generateQueueEmbed(message.guild.iconURL(), queue.songs);
         const queueEmbed = await message.channel.send(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
         if (embeds.length > 1) {
             try {

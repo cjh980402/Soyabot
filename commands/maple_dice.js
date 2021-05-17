@@ -20,6 +20,5 @@ module.exports = {
             dice.delete({ timeout: 1000 });
             await this.execute(message);
         });
-        return dice;
     }
 };
