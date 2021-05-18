@@ -125,15 +125,15 @@ module.exports.startTestPatch = function () {
     if (!testPatchTimer) {
         testPatchTimer = setInterval(async () => {
             try {
-                const dball = await db.all('SELECT * FROM testpatch');
-                const version = dball[dball.length - 1].version + 1; // 새로 가져올 패치의 버전
-                const patchURL = `http://maplestory.dn.nexoncdn.co.kr/PatchT/01${version}/01${version - 1}to01${version}.patch`;
+                const lastPatch = await db.get('SELECT * FROM testpatch ORDER BY version DESC LIMIT 1');
+                const patchVersion = lastPatch.version + 1; // 새로 가져올 패치의 버전
+                const patchURL = `http://maplestory.dn.nexoncdn.co.kr/PatchT/01${patchVersion}/01${patchVersion - 1}to01${patchVersion}.patch`;
                 const patchHeader = (await fetch(patchURL)).headers;
                 if (patchHeader.get('content-type') == 'application/octet-stream') {
                     // 파일이 감지된 경우
                     const fileSize = +patchHeader.get('content-length') / 1024 / 1024;
-                    await db.insert('testpatch', { version: version, url: patchURL });
-                    botNotice(`[Tver 1.2.${version}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기: ${fileSize.toFixed(2)}MB\n패치파일 주소: ${patchURL}`, 'testpatch');
+                    await db.insert('testpatch', { version: patchVersion, url: patchURL });
+                    botNotice(`[Tver 1.2.${patchVersion}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기: ${fileSize.toFixed(2)}MB\n패치파일 주소: ${patchURL}`, 'testpatch');
                 }
             } catch (e) {
                 replyAdmin(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${e}\n${e.stack ?? e._p}`);
