@@ -188,6 +188,7 @@ module.exports.play = async function (song, guild) {
     });
 
     collector.once('end', async () => {
+        collector.removeAllListeners('collect');
         const find = await db.get('SELECT * FROM pruningskip WHERE channelid = ?', [guild.id]);
         if (!find && playingMessage && !playingMessage.deleted) {
             playingMessage.delete({ timeout: 1000 });
