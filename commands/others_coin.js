@@ -41,12 +41,12 @@ module.exports = {
         }
 
         const type = args.length > 1 && chartType[args[args.length - 1]] ? args.pop() : '1일'; // 차트 종류
-        const search = args.join(' ').toUpperCase();
-        const coinLink = `https://search.daum.net/search?w=tot&DA=EMA&q=${encodeURIComponent(search)}&rtmaxcoll=EMA`;
+        const krSearch = args.join('');
+        const enSearch = args.join(' ').toUpperCase();
         const searchList = await (await fetch('https://api.upbit.com/v1/market/all')).json();
         const searchRslt = searchList.find((v) => {
             const [currency, code] = v.market.split('-');
-            return currency == 'KRW' && (code.includes(search) || v.korean_name.includes(search) || v.english_name.toUpperCase().includes(search));
+            return currency == 'KRW' && (code.includes(enSearch) || v.korean_name.includes(krSearch) || v.english_name.toUpperCase().includes(enSearch));
         });
 
         if (!searchRslt) {
@@ -68,7 +68,7 @@ module.exports = {
             await cmd(`python3 ./util/make_coin_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice} ${changeType} '${changeString}' ${minPrice} ${maxPrice}`);
             // 파이썬 스크립트 실행
 
-            const coinEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9899').setURL(coinLink).setImage(`http://${client.botDomain}/image/coin/${code}.png?time=${Date.now()}`).addField('**거래대금**', `${amount}원`, true);
+            const coinEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9899').setURL(`https://upbit.com/exchange?code=CRIX.UPBIT.KRW-${code}&tab=chart`).setImage(`http://${client.botDomain}/image/coin/${code}.png?time=${Date.now()}`).addField('**거래대금**', `${amount}원`, true);
 
             const binancePrice = await getCoinBinancePrice(code);
             if (binancePrice != -1) {
