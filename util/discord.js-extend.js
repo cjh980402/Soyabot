@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const fetch = require('node-fetch');
 const { decodeHTML } = require('entities');
 const { inspect } = require('util');
-global.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+globalThis.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 Object.defineProperty(Discord.Message.prototype, 'fullContent', {
     get: async function () {
