@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('../util/discord.js-extend');
-const Sejong = require('sejong');
+const Hangul = require('hangul-js');
 
 module.exports = {
     usage: `${client.prefix}최근챗 (닉네임)`,
@@ -28,7 +28,7 @@ module.exports = {
                 targetInfo = targetInfo.first();
             } else {
                 const userlistEmbed = new MessageEmbed()
-                    .setTitle(`**${Sejong.addJosa(targetNick, '을')} 포함한 닉네임**`)
+                    .setTitle(`**${targetNick}${Hangul.endsWithConsonant(targetNick) ? '을' : '를'} 포함한 닉네임**`)
                     .setDescription(targetInfo.array().map((v, i) => `${i + 1}. ${v.nickname ?? v.user.username}`))
                     .setColor('#FF9899')
                     .setTimestamp();
