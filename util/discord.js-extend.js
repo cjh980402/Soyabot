@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const { decodeHTML } = require('entities');
 const { inspect } = require('util');
 globalThis.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const originReply = Discord.Message.prototype.reply; // 기본으로 정의된 reply 메소드
 
 Object.defineProperty(Discord.Message.prototype, 'fullContent', {
     get: async function () {
@@ -11,6 +12,14 @@ Object.defineProperty(Discord.Message.prototype, 'fullContent', {
         } else {
             return this.content;
         }
+    }
+});
+
+Object.defineProperty(Discord.Message.prototype, 'reply', {
+    // failIfNotExists의 기본값을 false로 하기 위한 메소드 재정의
+    value: function (content, options = {}) {
+        options.reply = { failIfNotExists: false };
+        return originReply.call(this, content, options);
     }
 });
 
