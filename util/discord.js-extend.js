@@ -2,8 +2,8 @@ const Discord = require('discord.js');
 const fetch = require('node-fetch');
 const { decodeHTML } = require('entities');
 const { inspect } = require('util');
-globalThis.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const originReply = Discord.Message.prototype.reply; // 기본으로 정의된 reply 메소드
+globalThis.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 Object.defineProperty(Discord.Message.prototype, 'fullContent', {
     get: async function () {
