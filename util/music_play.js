@@ -76,7 +76,7 @@ module.exports.play = async function (song, guild) {
     }
 
     if (queue.connection.listenerCount('disconnect') == 1) {
-        // 1개는 기본적으로 디스코드 내부에서 등록이 되어있기 때문
+        // 1개는 디스코드 내부에서 등록을 하기 때문에 개수를 확인
         queue.connection.once('disconnect', () => client.queue.delete(guild.id)); // 연결 끊기면 자동으로 큐를 삭제하는 리스너 등록
     }
 
@@ -119,7 +119,7 @@ module.exports.play = async function (song, guild) {
         queue.textChannel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
     }
 
-    const filter = (reaction, user) => user.id != client.user.id;
+    const filter = (_, user) => user.id != client.user.id;
     collector = playingMessage.createReactionCollector(filter, {
         time: song.duration > 0 ? song.duration * 1000 : 600000
     });
@@ -175,8 +175,7 @@ module.exports.play = async function (song, guild) {
                     queue.textChannel.send(`${user} ⏹ 노래를 정지했습니다.`);
                     try {
                         queue.connection.dispatcher.end();
-                    } catch (e) {
-                        console.error(e);
+                    } catch {
                         queue.connection.disconnect();
                     }
                     collector.stop();
@@ -188,7 +187,7 @@ module.exports.play = async function (song, guild) {
     });
 
     collector.once('end', async () => {
-        collector.removeAllListeners('collect');
+        collector.removeAllListeners('collect'); // 메모리 관리를 위해 명시적으로 리스너 삭제
         const find = await db.get('SELECT * FROM pruningskip WHERE channelid = ?', [guild.id]);
         if (!find && playingMessage && !playingMessage.deleted) {
             playingMessage.delete({ timeout: 1000 });

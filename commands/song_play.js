@@ -87,7 +87,7 @@ module.exports = {
 
         try {
             queueConstruct.connection = await channel.join();
-            queueConstruct.connection.on('error', () => queueConstruct.connection.disconnect());
+            queueConstruct.connection.once('error', () => queueConstruct.connection.disconnect());
             await queueConstruct.connection.voice.setSelfDeaf(true);
             client.queue.set(message.guild.id, queueConstruct);
             play(queueConstruct.songs[0], message.guild);

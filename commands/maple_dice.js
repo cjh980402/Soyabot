@@ -15,7 +15,7 @@ module.exports = {
         const filter = (reaction, user) => reaction.emoji.name == '🔁' && message.author.id == user.id;
         const collector = dice.createReactionCollector(filter, { time: 60000 });
 
-        collector.once('collect', (reaction, user) => {
+        collector.once('collect', () => {
             collector.stop();
             dice.delete({ timeout: 1000 });
             this.execute(message);

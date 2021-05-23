@@ -40,7 +40,7 @@ module.exports = {
             } catch {
                 return message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
             }
-            const filter = (reaction, user) => message.author.id == user.id;
+            const filter = (_, user) => message.author.id == user.id;
             const collector = helpEmbed.createReactionCollector(filter, { time: 120000 });
 
             collector.on('collect', async (reaction, user) => {

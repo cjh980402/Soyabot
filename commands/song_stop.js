@@ -21,8 +21,7 @@ module.exports = {
         queue.songs = [];
         try {
             queue.connection.dispatcher.end();
-        } catch (e) {
-            console.error(e);
+        } catch {
             queue.connection.disconnect();
         }
         return message.channel.send(`${message.author} ⏹ 노래를 정지했습니다.`);
