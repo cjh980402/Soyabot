@@ -19,7 +19,7 @@ async function tran(source, target, text) {
 }
 
 function checkLan(src, tar) {
-    if (
+    return (
         (src == 'ko' && tar == 'en') ||
         (src == 'ko' && tar == 'ja') ||
         (src == 'ko' && tar == 'zh-CN') ||
@@ -39,11 +39,7 @@ function checkLan(src, tar) {
         (src == 'en' && tar == 'zh-CN') ||
         (src == 'en' && tar == 'zh-TW') ||
         (src == 'en' && tar == 'fr')
-    ) {
-        return true;
-    } else {
-        return false;
-    }
+    );
 }
 
 module.exports = {

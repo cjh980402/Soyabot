@@ -100,22 +100,14 @@ Object.defineProperty(Object.prototype, '_k', {
 Object.defineProperty(Object.prototype, '__p', {
     // 상위 프로토타입의 키와 값 출력
     get: function () {
-        return Object.getOwnPropertyNames(Object.getPrototypeOf(this))
-            .map((v) => {
-                try {
-                    return `${v}: ${this[v]}`;
-                } catch {
-                    return `${v}: error`;
-                }
-            })
-            .join('\n');
+        return Object.getPrototypeOf(this)._p;
     }
 });
 
 Object.defineProperty(Object.prototype, '__k', {
     // 상위 프로토타입의 키만 출력
     get: function () {
-        return Object.getOwnPropertyNames(Object.getPrototypeOf(this)).join('\n');
+        return Object.getPrototypeOf(this)._k;
     }
 });
 

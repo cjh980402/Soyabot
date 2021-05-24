@@ -2,11 +2,11 @@ const { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } = require('../soyabot_config.json
 const fetch = require('node-fetch');
 const FormData = require('form-data');
 
-async function requestCFR(type, url) {
+async function requestCFR(url) {
     const form = new FormData();
     const buffer = await (await fetch(url)).buffer();
     form.append('image', buffer);
-    const response = await fetch(`https://openapi.naver.com/v1/vision/${type}`, {
+    const response = await fetch('https://openapi.naver.com/v1/vision/face', {
         method: 'POST',
         headers: {
             'X-Naver-Client-Id': NAVER_CLIENT_ID,
@@ -14,14 +14,13 @@ async function requestCFR(type, url) {
         },
         body: form
     });
-    return await response.json();
+    return response.json();
 }
 
 async function clova_face(url) {
-    const data = await requestCFR('face', url);
+    const data = await requestCFR(url);
     if (!data.info) {
-        console.log(data);
-        return `사진 분석에 실패하였습니다.\n${/\((.+)\)/.exec(data.errorMessage)[1]}`;
+        return `사진 분석에 실패하였습니다.\n${data.errorMessage}`;
     }
 
     let rslt = `감지된 얼굴 수: ${data.info.faceCount}`;

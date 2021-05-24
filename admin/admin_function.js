@@ -40,7 +40,7 @@ module.exports.cmd = async function (_cmd, returnRslt = false) {
             return String(e).trimEnd();
         }
     } else {
-        return await exec(_cmd);
+        return exec(_cmd);
     }
 };
 
