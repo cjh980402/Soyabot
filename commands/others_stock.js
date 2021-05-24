@@ -59,6 +59,9 @@ module.exports = {
                 const data = $('.total_list > li > span');
                 const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_INDEX%3A${identifer}`)).json();
                 const trendData = $('.ct_box.dmst_trend .trend_lst');
+                if (nowData.result.areas[0].datas.length == 0) {
+                    return chat.Channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
+                }
 
                 const chartURL = getChartImage(identifer, type);
                 const nowPrice = nowData.result.areas[0].datas[0].nv / 100;
@@ -94,6 +97,9 @@ module.exports = {
             } else if (stockfind[2][0] == '해외지수') {
                 // 해외 지수
                 const data = await (await fetch(`https://api.stock.naver.com/index/${identifer}/basic`)).json();
+                if (data[0] == '잘못된 지수입니다.') {
+                    return chat.Channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
+                }
 
                 const chartURL = getChartImage(identifer, type, true);
                 const nowPrice = data.closePrice;
@@ -112,6 +118,9 @@ module.exports = {
                 const $ = load(await (await fetch(`https://m.stock.naver.com/api/html/item/getOverallInfo.nhn?code=${identifer}`)).text());
                 const data = $('.total_list > li > span');
                 const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_ITEM%3A${identifer}`)).json();
+                if (nowData.result.areas[0].datas.length == 0) {
+                    return chat.Channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
+                }
 
                 const chartURL = getChartImage(identifer, type);
                 const beforePrice = nowData.result.areas[0].datas[0].sv;
@@ -134,6 +143,9 @@ module.exports = {
             } else {
                 // 해외 주식
                 const data = await (await fetch(`https://api.stock.naver.com/stock/${identifer}/basic`)).json();
+                if (data.code == 'StockConflict') {
+                    return chat.Channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
+                }
 
                 const chartURL = getChartImage(identifer, type, true, true);
                 const nowPrice = data.closePrice;
