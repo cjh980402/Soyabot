@@ -41,7 +41,7 @@ module.exports = {
 
         const type = args.length > 1 && chartType[args[args.length - 1]] ? args.pop() : '일봉'; // 차트 종류
         const search = args.join(' ').toLowerCase();
-        const searchRslt = (await (await fetch(`https://ac.finance.naver.com/ac?q=${encodeURI(search)}&t_koreng=1&st=111&r_lt=111`)).json()).items[0];
+        const searchRslt = (await (await fetch(`https://ac.finance.naver.com/ac?q=${encodeURIComponent(search)}&t_koreng=1&st=111&r_lt=111`)).json()).items[0];
 
         if (!searchRslt?.length) {
             return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');

@@ -15,8 +15,8 @@ module.exports = {
         }
 
         const lyricsEmbed = new MessageEmbed().setColor('#FF9899').setTimestamp();
-        const songData = load(await (await fetch(`https://www.melon.com/search/song/index.htm?q=${encodeURI(search)}`)).text())('input[name="input_check"]'); // length가 검색 결과 수
-        const lyricData = load(await (await fetch(`https://www.melon.com/search/lyric/index.htm?q=${encodeURI(search)}`)).text())('.list_lyric .cntt_lyric .btn.btn_icon_detail'); // length가 검색 결과 수
+        const songData = load(await (await fetch(`https://www.melon.com/search/song/index.htm?q=${encodeURIComponent(search)}`)).text())('input[name="input_check"]'); // length가 검색 결과 수
+        const lyricData = load(await (await fetch(`https://www.melon.com/search/lyric/index.htm?q=${encodeURIComponent(search)}`)).text())('.list_lyric .cntt_lyric .btn.btn_icon_detail'); // length가 검색 결과 수
         const songId = songData.eq(0).attr('value') ?? lyricData.eq(0).attr('data-song-no');
 
         if (songId) {
