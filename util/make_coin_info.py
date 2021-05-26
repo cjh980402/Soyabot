@@ -21,7 +21,7 @@ def coin_info(img: Image):
         msg = f'{sys.argv[5]}{sys.argv[4]}  {sys.argv[7]}'
         font = ImageFont.truetype('./fonts/CookieRun Regular.ttf', 56)
         drawer.text((37, 148), msg, (120, 120, 120), font)
-    else:  # FALL
+    elif sys.argv[6] == 'FALL':
         msg = f'{sys.argv[5]}{sys.argv[4]}  ▼{sys.argv[7]}'
         font = ImageFont.truetype('./fonts/CookieRun Regular.ttf', 56)
         drawer.text((37, 148), msg, (100, 100, 255), font)
@@ -39,4 +39,4 @@ def coin_info(img: Image):
 
 coin_info(Image.open(requests.get(sys.argv[2], stream=True).raw)).save(
     f'./pictures/coin/{sys.argv[1]}.png')
-# argv[1]은 주식 코드, argv[2]는 차트 이미지 주소, 병합한 이미지 저장하기
+# argv[1]은 코인 코드, argv[2]는 차트 이미지 주소, 병합한 이미지 저장하기

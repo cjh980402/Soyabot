@@ -22,8 +22,8 @@ def stock_info(img: Image):
     w, h = drawer.textsize(msg, font)  # 텍스트의 사이즈를 반환
 
     if changeAmount > 0:  # 상승
-        drawer.text((638 - w, 60), msg, (255, 100, 100),
-                    font)  # 텍스트가 우측에서 20만큼의 여백을 가짐
+        # 텍스트가 우측에서 20만큼의 여백을 가짐
+        drawer.text((638 - w, 60), msg, (255, 100, 100), font)
         msg = f'▲{changeAmount:,}{sys.argv[4]}│{sys.argv[7]}%'  # argv[7]는 변화율
         font = ImageFont.truetype('./fonts/CookieRun Regular.ttf', 30)
         drawer.text((20, 80), msg, (255, 100, 100), font)
@@ -32,7 +32,7 @@ def stock_info(img: Image):
         msg = f'{changeAmount:,}{sys.argv[4]}│{sys.argv[7]}%'
         font = ImageFont.truetype('./fonts/CookieRun Regular.ttf', 30)
         drawer.text((20, 80), msg, (120, 120, 120), font)
-    else:  # 하락
+    elif changeAmount < 0:  # 하락
         drawer.text((638 - w, 60), msg, (100, 100, 255), font)
         msg = f'▼{changeAmount:,}{sys.argv[4]}│{sys.argv[7]}%'
         font = ImageFont.truetype('./fonts/CookieRun Regular.ttf', 30)
