@@ -56,7 +56,7 @@ module.exports.play = async function (song, guild) {
     try {
         if (song.url.includes('youtube.com')) {
             streamType = 'unknown';
-            stream = ytdl(song.url, { filter: 'audioonly', quality: 'highestaudio' });
+            stream = ytdl(song.url, { filter: 'audio', quality: 'highestaudio' });
         } else if (song.url.includes('soundcloud.com')) {
             try {
                 streamType = 'ogg/opus';
