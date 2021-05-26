@@ -31,7 +31,7 @@ module.exports = {
                 const userlistEmbed = new MessageEmbed()
                     .setTitle(`**${targetNick}${Hangul.endsWithConsonant(targetNick) ? '을' : '를'} 포함한 닉네임**`)
                     .setDescription(targetInfo.array().map((v, i) => `${i + 1}. ${v.nickname ?? v.user.username}`))
-                    .setColor('#FF9899')
+                    .setColor('#FF9999')
                     .setTimestamp();
                 message.channel.send(userlistEmbed);
 

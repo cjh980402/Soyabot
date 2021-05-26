@@ -37,7 +37,7 @@ module.exports = {
 
         const infoEmbed = new MessageEmbed()
             .setTitle(`**${mapleUserInfo.Name}님의 정보**`)
-            .setColor('#FF9899')
+            .setColor('#FF9999')
             .setURL(mapleUserInfo.GGURL)
             .setImage(mapleUserInfo.userImg())
             .addField('**레벨**', char_lv < 300 ? `${char_lv} (${char_percent}%)` : char_lv, true)

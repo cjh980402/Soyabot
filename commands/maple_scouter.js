@@ -69,7 +69,7 @@ module.exports = {
 
         const scouterEmbed = new MessageEmbed()
             .setTitle(`**${mapleUserInfo.Name}님의 측정결과**`)
-            .setColor('#FF9899')
+            .setColor('#FF9999')
             .setURL(mapleUserInfo.GGURL)
             .setImage(mapleUserInfo.userImg())
             .addField('**직업**', job, true)

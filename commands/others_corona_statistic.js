@@ -83,7 +83,7 @@ module.exports = {
             const corona1 = new MessageEmbed()
                 .setTitle(`**${updateDate}**`)
                 .setThumbnail(`http://${client.botDomain}/image/hosting/mohw.png`)
-                .setColor('#FF9899')
+                .setColor('#FF9999')
                 .setURL('http://ncov.mohw.go.kr')
                 .setImage(`http://${client.botDomain}/image/chart/corona.png?time=${Date.now()}`)
                 .addField('**확진 환자**', `${countData.TotalCase} (${calcIncrease(todaySum)})`)
@@ -100,7 +100,7 @@ module.exports = {
             const corona2 = new MessageEmbed()
                 .setTitle('**지역별 확진 환자 현황**')
                 .setThumbnail(`http://${client.botDomain}/image/hosting/mohw.png`)
-                .setColor('#FF9899')
+                .setColor('#FF9999')
                 .setURL('http://ncov.mohw.go.kr')
                 .setDescription(`${rslt.shift()}\n\n${rslt.join('\n')}`)
                 .setTimestamp();

@@ -27,7 +27,7 @@ module.exports.startNotice = function () {
                 }
 
                 if (notice.length > 0) {
-                    const noticeEmbed = new MessageEmbed().setTitle('**메이플 공지사항**').setDescription(notice.join('\n\n')).setColor('#FF9899').setTimestamp();
+                    const noticeEmbed = new MessageEmbed().setTitle('**메이플 공지사항**').setDescription(notice.join('\n\n')).setColor('#FF9999').setTimestamp();
 
                     botNotice(noticeEmbed, 'notice');
                 }
@@ -64,7 +64,7 @@ module.exports.startUpdate = function () {
                 }
 
                 if (update.length > 0) {
-                    const noticeEmbed = new MessageEmbed().setTitle('**메이플 업데이트**').setDescription(update.join('\n\n')).setColor('#FF9899').setTimestamp();
+                    const noticeEmbed = new MessageEmbed().setTitle('**메이플 업데이트**').setDescription(update.join('\n\n')).setColor('#FF9999').setTimestamp();
 
                     botNotice(noticeEmbed, 'update');
                 }
@@ -103,7 +103,7 @@ module.exports.startTest = function () {
                 }
 
                 if (test.length > 0) {
-                    const noticeEmbed = new MessageEmbed().setTitle('**메이플 테스트월드 공지**').setDescription(test.join('\n\n')).setColor('#FF9899').setTimestamp();
+                    const noticeEmbed = new MessageEmbed().setTitle('**메이플 테스트월드 공지**').setDescription(test.join('\n\n')).setColor('#FF9999').setTimestamp();
 
                     botNotice(noticeEmbed, 'test');
                 }

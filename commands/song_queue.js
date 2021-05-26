@@ -7,7 +7,7 @@ function generateQueueEmbed(thumbnail, songs) {
             .slice(i, i + 8)
             .map((track, j) => `${i + j + 1}. [${track.title}](${track.url})`)
             .join('\n\n');
-        const embed = new MessageEmbed().setTitle(`**${client.user.username} 음악 대기열**`).setThumbnail(thumbnail).setColor('#FF9899').setDescription(`**현재 재생 중인 노래 - [${songs[0].title}](${songs[0].url})**\n\n${info}`).setTimestamp();
+        const embed = new MessageEmbed().setTitle(`**${client.user.username} 음악 대기열**`).setThumbnail(thumbnail).setColor('#FF9999').setDescription(`**현재 재생 중인 노래 - [${songs[0].title}](${songs[0].url})**\n\n${info}`).setTimestamp();
         embeds.push(embed);
     }
     return embeds;

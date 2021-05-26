@@ -32,7 +32,7 @@ module.exports = {
             return message.reply('검색 내용에 해당하는 영상을 찾지 못했습니다.');
         }
 
-        const resultsEmbed = new MessageEmbed().setTitle('**재생할 노래의 번호를 알려주세요.**').setDescription(`${search}의 검색 결과`).setColor('#FF9899');
+        const resultsEmbed = new MessageEmbed().setTitle('**재생할 노래의 번호를 알려주세요.**').setDescription(`${search}의 검색 결과`).setColor('#FF9999');
         // results.forEach((video, index) => resultsEmbed.addField(video.shortURL, `${index + 1}. ${video.title.decodeHTML().decodeHTML()}`));
         results.forEach((video, index) => resultsEmbed.addField(`https://youtu.be/${video.id}`, `${index + 1}. ${video.title}`));
 

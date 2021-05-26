@@ -9,7 +9,7 @@ function generateEventEmbed(links, names, dates) {
         const curNames = names.slice(i, i + 5);
         const curDates = dates.slice(i, i + 5);
         const info = curLinks.map((j, link) => `${i + j + 1}. [${curNames[j]}](https://maplestory.nexon.com${link})\n기간: ${curDates[j]}`).get().join('\n\n');
-        const embed = new MessageEmbed().setTitle('**진행중인 이벤트**').setColor('#FF9899').setDescription(info).setTimestamp();
+        const embed = new MessageEmbed().setTitle('**진행중인 이벤트**').setColor('#FF9999').setDescription(info).setTimestamp();
         embeds.push(embed);
     }
     return embeds;

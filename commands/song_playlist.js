@@ -62,7 +62,7 @@ module.exports = {
                 if (!playlistID) {
                     const filter = (await ytsr.getFilters(search)).get('Type').get('Playlist').url;
                     playlistID = filter && (await ytsr(filter, { limit: 1 })).items[0]?.playlistID;
-                    // playlistID = (await youtube.searchPlaylists(search, 1, { part: "snippet" }))[0]?.id;
+                    // playlistID = (await youtube.searchPlaylists(search, 1, { part: 'snippet' }))[0]?.id;
                     if (!playlistID) {
                         return message.reply('검색 내용에 해당하는 재생목록을 찾지 못했습니다.');
                     }
@@ -84,7 +84,7 @@ module.exports = {
             .setTitle(`**${playlist.title.decodeHTML()}**`)
             .setDescription(videos.map((song, index) => `${index + 1}. ${song.title}`))
             .setURL(playlist.url ?? playlist.permalink_url) // 전자는 유튜브, 후자는 SoundCloud
-            .setColor('#FF9899')
+            .setColor('#FF9999')
             .setTimestamp();
 
         if (playlistEmbed.description.length > 2048) {

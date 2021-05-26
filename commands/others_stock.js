@@ -52,7 +52,7 @@ module.exports = {
             const link = getRedirectURL(stockfind[3][0]); // 리다이렉트 로직 반영
             const identifer = stockfind[4][0];
 
-            const stockEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9899').setURL(`https://m.stock.naver.com${link}`);
+            const stockEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9999').setURL(`https://m.stock.naver.com${link}`);
             if (stockfind[2][0] == '국내지수') {
                 // 국내 지수
                 const $ = load(await (await fetch(`https://m.stock.naver.com/sise/siseIndex.nhn?code=${identifer}`)).text());

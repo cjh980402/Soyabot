@@ -28,7 +28,7 @@ module.exports = {
         } else {
             const coordiEmbed = new MessageEmbed()
                 .setTitle(`**${mapleUserInfo.Name}님의 코디**`)
-                .setColor('#FF9899').setURL(mapleUserInfo.GGURL)
+                .setColor('#FF9999').setURL(mapleUserInfo.GGURL)
                 .setImage(mapleUserInfo.userImg())
                 .addField('**헤어**', coordi[1], true)
                 .addField('**성형**', coordi[2], true)

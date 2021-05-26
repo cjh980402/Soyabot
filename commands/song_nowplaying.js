@@ -19,7 +19,7 @@ module.exports = {
         const song = queue.songs[0];
         const seek = (queue.connection.dispatcher.streamTime - queue.connection.dispatcher.pausedTime) / 1000; // 실제로 재생한 시간(초)
 
-        const nowPlaying = new MessageEmbed().setTitle('**현재 재생 중인 노래**').setDescription(`${song.title}\n${song.url}`).setColor('#FF9899').setAuthor(client.user.username);
+        const nowPlaying = new MessageEmbed().setTitle('**현재 재생 중인 노래**').setDescription(`${song.title}\n${song.url}`).setColor('#FF9999').setAuthor(client.user.username);
 
         if (song.duration >= 0) {
             nowPlaying.addField('\u200b', `${new Date(seek * 1000).toISOString().substr(11, 8)} [${splitBar(song.duration || seek, seek, 20)[0]}] ${song.duration == 0 ? '◉ LIVE' : new Date(song.duration * 1000).toISOString().substr(11, 8)}`);

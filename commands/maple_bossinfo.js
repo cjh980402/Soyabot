@@ -18,7 +18,7 @@ module.exports = {
 
         const bossEmbed = new MessageEmbed()
             .setTitle(`**${bossName}(${bossGrade})의 보상 / 정보**`)
-            .setColor('#FF9899')
+            .setColor('#FF9999')
             .setDescription(`**보상**\n${bossData[bossName][bossGrade][0].join('\n\n')}\n\n**정보**\n${bossData[bossName][bossGrade][1].join('\n\n')}`);
 
         return message.channel.send(bossEmbed);

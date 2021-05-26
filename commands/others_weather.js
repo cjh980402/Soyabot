@@ -5,7 +5,7 @@ const { load } = require('cheerio');
 function generateWeatherEmbed(local, weatherDesc) {
     const embeds = [];
     for (let i = 0; i < weatherDesc.length; i++) {
-        const embed = new MessageEmbed().setTitle(`**${local}**`).setColor('#FF9899').setDescription(weatherDesc[i]).setTimestamp();
+        const embed = new MessageEmbed().setTitle(`**${local}**`).setColor('#FF9999').setDescription(weatherDesc[i]).setTimestamp();
 
         if (embed.description.length > 2048) {
             embed.description = `${embed.description.substr(0, 2045)}...`;
@@ -33,7 +33,7 @@ module.exports = {
             const locallistEmbed = new MessageEmbed()
                 .setTitle('**검색할 지역의 번호를 알려주세요.**')
                 .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`))
-                .setColor('#FF9899')
+                .setColor('#FF9999')
                 .setTimestamp();
             message.channel.send(locallistEmbed);
 
