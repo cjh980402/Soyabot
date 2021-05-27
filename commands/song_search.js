@@ -17,9 +17,6 @@ module.exports = {
         if (args.length < 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
-        if (message.channel.activeCollector) {
-            return message.reply('메시지 수집기가 이 채널에서 이미 활성화됐습니다.');
-        }
         if (!message.member.voice.channel) {
             return message.reply('음성 채널에 먼저 참가해주세요!');
         }
@@ -33,12 +30,11 @@ module.exports = {
         }
 
         const resultsEmbed = new MessageEmbed().setTitle('**재생할 노래의 번호를 알려주세요.**').setDescription(`${search}의 검색 결과`).setColor('#FF9999');
-        // results.forEach((video, index) => resultsEmbed.addField(video.shortURL, `${index + 1}. ${video.title.decodeHTML().decodeHTML()}`));
-        results.forEach((video, index) => resultsEmbed.addField(`https://youtu.be/${video.id}`, `${index + 1}. ${video.title}`));
+        // results.forEach((video, index) => resultsEmbed.addField(`${index + 1}. ${video.title.decodeHTML().decodeHTML()}`, video.shortURL));
+        results.forEach((video, index) => resultsEmbed.addField(`${index + 1}. ${video.title}`, `https://youtu.be/${video.id}`));
 
         const resultsMessage = await message.channel.send(resultsEmbed);
 
-        message.channel.activeCollector = true;
         try {
             let songChoice;
             const rslt = await message.channel.awaitMessages((msg) => msg.author.id == message.author.id && (songChoice = msg.content.split(',')).every((v) => !isNaN(v) && 1 <= +v && +v <= results.length), { max: 1, time: 20000, errors: ['time'] });
@@ -56,7 +52,6 @@ module.exports = {
                 replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             }
         } finally {
-            delete message.channel.activeCollector;
             if (!resultsMessage.deleted) {
                 resultsMessage.delete();
             }
