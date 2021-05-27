@@ -1,6 +1,6 @@
 const faceList = {
-    남: ['정결한 얼굴', '올림 얼굴', '꿈꾸는 얼굴', '뽀잉 얼굴', '딜런 성형', '아잉 얼굴'],
-    여: ['메이벨 얼굴', '맑음 얼굴', '꿈꾸는 얼굴', '뽀잉 얼굴', '로잘리아 성형', '아잉 얼굴']
+    남: ['하늘 얼굴', '뭐래 얼굴', '구르미 얼굴', '하린 얼굴', '숲의 요정 얼굴', '안보여요 얼굴'],
+    여: ['하늘 얼굴', '뭐래 얼굴', '구르미 얼굴', '하린 얼굴', '숲의 요정 얼굴', '안보여요 얼굴']
 }; // 성형은 모두 동일 확률이므로 배열을 이용
 
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
     type: ['메이플'],
     async execute(message, args) {
         if (args.length == 1 && (args[0] == '확률' || args[0] == 'ㅎㄹ')) {
-            const rslt = `<로얄 성형 확률>\n\n- 남자 성형\n${faceList['남'].map((v) => `${v}: 17%`).join('\n')}\n\n- 여자 성형\n${faceList['여'].map((v) => `${v}: 17%`).join('\n')}`;
+            const rslt = `<로얄 성형 확률>\n\n- 남자 성형\n${faceList['남'].map((v) => `${v}: 16.67%`).join('\n')}\n\n- 여자 성형\n${faceList['여'].map((v) => `${v}: 17%`).join('\n')}`;
             return message.channel.send(rslt);
         }
         if (args.length < 2) {
