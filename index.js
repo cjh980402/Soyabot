@@ -53,7 +53,7 @@ client.on('error', (e) => {
 });
 
 client.on('message', async (message) => {
-    // 각 메시지에 반응, 디스코드는 봇의 채팅도 이 이벤트에 들어옴
+    // 각 메시지에 반응, 디스코드는 봇의 메시지도 이 이벤트에 들어옴
     let commandName;
     try {
         console.log(`(${new Date().toLocaleString()}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username}: ${message.content}\n`);
