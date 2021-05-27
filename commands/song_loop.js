@@ -1,4 +1,4 @@
-const { canModifyQueue } = require('../util/SoyabotUtil');
+const { canModifyQueue } = require('../util/soyabot_util');
 
 module.exports = {
     usage: `${client.prefix}loop`,

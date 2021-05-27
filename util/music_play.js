@@ -2,7 +2,7 @@ const ytdl = require('ytdl-core');
 const scdl = require('soundcloud-downloader').default;
 const { replyAdmin } = require('../admin/bot_control');
 const { STAY_TIME, DEFAULT_VOLUME } = require('../soyabot_config.json');
-const { canModifyQueue } = require('./SoyabotUtil');
+const { canModifyQueue } = require('./soyabot_util');
 
 module.exports.QueueElement = class {
     #textChannel;
