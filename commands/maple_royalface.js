@@ -12,7 +12,7 @@ module.exports = {
     type: ['메이플'],
     async execute(message, args) {
         if (args.length == 1 && (args[0] == '확률' || args[0] == 'ㅎㄹ')) {
-            const rslt = `<로얄 성형 확률>\n\n- 남자 성형\n${faceList['남'].map((v) => `${v}: 16.67%`).join('\n')}\n\n- 여자 성형\n${faceList['여'].map((v) => `${v}: 17%`).join('\n')}`;
+            const rslt = `<로얄 성형 확률>\n\n- 남자 성형\n${faceList['남'].map((v) => `${v}: 16.67%`).join('\n')}\n\n- 여자 성형\n${faceList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
             return message.channel.send(rslt);
         }
         if (args.length < 2) {
