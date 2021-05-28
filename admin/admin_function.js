@@ -35,7 +35,7 @@ module.exports.adminChat = async function (message) {
 module.exports.cmd = async function (_cmd, returnRslt = false) {
     if (returnRslt) {
         try {
-            return (await exec(_cmd)).stdout.replace(/\u001b\[\d\dm/g, '').trimEnd();
+            return (await exec(_cmd)).stdout.replace(/\u001b\[.*?[@-~]/g, '').trimEnd();
         } catch (e) {
             return String(e).trimEnd();
         }
