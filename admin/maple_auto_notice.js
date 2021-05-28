@@ -170,7 +170,7 @@ module.exports.startFlag = function () {
 module.exports.stopFlag = function () {
     for (let i = 0; i < flagTimer.length; i++) {
         if (flagTimer[i]) {
-            clearInterval(flagTimer[i]); // setInterval 실행되기 전 setTimeout도 취소 가능
+            clearInterval(flagTimer[i]); // clearInterval과 clearTimeout은 동일한 동작 수행
             flagTimer[i] = null;
         }
     }
