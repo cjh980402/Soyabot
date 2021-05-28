@@ -1,6 +1,6 @@
 {
   "name": "soyabot",
-  "version": "5.7.0",
+  "version": "5.7.1",
   "description": "MapleStory, Music Discord Bot",
   "main": "index.js",
   "author": "9804cjh@naver.com",
@@ -39,7 +39,7 @@
     "soundcloud-downloader": "^1.0.0",
     "sqlite3": "^5.0.2",
     "string-progressbar": "^1.0.4",
-    "ytdl-core": "^4.8.0",
+    "ytdl-core": "^4.8.2",
     "ytsr": "^3.5.0"
   },
   "scripts": {
