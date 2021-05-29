@@ -6,10 +6,10 @@ module.exports = {
     usage: `${client.prefix}채팅량그래프 (옵션)`,
     command: ['채팅량그래프', 'ㅊㅌㄹㄱㄹㅍ', 'ㅊㅌㄹㄱㄿ', 'ㅊㅌㄺㄿ'],
     description: `- 상위 180명의 채팅량 통계를 그래프로 보여줍니다.
-- 옵션을 생략 시 상위 180명, -봇을 넣어주면 통계에서 봇을 제외하고 보여줍니다.`,
+- 옵션에 -봇을 넣어주면 통계에서 봇을 제외하고 보여줍니다. (생략 시 봇 포함)`,
     type: ['기타'],
     async execute(message, args) {
-        const targetChannel = (message.author.id == ADMIN_ID && args.length > 0 && client.guilds.cache.find((v) => v.name.includes(args.join(' ')))) || message.guild;
+        const targetChannel = (args.length > 0 && message.author.id == ADMIN_ID && client.guilds.cache.find((v) => v.name.includes(args.join(' ')))) || message.guild;
         if (!targetChannel) {
             return message.channel.send('사용이 불가능한 채널입니다.');
         }
@@ -20,7 +20,7 @@ module.exports = {
                 return member && (args[0] != '-봇' || !member.user.bot);
             })
             .sort((a, b) => b.messagecnt - a.messagecnt)
-            .slice(0, 180); // 내림차순
+            .slice(0, 180); // 내림차순, 상위 180명
         const usercolor = (a) =>
             roommessage.map((v) => {
                 const color = v.channelsenderid.split(' ')[1].hashCode() & 0xffffff;
