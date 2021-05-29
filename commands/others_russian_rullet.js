@@ -63,12 +63,12 @@ module.exports = {
                 },
                 { max: 1, time: 300000, errors: ['time'] }
             ); // 5분 대기
-            if (gameChatType == 1 && gameUser.length == bullet) {
+            if (gameChatType === 1 && gameUser.length === bullet) {
                 await message.channel.send('인원이 가득 차 게임이 자동으로 시작됩니다.');
                 break; // 게임 시작
-            } else if (gameChatType == 2) {
+            } else if (gameChatType === 2) {
                 break; // 게임 시작
-            } else if (gameChatType == 3) {
+            } else if (gameChatType === 3) {
                 return; // 게임 종료
             }
         }
@@ -77,9 +77,9 @@ module.exports = {
         const die = Math.floor(Math.random() * bullet); // 0번째 ~ (bullet - 1)번째 탄환 중에서 선택
         for (let i = 0; i < bullet; i++) {
             try {
-                await message.channel.awaitMessages((msg) => msg.member == gameUser[i % gameUser.length] && gameRegExp[3].test(msg.content.trim()), { max: 1, time: 60000, errors: ['time'] });
+                await message.channel.awaitMessages((msg) => msg.member === gameUser[i % gameUser.length] && gameRegExp[3].test(msg.content.trim()), { max: 1, time: 60000, errors: ['time'] });
             } catch {} // 시간 초과돼도 에러 throw 안하게 catch를 해줌
-            if (i == die) {
+            if (i === die) {
                 const dieUser = message.guild.member(gameUser[i % gameUser.length]);
                 if (dieUser) {
                     return message.channel.send(`🔫 ${dieUser}님이 사망하셨습니다......\n한 판 더 하실?`);

@@ -23,14 +23,14 @@ function choiceVS(msg) {
     const afterReplace = [];
     for (let i = 0; i < splitVS.length; i++) {
         splitVS[i] = splitVS[i].trim();
-        if (splitVS[i] == '') {
+        if (splitVS[i] === '') {
             return '빈 항목이 존재합니다.';
         }
         afterReplace.push(splitVS[i].replace(/[\s`'"~.,;:*+=!?^$@%&{}()<>/|[\]\\-]/g, '').replace('조아', '좋아').replace('시러', '싫어'));
     }
     for (let i = 0, otherInd; i < splitVS.length / 2; i++) {
         otherInd = afterReplace.lastIndexOf(afterReplace[i]);
-        if (otherInd != i && (afterReplace[i] != '' || splitVS[otherInd] == splitVS[i])) {
+        if (otherInd !== i && (afterReplace[i] !== '' || splitVS[otherInd] === splitVS[i])) {
             return `"${splitVS[i]}" 항목이 중복입니다.`;
         }
     }
@@ -38,7 +38,7 @@ function choiceVS(msg) {
 }
 
 module.exports = function (message) {
-    if (message.content == '주사위') {
+    if (message.content === '주사위') {
         return message.channel.send(`주사위 결과: ${Math.floor(Math.random() * 100 + 1)}`);
     } else if (/vs/i.test(message.content) && !/vsc/i.test(message.content)) {
         return message.reply(choiceVS(message.content));
@@ -53,20 +53,20 @@ module.exports = function (message) {
             return message.channel.send('🤔');
         }
         const cmd = Math.floor(Math.random() * 5);
-        if (cmd == 0) {
+        if (cmd === 0) {
             return message.channel.send('ㅋㅋㅋ');
-        } else if (cmd == 1) {
+        } else if (cmd === 1) {
             return message.channel.send('제로조아');
-        } else if (cmd == 2) {
+        } else if (cmd === 2) {
             return message.channel.send('헤비...');
-        } else if (cmd == 3) {
+        } else if (cmd === 3) {
             return message.channel.send('이노시스 조아');
         } else {
             return message.channel.send(`'${message.member?.nickname ?? message.author.username}'님이 ${client.user.username}을 불렀습니다.`);
         }
     } else if (message.content.includes('ㅊㅊㅊㅊ')) {
         const cmd = Math.floor(Math.random() * 3);
-        if (cmd == 0) {
+        if (cmd === 0) {
             return message.channel.send('👍');
         }
     }

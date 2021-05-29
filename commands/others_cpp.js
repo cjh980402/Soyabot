@@ -9,7 +9,7 @@ module.exports = {
     command: ['cpp'],
     type: ['기타'],
     async execute(message, args) {
-        if (message.author.id == ADMIN_ID && args.length > 0) {
+        if (message.author.id === ADMIN_ID && args.length > 0) {
             if (proc) {
                 proc.stdin.write(`${args.join(' ')}\n`);
             } else {

@@ -36,9 +36,9 @@ class SuperialItem {
 
     doingStarforce(data) {
         const len = data.length;
-        if (!data.every((v) => !isNaN(v)) || (len != 3 && len != 2)) {
+        if (!data.every((v) => !isNaN(v)) || (len !== 3 && len !== 2)) {
             return '잘못된 형식입니다.';
-        } else if (data[1] == 15) {
+        } else if (data[1] === 15) {
             return '과부하 방지를 위해 14성까지로 제한합니다.';
         }
 
@@ -52,7 +52,7 @@ class SuperialItem {
             return '강화 목표 수치를 다시 입력해주세요.';
         }
 
-        this.#starcat = +(data[2] == 1); // 스타캐치 여부
+        this.#starcat = +(data[2] === 1); // 스타캐치 여부
 
         console.log(`<슈페리얼> 레벨 제한: ${this.#lev}, 시작: ${this.#initial}성, 목표: ${this.#goal}성\n스타캐치: ${this.#starcat}`);
 
@@ -70,7 +70,7 @@ class SuperialItem {
 
         this.#sum += meso(this.#lev); // 항상 고정비용
 
-        if (this.#checkdown == -2) {
+        if (this.#checkdown === -2) {
             // 찬스타임
             this.#chance++;
             this.#star++;

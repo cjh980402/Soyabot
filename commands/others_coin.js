@@ -17,7 +17,7 @@ async function getCoinBinancePrice(code) {
     const binance = await (await fetch('https://api.binance.com/api/v1/ticker/allPrices')).json();
     const coinName = `${code}USDT`;
     for (let i = 0; i < binance.length; i++) {
-        if (coinName == binance[i].symbol) {
+        if (coinName === binance[i].symbol) {
             return +binance[i].price;
         }
     }
@@ -46,7 +46,7 @@ module.exports = {
         const searchList = await (await fetch('https://api.upbit.com/v1/market/all')).json();
         const searchRslt = searchList.find((v) => {
             const [currency, code] = v.market.split('-');
-            return currency == 'KRW' && (code.includes(enSearch) || v.korean_name.includes(krSearch) || v.english_name.toUpperCase().includes(enSearch));
+            return currency === 'KRW' && (code.includes(enSearch) || v.korean_name.includes(krSearch) || v.english_name.toUpperCase().includes(enSearch));
         });
 
         if (!searchRslt) {
@@ -71,7 +71,7 @@ module.exports = {
             const coinEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9999').setURL(`https://upbit.com/exchange?code=CRIX.UPBIT.KRW-${code}&tab=chart`).setImage(`http://${client.botDomain}/image/coin/${code}.png?time=${Date.now()}`).addField('**거래대금**', `${amount}원`, true);
 
             const binancePrice = await getCoinBinancePrice(code);
-            if (binancePrice != -1) {
+            if (binancePrice !== -1) {
                 const binanceKRW = await usdToKRW(binancePrice);
                 const kimPre = todayData.trade_price - binanceKRW;
                 const kimPrePercent = 100 * (kimPre / binanceKRW);

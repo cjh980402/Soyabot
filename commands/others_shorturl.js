@@ -13,7 +13,7 @@ async function shortURL(url) {
         body: params
     });
     const data = await response.json();
-    if (data.message == 'ok') {
+    if (data.message === 'ok') {
         return data.result.url;
     } else {
         return '올바르지 않은 주소거나 주소 변환에 실패했습니다.';
@@ -26,7 +26,7 @@ module.exports = {
     description: '- 입력한 주소를 짧은 형태의 주소로 변환합니다.',
     type: ['기타'],
     async execute(message, args) {
-        if (args.length != 1) {
+        if (args.length !== 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 

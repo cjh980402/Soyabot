@@ -11,7 +11,7 @@ module.exports = {
 - 참고. ${client.prefix}헤어 확률`,
     type: ['메이플'],
     async execute(message, args) {
-        if (args.length == 1 && (args[0] == '확률' || args[0] == 'ㅎㄹ')) {
+        if (args.length === 1 && (args[0] === '확률' || args[0] === 'ㅎㄹ')) {
             const rslt = `<로얄 헤어 확률>\n\n- 남자 헤어\n${hairList['남'].map((v) => `${v}: 16.67%`).join('\n')}\n\n- 여자 헤어\n${hairList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
             return message.channel.send(rslt);
         }
@@ -20,14 +20,14 @@ module.exports = {
         }
         const gender = args.shift()[0];
         const goalhair = (hairList[gender] ?? []).findIndex((v) => v.replace(/\s+/, '').includes(args.join('')));
-        if (goalhair == -1) {
+        if (goalhair === -1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         // gender은 성별, goalhair는 목표 헤어의 인덱스
         // random은 0이상 1미만
         const list = []; // 진행 과정 담을 배열 (인덱스 저장)
 
-        while (list[list.length - 1] != goalhair) {
+        while (list[list.length - 1] !== goalhair) {
             // 목표 헤어을 띄웠으면 종료
             const now = Math.floor(Math.random() * (hairList[gender].length - +(list.length > 0)));
             list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 헤어의 인덱스 저장, now 뒤에 더하는 이유는 최근 헤어 제외 목적

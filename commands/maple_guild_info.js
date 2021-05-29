@@ -22,13 +22,13 @@ module.exports = {
     description: '- 입력한 내용에 해당하는 길드의 길드원 정보(직위, 직업, 레벨, 유니온, 무릉)를 보여줍니다.',
     type: ['메이플'],
     async execute(message, args) {
-        if (args.length != 2 || !serverEngName[args[0]]) {
+        if (args.length !== 2 || !serverEngName[args[0]]) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
         const mapleGuildInfo = new MapleGuild(serverEngName[args[0]], args[1]);
         const isLatest = await mapleGuildInfo.isLatest();
-        if (mapleGuildInfo.MemberCount == 0) {
+        if (mapleGuildInfo.MemberCount === 0) {
             return message.channel.send('존재하지 않는 길드입니다.');
         }
 

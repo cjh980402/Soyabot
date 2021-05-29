@@ -53,7 +53,7 @@ module.exports = {
 - 참고. ${client.prefix}번역 목록`,
     type: ['기타'],
     async execute(message, args) {
-        if (args[0] == '목록' || args[0] == 'ㅁㄹ') {
+        if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
             return message.channel.send(
                 `<지원하는 언어 종류>\n${Object.values(langList)
                     .map((v) => v[0])

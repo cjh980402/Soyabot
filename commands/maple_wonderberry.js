@@ -20,7 +20,7 @@ module.exports = {
         if (args.length > 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
-        if (args[0] == '확률' || args[0] == 'ㅎㄹ') {
+        if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
             let rslt = '<원더베리 확률>';
             for (let key in probTable) {
                 rslt += `\n${key}: ${probTable[key] / 100}%`;

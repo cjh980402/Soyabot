@@ -23,7 +23,7 @@ module.exports = {
 
         const search = args.join(' ');
         const filter = (await ytsr.getFilters(search)).get('Type').get('Video').url;
-        const results = filter && (await ytsr(filter, { limit: 10 })).items.filter((v) => v.type == 'video'); // 영상만 가져오기
+        const results = filter && (await ytsr(filter, { limit: 10 })).items.filter((v) => v.type === 'video'); // 영상만 가져오기
         // const results = await youtube.searchVideos(search, 10);
         if (!results?.length) {
             return message.reply('검색 내용에 해당하는 영상을 찾지 못했습니다.');
@@ -37,7 +37,7 @@ module.exports = {
 
         try {
             let songChoice;
-            const rslt = await message.channel.awaitMessages((msg) => msg.author.id == message.author.id && (songChoice = msg.content.split(',')).every((v) => !isNaN(v) && 1 <= +v && +v <= results.length), { max: 1, time: 20000, errors: ['time'] });
+            const rslt = await message.channel.awaitMessages((msg) => msg.author.id === message.author.id && (songChoice = msg.content.split(',')).every((v) => !isNaN(v) && 1 <= +v && +v <= results.length), { max: 1, time: 20000, errors: ['time'] });
 
             for (let song of songChoice) {
                 await client.commands.find((cmd) => cmd.command.includes('play')).execute(message, [resultsEmbed.fields[+song - 1].name]);
@@ -45,7 +45,7 @@ module.exports = {
 
             rslt.first().delete();
         } catch (e) {
-            if (e.message == 'Missing Permissions') {
+            if (e.message === 'Missing Permissions') {
                 message.channel.send('**권한이 없습니다 - [MANAGE_MESSAGES]**');
             } else if (!(e instanceof Collection)) {
                 // awaitMessages에서 발생한 시간초과 에러는 Collection<Snowflake, Message>

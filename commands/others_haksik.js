@@ -9,7 +9,7 @@ module.exports = {
         const week = ['일', '월', '화', '수', '목', '금', '토'];
         const day = args[0]?.[0] ?? week[new Date().getDay()];
 
-        if (day == '일' || day == '토') {
+        if (day === '일' || day === '토') {
             return message.channel.send('주말은 학식이 제공되지 않습니다.');
         } else if (!week.includes(day)) {
             return message.channel.send('지원하지 않는 요일입니다.');

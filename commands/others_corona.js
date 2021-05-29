@@ -6,7 +6,7 @@ const { load } = require('cheerio');
 function calcIncrease($, selector) {
     const today = +$(selector).eq(0).text();
     const dateList = $('stateDt');
-    const yesterday = +$(selector).filter((i) => dateList.eq(i).text() != dateList.eq(0).text()).eq(0).text();
+    const yesterday = +$(selector).filter((i) => dateList.eq(i).text() !== dateList.eq(0).text()).eq(0).text();
     return `${today.toLocaleString()} (${today >= yesterday ? `⬆️ ${(today - yesterday).toLocaleString()}` : `⬇️ ${(yesterday - today).toLocaleString()}`})`;
 }
 
@@ -26,7 +26,7 @@ module.exports = {
         params.append('endCreateDt', `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`);
         const $ = load(await (await fetch(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?${params}`)).text(), { xmlMode: true });
 
-        if ($('resultCode').text() == '00') {
+        if ($('resultCode').text() === '00') {
             const coronaEmbed = new MessageEmbed()
                 .setTitle(`**${new Date($('createDt').eq(0).text()).toLocaleDateString()} 00시 기준**`)
                 .setThumbnail(`http://${client.botDomain}/image/hosting/mohw.png`)

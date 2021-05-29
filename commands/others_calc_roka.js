@@ -4,7 +4,7 @@ module.exports = {
     description: '- YYMMDD 형식으로 입력한 입대일을 기준으로 전역일을 계산해줍니다. (육군 기준)',
     type: ['기타'],
     async execute(message, args) {
-        if (args.length != 1) {
+        if (args.length !== 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const date = /^(\d{2})(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/.exec(args[0]);

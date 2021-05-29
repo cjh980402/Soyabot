@@ -6,7 +6,7 @@ module.exports = {
 - 아케인 심볼은 1 ~ 20, 어센틱 심볼은 1 ~ 11 레벨입니다.`,
     type: ['메이플'],
     async execute(message, args) {
-        if (args.length != 2) {
+        if (args.length !== 2) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 

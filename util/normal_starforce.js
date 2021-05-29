@@ -58,7 +58,7 @@ class NormalItem {
         const len = data.length;
         if (!data.every((v) => !isNaN(v)) || len < 3 || len > 6) {
             return '잘못된 형식입니다.';
-        } else if (data[2] == 25) {
+        } else if (data[2] === 25) {
             return '과부하 방지를 위해 24성까지로 제한합니다.';
         }
 
@@ -88,7 +88,7 @@ class NormalItem {
             return '강화 목표 수치를 다시 입력해주세요.';
         }
 
-        this.#starcat = +(data[3] == 1); // 스타캐치 여부: 적용 = 1, 미적용 = 그 외
+        this.#starcat = +(data[3] === 1); // 스타캐치 여부: 적용 = 1, 미적용 = 그 외
         this.#event = data[4] ?? 0; // 이벤트 종류: 30퍼 할인 = 1, 100퍼 이벤 = 2, 10성 이하 1+1 = 3, 미적용 = 그 외
         this.#nodest = data[5] ?? 0; // 파방 종류: 12~17 파방 = 1, 15~17 파방 = 2, 미적용 = 그 외
 
@@ -109,17 +109,17 @@ class NormalItem {
         const sucprob = (this.#starcat ? 1050 : 1000) * probTable[this.#star][0]; // 백분율 → 십만분율 변환, 스타캐치는 곱적용 5%
         let destprob = ((100000 - sucprob) * (1000 * probTable[this.#star][1])) / 100000; // 파괴확률 = 조건부 확률, 백분율 → 십만분율 변환
 
-        if (this.#nodest == 1) {
+        if (this.#nodest === 1) {
             startNodest = 12;
-        } else if (this.#nodest == 2) {
+        } else if (this.#nodest === 2) {
             startNodest = 15;
         }
-        if (this.#event == 1) {
+        if (this.#event === 1) {
             // 30퍼 세일
             afterSaleRate = 0.7;
         }
 
-        if (this.#checkdown == -2) {
+        if (this.#checkdown === -2) {
             // 찬스타임
             this.#chance++;
             this.#star++;
@@ -127,7 +127,7 @@ class NormalItem {
             this.#sum += afterSaleRate * meso(this.#star, this.#lev);
             return;
         }
-        if (this.#event == 2 && this.#star < 20 && this.#star % 5 == 0) {
+        if (this.#event === 2 && this.#star < 20 && this.#star % 5 === 0) {
             // 100퍼 이벤
             this.#star++;
             this.#checkdown = 0;
@@ -149,7 +149,7 @@ class NormalItem {
 
         if (i < sucprob) {
             // 성공
-            this.#star += this.#event == 3 && this.#star <= 10 ? 2 : 1; // 1 + 1 이벤이면 2단계 상승
+            this.#star += this.#event === 3 && this.#star <= 10 ? 2 : 1; // 1 + 1 이벤이면 2단계 상승
             this.#checkdown = 0;
         } else if (i < sucprob + destprob) {
             // 파괴

@@ -129,7 +129,7 @@ module.exports.startTestPatch = function () {
                 const patchVersion = lastPatch.version + 1; // 새로 가져올 패치의 버전
                 const patchURL = `http://maplestory.dn.nexoncdn.co.kr/PatchT/01${patchVersion}/01${patchVersion - 1}to01${patchVersion}.patch`;
                 const patchHeader = (await fetch(patchURL)).headers;
-                if (patchHeader.get('content-type') == 'application/octet-stream') {
+                if (patchHeader.get('content-type') === 'application/octet-stream') {
                     // 파일이 감지된 경우
                     const fileSize = +patchHeader.get('content-length') / 1024 / 1024;
                     await db.insert('testpatch', { version: patchVersion, url: patchURL });

@@ -14,7 +14,7 @@ async function farm_monster(monster) {
 async function farm_sex(monster) {
     // 몬스터 조합식
     monster = await farm_monster(monster);
-    if (monster == 'false') {
+    if (monster === 'false') {
         return '데이터에 없는 몬스터거나 올바르지 않은 몬스터입니다.';
     }
     const params = new URLSearchParams();
@@ -30,12 +30,12 @@ async function farm_sex(monster) {
     } else {
         return data
             .map((v) => {
-                if (v.type == 'child') {
+                if (v.type === 'child') {
                     // 결과가 monster인 경우
-                    return `${v.child}(${v.c_grade}): ${v.c_effect}${v.c_effect_value == '+0' ? '' : ` ${v.c_effect_value}`}\n↳${v.mom} (${v.m_species} ${v.m_grade})\n↳${v.dad} (${v.d_species} ${v.d_grade})`;
-                } else if (v.type == 'parents') {
+                    return `${v.child}(${v.c_grade}): ${v.c_effect}${v.c_effect_value === '+0' ? '' : ` ${v.c_effect_value}`}\n↳${v.mom} (${v.m_species} ${v.m_grade})\n↳${v.dad} (${v.d_species} ${v.d_grade})`;
+                } else if (v.type === 'parents') {
                     // monster가 재료인 경우
-                    return `↱${v.mom} (${v.m_species} ${v.m_grade})\n↱${v.dad} (${v.d_species} ${v.d_grade})\n${v.child}(${v.c_grade}): ${v.c_effect}${v.c_effect_value == '+0' ? '' : ` ${v.c_effect_value}`}`;
+                    return `↱${v.mom} (${v.m_species} ${v.m_grade})\n↱${v.dad} (${v.d_species} ${v.d_grade})\n${v.child}(${v.c_grade}): ${v.c_effect}${v.c_effect_value === '+0' ? '' : ` ${v.c_effect_value}`}`;
                 }
             })
             .join('\n\n');
@@ -44,7 +44,7 @@ async function farm_sex(monster) {
 
 async function farm_add(end_date, user, monster) {
     // 농장 추가
-    if (end_date == '무한유지') {
+    if (end_date === '무한유지') {
         end_date = ''; // 무한유지의 경우 빈 값을 넘겨야함
     } else {
         // 날짜 설정
@@ -63,7 +63,7 @@ async function farm_add(end_date, user, monster) {
         return '올바르지 않은 농장 이름입니다. 농장 이름은 2 ~ 6글자의 한글이어야 합니다.';
     }
     monster = await farm_monster(monster);
-    if (monster == 'false') {
+    if (monster === 'false') {
         return '데이터에 없는 몬스터거나 올바르지 않은 몬스터입니다.';
     }
     const params = new URLSearchParams();
@@ -75,7 +75,7 @@ async function farm_add(end_date, user, monster) {
         body: params
     });
     const data = await response.json();
-    if (data.error != false) {
+    if (data.error !== false) {
         // 오류 발생
         return data.error;
     } else {
@@ -86,7 +86,7 @@ async function farm_add(end_date, user, monster) {
 async function farm_read(monster) {
     // 농장 목록
     monster = await farm_monster(monster);
-    if (monster == 'false') {
+    if (monster === 'false') {
         return '데이터에 없는 몬스터거나 올바르지 않은 몬스터입니다.';
     }
     const params = new URLSearchParams();
@@ -96,7 +96,7 @@ async function farm_read(monster) {
         body: params
     });
     const data = await response.json();
-    if (data.error != false) {
+    if (data.error !== false) {
         // 오류 발생
         return data.error;
     } else {
@@ -122,7 +122,7 @@ async function farm_info(user) {
         body: params
     });
     const data = await response.json();
-    if (data.error != false) {
+    if (data.error !== false) {
         // 오류 발생
         return data.error;
     } else {
@@ -151,13 +151,13 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        if (args[0] == '목록' || args[0] == 'ㅁㄹ') {
+        if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
             return message.channel.send(await farm_read(args.slice(1).join('')), { split: true });
-        } else if (args[0] == '조합식' || args[0] == 'ㅈㅎㅅ') {
+        } else if (args[0] === '조합식' || args[0] === 'ㅈㅎㅅ') {
             return message.channel.send(await farm_sex(args.slice(1).join('')));
-        } else if (args[0] == '정보' || args[0] == 'ㅈㅂ') {
+        } else if (args[0] === '정보' || args[0] === 'ㅈㅂ') {
             return message.channel.send(await farm_info(args.slice(1).join('')), { split: true });
-        } else if (args[0] == '추가' || args[0] == 'ㅊㄱ') {
+        } else if (args[0] === '추가' || args[0] === 'ㅊㄱ') {
             if (args.length < 4) {
                 return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
             }

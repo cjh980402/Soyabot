@@ -46,20 +46,20 @@ module.exports = {
         if (!searchRslt?.length) {
             return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
         } else {
-            const stockfind = searchRslt.find((v) => v[0][0].toLowerCase() == search || v[1][0].toLowerCase() == search) ?? searchRslt[0]; // 내용과 일치하거나 첫번째 항목
+            const stockfind = searchRslt.find((v) => v[0][0].toLowerCase() === search || v[1][0].toLowerCase() === search) ?? searchRslt[0]; // 내용과 일치하거나 첫번째 항목
             const code = stockfind[0][0];
             const name = stockfind[1][0];
             const link = getRedirectURL(stockfind[3][0]); // 리다이렉트 로직 반영
             const identifer = stockfind[4][0];
 
             const stockEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9999').setURL(`https://m.stock.naver.com${link}`);
-            if (stockfind[2][0] == '국내지수') {
+            if (stockfind[2][0] === '국내지수') {
                 // 국내 지수
                 const $ = load(await (await fetch(`https://m.stock.naver.com/sise/siseIndex.nhn?code=${identifer}`)).text());
                 const data = $('.total_list > li > span');
                 const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_INDEX%3A${identifer}`)).json();
                 const trendData = $('.ct_box.dmst_trend .trend_lst');
-                if (nowData.result.areas[0].datas.length == 0) {
+                if (nowData.result.areas[0].datas.length === 0) {
                     return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
                 }
 
@@ -67,7 +67,7 @@ module.exports = {
                 const nowPrice = nowData.result.areas[0].datas[0].nv / 100;
                 const changeAmount = nowData.result.areas[0].datas[0].cv / 100; // 숫자값
                 const changeRate = nowData.result.areas[0].datas[0].cr;
-                const isFUT = identifer == 'FUT';
+                const isFUT = identifer === 'FUT';
 
                 const minPrice = data.eq(isFUT ? 3 : 1).text().trim() || '0';
                 const maxPrice = data.eq(isFUT ? 2 : 0).text().trim() || '0';
@@ -94,10 +94,10 @@ module.exports = {
                 if (down) {
                     stockEmbed.addField('**하락**', down, true);
                 }
-            } else if (stockfind[2][0] == '해외지수') {
+            } else if (stockfind[2][0] === '해외지수') {
                 // 해외 지수
                 const data = await (await fetch(`https://api.stock.naver.com/index/${identifer}/basic`)).json();
-                if (data[0] == '잘못된 지수입니다.') {
+                if (data[0] === '잘못된 지수입니다.') {
                     return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
                 }
 
@@ -118,7 +118,7 @@ module.exports = {
                 const $ = load(await (await fetch(`https://m.stock.naver.com/api/html/item/getOverallInfo.nhn?code=${identifer}`)).text());
                 const data = $('.total_list > li > span');
                 const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_ITEM%3A${identifer}`)).json();
-                if (nowData.result.areas[0].datas.length == 0) {
+                if (nowData.result.areas[0].datas.length === 0) {
                     return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
                 }
 
@@ -143,7 +143,7 @@ module.exports = {
             } else {
                 // 해외 주식
                 const data = await (await fetch(`https://api.stock.naver.com/stock/${identifer}/basic`)).json();
-                if (data.code == 'StockConflict') {
+                if (data.code === 'StockConflict') {
                     return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
                 }
 

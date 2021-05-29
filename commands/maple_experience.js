@@ -7,12 +7,12 @@ module.exports = {
 - 끝 레벨을 생략 시 시작 레벨의 경험치통과 누적 경험치 비율을 계산합니다.`,
     type: ['메이플'],
     async execute(message, args) {
-        if (args.length != 1 && args.length != 2) {
+        if (args.length !== 1 && args.length !== 2) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
         const startlev = +args[0];
-        if (args.length == 2) {
+        if (args.length === 2) {
             const endlev = +args[1];
             if (isNaN(startlev) || startlev < 1 || startlev > 299) {
                 return message.channel.send('1 ~ 299 범위의 시작 레벨을 입력해주세요.');

@@ -22,7 +22,7 @@ module.exports.QueueElement = class {
     get textChannel() {
         if (!client.channels.cache.get(this.#textChannel.id)) {
             // 해당하는 채널이 삭제된 경우
-            this.#textChannel = this.#textChannel.guild.channels.cache.find((v) => v.type == 'text');
+            this.#textChannel = this.#textChannel.guild.channels.cache.find((v) => v.type === 'text');
         }
         return this.#textChannel;
     }
@@ -75,7 +75,7 @@ module.exports.play = async function (song, guild) {
         return queue.textChannel.send(`오류 발생: ${e.message ?? e}`);
     }
 
-    if (queue.connection.listenerCount('disconnect') == 1) {
+    if (queue.connection.listenerCount('disconnect') === 1) {
         // 1개는 디스코드 내부에서 등록을 하기 때문에 개수를 확인
         queue.connection.once('disconnect', () => client.queue.delete(guild.id)); // 연결 끊기면 자동으로 큐를 삭제하는 리스너 등록
     }
@@ -119,7 +119,7 @@ module.exports.play = async function (song, guild) {
         queue.textChannel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
     }
 
-    const filter = (_, user) => user.id != client.user.id;
+    const filter = (_, user) => user.id !== client.user.id;
     collector = playingMessage.createReactionCollector(filter, {
         time: song.duration > 0 ? song.duration * 1000 : 600000
     });

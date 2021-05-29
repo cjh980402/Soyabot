@@ -45,29 +45,29 @@ module.exports.MapleUser = class {
     async homeLevel() {
         const len = this.#name.length + (this.#name.match(/[가-힣]/g)?.length ?? 0);
         this.#homeLevelData = await linkParse(this.#homeLevelURL);
-        if (this.#homeLevelData('img[alt="메이플스토리 서비스 점검중!"]').length != 0) {
+        if (this.#homeLevelData('img[alt="메이플스토리 서비스 점검중!"]').length !== 0) {
             throw new Error('메이플 공식 홈페이지가 서비스 점검 중입니다.');
         }
 
-        if (this.#homeLevelData('tr[class]').length != 10) {
+        if (this.#homeLevelData('tr[class]').length !== 10) {
             this.#homeLevelURL += '&w=254'; // 리부트 서버 목록
             this.#homeLevelData = await linkParse(this.#homeLevelURL);
         }
-        if (len < 1 || len > 12 || this.#homeLevelData('tr[class]').length != 10) {
+        if (len < 1 || len > 12 || this.#homeLevelData('tr[class]').length !== 10) {
             return null; // 없는 캐릭터
         }
 
         let data = this.#homeLevelData('.search_com_chk > td');
-        if (data.length == 0) {
+        if (data.length === 0) {
             const nickList = this.#homeLevelData('tr[class] > td.left > dl > dt > a'); // 순위 리스트의 닉네임
             for (let i = 0; i < 10; i++) {
-                if (this.#name.toLowerCase() == nickList.eq(i).text().toLowerCase()) {
+                if (this.#name.toLowerCase() === nickList.eq(i).text().toLowerCase()) {
                     this.#name = nickList.eq(i).text(); // 대소문자 정확한 이름으로 갱신
                     data = this.#homeLevelData('tr[class]').eq(i).find('td');
                     break;
                 }
             }
-            if (data.length == 0) {
+            if (data.length === 0) {
                 return null; // 공홈이 오류나서 순위 리스트가 떠도 해당 캐릭터는 없는 경우
             }
         }
@@ -84,25 +84,25 @@ module.exports.MapleUser = class {
     async homeUnion() {
         const len = this.#name.length + (this.#name.match(/[가-힣]/g)?.length ?? 0);
         this.#homeUnionData = await linkParse(this.#homeUnionURL);
-        if (this.#homeUnionData('img[alt="메이플스토리 서비스 점검중!"]').length != 0) {
+        if (this.#homeUnionData('img[alt="메이플스토리 서비스 점검중!"]').length !== 0) {
             throw new Error('메이플 공식 홈페이지가 서비스 점검 중입니다.');
         }
 
-        if (len < 1 || len > 12 || this.#homeUnionData('tr').length != 12) {
+        if (len < 1 || len > 12 || this.#homeUnionData('tr').length !== 12) {
             return null; // 유니온 기록이 없음
         }
 
         let data = this.#homeUnionData('.search_com_chk > td');
-        if (data.length == 0) {
+        if (data.length === 0) {
             const nickList = this.#homeUnionData('tr > td.left > dl > dt > a'); // 순위 리스트의 닉네임
             for (let i = 0; i < 10; i++) {
-                if (this.#name.toLowerCase() == nickList.eq(i).text().toLowerCase()) {
+                if (this.#name.toLowerCase() === nickList.eq(i).text().toLowerCase()) {
                     this.#name = nickList.eq(i).text(); // 대소문자 정확한 이름으로 갱신
                     data = this.#homeUnionData('tr').eq(i + 2).find('td');
                     break;
                 }
             }
-            if (data.length == 0) {
+            if (data.length === 0) {
                 return null; // 공홈이 오류나서 순위 리스트가 떠도 해당 캐릭터는 없는 경우
             }
         }
@@ -117,13 +117,13 @@ module.exports.MapleUser = class {
 
     async isLatest() {
         this.#ggData = await linkParse(this.#ggURL); // this.#ggData는 함수
-        if (this.#ggData('div.alert.alert-warning.mt-3').length != 0) {
+        if (this.#ggData('div.alert.alert-warning.mt-3').length !== 0) {
             throw new Error('메이플 GG 서버가 점검 중입니다.');
-        } else if (/Bad Gateway|Error/.test(this.#ggData('title').text()) || this.#ggData('div.flex-center.position-ref.full-height').length != 0) {
+        } else if (/Bad Gateway|Error/.test(this.#ggData('title').text()) || this.#ggData('div.flex-center.position-ref.full-height').length !== 0) {
             throw new Error('메이플 GG 서버에 에러가 발생했습니다.');
         }
 
-        if (this.#ggData('.d-block.font-weight-light').text().replace(/\s+/g, '') != '마지막업데이트:오늘' || this.#ggData('.container.mt-5.text-center > h3').text() == '검색결과가 없습니다.') {
+        if (this.#ggData('.d-block.font-weight-light').text().replace(/\s+/g, '') !== '마지막업데이트:오늘' || this.#ggData('.container.mt-5.text-center > h3').text() === '검색결과가 없습니다.') {
             return false;
         } else {
             return true;
@@ -152,7 +152,7 @@ module.exports.MapleUser = class {
     Murung() {
         const murung = this.#ggData('.col-lg-3.col-6.mt-3.px-1').eq(0); // murung은 cheerio객체
         const nomurung = murung.find('.user-summary-no-data').length; // 0이면 기록 있고 1이면 기록 없음
-        if (murung.length == 0 || nomurung) {
+        if (murung.length === 0 || nomurung) {
             return null;
         }
 
@@ -167,7 +167,7 @@ module.exports.MapleUser = class {
     Seed() {
         const seed = this.#ggData('.col-lg-3.col-6.mt-3.px-1').eq(1);
         const noseed = seed.find('.user-summary-no-data').length; // 0이면 기록 있고 1이면 기록 없음
-        if (seed.length == 0 || noseed) {
+        if (seed.length === 0 || noseed) {
             return null;
         }
 
@@ -182,7 +182,7 @@ module.exports.MapleUser = class {
     Union() {
         const union = this.#ggData('.col-lg-3.col-6.mt-3.px-1').eq(2);
         const nounion = union.find('.user-summary-no-data').length; // 0이면 기록 있고 1이면 기록 없음
-        if (union.length == 0 || nounion) {
+        if (union.length === 0 || nounion) {
             return null;
         }
 
@@ -197,7 +197,7 @@ module.exports.MapleUser = class {
     Achieve() {
         const achieve = this.#ggData('.col-lg-3.col-6.mt-3.px-1').eq(3);
         const noachieve = achieve.find('.user-summary-no-data').length; // 0이면 기록 있고 1이면 기록 없음
-        if (achieve.length == 0 || noachieve) {
+        if (achieve.length === 0 || noachieve) {
             return null;
         }
 
@@ -211,7 +211,7 @@ module.exports.MapleUser = class {
 
     Rank() {
         const rank = this.#ggData('.col-lg-2.col-md-4.col-sm-4.col-6.mt-3 > span');
-        if (rank.length == 0) {
+        if (rank.length === 0) {
             return null;
         }
 
@@ -224,7 +224,7 @@ module.exports.MapleUser = class {
 
     Coordi() {
         const coordi = this.#ggData('.character-coord__item-name');
-        if (coordi.length == 0) {
+        if (coordi.length === 0) {
             return null;
         }
 
@@ -237,7 +237,7 @@ module.exports.MapleUser = class {
 
     LevelHistory() {
         const data = this.#ggData('body > script').filter((i, v) => /\[\[.+\]\]/.test(this.#ggData(v).html()));
-        if (data.length == 0) {
+        if (data.length === 0) {
             return null;
         }
 
@@ -246,7 +246,7 @@ module.exports.MapleUser = class {
 
     MurungHistory() {
         const data = this.#ggData('.text-center.px-2.font-size-14.align-middle');
-        if (data.length == 0) {
+        if (data.length === 0) {
             return null;
         }
 
@@ -261,7 +261,7 @@ module.exports.MapleUser = class {
 
     Collection() {
         const collection = this.#ggData('section.box.mt-3 .avatar-collection-item.col-lg-2.col-md-4.col-6');
-        if (collection.length == 0) {
+        if (collection.length === 0) {
             return null;
         }
 
@@ -333,9 +333,9 @@ module.exports.MapleGuild = class {
     async isLatest() {
         const updateResult = await this.#updateGuild();
         this.#ggData = await linkParse(`${this.#ggURL}/members?sort=level`); // this.#ggData는 함수
-        if (this.#ggData('div.alert.alert-warning.mt-3').length != 0) {
+        if (this.#ggData('div.alert.alert-warning.mt-3').length !== 0) {
             throw new Error('메이플 GG 서버가 점검 중입니다.');
-        } else if (/Bad Gateway|Error/.test(this.#ggData('title').text()) || this.#ggData('div.flex-center.position-ref.full-height').length != 0) {
+        } else if (/Bad Gateway|Error/.test(this.#ggData('title').text()) || this.#ggData('div.flex-center.position-ref.full-height').length !== 0) {
             throw new Error('메이플 GG 서버에 에러가 발생했습니다.');
         }
 

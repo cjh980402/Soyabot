@@ -22,7 +22,7 @@ module.exports = {
         const nowPlaying = new MessageEmbed().setTitle('**현재 재생 중인 노래**').setDescription(`${song.title}\n${song.url}`).setColor('#FF9999').setAuthor(client.user.username);
 
         if (song.duration >= 0) {
-            nowPlaying.addField('\u200b', `${new Date(seek * 1000).toISOString().substr(11, 8)} [${splitBar(song.duration || seek, seek, 20)[0]}] ${song.duration == 0 ? '◉ LIVE' : new Date(song.duration * 1000).toISOString().substr(11, 8)}`);
+            nowPlaying.addField('\u200b', `${new Date(seek * 1000).toISOString().substr(11, 8)} [${splitBar(song.duration || seek, seek, 20)[0]}] ${song.duration === 0 ? '◉ LIVE' : new Date(song.duration * 1000).toISOString().substr(11, 8)}`);
         }
         if (song.duration > 0) {
             nowPlaying.setFooter(`남은 시간: ${new Date((song.duration - seek) * 1000).toISOString().substr(11, 8)}`);

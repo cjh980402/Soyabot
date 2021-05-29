@@ -88,11 +88,11 @@ module.exports = {
 - 참고. ${client.prefix}익성비 확률 (시작 레벨)`,
     type: ['메이플'],
     async execute(message, args) {
-        if (args.length != 1 && args.length != 2) {
+        if (args.length !== 1 && args.length !== 2) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        if (args[0] == '확률' || args[0] == 'ㅎㄹ') {
+        if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
             const startlev = +args[1];
             let rslt = `<${startlev}레벨 기준 확률>`;
             if (isNaN(startlev) || startlev < 141 || startlev > 199) {
@@ -105,7 +105,7 @@ module.exports = {
         }
 
         const startlev = +args[0];
-        if (args.length == 2) {
+        if (args.length === 2) {
             const endlev = +args[1];
             if (isNaN(startlev) || startlev < 141 || startlev > 199) {
                 return message.channel.send('141 ~ 199 범위의 시작 레벨을 입력해주세요.');

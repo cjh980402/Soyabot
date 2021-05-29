@@ -7,7 +7,7 @@ module.exports = {
     description: '- 캐릭터의 메이플 gg 프로필을 출력합니다.',
     type: ['메이플'],
     async execute(message, args) {
-        if (args.length != 1) {
+        if (args.length !== 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
@@ -24,7 +24,7 @@ module.exports = {
         }
 
         const rank = mapleUserInfo.Rank();
-        const rankString = rank[2] == '-위' ? ' ' : `월드 ${rank[2]} (전체 ${rank[3]})`;
+        const rankString = rank[2] === '-위' ? ' ' : `월드 ${rank[2]} (전체 ${rank[3]})`;
         const murung = mapleUserInfo.Murung();
         const union = mapleUserInfo.Union();
         const seed = mapleUserInfo.Seed();

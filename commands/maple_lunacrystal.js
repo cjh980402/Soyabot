@@ -42,7 +42,7 @@ module.exports = {
         }
 
         const category = args[0];
-        if (args[1] == '확률' || args[1] == 'ㅎㄹ') {
+        if (args[1] === '확률' || args[1] === 'ㅎㄹ') {
             let rslt = `<루나크리스탈 ${category} 확률>`;
             for (let key in probTable[category]) {
                 rslt += `\n${key}: ${probTable[category][key] / 100}%`;

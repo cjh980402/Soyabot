@@ -10,7 +10,7 @@ module.exports = {
 - 채팅지수 = (공백 문자 제외 글자 개수) / 채팅량`,
     type: ['기타'],
     async execute(message, args) {
-        const targetChannel = (args.length > 0 && message.author.id == ADMIN_ID && client.guilds.cache.find((v) => v.name.includes(args.join(' ')))) || message.guild;
+        const targetChannel = (args.length > 0 && message.author.id === ADMIN_ID && client.guilds.cache.find((v) => v.name.includes(args.join(' ')))) || message.guild;
         if (!targetChannel) {
             return message.channel.send('사용이 불가능한 채널입니다.');
         }
@@ -18,7 +18,7 @@ module.exports = {
         const roommessage = (await db.all('SELECT * FROM messagedb WHERE channelsenderid LIKE ?', [`${targetChannel.id}%`]))
             .filter((v) => {
                 const member = targetChannel.members.cache.get(v.channelsenderid.split(' ')[1]);
-                return member && (args[0] != '-봇' || !member.user.bot);
+                return member && (args[0] !== '-봇' || !member.user.bot);
             })
             .sort((a, b) => b.lettercnt / b.messagecnt - a.lettercnt / a.messagecnt)
             .slice(0, 180); // 내림차순, 상위 180명

@@ -8,7 +8,7 @@ module.exports = {
 - 이미 달성한 레벨에 대한 계산은 수행하지 않습니다.`,
     type: ['메이플'],
     async execute(message, args) {
-        if (args.length != 1) {
+        if (args.length !== 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 

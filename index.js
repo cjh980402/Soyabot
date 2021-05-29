@@ -65,7 +65,7 @@ client.on('message', async (message) => {
         if (permissions && (!permissions.has('VIEW_CHANNEL') || !permissions.has('SEND_MESSAGES'))) {
             return; // 기본 권한이 없는 채널이므로 바로 종료
         }
-        if (message.author.id == ADMIN_ID) {
+        if (message.author.id === ADMIN_ID) {
             // 관리자 여부 체크
             await adminChat(message);
         }
@@ -119,12 +119,12 @@ client.on('voiceStateUpdate', (oldState, newState) => {
     try {
         const oldVoice = oldState.channel;
         const newVoice = newState.channel;
-        if (oldVoice != newVoice) {
+        if (oldVoice !== newVoice) {
             console.log(!oldVoice ? 'User joined!' : !newVoice ? 'User left!' : 'User switched channels!');
 
             if (newVoice) {
                 const newQueue = client.queue.get(newVoice.guild.id);
-                if (newQueue?.connection && !newQueue.playing && newVoice == newQueue.channel && newVoice.members.size == 2) {
+                if (newQueue?.connection && !newQueue.playing && newVoice === newQueue.channel && newVoice.members.size === 2) {
                     newQueue.connection.dispatcher?.resume();
                     newQueue.textChannel.send('대기열을 다시 재생합니다.');
                     newQueue.playing = true;
@@ -133,7 +133,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
             if (oldVoice) {
                 const oldQueue = client.queue.get(oldVoice.guild.id);
-                if (oldQueue?.connection && oldVoice == oldQueue.channel && oldVoice.members.size == 1) {
+                if (oldQueue?.connection && oldVoice === oldQueue.channel && oldVoice.members.size === 1) {
                     // 봇만 음성 채널에 있는 경우
                     if (oldQueue.playing) {
                         oldQueue.connection.dispatcher?.pause(true);
@@ -142,7 +142,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                     }
                     setTimeout(() => {
                         const queue = client.queue.get(oldVoice.guild.id);
-                        if (queue?.connection && oldVoice == queue.channel && oldVoice.members.size == 1) {
+                        if (queue?.connection && oldVoice === queue.channel && oldVoice.members.size === 1) {
                             // 5분이 지나도 봇만 음성 채널에 있는 경우
                             queue.songs = [];
                             queue.connection.dispatcher?.end();

@@ -10,7 +10,7 @@ module.exports = {
 (120레벨 이상 기준 주흔작 100%, 70%, 30%, 15%은 각각 공격력 3, 5, 7, 9 상승)`,
     type: ['메이플'],
     async execute(message, args) {
-        if (args.length != 4 && args.length != 5) {
+        if (args.length !== 4 && args.length !== 5) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
@@ -28,7 +28,7 @@ module.exports = {
         if (!starforce[args[2]]) {
             return message.channel.send('130제, 140제, 150제, 160제, 200제 아이템만 가능합니다.');
         }
-        if (args[2] == 130 && args[3] > 20) {
+        if (args[2] === 130 && args[3] > 20) {
             return message.channel.send('130제는 20성까지만 가능합니다.');
         }
         if (args[3] < 0 || args[3] > 25) {

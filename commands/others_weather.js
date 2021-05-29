@@ -27,7 +27,7 @@ module.exports = {
         let targetLocal;
         if (!searchRslt?.length) {
             return message.channel.send('검색된 지역이 없습니다.');
-        } else if (searchRslt.length == 1) {
+        } else if (searchRslt.length === 1) {
             targetLocal = searchRslt[0];
         } else {
             const locallistEmbed = new MessageEmbed()
@@ -37,7 +37,7 @@ module.exports = {
                 .setTimestamp();
             message.channel.send(locallistEmbed);
 
-            const rslt = await message.channel.awaitMessages((msg) => msg.author.id == message.author.id && !isNaN(msg.content) && 1 <= +msg.content && +msg.content <= searchRslt.length, { max: 1, time: 20000, errors: ['time'] });
+            const rslt = await message.channel.awaitMessages((msg) => msg.author.id === message.author.id && !isNaN(msg.content) && 1 <= +msg.content && +msg.content <= searchRslt.length, { max: 1, time: 20000, errors: ['time'] });
             targetLocal = searchRslt[+rslt.first().content - 1];
         }
 
@@ -59,7 +59,7 @@ module.exports = {
         const weather = $('.time_list > .item_time');
         const rainData = $('div[data-name="rain"] .row_graph').eq(0); // 가끔 적설량이 병기되는 경우에 대응
         const rainName = rainData.find('.blind').text();
-        const rainUnit = rainName == '적설량' ? '㎝' : '㎜';
+        const rainUnit = rainName === '적설량' ? '㎝' : '㎜';
         const rain = rainData.find('.data');
         const humidity = $('div[data-name="humidity"] .row_graph > .data');
         const wind = $('div[data-name="wind"] .row_graph > .data');
@@ -67,7 +67,7 @@ module.exports = {
         for (let i = 0, j = 0, rainSpan = 1; i < weather.length - 1; i++) {
             rainSpan--;
             weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${weather.eq(i).attr('data-wetr-txt')})│${rainName}: ${rain.eq(j).text().trim()}${rainUnit}│습도: ${humidity.eq(i).text().trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
-            if (rainSpan == 0) {
+            if (rainSpan === 0) {
                 rainSpan = +(rain.eq(++j).attr('colspan') ?? 1);
             }
         }
@@ -83,7 +83,7 @@ module.exports = {
         } catch {
             return message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
         }
-        const filter = (_, user) => message.author.id == user.id;
+        const filter = (_, user) => message.author.id === user.id;
         const collector = weatherEmbed.createReactionCollector(filter, { time: 60000 });
 
         collector.on('collect', async (reaction, user) => {
@@ -91,13 +91,13 @@ module.exports = {
                 if (message.guild) {
                     await reaction.users.remove(user);
                 }
-                if (reaction.emoji.name == '➡️') {
+                if (reaction.emoji.name === '➡️') {
                     currentPage = (currentPage + 1) % embeds.length;
                     weatherEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                } else if (reaction.emoji.name == '⬅️') {
+                } else if (reaction.emoji.name === '⬅️') {
                     currentPage = (currentPage - 1 + embeds.length) % embeds.length;
                     weatherEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                } else if (reaction.emoji.name == '⏹') {
+                } else if (reaction.emoji.name === '⏹') {
                     collector.stop();
                 }
             } catch {

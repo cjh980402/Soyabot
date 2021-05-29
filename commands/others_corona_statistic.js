@@ -10,7 +10,7 @@ function calcIncrease(data) {
 
 function colorData(cityList) {
     const colorList = ['rgb(216, 75, 75)', 'rgb(232, 115, 115)', 'rgb(238, 145, 145)', 'rgb(244, 200, 200)', 'rgb(227, 227, 227)'];
-    return cityList.map((v) => (v == '기타' ? 'rgb(227, 227, 227)' : colorList.shift()));
+    return cityList.map((v) => (v === '기타' ? 'rgb(227, 227, 227)' : colorList.shift()));
 }
 
 module.exports = {
@@ -22,7 +22,7 @@ module.exports = {
         const countData = await (await fetch(`https://api.corona-19.kr/korea/?serviceKey=${CORONA_API_KEY}`)).json();
         const countryData = await (await fetch(`https://api.corona-19.kr/korea/country/new/?serviceKey=${CORONA_API_KEY}`)).json();
 
-        if (countData.resultCode == '0' && countryData.resultCode == '0') {
+        if (countData.resultCode === '0' && countryData.resultCode === '0') {
             const rateData = [
                 [countData.city1n, countData.city2n, countData.city3n, countData.city4n, countData.city5n],
                 [countData.city1p, countData.city2p, countData.city3p, countData.city4p, countData.city5p]
@@ -116,7 +116,7 @@ module.exports = {
             } catch {
                 return message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
             }
-            const filter = (_, user) => message.author.id == user.id;
+            const filter = (_, user) => message.author.id === user.id;
             const collector = coronaEmbed.createReactionCollector(filter, { time: 60000 });
 
             collector.on('collect', async (reaction, user) => {
@@ -124,13 +124,13 @@ module.exports = {
                     if (message.guild) {
                         await reaction.users.remove(user);
                     }
-                    if (reaction.emoji.name == '➡️') {
+                    if (reaction.emoji.name === '➡️') {
                         currentPage = (currentPage + 1) % embeds.length;
                         coronaEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                    } else if (reaction.emoji.name == '⬅️') {
+                    } else if (reaction.emoji.name === '⬅️') {
                         currentPage = (currentPage - 1 + embeds.length) % embeds.length;
                         coronaEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                    } else if (reaction.emoji.name == '⏹') {
+                    } else if (reaction.emoji.name === '⏹') {
                         collector.stop();
                     }
                 } catch {

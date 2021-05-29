@@ -20,25 +20,25 @@ async function tran(source, target, text) {
 
 function checkLan(src, tar) {
     return (
-        (src == 'ko' && tar == 'en') ||
-        (src == 'ko' && tar == 'ja') ||
-        (src == 'ko' && tar == 'zh-CN') ||
-        (src == 'ko' && tar == 'zh-TW') ||
-        (src == 'ko' && tar == 'es') ||
-        (src == 'ko' && tar == 'fr') ||
-        (src == 'ko' && tar == 'ru') ||
-        (src == 'ko' && tar == 'vi') ||
-        (src == 'ko' && tar == 'th') ||
-        (src == 'ko' && tar == 'id') ||
-        (src == 'ko' && tar == 'de') ||
-        (src == 'ko' && tar == 'it') ||
-        (src == 'zh-CN' && tar == 'zh-TW') ||
-        (src == 'zh-CN' && tar == 'ja') ||
-        (src == 'zh-TW' && tar == 'ja') ||
-        (src == 'en' && tar == 'ja') ||
-        (src == 'en' && tar == 'zh-CN') ||
-        (src == 'en' && tar == 'zh-TW') ||
-        (src == 'en' && tar == 'fr')
+        (src === 'ko' && tar === 'en') ||
+        (src === 'ko' && tar === 'ja') ||
+        (src === 'ko' && tar === 'zh-CN') ||
+        (src === 'ko' && tar === 'zh-TW') ||
+        (src === 'ko' && tar === 'es') ||
+        (src === 'ko' && tar === 'fr') ||
+        (src === 'ko' && tar === 'ru') ||
+        (src === 'ko' && tar === 'vi') ||
+        (src === 'ko' && tar === 'th') ||
+        (src === 'ko' && tar === 'id') ||
+        (src === 'ko' && tar === 'de') ||
+        (src === 'ko' && tar === 'it') ||
+        (src === 'zh-CN' && tar === 'zh-TW') ||
+        (src === 'zh-CN' && tar === 'ja') ||
+        (src === 'zh-TW' && tar === 'ja') ||
+        (src === 'en' && tar === 'ja') ||
+        (src === 'en' && tar === 'zh-CN') ||
+        (src === 'en' && tar === 'zh-TW') ||
+        (src === 'en' && tar === 'fr')
     );
 }
 
@@ -49,7 +49,7 @@ module.exports = {
 - 참고. ${client.prefix}파파고 목록`,
     type: ['기타'],
     async execute(message, args) {
-        if (args[0] == '목록' || args[0] == 'ㅁㄹ') {
+        if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
             const list = '한국어(ko)-영어(en), 한국어(ko)-일본어(ja), 한국어(ko)-중국어 간체(zh-CN), 한국어(ko)-중국어 번체(zh-TW), 한국어(ko)-스페인어(es), 한국어(ko)-프랑스어(fr), 한국어(ko)-러시아어(ru), 한국어(ko)-베트남어(vi), 한국어(ko)-태국어(th), 한국어(ko)-인도네시아어(id), 한국어(ko)-독일어(de), 한국어(ko)-이탈리아어(it), 중국어 간체(zh-CN) - 중국어 번체(zh-TW), 중국어 간체(zh-CN) - 일본어(ja), 중국어 번체(zh-TW) - 일본어(ja), 영어(en)-일본어(ja), 영어(en)-중국어 간체(zh-CN), 영어(en)-중국어 번체(zh-TW), 영어(en)-프랑스어(fr)';
             return message.channel.send(`<지원하는 번역 종류>\n\n${list.replace(/, /g, '\n')}\n\n순서는 바뀌어도 됩니다.`);
         }

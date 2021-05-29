@@ -27,7 +27,7 @@ module.exports = {
         const names = eventdata.find('dt a').map((i, v) => $(v).text());
         const dates = eventdata.find('dd a').map((i, v) => $(v).text());
 
-        if (links.length == 0) {
+        if (links.length === 0) {
             return message.channel.send('현재 진행중인 이벤트가 없습니다.');
         } else {
             let currentPage = 0;
@@ -41,7 +41,7 @@ module.exports = {
                 } catch {
                     return message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
                 }
-                const filter = (_, user) => message.author.id == user.id;
+                const filter = (_, user) => message.author.id === user.id;
                 const collector = eventEmbed.createReactionCollector(filter, { time: 60000 });
 
                 collector.on('collect', async (reaction, user) => {
@@ -49,13 +49,13 @@ module.exports = {
                         if (message.guild) {
                             await reaction.users.remove(user);
                         }
-                        if (reaction.emoji.name == '➡️') {
+                        if (reaction.emoji.name === '➡️') {
                             currentPage = (currentPage + 1) % embeds.length;
                             eventEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                        } else if (reaction.emoji.name == '⬅️') {
+                        } else if (reaction.emoji.name === '⬅️') {
                             currentPage = (currentPage - 1 + embeds.length) % embeds.length;
                             eventEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                        } else if (reaction.emoji.name == '⏹') {
+                        } else if (reaction.emoji.name === '⏹') {
                             collector.stop();
                         }
                     } catch {

@@ -6,7 +6,7 @@ module.exports = {
     description: '- 캐릭터의 메이플 gg 정보를 갱신합니다.',
     type: ['메이플'],
     async execute(message, args) {
-        if (args.length != 1) {
+        if (args.length !== 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 

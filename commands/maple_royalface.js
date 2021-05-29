@@ -11,7 +11,7 @@ module.exports = {
 - 참고. ${client.prefix}성형 확률`,
     type: ['메이플'],
     async execute(message, args) {
-        if (args.length == 1 && (args[0] == '확률' || args[0] == 'ㅎㄹ')) {
+        if (args.length === 1 && (args[0] === '확률' || args[0] === 'ㅎㄹ')) {
             const rslt = `<로얄 성형 확률>\n\n- 남자 성형\n${faceList['남'].map((v) => `${v}: 16.67%`).join('\n')}\n\n- 여자 성형\n${faceList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
             return message.channel.send(rslt);
         }
@@ -20,14 +20,14 @@ module.exports = {
         }
         const gender = args.shift()[0];
         const goalface = (faceList[gender] ?? []).findIndex((v) => v.replace(/\s+/, '').includes(args.join('')));
-        if (goalface == -1) {
+        if (goalface === -1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         // gender은 성별, goalface는 목표 성형의 인덱스
         // random은 0이상 1미만
         const list = []; // 진행 과정 담을 배열 (인덱스 저장)
 
-        while (list[list.length - 1] != goalface) {
+        while (list[list.length - 1] !== goalface) {
             // 목표 성형을 띄웠으면 종료
             const now = Math.floor(Math.random() * (faceList[gender].length - +(list.length > 0)));
             list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 성형의 인덱스 저장, now 뒤에 더하는 이유는 최근 성형 제외 목적

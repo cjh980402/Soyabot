@@ -19,7 +19,7 @@ module.exports = {
     description: '- 정해진 조건으로 해당 캐릭터의 점수를 평가합니다. 닉네임을 생략시에는 기준 점수표를 보여줍니다.',
     type: ['메이플'],
     async execute(message, args) {
-        if (args.length != 1) {
+        if (args.length !== 1) {
             let rslt = '스카우터 기준 점수표';
             for (let i = 0; i < scoreGrade.length - 2; i++) {
                 rslt += `\n${scoreGrade[i][0]} ~ ${scoreGrade[i + 1][0] - 1}점: ${scoreGrade[i][1]}`;

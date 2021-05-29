@@ -7,7 +7,7 @@ globalThis.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 Object.defineProperty(Discord.Message.prototype, 'fullContent', {
     get: async function () {
-        if (this.type == 'DEFAULT' && this.attachments.first()?.name == 'message.txt') {
+        if (this.type === 'DEFAULT' && this.attachments.first()?.name === 'message.txt') {
             return (await fetch(this.attachments.first().url)).text();
         } else {
             return this.content;

@@ -14,7 +14,7 @@ module.exports = {
             return message.channel.send('썬데이 메이플 공지가 아직 없습니다.');
         }
 
-        const sundayTitle = `${eventdata.find('dd a').filter((i, v) => $(v).attr('href') == sunday).text().substr(0, 14)}의 썬데이 메이플`;
+        const sundayTitle = `${eventdata.find('dd a').filter((i, v) => $(v).attr('href') === sunday).text().substr(0, 14)}의 썬데이 메이플`;
         const imgLink = load(await (await fetch(`https://maplestory.nexon.com${sunday}`)).text())('img[alt="썬데이 메이플!"]').attr('src');
 
         return message.channel.send(sundayTitle, { files: [imgLink] });

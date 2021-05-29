@@ -26,7 +26,7 @@ module.exports = {
     type: ['기타'],
     async execute(message) {
         let memory;
-        if (process.platform == 'linux') {
+        if (process.platform === 'linux') {
             const memorycmd = (await cmd('free', true)).split(/\s+/);
             memory = 100 - Math.round((memorycmd[13] / memorycmd[8]) * 100);
         } else {
