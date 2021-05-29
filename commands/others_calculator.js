@@ -1,6 +1,11 @@
 const { create, all } = require('mathjs');
 const math = create(all);
-const limitedEvaluate = math.evaluate; // 제한을 걸기 전에 evaluate 함수를 가져옴
+const originEvaluate = math.evaluate; // 오버라이드 전에 원래 evaluate 함수를 가져옴
+
+math.config({
+    number: 'BigNumber',
+    precision: 64
+}); // 기본 자료형을 BigNumber로 설정
 
 math.import(
     {
@@ -28,7 +33,7 @@ function inputExpression(str) {
         .replace(/°/g, 'deg')
         .replace(/√/g, 'sqrt')
         .replace(/\*\*/g, '^')
-        .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (all) => `^(${all.split('').map((v) => '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(v)).join('')})`);
+        .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (all) => `^(${[...all].map((v) => '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(v)).join('')})`);
 }
 
 module.exports = {
@@ -42,7 +47,7 @@ module.exports = {
         }
 
         try {
-            return message.channel.send(String(limitedEvaluate(inputExpression(args.join(' ')))) || 'empty result');
+            return message.channel.send(String(originEvaluate(inputExpression(args.join(' ')))) || 'empty result');
         } catch {
             return message.channel.send('올바르지 않은 수식입니다.');
         }
