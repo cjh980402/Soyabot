@@ -44,14 +44,18 @@ module.exports = {
             collector.on('collect', async (reaction, user) => {
                 try {
                     await reaction.users.remove(user);
-                    if (reaction.emoji.name === '➡️') {
-                        currentPage = (currentPage + 1) % embeds.length;
-                        queueEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                    } else if (reaction.emoji.name === '⬅️') {
-                        currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        queueEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
-                    } else if (reaction.emoji.name === '⏹') {
-                        collector.stop();
+                    switch (reaction.emoji.name) {
+                        case '➡️':
+                            currentPage = (currentPage + 1) % embeds.length;
+                            helpEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                            break;
+                        case '⬅️':
+                            currentPage = (currentPage - 1 + embeds.length) % embeds.length;
+                            helpEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                            break;
+                        case '⏹':
+                            collector.stop();
+                            break;
                     }
                 } catch {
                     return message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');

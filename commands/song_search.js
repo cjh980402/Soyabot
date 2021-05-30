@@ -43,16 +43,15 @@ module.exports = {
                 await client.commands.find((cmd) => cmd.command.includes('play')).execute(message, [resultsEmbed.fields[+song - 1].name]);
             }
 
-            rslt.first().delete();
+            if (rslt.first().deletable) {
+                rslt.first().delete();
+            }
         } catch (e) {
-            if (e.message === 'Missing Permissions') {
-                message.channel.send('**권한이 없습니다 - [MANAGE_MESSAGES]**');
-            } else if (!(e instanceof Collection)) {
-                // awaitMessages에서 발생한 시간초과 에러는 Collection<Snowflake, Message>
-                replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+            if (!(e instanceof Collection)) {
+                throw e; // 시간초과 에러(Collection<Snowflake, Message>)가 아닌 경우 에러를 다시 throw
             }
         } finally {
-            if (!resultsMessage.deleted) {
+            if (resultsMessage?.deletable) {
                 resultsMessage.delete();
             }
         }
