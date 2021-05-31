@@ -18,7 +18,7 @@ module.exports = {
         collector.once('collect', () => {
             collector.stop();
             if (dice?.deletable) {
-                dice.delete({ timeout: 1000 });
+                dice.delete();
             }
             this.execute(message);
         });
