@@ -67,12 +67,10 @@ module.exports.play = async function (song, guild) {
             }
         }
     } catch (e) {
-        if (queue) {
-            queue.songs.shift();
-            module.exports.play(queue.songs[0], guild);
-        }
         console.error(e);
-        return queue.textChannel.send(`오류 발생: ${e.message ?? e}`);
+        queue.songs.shift();
+        queue.textChannel.send(`오류 발생: ${e.message ?? e}`)
+        return module.exports.play(queue.songs[0], guild);
     }
 
     if (queue.connection.listenerCount('disconnect') === 1) {
