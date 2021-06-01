@@ -14,11 +14,11 @@ module.exports.adminChat = async function (message) {
         // 노드 코드 실행 후 출력
         const funcBody = fullContent.substr(1).trim().split('\n'); // 긴 코드 테스트를 위해 fullContent 이용
         funcBody.push(`return ${funcBody.pop()};`); // 함수의 마지막 줄 내용은 자동으로 반환
-        message.channel.send(String(await eval(`(async () => {\n${funcBody.join('\n')}\n})()`)) || 'empty message', { split: { char: '' } });
+        message.channel.send(String(await eval(`(async () => {\n${funcBody.join('\n')}\n})()`)) || '\u200b', { split: { char: '' } });
         // eval의 내부가 async 함수의 리턴값이므로 await까지 해준다.
     } else if (fullContent.startsWith(')')) {
         // 콘솔 명령 실행 후 출력
-        message.channel.send((await module.exports.cmd(fullContent.substr(1).trim(), true)) || 'empty message', { split: { char: '' } });
+        message.channel.send((await module.exports.cmd(fullContent.substr(1).trim(), true)) || '\u200b', { split: { char: '' } });
     } else if (room) {
         // 원하는 방에 봇으로 채팅 전송 (텍스트 채널 ID 이용)
         const rslt = replyRoomID(room, fullContent.substr(room.length + 3));
