@@ -30,8 +30,8 @@ module.exports = {
             lyricsEmbed.setTitle(`**"${search}"의 가사**`).setDescription('검색된 노래가 없습니다.');
         }
 
-        if (lyricsEmbed.description.length > 2048) {
-            lyricsEmbed.description = `${lyricsEmbed.description.substr(0, 2045)}...`;
+        if (lyricsEmbed.description.length > 2000) {
+            lyricsEmbed.description = `${lyricsEmbed.description.substr(0, 1997)}...`;
         }
         return message.channel.send(lyricsEmbed);
     }

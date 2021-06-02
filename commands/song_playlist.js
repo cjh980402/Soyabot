@@ -87,8 +87,8 @@ module.exports = {
             .setColor('#FF9999')
             .setTimestamp();
 
-        if (playlistEmbed.description.length > 2048) {
-            playlistEmbed.description = `${playlistEmbed.description.substr(0, 2045)}...`;
+        if (playlistEmbed.description.length > 2000) {
+            playlistEmbed.description = `${playlistEmbed.description.substr(0, 1997)}...`;
         }
 
         if (serverQueue) {

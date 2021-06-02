@@ -7,8 +7,8 @@ function generateWeatherEmbed(local, weatherDesc) {
     for (let i = 0; i < weatherDesc.length; i++) {
         const embed = new MessageEmbed().setTitle(`**${local}**`).setColor('#FF9999').setDescription(weatherDesc[i]).setTimestamp();
 
-        if (embed.description.length > 2048) {
-            embed.description = `${embed.description.substr(0, 2045)}...`;
+        if (embed.description.length > 2000) {
+            embed.description = `${embed.description.substr(0, 1997)}...`;
         }
         embeds.push(embed);
     }
