@@ -69,7 +69,7 @@ module.exports.play = async function (song, guild) {
     } catch (e) {
         console.error(e);
         queue.songs.shift();
-        queue.textChannel.send(`오류 발생: ${e.message ?? e}`)
+        queue.textChannel.send(`오류 발생: ${e.message ?? e}`);
         return module.exports.play(queue.songs[0], guild);
     }
 
@@ -186,8 +186,10 @@ module.exports.play = async function (song, guild) {
 
     collector.once('end', async () => {
         const find = await db.get('SELECT * FROM pruningskip WHERE channelid = ?', [guild.id]);
-        if (!find && playingMessage?.deletable) {
-            playingMessage.delete();
+        if (!find) {
+            try {
+                playingMessage.delete();
+            } catch {}
         }
     });
 };

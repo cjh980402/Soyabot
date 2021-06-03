@@ -43,17 +43,17 @@ module.exports = {
                 await client.commands.find((cmd) => cmd.command.includes('play')).execute(message, [resultsEmbed.fields[+song - 1].name]);
             }
 
-            if (rslt.first().deletable) {
+            try {
                 rslt.first().delete();
-            }
+            } catch {}
         } catch (e) {
             if (!(e instanceof Collection)) {
                 throw e; // 시간초과 에러(Collection<Snowflake, Message>)가 아닌 경우 에러를 다시 throw
             }
         } finally {
-            if (resultsMessage?.deletable) {
+            try {
                 resultsMessage.delete();
-            }
+            } catch {}
         }
     }
 };
