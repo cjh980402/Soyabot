@@ -19,7 +19,7 @@ module.exports = {
             message.channel.send(i);
             await sleep(1000); // 3초 카운트 다운 로직
         }
-        message.channel.send(`대결할 문장: ${choice.split('').join('\u200b')}\n\n위 문장으로 대결을 수행합니다.`);
+        message.channel.send(`대결할 문장: ${[...choice].join('\u200b')}\n\n위 문장으로 대결을 수행합니다.`);
 
         const start = Date.now();
         const winMessage = (await message.channel.awaitMessages((msg) => msg.content === choice, { max: 1, time: 40000, errors: ['time'] })).first();
