@@ -28,6 +28,7 @@
     "deepai": "^1.0.17",
     "discord.js": "^12.5.3",
     "entities": "^2.2.0",
+    "erlpack": "github:discord/erlpack",
     "express": "^4.17.1",
     "ffmpeg-static": "^4.3.0",
     "form-data": "^4.0.0",
@@ -43,7 +44,8 @@
     "string-progressbar": "^1.0.4",
     "utf-8-validate": "^5.0.5",
     "ytdl-core": "^4.8.2",
-    "ytsr": "^3.5.0"
+    "ytsr": "^3.5.0",
+    "zlib-sync": "^0.1.7"
   },
   "scripts": {
     "start": "forever start -o ./log/out.log -e ./log/err.log index.js",
