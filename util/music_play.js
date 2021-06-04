@@ -35,8 +35,8 @@ module.exports.QueueElement = class {
     }
 };
 
-module.exports.play = async function (song, guild) {
-    const queue = client.queue.get(guild.id);
+module.exports.play = async function (queue, guild) {
+    const song = queue.songs[0];
 
     if (!song) {
         client.queue.delete(guild.id);
@@ -70,7 +70,7 @@ module.exports.play = async function (song, guild) {
         console.error(e);
         queue.songs.shift();
         queue.textChannel.send(`오류 발생: ${e.message ?? e}`);
-        return module.exports.play(queue.songs[0], guild);
+        return module.exports.play(queue, guild);
     }
 
     if (queue.connection.listenerCount('disconnect') === 1) {
@@ -91,7 +91,7 @@ module.exports.play = async function (song, guild) {
             } else {
                 queue.songs.shift();
             }
-            module.exports.play(queue.songs[0], guild); // 재귀적으로 다음 곡 재생
+            module.exports.play(queue, guild); // 재귀적으로 다음 곡 재생
         })
         .once('error', async (e) => {
             while (!collector) {
@@ -101,7 +101,7 @@ module.exports.play = async function (song, guild) {
             queue.textChannel.send('재생할 수 없는 동영상입니다.');
             replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             queue.songs.shift();
-            module.exports.play(queue.songs[0], guild);
+            module.exports.play(queue, guild);
         });
 
     const playingMessage = await queue.textChannel.send(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
