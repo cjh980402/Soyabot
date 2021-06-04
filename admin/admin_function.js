@@ -37,7 +37,7 @@ module.exports.cmd = async function (command, returnRslt = false) {
         try {
             return (await exec(command)).stdout.replace(/\u001b\[.*?[@-~]|\n$/g, ''); // 제어 문자와 맨 끝 개행 제거
         } catch (e) {
-            return String(e);
+            return String(e).replace(/\n$/, '');
         }
     } else {
         return exec(command);

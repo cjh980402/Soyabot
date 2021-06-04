@@ -49,7 +49,6 @@ module.exports = {
 
         let playlist = null,
             videos = null;
-
         try {
             if (scVideo) {
                 playlist = await scdl.getSetInfo(`https://soundcloud.com/${scVideo}`);
