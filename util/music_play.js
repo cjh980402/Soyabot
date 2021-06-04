@@ -188,7 +188,7 @@ module.exports.play = async function (song, guild) {
         const find = await db.get('SELECT * FROM pruningskip WHERE channelid = ?', [guild.id]);
         if (!find) {
             try {
-                playingMessage.delete();
+                await playingMessage.delete();
             } catch {}
         }
     });

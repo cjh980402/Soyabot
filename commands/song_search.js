@@ -44,7 +44,7 @@ module.exports = {
             }
 
             try {
-                rslt.first().delete();
+                await rslt.first().delete();
             } catch {}
         } catch (e) {
             if (!(e instanceof Collection)) {
@@ -52,7 +52,7 @@ module.exports = {
             }
         } finally {
             try {
-                resultsMessage.delete();
+                await resultsMessage.delete();
             } catch {}
         }
     }
