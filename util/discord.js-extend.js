@@ -3,7 +3,6 @@ const fetch = require('node-fetch');
 const { decodeHTML } = require('entities');
 const { inspect } = require('util');
 const originReply = Discord.Message.prototype.reply; // 기본으로 정의된 reply 메소드
-const originStop = Discord.Collector.prototype.stop; // 기본으로 정의된 stop 메소드
 globalThis.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 Object.defineProperty(Discord.Message.prototype, 'fullContent', {
@@ -21,14 +20,6 @@ Object.defineProperty(Discord.Message.prototype, 'reply', {
     value: function (content, options = {}) {
         options.reply = { failIfNotExists: false };
         return originReply.call(this, content, options);
-    }
-});
-
-Object.defineProperty(Discord.Collector.prototype, 'stop', {
-    // collect 이벤트 리스너를 자동으로 삭제하기 위한 메소드 재정의
-    value: function (reason = 'user') {
-        this.removeAllListeners('collect');
-        return originStop.call(this, reason);
     }
 });
 
