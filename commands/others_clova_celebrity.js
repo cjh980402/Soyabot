@@ -1,4 +1,5 @@
 const { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } = require('../soyabot_config.json');
+const { getMessageImage } = require('../util/soyabot_util');
 const fetch = require('node-fetch');
 const FormData = require('form-data');
 
@@ -30,17 +31,13 @@ async function clova_celebrity(url) {
     return rslt;
 }
 
-function getMessageImage(message) {
-    return message?.attachments.first()?.height ? message.attachments.first().url : null;
-}
-
 module.exports = {
     usage: `${client.prefix}닮은꼴`,
     command: ['닮은꼴', 'ㄷㅇㄲ'],
     description: '- 원하는 사진과 함께 명령어를 사용하면 얼굴을 분석한 후 닮은 유명인을 알려줍니다.',
     type: ['기타'],
     async execute(message) {
-        const imageURL = getMessageImage(message) ?? getMessageImage(message.channel.messages.cache.get(message.reference?.messageID));
+        const imageURL = await getMessageImage(message);
         if (!imageURL) {
             return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
         } else {

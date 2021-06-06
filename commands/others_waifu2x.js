@@ -1,10 +1,7 @@
 const { DEEP_API_KEY } = require('../soyabot_config.json');
+const { getMessageImage } = require('../util/soyabot_util');
 const deepai = require('deepai');
 deepai.setApiKey(DEEP_API_KEY);
-
-function getMessageImage(message) {
-    return message?.attachments.first()?.height ? message.attachments.first().url : null;
-}
 
 module.exports = {
     usage: `${client.prefix}확대`,
@@ -12,7 +9,7 @@ module.exports = {
     description: '- 원하는 사진과 함께 명령어를 사용하면 waifu2x를 사용하여 노이즈 제거와 함께 사진을 확대합니다.',
     type: ['기타'],
     async execute(message) {
-        const imageURL = getMessageImage(message) ?? getMessageImage(message.channel.messages.cache.get(message.reference?.messageID));
+        const imageURL = await getMessageImage(message);
         if (!imageURL) {
             return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
         } else {

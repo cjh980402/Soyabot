@@ -25,7 +25,7 @@ module.exports.adminChat = async function (message) {
         message.channel.send(rslt ? '채팅이 전송되었습니다.' : '존재하지 않는 방입니다.');
     } else if (message.channel.recipient?.id === ADMIN_ID && message.reference) {
         // 건의 답변 기능
-        const suggestRefer = message.channel.messages.cache.get(message.reference.messageID);
+        const suggestRefer = await message.channel.messages.fetch(message.reference.messageID, false);
         const target = client.suggestionChat[suggestRefer?.content.split('\n')[0]];
         target?.reply(fullContent);
         message.channel.send(target ? '건의 답변을 보냈습니다.' : '해당하는 건의의 정보가 존재하지 않습니다.');
