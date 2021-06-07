@@ -6,7 +6,7 @@ module.exports = {
     description: '- 메이플스토리 닉네임을 추천합니다. (2 ~ 6글자)',
     type: ['메이플'],
     async execute(message, args) {
-        const count = +(args[0] ?? 2);
+        const count = Math.trunc(args[0] ?? 2);
         if (isNaN(count) || count < 2 || count > 6) {
             return message.reply('닉네임은 2 ~ 6 글자만 가능합니다.');
         }

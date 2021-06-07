@@ -11,9 +11,9 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const startlev = +args[0];
+        const startlev = Math.trunc(args[0]);
         if (args.length === 2) {
-            const endlev = +args[1];
+            const endlev = Math.trunc(args[1]);
             if (isNaN(startlev) || startlev < 1 || startlev > 299) {
                 return message.channel.send('1 ~ 299 범위의 시작 레벨을 입력해주세요.');
             }

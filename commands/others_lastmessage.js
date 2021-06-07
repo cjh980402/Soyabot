@@ -35,7 +35,7 @@ module.exports = {
                 message.channel.send(userlistEmbed);
 
                 const rslt = await message.channel.awaitMessages((msg) => msg.author.id === message.author.id && !isNaN(msg.content) && 1 <= +msg.content && +msg.content <= targetInfo.size, { max: 1, time: 20000, errors: ['time'] });
-                targetInfo = targetInfo.array()[+rslt.first().content - 1];
+                targetInfo = targetInfo.array()[Math.trunc(rslt.first().content) - 1];
             }
         }
 

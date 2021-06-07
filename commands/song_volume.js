@@ -24,11 +24,13 @@ module.exports = {
         if (isNaN(args[0])) {
             return message.reply('음량 변경을 위해 숫자를 사용해주세요.');
         }
-        if (+args[0] > 100 || +args[0] < 0) {
+
+        const volume = Math.trunc(args[0]);
+        if (volume > 100 || volume < 0) {
             return message.reply('0 ~ 100 범위의 음량만 가능합니다.');
         }
 
-        queue.volume = +args[0];
+        queue.volume = volume;
         queue.connection.dispatcher.setVolume(queue.volume / 100);
         return message.channel.send(`변경된 음량: **${queue.volume}%**`);
     }

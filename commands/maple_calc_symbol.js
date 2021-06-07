@@ -10,8 +10,8 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const startlev = +args[0],
-            endlev = +args[1];
+        const startlev = Math.trunc(args[0]),
+            endlev = Math.trunc(args[1]);
         if (isNaN(startlev) || startlev < 1 || startlev > 20) {
             return message.channel.send('1 ~ 20 범위의 시작 레벨을 입력해주세요.');
         }

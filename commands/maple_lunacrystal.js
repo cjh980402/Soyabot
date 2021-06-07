@@ -50,7 +50,7 @@ module.exports = {
             return message.channel.send(rslt);
         }
 
-        const count = +(args[1] ?? 1);
+        const count = Math.trunc(args[1] ?? 1);
         if (isNaN(count) || count < 1 || count > 20000) {
             return message.channel.send('1 ~ 20000 범위의 숫자만 입력가능합니다.');
         }

@@ -18,7 +18,8 @@ module.exports = {
         } else if (message.guild.memberCount < 3) {
             return message.reply('소야봇을 제외한 방의 인원이 2명 이상일 때 게임을 이용할 수 있습니다.');
         }
-        const bullet = isNaN(args[0]) || +args[0] < 2 || +args[0] > 20 ? 6 : +args[0]; // 탄환 수 지정
+        const count = Math.trunc(args[0]);
+        const bullet = isNaN(count) || count < 2 || count > 20 ? 6 : count; // 탄환 수 지정
         const gameUser = [message.member]; // 참가자 객체 배열
         message.channel.send(`게임을 시작하셨습니다.\n${client.prefix}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${gameUser[0].nickname ?? gameUser[0].user.username}`);
         for (let gameChatType = 0; ; ) {

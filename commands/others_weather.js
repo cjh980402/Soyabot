@@ -38,7 +38,7 @@ module.exports = {
             message.channel.send(locallistEmbed);
 
             const rslt = await message.channel.awaitMessages((msg) => msg.author.id === message.author.id && !isNaN(msg.content) && 1 <= +msg.content && +msg.content <= searchRslt.length, { max: 1, time: 20000, errors: ['time'] });
-            targetLocal = searchRslt[+rslt.first().content - 1];
+            targetLocal = searchRslt[Math.trunc(rslt.first().content) - 1];
         }
 
         const $ = load(await (await fetch(`https://weather.naver.com/today/${targetLocal[1][0]}`)).text());

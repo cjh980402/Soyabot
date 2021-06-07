@@ -93,7 +93,7 @@ module.exports = {
         }
 
         if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
-            const startlev = +args[1];
+            const startlev = Math.trunc(args[1]);
             let rslt = `<${startlev}레벨 기준 확률>`;
             if (isNaN(startlev) || startlev < 141 || startlev > 199) {
                 return message.channel.send('141 ~ 199 범위의 기준 레벨을 입력해주세요.');
@@ -104,9 +104,9 @@ module.exports = {
             return message.channel.send(rslt);
         }
 
-        const startlev = +args[0];
+        const startlev = Math.trunc(args[0]);
         if (args.length === 2) {
-            const endlev = +args[1];
+            const endlev = Math.trunc(args[1]);
             if (isNaN(startlev) || startlev < 141 || startlev > 199) {
                 return message.channel.send('141 ~ 199 범위의 시작 레벨을 입력해주세요.');
             }

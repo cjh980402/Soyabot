@@ -40,7 +40,7 @@ module.exports = {
             const rslt = await message.channel.awaitMessages((msg) => msg.author.id === message.author.id && (songChoice = msg.content.split(',')).every((v) => !isNaN(v) && 1 <= +v && +v <= results.length), { max: 1, time: 20000, errors: ['time'] });
 
             for (let song of songChoice) {
-                await client.commands.find((cmd) => cmd.command.includes('play')).execute(message, [resultsEmbed.fields[+song - 1].name]);
+                await client.commands.find((cmd) => cmd.command.includes('play')).execute(message, [resultsEmbed.fields[Math.trunc(song) - 1].name]);
             }
 
             try {

@@ -23,19 +23,21 @@ module.exports = {
         if (queue.songs.length < 2) {
             return message.reply('현재 대기열에서 건너뛸 수 있는 노래가 없습니다.');
         }
-        if (+args[0] < 2 || +args[0] > queue.songs.length) {
+
+        const skipto = Math.trunc(args[0]);
+        if (skipto < 2 || skipto > queue.songs.length) {
             return message.reply(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래로 건너뛸 수 있습니다.`);
         }
 
         queue.playing = true;
         if (queue.loop) {
-            for (let i = 0; i < args[0] - 2; i++) {
+            for (let i = 0; i < skipto - 2; i++) {
                 queue.songs.push(queue.songs.shift());
             }
         } else {
-            queue.songs = queue.songs.slice(args[0] - 2);
+            queue.songs = queue.songs.slice(skipto - 2);
         }
         queue.connection.dispatcher.end();
-        return message.channel.send(`${message.author} ⏭ ${args[0] - 1}개의 노래를 건너뛰었습니다.`);
+        return message.channel.send(`${message.author} ⏭ ${skipto - 1}개의 노래를 건너뛰었습니다.`);
     }
 };
