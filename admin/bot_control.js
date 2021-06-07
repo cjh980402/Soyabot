@@ -21,8 +21,8 @@ module.exports.replyRoomID = function (roomID, str) {
     return target;
 };
 
-module.exports.replyAdmin = function (str) {
-    const admin = client.users.cache.get(ADMIN_ID);
+module.exports.replyAdmin = async function (str) {
+    const admin = await client.users.fetch(ADMIN_ID);
     admin?.send(str, { split: { char: '' } }); // 관리자에게 DM으로 보냄
     return admin;
 };
