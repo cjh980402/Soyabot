@@ -1,9 +1,24 @@
-const Discord = require('discord.js');
+const Discord = require('discord.js-light');
 const fetch = require('node-fetch');
 const { decodeHTML } = require('entities');
 const { inspect } = require('util');
 const originReply = Discord.Message.prototype.reply; // 기본으로 정의된 reply 메소드
 globalThis.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+Object.defineProperty(Discord, 'clientOption', {
+    value: {
+        cacheGuilds: true, // 전체 길드 캐싱
+        cacheChannels: true, // 전체 채널 캐싱
+        cacheRoles: true, // 권한 관련 코드 사용 시 필요
+        cacheOverwrites: true, // 권한 관련 코드 사용 시 필요
+        cacheEmojis: false,
+        cachePresences: false,
+        messageCacheMaxSize: 10,
+        messageEditHistoryMaxSize: 0,
+        messageCacheLifetime: 1800,
+        messageSweepInterval: 3600
+    }
+});
 
 Object.defineProperty(Discord.Message.prototype, 'fullContent', {
     get: async function () {
@@ -20,6 +35,14 @@ Object.defineProperty(Discord.Message.prototype, 'reply', {
     value: function (content, options = {}) {
         options.reply = { failIfNotExists: false };
         return originReply.call(this, content, options);
+    }
+});
+
+Object.defineProperty(Array.prototype, 'asyncFilter', {
+    // async 함수를 사용 가능한 Array의 filter 메소드 구현
+    value: async function (callback) {
+        const fail = Symbol();
+        return (await Promise.all(this.map(async (v) => ((await callback(v)) ? v : fail)))).filter((v) => v !== fail);
     }
 });
 

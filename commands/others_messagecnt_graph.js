@@ -14,11 +14,19 @@ module.exports = {
             return message.channel.send('사용이 불가능한 채널입니다.');
         }
 
-        const roommessage = (await db.all('SELECT * FROM messagedb WHERE channelsenderid LIKE ?', [`${targetChannel.id}%`]))
-            .filter((v) => {
-                const member = targetChannel.members.cache.get(v.channelsenderid.split(' ')[1]);
-                return member && (args[0] !== '-봇' || !member.user.bot);
+        const roommessage = (
+            await (
+                await db.all('SELECT * FROM messagedb WHERE channelsenderid LIKE ?', [`${targetChannel.id}%`])
+            ).asyncFilter(async (v) => {
+                try {
+                    const senderid = v.channelsenderid.split(' ')[1];
+                    v.member = await targetChannel.members.fetch(senderid, false);
+                    return v.member && (args[0] !== '-봇' || !v.member.user.bot);
+                } catch {
+                    return false;
+                }
             })
+        )
             .sort((a, b) => b.messagecnt - a.messagecnt)
             .slice(0, 180); // 내림차순, 상위 180명
         const usercolor = (a) =>
@@ -40,10 +48,7 @@ module.exports = {
         const config = {
             type: 'horizontalBar',
             data: {
-                labels: roommessage.map((v) => {
-                    const member = targetChannel.members.cache.get(v.channelsenderid.split(' ')[1]);
-                    return member.nickname ?? member.user.username;
-                }),
+                labels: roommessage.map((v) => v.member.nickname ?? v.member.user.username),
                 datasets: [
                     {
                         label: '채팅량',

@@ -1,7 +1,7 @@
 /**
  * 모듈 import
  */
-const { Client, Collection } = require('./util/discord.js-extend'); // 제일 처음에 import 해야하는 모듈
+const { Client, Collection, clientOption } = require('./util/discord.js-extend'); // 제일 처음에 import 해야하는 모듈
 const { readdirSync } = require('fs');
 const { TOKEN, PREFIX, ADMIN_ID } = require('./soyabot_config.json');
 const { adminChat, initClient, cmd } = require('./admin/admin_function');
@@ -10,8 +10,8 @@ const cachingMessage = require('./util/message_caching');
 const botChatting = require('./util/bot_chatting');
 const app = require('./util/express_server');
 const sqlite = require('./util/sqlite-handler');
-globalThis.db = new sqlite('./db/soyabot_data.db'); // 여러 기능들에 의해 필수로 최상위 전역
-globalThis.client = new Client({ messageCacheMaxSize: 20, messageEditHistoryMaxSize: 0, messageCacheLifetime: 1800, messageSweepInterval: 3600 }); // 최적화를 위한 옵션 설정
+globalThis.db = new sqlite('./db/soyabot_data.db'); // db와 client는 여러 기능들에 의해 필수로 최상위 전역
+globalThis.client = new Client(clientOption);
 client.commands = []; // 명령어 객체 저장할 배열
 client.queue = new Map(); // 음악기능 정보 저장용
 client.prefix = PREFIX;
@@ -21,9 +21,9 @@ const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((reso
 
 (async () => {
     try {
+        client.botDomain = `${await cmd('curl ifconfig.me', true)}:${app.locals.port}`;
         await client.login(TOKEN);
         await initClient(); // 클라이언트 초기 세팅 함수
-        client.botDomain = `${await cmd('curl ifconfig.me', true)}:${app.locals.port}`;
         /**
          * 모든 명령 import
          */
@@ -57,8 +57,8 @@ client.on('message', async (message) => {
     let commandName;
     try {
         console.log(`(${new Date().toLocaleString()}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username}: ${message.content}\n`);
-        if (message.author.bot) {
-            // 봇 여부 체크
+        if (message.author.bot || message.channel.type !== 'text') {
+            // 봇 여부, 텍스트 채널 여부 체크
             return;
         }
         const permissions = message.channel.permissionsFor?.(client.user);
@@ -117,9 +117,9 @@ client.on('message', async (message) => {
 client.on('voiceStateUpdate', (oldState, newState) => {
     // 유저 음성채팅 상태 변경 이벤트
     try {
-        const oldVoice = oldState.channel;
-        const newVoice = newState.channel;
-        if (oldVoice !== newVoice) {
+        const oldVoice = oldState?.channel;
+        const newVoice = newState?.channel;
+        if ((oldVoice || newVoice) && oldVoice !== newVoice) {
             console.log(!oldVoice ? 'User joined!' : !newVoice ? 'User left!' : 'User switched channels!');
 
             if (newVoice) {

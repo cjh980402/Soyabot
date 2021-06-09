@@ -128,7 +128,7 @@ module.exports.play = async function (queue, guild) {
             if (!queue?.connection.dispatcher) {
                 return collector.stop();
             }
-            if (!canModifyQueue(guild.member(user))) {
+            if (!canModifyQueue(await guild.members.fetch(user.id, false))) {
                 return queue.textChannel.send(`같은 음성 채널에 참가해주세요! (${client.user})`);
             }
 

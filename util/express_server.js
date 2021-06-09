@@ -27,7 +27,7 @@ app.get('/image/:category/:picName', async (req, res) => {
     }
 });
 
-app.get('/:name', async (req, res) => {
+app.get('/:name', (req, res) => {
     // 그 외 경로
     try {
         console.log(`익스프레스 접속 경로\n${decodeURIComponent(req.originalUrl)}`); // request의 원본 경로
@@ -38,7 +38,7 @@ app.get('/:name', async (req, res) => {
     }
 });
 
-app.get('/', async (req, res) => {
+app.get('/', (req, res) => {
     // 메인 화면
     try {
         console.log(`익스프레스 접속 경로\n${decodeURIComponent(req.originalUrl)}`); // request의 원본 경로

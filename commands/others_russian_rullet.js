@@ -37,19 +37,21 @@ module.exports = {
                             return true;
                         }
                     } else if (gameRegExp[1].test(trimContent)) {
-                        if (gameUser.includes(msg.member) && gameUser.length > 1) {
-                            gameChatType = 2;
-                            msg.channel.send('러시안룰렛을 시작합니다.');
-                            return true;
-                        } else if (gameUser.includes(msg.member)) {
-                            msg.channel.send('2명 이상의 참가자가 있어야 시작할 수 있습니다.');
-                            return false;
+                        if (gameUser.some((v) => msg.member.id === v.id)) {
+                            if (gameUser.length > 1) {
+                                gameChatType = 2;
+                                msg.channel.send('러시안룰렛을 시작합니다.');
+                                return true;
+                            } else {
+                                msg.channel.send('2명 이상의 참가자가 있어야 시작할 수 있습니다.');
+                                return false;
+                            }
                         } else {
                             msg.channel.send('게임에 참가한 사람만 시작할 수 있습니다.');
                             return false;
                         }
                     } else if (gameRegExp[2].test(trimContent)) {
-                        if (gameUser.includes(msg.member)) {
+                        if (gameUser.some((v) => msg.member.id === v.id)) {
                             gameChatType = 3;
                             msg.channel.send('게임을 종료합니다.');
                             return true;
@@ -78,21 +80,21 @@ module.exports = {
         const die = Math.floor(Math.random() * bullet); // 0번째 ~ (bullet - 1)번째 탄환 중에서 선택
         for (let i = 0; i < bullet; i++) {
             try {
-                await message.channel.awaitMessages((msg) => msg.member === gameUser[i % gameUser.length] && gameRegExp[3].test(msg.content.trim()), { max: 1, time: 60000, errors: ['time'] });
+                await message.channel.awaitMessages((msg) => msg.member.id === gameUser[i % gameUser.length].id && gameRegExp[3].test(msg.content.trim()), { max: 1, time: 60000, errors: ['time'] });
             } catch {} // 시간 초과돼도 에러 throw 안하게 catch를 해줌
             if (i === die) {
-                const dieUser = message.guild.member(gameUser[i % gameUser.length]);
-                if (dieUser) {
+                try {
+                    const dieUser = await message.guild.members.fetch(gameUser[i % gameUser.length].id, false);
                     return message.channel.send(`🔫 ${dieUser}님이 사망하셨습니다......\n한 판 더 하실?`);
-                } else {
+                } catch {
                     return message.channel.send('사망한 유저가 방에서 나가서 게임이 자동으로 종료됩니다.');
                 }
             } else {
-                const nextUser = message.guild.member(gameUser[(i + 1) % gameUser.length]);
-                if (nextUser) {
+                try {
+                    const nextUser = await message.guild.members.fetch(gameUser[(i + 1) % gameUser.length].id, false);
                     await message.channel.send(`🔫 철컥 (${bullet - (i + 1)}발 남음)`);
                     await message.channel.send(`다음 차례는 ${nextUser}님입니다.`);
-                } else {
+                } catch {
                     return message.channel.send('다음 차례 유저가 방에서 나가서 게임이 자동으로 종료됩니다.');
                 }
             }

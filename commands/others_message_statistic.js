@@ -16,8 +16,9 @@ module.exports = {
         if (args.length === 0) {
             targetInfo = message.member;
         } else if (message.mentions.users.size > 0) {
-            targetInfo = message.guild.member(message.mentions.users.first());
-            if (!targetInfo) {
+            try {
+                targetInfo = await message.guild.members.fetch(message.mentions.users.first().id, false);
+            } catch {
                 return message.channel.send('서버에 존재하지 않는 사람입니다.');
             }
         } else {
