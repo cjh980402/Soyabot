@@ -23,9 +23,9 @@ module.exports = {
     async execute(message) {
         const $ = load(await (await fetch('https://maplestory.nexon.com/News/Event')).text());
         const eventdata = $('.event_all_banner li dl');
-        const links = eventdata.find('dt a').map((i, v) => $(v).attr('href'));
-        const names = eventdata.find('dt a').map((i, v) => $(v).text());
-        const dates = eventdata.find('dd a').map((i, v) => $(v).text());
+        const links = eventdata.find('dt a').map((_, v) => $(v).attr('href'));
+        const names = eventdata.find('dt a').map((_, v) => $(v).text());
+        const dates = eventdata.find('dd a').map((_, v) => $(v).text());
 
         if (links.length === 0) {
             return message.channel.send('현재 진행중인 이벤트가 없습니다.');

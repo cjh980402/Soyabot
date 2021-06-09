@@ -236,7 +236,7 @@ module.exports.MapleUser = class {
     }
 
     LevelHistory() {
-        const data = this.#ggData('body > script').filter((i, v) => /\[\[.+\]\]/.test(this.#ggData(v).html()));
+        const data = this.#ggData('body > script').filter((_, v) => /\[\[.+\]\]/.test(this.#ggData(v).html()));
         if (data.length === 0) {
             return null;
         }
@@ -345,8 +345,8 @@ module.exports.MapleGuild = class {
 
     async memberDataList() {
         const rslt = [];
-        const memberList = this.#memberData.map((i, v) => new module.exports.MapleUser(this.#ggData(v).find('.mb-2 a').eq(1).text()));
-        const updateRslt = await Promise.all(memberList.map(async (i, v) => (await v.isLatest()) || (await v.updateGG())));
+        const memberList = this.#memberData.map((_, v) => new module.exports.MapleUser(this.#ggData(v).find('.mb-2 a').eq(1).text()));
+        const updateRslt = await Promise.all(memberList.map(async (_, v) => (await v.isLatest()) || (await v.updateGG())));
         for (let i = 0; i < this.MemberCount; i++) {
             rslt.push(`[갱신 ${updateRslt[i] ? '성공' : '실패'}] ${this.#memberData.eq(i).find('header > span').text() || '길드원'}: ${memberList[i].Name}, ${memberList[i].Job()} / Lv.${memberList[i].Level()}, 유니온: ${memberList[i].Union()?.[0].toLocaleString() ?? '-'}, 무릉: ${memberList[i].Murung()?.[1] ?? '-'} (${memberList[i].lastActiveDay()})`);
         }
