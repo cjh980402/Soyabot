@@ -16,7 +16,8 @@ Object.defineProperty(Discord, 'clientOption', {
         messageCacheMaxSize: 10,
         messageEditHistoryMaxSize: 0,
         messageCacheLifetime: 1800,
-        messageSweepInterval: 3600
+        messageSweepInterval: 3600,
+        retryLimit: 3
     }
 });
 
