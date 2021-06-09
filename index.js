@@ -44,7 +44,9 @@ client.on('warn', console.log);
 
 client.on('ready', async () => {
     client.user.setActivity(`${client.prefix}help and ${client.prefix}play`, { type: 'LISTENING' });
-    replyAdmin(`${client.user.tag}이 작동 중입니다.\n${app.locals.port}번 포트에서 http 서버가 작동 중입니다.`);
+    replyAdmin(`${client.user.tag}이 작동 중입니다.
+${app.locals.port}번 포트에서 http 서버가 작동 중입니다.
+재가동 경로: http://${client.botDomain}/restart/${app.locals.restartPath}`);
 });
 
 client.on('error', (e) => {
