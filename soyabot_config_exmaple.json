@@ -2,6 +2,7 @@
     "PREFIX": "/",
     "TOKEN": "",
     "ADMIN_ID": "",
+    "ADMIN_IP": "",
     "MAX_PLAYLIST_SIZE": 20,
     "STAY_TIME": 30,
     "DEFAULT_VOLUME": 70,

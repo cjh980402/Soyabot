@@ -1,6 +1,7 @@
 const { readFile } = require('fs').promises;
 const { cmd } = require('../admin/admin_function');
 const { AES } = require('./crypto');
+const { ADMIN_IP } = require('../soyabot_config.json');
 const express = require('express');
 const app = express();
 app.locals.port = 8170;
@@ -24,7 +25,8 @@ app.get('/restart/:path', async (req, res) => {
         console.log(`익스프레스 접속 경로\n${decodeURIComponent(req.originalUrl)}`); // request의 원본 경로
         console.log(`익스프레스 하위 속성\n${req.params._p}\n${req.query._p}`); // 라우팅 하위 경로와 쿼리에 해당하는 부분
         res.end(getServerHTML());
-        if (req.originalUrl.substr(9) === app.locals.restartPath) {
+        if (req.ip === ADMIN_IP && req.originalUrl.substr(9) === app.locals.restartPath) {
+            // 관리자가 해당하는 경로 접속 시 재가동
             console.log('봇 재가동');
             await cmd('npm restart');
         }
