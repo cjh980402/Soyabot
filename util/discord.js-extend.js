@@ -8,9 +8,9 @@ globalThis.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 Object.defineProperty(Discord, 'clientOption', {
     value: {
         cacheGuilds: true, // 전체 길드 캐싱
-        cacheChannels: true, // 전체 채널 캐싱
         cacheRoles: true, // 권한 관련 코드 사용 시 필요
         cacheOverwrites: true, // 권한 관련 코드 사용 시 필요
+        cacheChannels: false,
         cacheEmojis: false,
         cachePresences: false,
         messageCacheMaxSize: 10,
