@@ -21,13 +21,13 @@ module.exports.QueueElement = class {
 
     async textSend(text) {
         try {
-            await this.textChannel.send(text);
+            return await this.textChannel.send(text);
         } catch {
             const channels = await this.textChannel.guild.channels.fetch(false);
             if (!channels.get(this.textChannel.id)) {
                 this.textChannel = channels.find((v) => v.type === 'text');
             }
-            await this.textChannel.send(text);
+            return await this.textChannel.send(text);
         }
     }
 };
