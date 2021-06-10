@@ -1,10 +1,7 @@
-const { MessageEmbed } = require('../util/discord.js-extend');
-const Hangul = require('hangul-js');
-
 module.exports = {
-    usage: `${client.prefix}채팅량 (닉네임)`,
+    usage: `${client.prefix}채팅량 (멘션)`,
     command: ['채팅량', 'ㅊㅌㄹ'],
-    description: '- 해당하는 닉네임의 채팅 통계를 보여줍니다. 닉네임을 생략 시에는 본인의 채팅 통계를 보여줍니다.',
+    description: '- 첫번째 멘션에 해당하는 유저의 채팅 통계를 보여줍니다. 멘션을 생략 시에는 본인의 채팅 통계를 보여줍니다.',
     channelCool: true,
     type: ['기타'],
     async execute(message, args) {
@@ -20,24 +17,6 @@ module.exports = {
                 targetInfo = await message.guild.members.fetch(message.mentions.users.first().id, false);
             } catch {
                 return message.channel.send('서버에 존재하지 않는 사람입니다.');
-            }
-        } else {
-            const targetNick = message.content.substr(message.content.indexOf(args[0])).trim();
-            targetInfo = message.guild.members.cache.filter((v) => (v.nickname ?? v.user.username).includes(targetNick));
-            if (targetInfo.size === 0) {
-                return message.channel.send('서버에 존재하지 않는 사람입니다.');
-            } else if (targetInfo.size === 1) {
-                targetInfo = targetInfo.first();
-            } else {
-                const userlistEmbed = new MessageEmbed()
-                    .setTitle(`**${targetNick}${Hangul.endsWithConsonant(targetNick) ? '을' : '를'} 포함한 닉네임**`)
-                    .setDescription(targetInfo.array().map((v, i) => `${i + 1}. ${v.nickname ?? v.user.username}`))
-                    .setColor('#FF9999')
-                    .setTimestamp();
-                message.channel.send(userlistEmbed);
-
-                const rslt = await message.channel.awaitMessages((msg) => msg.author.id === message.author.id && !isNaN(msg.content) && 1 <= +msg.content && +msg.content <= targetInfo.size, { max: 1, time: 20000, errors: ['time'] });
-                targetInfo = targetInfo.array()[Math.trunc(rslt.first().content) - 1];
             }
         }
 
