@@ -10,7 +10,7 @@ module.exports.QueueElement = class {
     songs;
     connection = null;
     loop = false;
-    volume = DEFAULT_VOLUME ?? 100;
+    volume = DEFAULT_VOLUME;
     playing = true;
 
     constructor(textChannel, voiceChannel, songs) {
@@ -23,11 +23,13 @@ module.exports.QueueElement = class {
         try {
             return await this.textChannel.send(text);
         } catch {
-            const channels = await this.textChannel.guild.channels.fetch(false);
-            if (!channels.get(this.textChannel.id)) {
-                this.textChannel = channels.find((v) => v.type === 'text');
-            }
-            return await this.textChannel.send(text);
+            try {
+                const channels = await this.textChannel.guild.channels.fetch(false);
+                if (!channels.get(this.textChannel.id)) {
+                    this.textChannel = channels.find((v) => v.type === 'text') ?? this.textChannel;
+                }
+                return await this.textChannel.send(text);
+            } catch {}
         }
     }
 };
@@ -147,7 +149,7 @@ module.exports.play = async function (queue, guild) {
                     collector.stop();
                     break;
                 case '🔇':
-                    queue.volume = queue.volume <= 0 ? DEFAULT_VOLUME ?? 100 : 0;
+                    queue.volume = queue.volume <= 0 ? DEFAULT_VOLUME : 0;
                     queue.connection.dispatcher.setVolume(queue.volume / 100);
                     queue.textSend(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
                     break;

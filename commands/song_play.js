@@ -21,8 +21,11 @@ module.exports = {
 
         const { channel } = message.member.voice;
         const serverQueue = client.queue.get(message.guild.id);
-        if (!channel || (serverQueue && channel !== message.guild.me.voice.channel)) {
-            return message.reply(`같은 음성 채널에 참가해주세요! (${client.user})`);
+        if (!channel) {
+            return message.reply('음성 채널에 먼저 참가해주세요!');
+        }
+        if (serverQueue && channel.id !== message.guild.me.voice.channel.id) {
+            return message.reply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
         if (args.length < 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
