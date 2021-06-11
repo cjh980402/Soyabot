@@ -3,20 +3,20 @@ module.exports = {
     command: ['최근챗', 'ㅊㄱㅊ'],
     channelCool: true,
     type: ['기타'],
-    async execute(message, args) {
+    async execute(message) {
         if (!message.guild) {
             return message.channel.send('사용이 불가능한 채널입니다.');
         }
 
         let targetInfo;
-        if (args.length === 0) {
-            targetInfo = message.member;
-        } else if (message.mentions.users.size > 0) {
+        if (message.mentions.users.size > 0) {
             try {
                 targetInfo = await message.guild.members.fetch(message.mentions.users.first().id, false);
             } catch {
                 return message.channel.send('서버에 존재하지 않는 사람입니다.');
             }
+        } else {
+            targetInfo = message.member;
         }
 
         const messagestat = await db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [`${message.guild.id} ${targetInfo.user.id}`]);
