@@ -23,7 +23,7 @@ module.exports.adminChat = async function (message) {
         // 원하는 방에 봇으로 채팅 전송 (텍스트 채널 ID 이용)
         const rslt = await replyRoomID(room, fullContent.substr(room.length + 3));
         message.channel.send(rslt ? '채팅이 전송되었습니다.' : '존재하지 않는 방입니다.');
-    } else if (message.channel.recipient?.id === ADMIN_ID && message.reference) {
+    } else if (message.channel.type === 'dm' && message.author.id === ADMIN_ID && message.reference) {
         // 건의 답변 기능
         const suggestRefer = await message.channel.messages.fetch(message.reference.messageID, false);
         const target = client.suggestionChat[suggestRefer?.content.split('\n')[0]];
