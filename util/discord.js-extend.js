@@ -17,7 +17,8 @@ Object.defineProperty(Discord, 'clientOption', {
         messageEditHistoryMaxSize: 0,
         messageCacheLifetime: 1800,
         messageSweepInterval: 3600,
-        retryLimit: 3
+        retryLimit: 3,
+        ws: { intents: ['GUILDS', 'GUILD_VOICE_STATES', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'DIRECT_MESSAGES', 'DIRECT_MESSAGE_REACTIONS'] }
     }
 });
 
