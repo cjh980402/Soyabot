@@ -14,7 +14,7 @@ module.exports = {
     type: ['기타'],
     async execute(message, args) {
         if (!message.guild) {
-            return message.reply('사용이 불가능한 채널입니다.'); // 그룹톡 여부 체크
+            return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         } else if (message.guild.memberCount < 3) {
             return message.reply('소야봇을 제외한 방의 인원이 2명 이상일 때 게임을 이용할 수 있습니다.');
         }

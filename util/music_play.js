@@ -128,7 +128,7 @@ module.exports.play = async function (queue, guild) {
                 return collector.stop();
             }
             if (!canModifyQueue(await guild.members.fetch(user.id, false))) {
-                return queue.textSend(`같은 음성 채널에 참가해주세요! (${client.user})`);
+                return queue.textSend(`${client.user}과 같은 음성 채널에 참가해주세요!`);
             }
 
             switch (reaction.emoji.name) {

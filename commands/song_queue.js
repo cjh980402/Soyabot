@@ -20,7 +20,7 @@ module.exports = {
     type: ['음악'],
     async execute(message) {
         if (!message.guild) {
-            return message.reply('사용이 불가능한 채널입니다.'); // 그룹톡 여부 체크
+            return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
         const queue = client.queues.get(message.guild.id);

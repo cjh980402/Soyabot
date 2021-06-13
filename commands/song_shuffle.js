@@ -7,7 +7,7 @@ module.exports = {
     type: ['음악'],
     async execute(message) {
         if (!message.guild) {
-            return message.reply('사용이 불가능한 채널입니다.'); // 그룹톡 여부 체크
+            return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
         const queue = client.queues.get(message.guild.id);
@@ -15,7 +15,7 @@ module.exports = {
             return message.reply('재생 중인 노래가 없습니다.');
         }
         if (!canModifyQueue(message.member)) {
-            return message.reply(`같은 음성 채널에 참가해주세요! (${client.user})`);
+            return message.reply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
 
         const songs = queue.songs; // 배열도 객체의 일종이므로 songs를 변경시 원본이 변경된다.

@@ -14,7 +14,7 @@ module.exports = {
     type: ['메이플'],
     async execute(message, args) {
         if (!message.guild) {
-            return message.reply('사용이 불가능한 채널입니다.'); // 그룹톡 여부 체크
+            return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
         if (!noticematch[args[0]]) {
             const notice = [];

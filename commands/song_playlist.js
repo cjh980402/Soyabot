@@ -17,7 +17,7 @@ module.exports = {
     type: ['음악'],
     async execute(message, args) {
         if (!message.guild) {
-            return message.reply('사용이 불가능한 채널입니다.'); // 그룹톡 여부 체크
+            return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
         const { channel } = message.member.voice;
@@ -37,7 +37,7 @@ module.exports = {
             return message.reply('권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.');
         }
         if (!permissions.has('SPEAK')) {
-            return message.reply('이 음성 채널에서 말을 할 수 없습니다. 적절한 권한이 있는지 확인해야합니다.');
+            return message.reply('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
         }
 
         const url = args[0];
