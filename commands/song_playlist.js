@@ -21,7 +21,7 @@ module.exports = {
         }
 
         const { channel } = message.member.voice;
-        const serverQueue = client.queue.get(message.guild.id);
+        const serverQueue = client.queues.get(message.guild.id);
         if (!channel) {
             return message.reply('음성 채널에 먼저 참가해주세요!');
         }
@@ -106,12 +106,12 @@ module.exports = {
             newQueue.connection = await channel.join();
             newQueue.connection.once('error', () => newQueue.connection.disconnect());
             await newQueue.connection.voice.setSelfDeaf(true);
-            client.queue.set(message.guild.id, newQueue);
+            client.queues.set(message.guild.id, newQueue);
             play(newQueue, message.guild);
         } catch (e) {
             replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             channel.leave();
-            client.queue.delete(message.guild.id);
+            client.queues.delete(message.guild.id);
             return message.channel.send(`채널에 참가할 수 없습니다: ${e.message ?? e}`);
         }
     }

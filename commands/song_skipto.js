@@ -13,7 +13,7 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const queue = client.queue.get(message.guild.id);
+        const queue = client.queues.get(message.guild.id);
         if (!queue?.connection.dispatcher) {
             return message.reply('재생 중인 노래가 없습니다.');
         }

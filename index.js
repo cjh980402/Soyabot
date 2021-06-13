@@ -13,7 +13,7 @@ const sqlite = require('./util/sqlite-handler');
 globalThis.db = new sqlite('./db/soyabot_data.db'); // db와 client는 여러 기능들에 의해 필수로 최상위 전역
 globalThis.client = new Client(clientOption);
 client.commands = []; // 명령어 객체 저장할 배열
-client.queue = new Map(); // 음악기능 정보 저장용
+client.queues = new Map(); // 음악기능 정보 저장용
 client.prefix = PREFIX;
 const cooldowns = new Set(); // 중복 명령 방지할 set
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // 정규식 내부에서 일부 특수 문자를 그대로 취급하기 위해 사용자 입력을 이스케이프로 치환하는 함수
@@ -127,7 +127,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
             console.log(!oldVoice ? 'User joined!' : !newVoice ? 'User left!' : 'User switched channels!');
 
             if (newVoice) {
-                const newQueue = client.queue.get(newVoice.guild.id);
+                const newQueue = client.queues.get(newVoice.guild.id);
                 if (newQueue?.connection && !newQueue.playing && newVoice.id === newQueue.voiceChannel.id && newVoice.members.size === 2) {
                     newQueue.connection.dispatcher?.resume();
                     newQueue.textSend('대기열을 다시 재생합니다.');
@@ -136,7 +136,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
             }
 
             if (oldVoice) {
-                const oldQueue = client.queue.get(oldVoice.guild.id);
+                const oldQueue = client.queues.get(oldVoice.guild.id);
                 if (oldQueue?.connection && oldVoice.id === oldQueue.voiceChannel.id && oldVoice.members.size === 1) {
                     // 봇만 음성 채널에 있는 경우
                     if (oldQueue.playing) {
@@ -145,7 +145,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                         oldQueue.playing = false;
                     }
                     setTimeout(() => {
-                        const queue = client.queue.get(oldVoice.guild.id);
+                        const queue = client.queues.get(oldVoice.guild.id);
                         if (queue?.connection && oldVoice.id === queue.voiceChannel.id && oldVoice.members.size === 1) {
                             // 5분이 지나도 봇만 음성 채널에 있는 경우
                             queue.songs = [];

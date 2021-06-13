@@ -38,10 +38,10 @@ module.exports.play = async function (queue, guild) {
     const song = queue.songs[0];
 
     if (!song) {
-        client.queue.delete(guild.id);
+        client.queues.delete(guild.id);
         setTimeout(() => {
             // 종료 후 새로운 음악 기능이 수행 중이면 나가지 않음
-            const newQueue = client.queue.get(guild.id);
+            const newQueue = client.queues.get(guild.id);
             if (!newQueue && guild.me.voice.channel) {
                 guild.me.voice.channel.leave(); // 봇이 참가한 음성 채널을 떠남
                 queue.textSend(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
@@ -74,7 +74,7 @@ module.exports.play = async function (queue, guild) {
 
     if (queue.connection.listenerCount('disconnect') === 1) {
         // 1개는 디스코드 내부에서 등록을 하기 때문에 개수를 확인
-        queue.connection.once('disconnect', () => client.queue.delete(guild.id)); // 연결 끊기면 자동으로 큐를 삭제하는 리스너 등록
+        queue.connection.once('disconnect', () => client.queues.delete(guild.id)); // 연결 끊기면 자동으로 큐를 삭제하는 리스너 등록
     }
 
     let collector = null;
