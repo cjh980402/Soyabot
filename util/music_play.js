@@ -77,13 +77,24 @@ module.exports.play = async function (queue, guild) {
         queue.connection.once('disconnect', () => client.queues.delete(guild.id)); // 연결 끊기면 자동으로 큐를 삭제하는 리스너 등록
     }
 
-    let collector = null;
+    const playingMessage = await queue.textSend(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
+    const filter = (_, user) => user.id !== client.user.id;
+    const collector = playingMessage
+        .createReactionCollector(filter, {
+            time: song.duration > 0 ? song.duration * 1000 : 600000
+        })
+        .once('end', async () => {
+            const find = await db.get('SELECT * FROM pruningskip WHERE channelid = ?', [guild.id]);
+            if (!find) {
+                try {
+                    await playingMessage.delete();
+                } catch {}
+            }
+        });
+
     queue.connection
         .play(stream, { type: streamType, volume: queue.volume / 100 })
         .once('finish', async () => {
-            while (!collector) {
-                await sleep(500);
-            }
             collector.stop();
             if (queue.loop) {
                 queue.songs.push(queue.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣음 -> 루프 발생
@@ -93,9 +104,6 @@ module.exports.play = async function (queue, guild) {
             module.exports.play(queue, guild); // 재귀적으로 다음 곡 재생
         })
         .once('error', async (e) => {
-            while (!collector) {
-                await sleep(500);
-            }
             collector.stop();
             queue.textSend('재생할 수 없는 동영상입니다.');
             replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
@@ -103,7 +111,6 @@ module.exports.play = async function (queue, guild) {
             module.exports.play(queue, guild);
         });
 
-    const playingMessage = await queue.textSend(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
     try {
         await playingMessage.react('⏯');
         await playingMessage.react('⏭');
@@ -113,13 +120,8 @@ module.exports.play = async function (queue, guild) {
         await playingMessage.react('🔁');
         await playingMessage.react('⏹');
     } catch {
-        queue.textSend('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
+        return; // 에러 발생 시 종료
     }
-
-    const filter = (_, user) => user.id !== client.user.id;
-    collector = playingMessage.createReactionCollector(filter, {
-        time: song.duration > 0 ? song.duration * 1000 : 600000
-    });
 
     collector.on('collect', async (reaction, user) => {
         try {
@@ -180,15 +182,6 @@ module.exports.play = async function (queue, guild) {
             }
         } catch {
             return queue.textSend('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
-        }
-    });
-
-    collector.once('end', async () => {
-        const find = await db.get('SELECT * FROM pruningskip WHERE channelid = ?', [guild.id]);
-        if (!find) {
-            try {
-                await playingMessage.delete();
-            } catch {}
         }
     });
 };
