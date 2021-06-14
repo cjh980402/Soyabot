@@ -55,7 +55,7 @@ module.exports.play = async function (queue) {
         streamType = null;
     try {
         if (song.url.includes('youtube.com')) {
-            streamType = 'opus';
+            streamType = 'unknown';
             stream = ytdl(song.url, { filter: 'audio', quality: 'highestaudio' });
         } else if (song.url.includes('soundcloud.com')) {
             try {
