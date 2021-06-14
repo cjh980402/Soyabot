@@ -34,8 +34,9 @@ module.exports.QueueElement = class {
     }
 };
 
-module.exports.play = async function (queue, guild) {
+module.exports.play = async function (queue) {
     const song = queue.songs[0];
+    const { guild } = queue.voiceChannel;
 
     if (!song) {
         client.queues.delete(guild.id);
@@ -54,7 +55,7 @@ module.exports.play = async function (queue, guild) {
         streamType = null;
     try {
         if (song.url.includes('youtube.com')) {
-            streamType = 'unknown';
+            streamType = 'opus';
             stream = ytdl(song.url, { filter: 'audio', quality: 'highestaudio' });
         } else if (song.url.includes('soundcloud.com')) {
             try {
@@ -69,7 +70,7 @@ module.exports.play = async function (queue, guild) {
         console.error(e);
         queue.songs.shift();
         queue.textSend(`오류 발생: ${e.message ?? e}`);
-        return module.exports.play(queue, guild);
+        return module.exports.play(queue);
     }
 
     if (queue.connection.listenerCount('disconnect') === 1) {
@@ -101,14 +102,14 @@ module.exports.play = async function (queue, guild) {
             } else {
                 queue.songs.shift();
             }
-            module.exports.play(queue, guild); // 재귀적으로 다음 곡 재생
+            module.exports.play(queue); // 재귀적으로 다음 곡 재생
         })
         .once('error', async (e) => {
             collector.stop();
             queue.textSend('재생할 수 없는 동영상입니다.');
             replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             queue.songs.shift();
-            module.exports.play(queue, guild);
+            module.exports.play(queue);
         });
 
     try {

@@ -107,7 +107,7 @@ module.exports = {
             newQueue.connection.once('error', () => newQueue.connection.disconnect());
             await newQueue.connection.voice.setSelfDeaf(true);
             client.queues.set(message.guild.id, newQueue);
-            play(newQueue, message.guild);
+            play(newQueue);
         } catch (e) {
             replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             channel.leave();
