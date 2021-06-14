@@ -51,20 +51,12 @@ module.exports.play = async function (queue) {
         return queue.textSend('❌ 음악 대기열이 끝났습니다.');
     }
 
-    let stream = null,
-        streamType = null;
+    let stream = null;
     try {
         if (song.url.includes('youtube.com')) {
-            streamType = 'unknown';
             stream = ytdl(song.url, { filter: 'audio', quality: 'highestaudio' });
         } else if (song.url.includes('soundcloud.com')) {
-            try {
-                streamType = 'ogg/opus';
-                stream = await scdl.downloadFormat(song.url, scdl.FORMATS.OPUS);
-            } catch {
-                streamType = 'unknown';
-                stream = await scdl.downloadFormat(song.url, scdl.FORMATS.MP3);
-            }
+            stream = await scdl.downloadFormat(song.url, scdl.FORMATS.MP3);
         }
     } catch (e) {
         console.error(e);
@@ -94,7 +86,7 @@ module.exports.play = async function (queue) {
         });
 
     queue.connection
-        .play(stream, { type: streamType, volume: queue.volume / 100 })
+        .play(stream, { volume: queue.volume / 100 })
         .once('finish', async () => {
             collector.stop();
             if (queue.loop) {
