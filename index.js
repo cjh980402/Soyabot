@@ -68,7 +68,7 @@ client.on('message', async (message) => {
             return;
         }
         const permissions = message.channel.permissionsFor?.(client.user);
-        if (permissions && (!permissions.has('VIEW_CHANNEL') || !permissions.has('SEND_MESSAGES'))) {
+        if (permissions && !permissions.has(['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY'])) {
             return; // 기본 권한이 없는 채널이므로 바로 종료
         }
         if (message.author.id === ADMIN_ID) {
