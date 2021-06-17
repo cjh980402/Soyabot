@@ -6,8 +6,8 @@ const app = express();
 app.locals.port = 8170;
 app.locals.restartPath = encodeURIComponent(String(AES.encrypt('restart', Math.random().toString(36))));
 
-function getServerHTML(redirectURL) {
-    const script = ['window.close();', `window.location.replace("${redirectURL ?? 'https://www.google.com'}");`];
+function getServerHTML(redirectURL = 'https://www.google.com') {
+    const script = ['window.close();', `window.location.replace("${redirectURL}");`];
 
     return `<script>
     if (/kakaotalk/i.test(window.navigator.userAgent)) {

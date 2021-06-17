@@ -6,7 +6,7 @@ let noticeTimer = null;
 let updateTimer = null;
 let testTimer = null;
 let testPatchTimer = null;
-let flagTimer = [null, null, null];
+let urusTimer = null;
 
 module.exports.startNotice = function () {
     if (!noticeTimer) {
@@ -149,29 +149,24 @@ module.exports.stopTestPatch = function () {
     }
 };
 
-module.exports.startFlag = function () {
-    const flagtime = [11, 18, 20]; // 12, 19, 21시에 시작 → 5분전에 알림
-    const now = new Date();
-    for (let i = 0; i < flagTimer.length; i++) {
-        if (!flagTimer[i]) {
-            const flagDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), flagtime[i], 55); // 플래그 알림 시간 객체 저장
-            if (now > flagDate) {
-                flagDate.setDate(now.getDate() + 1); // 플래그 시간 지났으면 다음 날 플래그로 알림 설정
-            }
-            flagTimer[i] = setTimeout(async () => {
-                botNotice(`${flagtime[i] + 1}시 플래그를 준비하세요!`, 'flag');
-                // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
-                flagTimer[i] = setInterval(botNotice, 86400000, `${flagtime[i] + 1}시 플래그를 준비하세요!`, 'flag'); // 24시간 주기
-            }, flagDate - now);
+module.exports.startUrus = function () {
+    if (!urusTimer) {
+        const now = new Date();
+        const urusDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 22, 30); // 우르스 알림 시간 객체 저장
+        if (now > urusDate) {
+            urusDate.setDate(now.getDate() + 1); // 우르스 알림 시간 지났으면 다음 날로 알림 설정
         }
+        urusTimer = setTimeout(() => {
+            botNotice('우르스 메소 2배 종료까지 30분 남았습니다!', 'urus'); // 그룹챗에만 공지
+            // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
+            urusTimer = setInterval(botNotice, 86400000, '우르스 메소 2배 종료까지 30분 남았습니다!', 'urus'); // 24시간 주기
+        }, urusDate - now);
     }
 };
 
-module.exports.stopFlag = function () {
-    for (let i = 0; i < flagTimer.length; i++) {
-        if (flagTimer[i]) {
-            clearInterval(flagTimer[i]); // clearInterval과 clearTimeout은 동일한 동작 수행
-            flagTimer[i] = null;
-        }
+module.exports.stopUrus = function () {
+    if (urusTimer) {
+        clearInterval(urusTimer); // clearInterval과 clearTimeout은 동일한 동작 수행
+        urusTimer = null;
     }
 };

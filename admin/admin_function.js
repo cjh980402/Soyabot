@@ -4,7 +4,7 @@ const cp = require('child_process');
 const exec = util.promisify(cp.exec);
 const { ADMIN_ID } = require('../soyabot_config.json');
 const { botNotice, replyRoomID } = require('./bot_control.js');
-const { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, startTestPatch, stopTestPatch, startFlag, stopFlag } = require('./maple_auto_notice');
+const { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, startTestPatch, stopTestPatch, startUrus, stopUrus } = require('./maple_auto_notice');
 
 module.exports.adminChat = async function (message) {
     debugFunc(message);
@@ -50,7 +50,7 @@ module.exports.initClient = async function () {
     await db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS noticeskip(channelid text primary key, name text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS updateskip(channelid text primary key, name text not null)');
-    await db.run('CREATE TABLE IF NOT EXISTS flagskip(channelid text primary key, name text not null)');
+    await db.run('CREATE TABLE IF NOT EXISTS urusskip(channelid text primary key, name text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS testskip(channelid text primary key, name text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS testpatchskip(channelid text primary key, name text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS pruningskip(channelid text primary key, name text not null)');
@@ -63,7 +63,7 @@ module.exports.initClient = async function () {
     startUpdate(); // 업데이트 자동 알림 기능
     startTest(); // 테섭 자동 알림 기능
     startTestPatch(); // 테섭 패치 감지 기능
-    startFlag(); // 플래그 5분 전 알림
+    startUrus(); // 우르스 2배 종료 30분 전 알림
 };
 
 function debugFunc(message) {

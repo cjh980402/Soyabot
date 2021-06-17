@@ -1,7 +1,7 @@
 const noticematch = {
     공지: 'notice',
     업데이트: 'update',
-    플래그: 'flag',
+    우르스: 'urus',
     테섭공지: 'test',
     테섭파일: 'testpatch'
 };
