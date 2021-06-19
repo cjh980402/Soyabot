@@ -27,7 +27,7 @@ module.exports = {
                 (msg) => {
                     const trimContent = msg.content.trim();
                     if (gameRegExp[0].test(trimContent)) {
-                        if (gameUser.includes(msg.member)) {
+                        if (gameUser.some((v) => msg.member.id === v.id)) {
                             msg.channel.send('이미 참가하셨습니다.');
                             return false;
                         } else {
