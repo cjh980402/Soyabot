@@ -81,7 +81,7 @@ client.on('message', async (message) => {
         const matchedPrefix = prefixRegex.exec(message.content)?.[0]; // 정규식에 대응되는 명령어 접두어 부분을 탐색
         if (!matchedPrefix) {
             // 멘션이나 client.prefix로 시작하지 않는 경우
-            return botChatting(message); // 잡담 로직
+            return await botChatting(message); // 잡담 로직
         }
 
         const args = message.content.slice(matchedPrefix.length).trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
@@ -104,15 +104,17 @@ client.on('message', async (message) => {
         cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
     } catch (e) {
         cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
-        if (e instanceof Collection) {
-            // awaitMessages에서 시간초과한 경우
-            message.channel.send(`"${commandName.split('_')[0]}"의 입력 대기 시간이 초과되었습니다.`);
-        } else if (e.message?.startsWith('메이플')) {
-            message.reply(e.message);
-        } else {
-            message.reply('에러로그가 전송되었습니다.');
-            replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
-        }
+        try {
+            if (e instanceof Collection) {
+                // awaitMessages에서 시간초과한 경우
+                await message.channel.send(`"${commandName.split('_')[0]}"의 입력 대기 시간이 초과되었습니다.`);
+            } else if (e.message?.startsWith('메이플')) {
+                await message.reply(e.message);
+            } else {
+                await message.reply('에러로그가 전송되었습니다.');
+                replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+            }
+        } catch {}
     } finally {
         await cachingMessage(message); // 들어오는 채팅 항상 캐싱
     }
