@@ -7,14 +7,13 @@ app.locals.port = 8170;
 app.locals.restartPath = encodeURIComponent(String(AES.encrypt('restart', Math.random().toString(36))));
 
 function getServerHTML(redirectURL = 'https://www.google.com') {
-    const script = ['window.close();', `window.location.replace("${redirectURL}");`];
-
     return `<script>
     if (/kakaotalk/i.test(window.navigator.userAgent)) {
         window.location.replace("kakaotalk://inappbrowser/close");
         window.location.replace("kakaoweb://closeBrowser");
     }
-    ${script.join('\n')}
+    window.close();
+    window.location.replace("${redirectURL}");
 </script>`;
 }
 
