@@ -137,7 +137,6 @@ module.exports.play = async function (queue) {
                     queue.playing = true;
                     queue.connection.dispatcher.end();
                     queue.textSend(`${user} ⏭ 노래를 건너뛰었습니다.`);
-                    collector.stop();
                     break;
                 case '🔇':
                     queue.volume = queue.volume <= 0 ? DEFAULT_VOLUME : 0;
@@ -166,7 +165,6 @@ module.exports.play = async function (queue) {
                     } catch {
                         queue.connection.disconnect();
                     }
-                    collector.stop();
                     break;
             }
         } catch {
