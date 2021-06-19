@@ -41,10 +41,9 @@ module.exports.play = async function (queue) {
     if (!song) {
         client.queues.delete(guild.id);
         setTimeout(() => {
-            // 종료 후 새로운 음악 기능이 수행 중이면 나가지 않음
-            const newQueue = client.queues.get(guild.id);
-            if (!newQueue && guild.me.voice.channel) {
-                guild.me.voice.channel.leave(); // 봇이 참가한 음성 채널을 떠남
+            // 종료 후 새로운 음악 기능이 수행 중이지 않으면 나감
+            if (!queue.connection.dispatcher) {
+                queue.connection.disconnect();
                 queue.textSend(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
             }
         }, STAY_TIME * 1000);
@@ -56,18 +55,13 @@ module.exports.play = async function (queue) {
         if (song.url.includes('youtube.com')) {
             stream = ytdl(song.url, { filter: 'audio', quality: 'highestaudio' });
         } else if (song.url.includes('soundcloud.com')) {
-            stream = await scdl.downloadFormat(song.url, scdl.FORMATS.MP3);
+            stream = await scdl.download(song.url);
         }
     } catch (e) {
         console.error(e);
         queue.songs.shift();
         queue.textSend(`오류 발생: ${e.message ?? e}`);
         return module.exports.play(queue);
-    }
-
-    if (queue.connection.listenerCount('disconnect') === 1) {
-        // 1개는 디스코드 내부에서 등록을 하기 때문에 개수를 확인
-        queue.connection.once('disconnect', () => client.queues.delete(guild.id)); // 연결 끊기면 자동으로 큐를 삭제하는 리스너 등록
     }
 
     const playingMessage = await queue.textSend(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
@@ -89,6 +83,7 @@ module.exports.play = async function (queue) {
         .play(stream, { volume: queue.volume / 100 })
         .once('finish', async () => {
             collector.stop();
+            stream.destroy();
             if (queue.loop) {
                 queue.songs.push(queue.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣음 -> 루프 발생
             } else {
@@ -98,6 +93,7 @@ module.exports.play = async function (queue) {
         })
         .once('error', async (e) => {
             collector.stop();
+            stream.destroy();
             queue.textSend('재생할 수 없는 동영상입니다.');
             replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             queue.songs.shift();
@@ -119,7 +115,7 @@ module.exports.play = async function (queue) {
     collector.on('collect', async (reaction, user) => {
         try {
             await reaction.users.remove(user);
-            if (!queue?.connection.dispatcher) {
+            if (!queue.connection.dispatcher) {
                 return collector.stop();
             }
             if (!canModifyQueue(await guild.members.fetch(user.id, false))) {

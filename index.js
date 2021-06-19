@@ -128,8 +128,8 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
             if (newVoice) {
                 const newQueue = client.queues.get(newVoice.guild.id);
-                if (newQueue?.connection && !newQueue.playing && newVoice.id === newQueue.voiceChannel.id && newVoice.members.size === 2) {
-                    newQueue.connection.dispatcher?.resume();
+                if (newQueue?.connection?.dispatcher && !newQueue.playing && newVoice.id === newQueue.voiceChannel.id && newVoice.members.size === 2 && newVoice.members.first().id === client.user.id) {
+                    newQueue.connection.dispatcher.resume();
                     newQueue.textSend('대기열을 다시 재생합니다.');
                     newQueue.playing = true;
                 }
@@ -137,19 +137,19 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
             if (oldVoice) {
                 const oldQueue = client.queues.get(oldVoice.guild.id);
-                if (oldQueue?.connection && oldVoice.id === oldQueue.voiceChannel.id && oldVoice.members.size === 1) {
+                if (oldQueue?.connection?.dispatcher && oldVoice.id === oldQueue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.first().id === client.user.id) {
                     // 봇만 음성 채널에 있는 경우
                     if (oldQueue.playing) {
-                        oldQueue.connection.dispatcher?.pause(true);
+                        oldQueue.connection.dispatcher.pause(true);
                         oldQueue.textSend('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
                         oldQueue.playing = false;
                     }
                     setTimeout(() => {
                         const queue = client.queues.get(oldVoice.guild.id);
-                        if (queue?.connection && oldVoice.id === queue.voiceChannel.id && oldVoice.members.size === 1) {
+                        if (queue?.connection?.dispatcher && oldVoice.id === queue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.first().id === client.user.id) {
                             // 5분이 지나도 봇만 음성 채널에 있는 경우
                             queue.songs = [];
-                            queue.connection.dispatcher?.end();
+                            queue.connection.dispatcher.end();
                             queue.textSend('5분 동안 소야봇이 비활성화 되어 대기열을 끝냅니다.');
                         }
                     }, 300000);
@@ -157,6 +157,6 @@ client.on('voiceStateUpdate', (oldState, newState) => {
             }
         }
     } catch (e) {
-        replyAdmin(`[oldState]\n${oldState._p}\n[newState]\n${newState._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+        replyAdmin(`[oldState]\n${oldState?._p}\n[newState]\n${newState?._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
     }
 });

@@ -31,7 +31,7 @@ Object.defineProperty(Discord.Message.prototype, 'fullContent', {
 });
 
 Object.defineProperty(Discord.Message.prototype, 'reply', {
-    // failIfNotExists의 기본값을 false로 하기 위한 메소드 재정의
+    // failIfNotExists의 값을 false로 하기 위한 메소드 재정의
     value: function (content, options = {}) {
         options.reply = { failIfNotExists: false };
         return originReply.call(this, content, options);
