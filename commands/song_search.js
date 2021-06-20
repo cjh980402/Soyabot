@@ -40,7 +40,7 @@ module.exports = {
 
             const playCommand = client.commands.find((cmd) => cmd.command.includes('play'));
             for (let song of songChoice) {
-                await playCommand.execute(message, [resultsEmbed.fields[Math.trunc(song) - 1].name]);
+                await playCommand.execute(message, [resultsEmbed.fields[Math.trunc(song) - 1].value]);
             }
 
             try {
