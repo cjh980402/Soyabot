@@ -48,6 +48,7 @@ module.exports.initClient = async function () {
     await db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');
+    await db.run('CREATE TABLE IF NOT EXISTS testpatch(version integer primary key, url text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS noticeskip(channelid text primary key, name text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS updateskip(channelid text primary key, name text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS urusskip(channelid text primary key, name text not null)');
