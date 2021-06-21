@@ -1,3 +1,4 @@
+const { AudioPlayerStatus, AudioResource, entersState, joinVoiceChannel, VoiceConnectionStatus } = require('@discordjs/voice');
 const { QueueElement, play } = require('../util/music_play');
 const { replyAdmin } = require('../admin/bot_control');
 const { GOOGLE_API_KEY } = require('../soyabot_config.json');
@@ -91,8 +92,8 @@ module.exports = {
             client.queues.set(message.guild.id, newQueue);
             newQueue.connection = await channel.join();
             newQueue.connection.once('error', () => newQueue.connection.disconnect());
-            newQueue.connection.once('disconnect', () => client.queues.delete(message.guild.id));
-            await newQueue.connection.voice.setSelfDeaf(true);
+            newQueue.connection.once('disconnected', () => client.queues.delete(message.guild.id));
+            newQueue.connection.subscribe(newQueue.audioPlayer);
             play(newQueue);
         } catch (e) {
             client.queues.delete(message.guild.id);

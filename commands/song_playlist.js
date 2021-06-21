@@ -106,8 +106,7 @@ module.exports = {
             client.queues.set(message.guild.id, newQueue);
             newQueue.connection = await channel.join();
             newQueue.connection.once('error', () => newQueue.connection.disconnect());
-            newQueue.connection.once('disconnect', () => client.queues.delete(message.guild.id));
-            await newQueue.connection.voice.setSelfDeaf(true);
+            newQueue.connection.once('disconnected', () => client.queues.delete(message.guild.id));
             play(newQueue);
         } catch (e) {
             client.queues.delete(message.guild.id);

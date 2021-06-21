@@ -1,4 +1,5 @@
 const Discord = require('discord.js-light');
+const { entersState, joinVoiceChannel, VoiceConnectionStatus } = require('@discordjs/voice');
 const fetch = require('node-fetch');
 const { decodeHTML } = require('entities');
 const { inspect } = require('util');
@@ -8,15 +9,15 @@ globalThis.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 Object.defineProperty(Discord, 'clientOption', {
     value: {
         cacheGuilds: true, // 전체 길드 캐싱
-        cacheRoles: true, // 권한 관련 코드 사용 시 필요
         cacheOverwrites: true, // 권한 관련 코드 사용 시 필요
+        cacheRoles: true, // 권한 관련 코드 사용 시 필요
         cacheChannels: false,
         cacheEmojis: false,
         cachePresences: false,
+        cacheMembers: false,
         messageCacheMaxSize: 0,
-        messageEditHistoryMaxSize: 0,
         retryLimit: 3,
-        ws: { intents: ['GUILDS', 'GUILD_VOICE_STATES', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'DIRECT_MESSAGES', 'DIRECT_MESSAGE_REACTIONS'] }
+        intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_VOICE_STATES, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.DIRECT_MESSAGES, Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS]
     }
 });
 
@@ -35,6 +36,24 @@ Object.defineProperty(Discord.Message.prototype, 'reply', {
     value: function (content, options = {}) {
         options.reply = { failIfNotExists: false };
         return originReply.call(this, content, options);
+    }
+});
+
+Object.defineProperty(Discord.VoiceChannel.prototype, 'join', {
+    value: async function () {
+        const connection = joinVoiceChannel({
+            channelId: this.id,
+            guildId: this.guild.id,
+            adapterCreator: this.guild.voiceAdapterCreator
+        });
+
+        try {
+            await entersState(connection, VoiceConnectionStatus.Ready, 30000); // 연결될 때까지 최대 30초 대기
+            return connection;
+        } catch (e) {
+            connection.destroy();
+            throw e;
+        }
     }
 });
 

@@ -1,3 +1,4 @@
+const { createAudioPlayer, createAudioResource, StreamType } = require('@discordjs/voice');
 const ytdl = require('ytdl-core');
 const scdl = require('soundcloud-downloader').default;
 const { replyAdmin } = require('../admin/bot_control');
@@ -9,6 +10,7 @@ module.exports.QueueElement = class {
     voiceChannel;
     songs;
     connection = null;
+    audioPlayer = createAudioPlayer();
     loop = false;
     volume = DEFAULT_VOLUME;
     playing = true;
@@ -57,6 +59,9 @@ module.exports.play = async function (queue) {
         } else if (song.url.includes('soundcloud.com')) {
             stream = await scdl.download(song.url);
         }
+        stream = createAudioResource(stream, {
+            inputType: StreamType.Arbitrary
+        });
     } catch (e) {
         console.error(e);
         queue.songs.shift();
@@ -79,11 +84,10 @@ module.exports.play = async function (queue) {
             }
         });
 
-    queue.connection
-        .play(stream, { volume: queue.volume / 100 })
+    queue.audioPlayer.play(stream);
+    stream.playStream
         .once('finish', async () => {
             collector.stop();
-            stream.destroy();
             if (queue.loop) {
                 queue.songs.push(queue.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣음 -> 루프 발생
             } else {
@@ -93,7 +97,6 @@ module.exports.play = async function (queue) {
         })
         .once('error', async (e) => {
             collector.stop();
-            stream.destroy();
             queue.textSend('재생할 수 없는 동영상입니다.');
             replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             queue.songs.shift();
@@ -115,7 +118,7 @@ module.exports.play = async function (queue) {
     collector.on('collect', async (reaction, user) => {
         try {
             await reaction.users.remove(user);
-            if (!queue.connection.dispatcher) {
+            if (queue.connection.state != 'connecting' || !queue.audioPlayer.playable) {
                 return collector.stop();
             }
             if (!canModifyQueue(await guild.members.fetch(user.id, false))) {
@@ -126,31 +129,31 @@ module.exports.play = async function (queue) {
                 case '⏯':
                     queue.playing = !queue.playing;
                     if (queue.playing) {
-                        queue.connection.dispatcher.resume();
+                        queue.audioPlayer.unpause();
                         queue.textSend(`${user} ▶️ 노래를 다시 틀었습니다.`);
                     } else {
-                        queue.connection.dispatcher.pause(true);
+                        queue.audioPlayer.pause(true);
                         queue.textSend(`${user} ⏸ 노래를 일시정지했습니다.`);
                     }
                     break;
                 case '⏭':
                     queue.playing = true;
-                    queue.connection.dispatcher.end();
+                    queue.audioPlayer.stop();
                     queue.textSend(`${user} ⏭ 노래를 건너뛰었습니다.`);
                     break;
                 case '🔇':
                     queue.volume = queue.volume <= 0 ? DEFAULT_VOLUME : 0;
-                    queue.connection.dispatcher.setVolume(queue.volume / 100);
+                    // queue.connection.dispatcher.setVolume(queue.volume / 100);
                     queue.textSend(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
                     break;
                 case '🔉':
                     queue.volume = Math.max(queue.volume - 10, 0);
-                    queue.connection.dispatcher.setVolume(queue.volume / 100);
+                    // queue.connection.dispatcher.setVolume(queue.volume / 100);
                     queue.textSend(`${user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
                     break;
                 case '🔊':
                     queue.volume = Math.min(queue.volume + 10, 100);
-                    queue.connection.dispatcher.setVolume(queue.volume / 100);
+                    // queue.connection.dispatcher.setVolume(queue.volume / 100);
                     queue.textSend(`${user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
                     break;
                 case '🔁':
@@ -161,7 +164,7 @@ module.exports.play = async function (queue) {
                     queue.songs = [];
                     queue.textSend(`${user} ⏹ 노래를 정지했습니다.`);
                     try {
-                        queue.connection.dispatcher.end();
+                        queue.audioPlayer.stop();
                     } catch {
                         queue.connection.disconnect();
                     }
