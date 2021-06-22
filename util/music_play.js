@@ -92,7 +92,7 @@ module.exports.play = async function (queue) {
         });
 
     queue.audioPlayer.play(stream);
-    stream.volume.setVolume(queue.volume / 100);
+    queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
     queue.audioPlayer
         .on('stateChange', (oldState, newState) => {
             if (newState.status === 'idle' && oldState.status !== 'idle') {
@@ -156,17 +156,17 @@ module.exports.play = async function (queue) {
                     break;
                 case '🔇':
                     queue.volume = queue.volume <= 0 ? DEFAULT_VOLUME : 0;
-                    stream.volume.setVolume(queue.volume / 100);
+                    queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
                     queue.textSend(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
                     break;
                 case '🔉':
                     queue.volume = Math.max(queue.volume - 10, 0);
-                    stream.volume.setVolume(queue.volume / 100);
+                    queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
                     queue.textSend(`${user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
                     break;
                 case '🔊':
                     queue.volume = Math.min(queue.volume + 10, 100);
-                    stream.volume.setVolume(queue.volume / 100);
+                    queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
                     queue.textSend(`${user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
                     break;
                 case '🔁':
