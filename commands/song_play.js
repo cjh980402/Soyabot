@@ -85,19 +85,15 @@ module.exports = {
             return message.channel.send(`✅ ${message.author}가 **${song.title}**를 대기열에 추가했습니다.`);
         }
 
-        const newQueue = new QueueElement(message.channel, channel, [song]);
-
         try {
+            const newQueue = new QueueElement(message.channel, channel, await channel.join(), [song]);
             client.queues.set(message.guild.id, newQueue);
-            newQueue.connection = await channel.join();
-            newQueue.connection.once('error', () => newQueue.connection.disconnect());
-            newQueue.connection.once('disconnect', () => client.queues.delete(message.guild.id));
             await newQueue.connection.voice.setSelfDeaf(true);
             play(newQueue);
         } catch (e) {
+            channel.leave();
             client.queues.delete(message.guild.id);
             replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
-            channel.leave();
             return message.channel.send(`채널에 참가할 수 없습니다: ${e.message ?? e}`);
         }
     }
