@@ -121,7 +121,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
     try {
         const oldVoice = oldState?.channel;
         const newVoice = newState?.channel;
-        if ((oldVoice || newVoice) && oldVoice !== newVoice) {
+        if (oldVoice !== newVoice) {
             console.log(!oldVoice ? 'User joined!' : !newVoice ? 'User left!' : 'User switched channels!');
 
             if (newVoice) {

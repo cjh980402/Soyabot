@@ -58,7 +58,7 @@ Object.defineProperty(Discord.VoiceChannel.prototype, 'join', {
             await entersState(connection, VoiceConnectionStatus.Ready, 30000); // 연결될 때까지 최대 30초 대기
             return connection;
         } catch (e) {
-            connection.destroy();
+            connection.destroy(); // 에러 발생 시 연결 취소
             throw e;
         }
     }
