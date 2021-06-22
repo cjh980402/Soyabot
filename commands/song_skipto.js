@@ -37,7 +37,7 @@ module.exports = {
         } else {
             queue.songs = queue.songs.slice(skipto - 2);
         }
-        queue.connection.dispatcher.end();
+        queue.audioPlayer.stop(true);
         return message.channel.send(`${message.author} ⏭ ${skipto - 1}개의 노래를 건너뛰었습니다.`);
     }
 };

@@ -32,10 +32,14 @@ async function farm_sex(monster) {
             .map((v) => {
                 if (v.type === 'child') {
                     // 결과가 monster인 경우
-                    return `${v.child}(${v.c_grade}): ${v.c_effect}${v.c_effect_value === '+0' ? '' : ` ${v.c_effect_value}`}\n↳${v.mom} (${v.m_species} ${v.m_grade})\n↳${v.dad} (${v.d_species} ${v.d_grade})`;
+                    return `${v.child}(${v.c_grade}): ${v.c_effect}${v.c_effect_value === '+0' ? '' : ` ${v.c_effect_value}`}\n↳${v.mom} (${v.m_species} ${v.m_grade})\n↳${v.dad} (${v.d_species} ${
+                        v.d_grade
+                    })`;
                 } else if (v.type === 'parents') {
                     // monster가 재료인 경우
-                    return `↱${v.mom} (${v.m_species} ${v.m_grade})\n↱${v.dad} (${v.d_species} ${v.d_grade})\n${v.child}(${v.c_grade}): ${v.c_effect}${v.c_effect_value === '+0' ? '' : ` ${v.c_effect_value}`}`;
+                    return `↱${v.mom} (${v.m_species} ${v.m_grade})\n↱${v.dad} (${v.d_species} ${v.d_grade})\n${v.child}(${v.c_grade}): ${v.c_effect}${
+                        v.c_effect_value === '+0' ? '' : ` ${v.c_effect_value}`
+                    }`;
                 }
             })
             .join('\n\n');
@@ -152,11 +156,11 @@ module.exports = {
         }
 
         if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
-            return message.channel.send(await farm_read(args.slice(1).join('')), { split: true });
+            return message.channel.send({ content: await farm_read(args.slice(1).join('')), split: true });
         } else if (args[0] === '조합식' || args[0] === 'ㅈㅎㅅ') {
             return message.channel.send(await farm_sex(args.slice(1).join('')));
         } else if (args[0] === '정보' || args[0] === 'ㅈㅂ') {
-            return message.channel.send(await farm_info(args.slice(1).join('')), { split: true });
+            return message.channel.send({ content: await farm_info(args.slice(1).join('')), split: true });
         } else if (args[0] === '추가' || args[0] === 'ㅊㄱ') {
             if (args.length < 4) {
                 return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);

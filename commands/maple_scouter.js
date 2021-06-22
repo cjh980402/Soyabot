@@ -78,6 +78,6 @@ module.exports = {
             .addField('**무릉 기록**', murung ? `${murungfl}층 (${min}분 ${sec}초)` : '-', true)
             .addField('**측정 결과**', `${grade}! (${score}점)`);
 
-        return message.channel.send(scouterEmbed);
+        return message.channel.send({ embeds: [scouterEmbed] });
     }
 };

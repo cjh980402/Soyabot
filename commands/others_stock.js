@@ -69,14 +69,39 @@ module.exports = {
                 const changeRate = nowData.result.areas[0].datas[0].cr;
                 const isFUT = identifer === 'FUT';
 
-                const minPrice = data.eq(isFUT ? 3 : 1).text().trim() || '0';
-                const maxPrice = data.eq(isFUT ? 2 : 0).text().trim() || '0';
-                const amount = data.eq(isFUT ? 4 : 2).text().trim() || '0';
-                const totalPrice = data.eq(isFUT ? 5 : 3).text().trim();
-                const min_52weeks = data.eq(isFUT ? 7 : 5).text().trim() || '0';
-                const max_52weeks = data.eq(isFUT ? 6 : 4).text().trim() || '0';
+                const minPrice =
+                    data
+                        .eq(isFUT ? 3 : 1)
+                        .text()
+                        .trim() || '0';
+                const maxPrice =
+                    data
+                        .eq(isFUT ? 2 : 0)
+                        .text()
+                        .trim() || '0';
+                const amount =
+                    data
+                        .eq(isFUT ? 4 : 2)
+                        .text()
+                        .trim() || '0';
+                const totalPrice = data
+                    .eq(isFUT ? 5 : 3)
+                    .text()
+                    .trim();
+                const min_52weeks =
+                    data
+                        .eq(isFUT ? 7 : 5)
+                        .text()
+                        .trim() || '0';
+                const max_52weeks =
+                    data
+                        .eq(isFUT ? 6 : 4)
+                        .text()
+                        .trim() || '0';
 
-                await cmd(`python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
+                await cmd(
+                    `python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
+                );
                 // 파이썬 스크립트 실행
 
                 stockEmbed
@@ -111,7 +136,9 @@ module.exports = {
                 const min_52weeks = data.stockItemTotalInfos[5].value;
                 const max_52weeks = data.stockItemTotalInfos[4].value;
 
-                await cmd(`python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
+                await cmd(
+                    `python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
+                );
                 // 파이썬 스크립트 실행
             } else if (stockfind[3][0].startsWith('/item/main')) {
                 // 국내 주식
@@ -136,10 +163,22 @@ module.exports = {
                 const min_52weeks = data.eq(9).contents().first().text().trim() || '0';
                 const max_52weeks = data.eq(8).contents().first().text().trim() || '0';
 
-                await cmd(`python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
+                await cmd(
+                    `python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
+                );
                 // 파이썬 스크립트 실행
 
-                stockEmbed.addField('**거래량**', amount, true).addField('**거래대금**', `${totalPrice}원`, true).addField('**시가총액**', `${capitalization}원`, true).addField('**외인소진율**', data.eq(7).text().trim(), true).addField('**PER**', data.eq(10).text().trim(), true).addField('**EPS**', data.eq(11).text().trim(), true).addField('**PBR**', data.eq(14).text().trim(), true).addField('**BPS**', data.eq(15).text().trim(), true).addField('**배당률**', data.eq(16).text().trim(), true).addField('**배당금**', data.eq(17).text().trim(), true);
+                stockEmbed
+                    .addField('**거래량**', amount, true)
+                    .addField('**거래대금**', `${totalPrice}원`, true)
+                    .addField('**시가총액**', `${capitalization}원`, true)
+                    .addField('**외인소진율**', data.eq(7).text().trim(), true)
+                    .addField('**PER**', data.eq(10).text().trim(), true)
+                    .addField('**EPS**', data.eq(11).text().trim(), true)
+                    .addField('**PBR**', data.eq(14).text().trim(), true)
+                    .addField('**BPS**', data.eq(15).text().trim(), true)
+                    .addField('**배당률**', data.eq(16).text().trim(), true)
+                    .addField('**배당금**', data.eq(17).text().trim(), true);
             } else {
                 // 해외 주식
                 const data = await (await fetch(`https://api.stock.naver.com/stock/${identifer}/basic`)).json();
@@ -160,7 +199,11 @@ module.exports = {
                 const min_52weeks = data.stockItemTotalInfos[9].value;
                 const max_52weeks = data.stockItemTotalInfos[8].value;
 
-                await cmd(`python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' ${data.currencyType.name} ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
+                await cmd(
+                    `python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' ${
+                        data.currencyType.name
+                    } ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
+                );
                 // 파이썬 스크립트 실행
 
                 stockEmbed
@@ -177,7 +220,7 @@ module.exports = {
             }
 
             stockEmbed.setImage(`http://${client.botDomain}/image/stock/${encodeURIComponent(code)}.png?time=${Date.now()}`);
-            return message.channel.send(stockEmbed);
+            return message.channel.send({ embeds: [stockEmbed] });
         }
     }
 };

@@ -56,10 +56,6 @@ client.on('error', (e) => {
 
 client.on('message', async (message) => {
     // 각 메시지에 반응, 디스코드는 봇의 메시지도 이 이벤트에 들어옴
-    if (message.channel.type !== 'text' && message.channel.type !== 'dm') {
-        // 텍스트 채널 또는 DM 채널이 아닌 경우는 봇 동작에서 제외
-        return;
-    }
     let commandName;
     try {
         console.log(`(${new Date().toLocaleString()}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username}: ${message.content}\n`);
@@ -130,7 +126,13 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
             if (newVoice) {
                 const newQueue = client.queues.get(newVoice.guild.id);
-                if (newQueue?.connection?.dispatcher && !newQueue.playing && newVoice.id === newQueue.voiceChannel.id && newVoice.members.size === 2 && newVoice.members.first().id === client.user.id) {
+                if (
+                    newQueue?.connection?.dispatcher &&
+                    !newQueue.playing &&
+                    newVoice.id === newQueue.voiceChannel.id &&
+                    newVoice.members.size === 2 &&
+                    newVoice.members.first().id === client.user.id
+                ) {
                     newQueue.connection.dispatcher.resume();
                     newQueue.textSend('대기열을 다시 재생합니다.');
                     newQueue.playing = true;

@@ -171,6 +171,6 @@ module.exports = {
                 rslt += `\n${key}: ${list[key]}회`;
             }
         }
-        return message.channel.send(rslt, { split: true });
+        return message.channel.send({ content: rslt, split: true });
     }
 };

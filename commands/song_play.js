@@ -1,4 +1,3 @@
-const { AudioPlayerStatus, AudioResource, entersState, joinVoiceChannel, VoiceConnectionStatus } = require('@discordjs/voice');
 const { QueueElement, play } = require('../util/music_play');
 const { replyAdmin } = require('../admin/bot_control');
 const { GOOGLE_API_KEY } = require('../soyabot_config.json');
@@ -99,7 +98,6 @@ module.exports = {
         } catch (e) {
             client.queues.delete(message.guild.id);
             replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
-            // channel.leave();
             return message.channel.send(`채널에 참가할 수 없습니다: ${e.message ?? e}`);
         }
     }

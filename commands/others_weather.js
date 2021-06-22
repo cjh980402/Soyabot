@@ -37,7 +37,11 @@ module.exports = {
                 .setTimestamp();
             message.channel.send(locallistEmbed);
 
-            const rslt = await message.channel.awaitMessages((msg) => msg.author.id === message.author.id && !isNaN(msg.content) && 1 <= +msg.content && +msg.content <= searchRslt.length, { max: 1, time: 20000, errors: ['time'] });
+            const rslt = await message.channel.awaitMessages((msg) => msg.author.id === message.author.id && !isNaN(msg.content) && 1 <= +msg.content && +msg.content <= searchRslt.length, {
+                max: 1,
+                time: 20000,
+                errors: ['time']
+            });
             targetLocal = searchRslt[Math.trunc(rslt.first().content) - 1];
         }
 
@@ -66,7 +70,10 @@ module.exports = {
 
         for (let i = 0, j = 0, rainSpan = 1; i < weather.length - 1; i++) {
             rainSpan--;
-            weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${weather.eq(i).attr('data-wetr-txt')})│${rainName}: ${rain.eq(j).text().trim()}${rainUnit}│습도: ${humidity.eq(i).text().trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
+            weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${weather.eq(i).attr('data-wetr-txt')})│${rainName}: ${rain
+                .eq(j)
+                .text()
+                .trim()}${rainUnit}│습도: ${humidity.eq(i).text().trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
             if (rainSpan === 0) {
                 rainSpan = +(rain.eq(++j).attr('colspan') ?? 1);
             }
@@ -74,7 +81,7 @@ module.exports = {
 
         let currentPage = 0;
         const embeds = generateWeatherEmbed(targetLocal[0][0], weatherDesc);
-        const weatherEmbed = await message.channel.send(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+        const weatherEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
 
         try {
             await weatherEmbed.react('⬅️');
@@ -94,11 +101,11 @@ module.exports = {
                 switch (reaction.emoji.name) {
                     case '➡️':
                         currentPage = (currentPage + 1) % embeds.length;
-                        weatherEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                        weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
                         break;
                     case '⬅️':
                         currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        weatherEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                        weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
                         break;
                     case '⏹':
                         collector.stop();

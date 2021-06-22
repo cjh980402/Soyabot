@@ -21,6 +21,6 @@ module.exports = {
             }
         }
 
-        return message.channel.send(`${mapleUserInfo.Name}님의 캐릭터 이미지`, { files: [mapleUserInfo.userImg()] });
+        return message.channel.send({ content: `${mapleUserInfo.Name}님의 캐릭터 이미지`, files: [mapleUserInfo.userImg()] });
     }
 };

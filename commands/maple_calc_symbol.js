@@ -34,6 +34,11 @@ module.exports = {
             }
         }
 
-        return message.channel.send(`아케인 심볼 Lv.${startlev} → Lv.${endlev}\n요구량: ${total_req1}\n여로: ${total_meso1.toLocaleString()}메소\n여로 제외: ${total_meso2.toLocaleString()}메소\n\n어센틱 심볼 Lv.${Math.min(11, startlev)} → Lv.${Math.min(11, endlev)}\n요구량: ${total_req2}\n어센틱 심볼: ${total_meso3.toLocaleString()}메소`);
+        return message.channel.send(
+            `아케인 심볼 Lv.${startlev} → Lv.${endlev}\n요구량: ${total_req1}\n여로: ${total_meso1.toLocaleString()}메소\n여로 제외: ${total_meso2.toLocaleString()}메소\n\n어센틱 심볼 Lv.${Math.min(
+                11,
+                startlev
+            )} → Lv.${Math.min(11, endlev)}\n요구량: ${total_req2}\n어센틱 심볼: ${total_meso3.toLocaleString()}메소`
+        );
     }
 };

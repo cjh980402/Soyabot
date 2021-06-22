@@ -8,7 +8,10 @@ function generateEventEmbed(links, names, dates) {
         const curLinks = links.slice(i, i + 5);
         const curNames = names.slice(i, i + 5);
         const curDates = dates.slice(i, i + 5);
-        const info = curLinks.map((j, link) => `${i + j + 1}. [${curNames[j]}](https://maplestory.nexon.com${link})\n기간: ${curDates[j]}`).get().join('\n\n');
+        const info = curLinks
+            .map((j, link) => `${i + j + 1}. [${curNames[j]}](https://maplestory.nexon.com${link})\n기간: ${curDates[j]}`)
+            .get()
+            .join('\n\n');
         const embed = new MessageEmbed().setTitle('**진행중인 이벤트**').setColor('#FF9999').setDescription(info).setTimestamp();
         embeds.push(embed);
     }
@@ -32,7 +35,7 @@ module.exports = {
         } else {
             let currentPage = 0;
             const embeds = generateEventEmbed(links, names, dates);
-            const eventEmbed = await message.channel.send(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+            const eventEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
             if (embeds.length > 1) {
                 try {
                     await eventEmbed.react('⬅️');
@@ -52,11 +55,11 @@ module.exports = {
                         switch (reaction.emoji.name) {
                             case '➡️':
                                 currentPage = (currentPage + 1) % embeds.length;
-                                eventEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                                eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
                                 break;
                             case '⬅️':
                                 currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                                eventEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                                eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
                                 break;
                             case '⏹':
                                 collector.stop();

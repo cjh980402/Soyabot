@@ -96,11 +96,11 @@ module.exports = {
         if (serverQueue) {
             serverQueue.textChannel = message.channel;
             serverQueue.songs.push(...videos);
-            return message.channel.send(`✅ ${message.author}가 재생목록을 추가하였습니다.`, playlistEmbed);
+            return message.channel.send({ content: `✅ ${message.author}가 재생목록을 추가하였습니다.`, embeds: [playlistEmbed] });
         }
 
         const newQueue = new QueueElement(message.channel, channel, videos);
-        message.channel.send(`✅ ${message.author}가 재생목록을 시작했습니다.`, playlistEmbed);
+        message.channel.send({ content: `✅ ${message.author}가 재생목록을 시작했습니다.`, embeds: [playlistEmbed] });
 
         try {
             client.queues.set(message.guild.id, newQueue);
@@ -113,7 +113,6 @@ module.exports = {
         } catch (e) {
             client.queues.delete(message.guild.id);
             replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
-            // channel.leave();
             return message.channel.send(`채널에 참가할 수 없습니다: ${e.message ?? e}`);
         }
     }

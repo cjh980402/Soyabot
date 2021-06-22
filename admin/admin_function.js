@@ -55,7 +55,9 @@ module.exports.initClient = async function () {
     await db.run('CREATE TABLE IF NOT EXISTS testskip(channelid text primary key, name text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS testpatchskip(channelid text primary key, name text not null)');
     await db.run('CREATE TABLE IF NOT EXISTS pruningskip(channelid text primary key, name text not null)');
-    await db.run("CREATE TABLE IF NOT EXISTS messagedb(channelsenderid text primary key, messagecnt integer default 0, lettercnt integer default 0, lastmessage text default '', lasttime datetime default (datetime('now', 'localtime')))");
+    await db.run(
+        "CREATE TABLE IF NOT EXISTS messagedb(channelsenderid text primary key, messagecnt integer default 0, lettercnt integer default 0, lastmessage text default '', lasttime datetime default (datetime('now', 'localtime')))"
+    );
 
     client.suggestionChat = {}; // 건의 기능을 사용한 Message객체 임시 저장
     client.setMaxListeners(20); // 이벤트 개수 제한 증가

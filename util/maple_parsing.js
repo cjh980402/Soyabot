@@ -98,7 +98,9 @@ module.exports.MapleUser = class {
             for (let i = 0; i < 10; i++) {
                 if (this.#name.toLowerCase() === nickList.eq(i).text().toLowerCase()) {
                     this.#name = nickList.eq(i).text(); // 대소문자 정확한 이름으로 갱신
-                    data = this.#homeUnionData('tr').eq(i + 2).find('td');
+                    data = this.#homeUnionData('tr')
+                        .eq(i + 2)
+                        .find('td');
                     break;
                 }
             }
@@ -254,7 +256,15 @@ module.exports.MapleUser = class {
             murung = [];
         for (let i = 0; i < data.length; i += 6) {
             date.push(`${data.eq(i).find('span').text()}${data.eq(i).find('b').text()}`); // 날짜
-            murung.push(`${data.eq(i + 1).find('h5').text()} (${data.eq(i + 1).find('span').text()})`); // 무릉 기록
+            murung.push(
+                `${data
+                    .eq(i + 1)
+                    .find('h5')
+                    .text()} (${data
+                    .eq(i + 1)
+                    .find('span')
+                    .text()})`
+            ); // 무릉 기록
         }
         return [date, murung];
     }
@@ -300,7 +310,11 @@ module.exports.MapleUser = class {
     }
 
     lastActiveDay() {
-        return (this.#ggData('.col-6.col-md-8.col-lg-6 .font-size-12.text-white').text().replace(/(\d+)\s+/, '$1') || '마지막 활동일: 알 수 없음');
+        return (
+            this.#ggData('.col-6.col-md-8.col-lg-6 .font-size-12.text-white')
+                .text()
+                .replace(/(\d+)\s+/, '$1') || '마지막 활동일: 알 수 없음'
+        );
     }
 };
 
@@ -348,7 +362,11 @@ module.exports.MapleGuild = class {
         const memberList = this.#memberData.map((_, v) => new module.exports.MapleUser(this.#ggData(v).find('.mb-2 a').eq(1).text()));
         const updateRslt = await Promise.all(memberList.map(async (_, v) => (await v.isLatest()) || (await v.updateGG())));
         for (let i = 0; i < this.MemberCount; i++) {
-            rslt.push(`[갱신 ${updateRslt[i] ? '성공' : '실패'}] ${this.#memberData.eq(i).find('header > span').text() || '길드원'}: ${memberList[i].Name}, ${memberList[i].Job()} / Lv.${memberList[i].Level()}, 유니온: ${memberList[i].Union()?.[0].toLocaleString() ?? '-'}, 무릉: ${memberList[i].Murung()?.[1] ?? '-'} (${memberList[i].lastActiveDay()})`);
+            rslt.push(
+                `[갱신 ${updateRslt[i] ? '성공' : '실패'}] ${this.#memberData.eq(i).find('header > span').text() || '길드원'}: ${memberList[i].Name}, ${memberList[i].Job()} / Lv.${memberList[
+                    i
+                ].Level()}, 유니온: ${memberList[i].Union()?.[0].toLocaleString() ?? '-'}, 무릉: ${memberList[i].Murung()?.[1] ?? '-'} (${memberList[i].lastActiveDay()})`
+            );
         }
 
         return rslt;
