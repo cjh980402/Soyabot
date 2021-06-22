@@ -8,17 +8,23 @@ const { canModifyQueue } = require('./soyabot_util');
 module.exports.QueueElement = class {
     textChannel;
     voiceChannel;
+    connection;
     songs;
-    connection = null;
     audioPlayer = createAudioPlayer();
     loop = false;
     volume = DEFAULT_VOLUME;
     playing = true;
 
-    constructor(textChannel, voiceChannel, songs) {
+    constructor(textChannel, voiceChannel, connection, songs) {
         this.textChannel = textChannel;
         this.voiceChannel = voiceChannel;
+        this.connection = connection;
         this.songs = songs;
+
+        this.connection.once('error', () => this.connection.destroy());
+        this.connection.once('destroyed', () => client.queues.delete(this.voiceChannel.guild.id));
+        this.connection.once('disconnected', () => client.queues.delete(this.voiceChannel.guild.id));
+        this.connection.subscribe(this.audioPlayer);
     }
 
     async textSend(text) {

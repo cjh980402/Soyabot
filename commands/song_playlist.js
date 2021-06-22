@@ -84,7 +84,7 @@ module.exports = {
 
         const playlistEmbed = new MessageEmbed()
             .setTitle(`**${playlist.title.decodeHTML()}**`)
-            .setDescription(videos.map((song, index) => `${index + 1}. ${song.title}`))
+            .setDescription(videos.map((song, index) => `${index + 1}. ${song.title}`).join('\n'))
             .setURL(playlist.url ?? playlist.permalink_url) // 전자는 유튜브, 후자는 SoundCloud
             .setColor('#FF9999')
             .setTimestamp();
@@ -99,16 +99,11 @@ module.exports = {
             return message.channel.send({ content: `✅ ${message.author}가 재생목록을 추가하였습니다.`, embeds: [playlistEmbed] });
         }
 
-        const newQueue = new QueueElement(message.channel, channel, videos);
         message.channel.send({ content: `✅ ${message.author}가 재생목록을 시작했습니다.`, embeds: [playlistEmbed] });
 
         try {
+            const newQueue = new QueueElement(message.channel, channel, await channel.join(), videos);
             client.queues.set(message.guild.id, newQueue);
-            newQueue.connection = await channel.join();
-            newQueue.connection.once('error', () => newQueue.connection.destroy());
-            newQueue.connection.once('destroyed', () => client.queues.delete(message.guild.id));
-            newQueue.connection.once('disconnected', () => client.queues.delete(message.guild.id));
-            newQueue.connection.subscribe(newQueue.audioPlayer);
             play(newQueue);
         } catch (e) {
             client.queues.delete(message.guild.id);

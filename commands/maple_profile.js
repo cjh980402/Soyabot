@@ -36,6 +36,6 @@ module.exports = {
                 union ? union[3] : '기록없음'
             }' '${union ? `Lv.${union[0].toLocaleString()}` : ' '}' '${seed ? seed[1] : '기록없음'}' '${seed ? seed[2] : ' '}'`
         );
-        return message.channel.send(`${mapleUserInfo.Name}님의 프로필`, { files: ['./pictures/profile.png'] });
+        return message.channel.send({ content: `${mapleUserInfo.Name}님의 프로필`, files: ['./pictures/profile.png'] });
     }
 };

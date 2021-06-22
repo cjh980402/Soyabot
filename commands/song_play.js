@@ -85,15 +85,9 @@ module.exports = {
             return message.channel.send(`✅ ${message.author}가 **${song.title}**를 대기열에 추가했습니다.`);
         }
 
-        const newQueue = new QueueElement(message.channel, channel, [song]);
-
         try {
+            const newQueue = new QueueElement(message.channel, channel, await channel.join(), [song]);
             client.queues.set(message.guild.id, newQueue);
-            newQueue.connection = await channel.join();
-            newQueue.connection.once('error', () => newQueue.connection.destroy());
-            newQueue.connection.once('destroyed', () => client.queues.delete(message.guild.id));
-            newQueue.connection.once('disconnected', () => client.queues.delete(message.guild.id));
-            newQueue.connection.subscribe(newQueue.audioPlayer);
             play(newQueue);
         } catch (e) {
             client.queues.delete(message.guild.id);

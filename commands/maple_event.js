@@ -35,7 +35,7 @@ module.exports = {
         } else {
             let currentPage = 0;
             const embeds = generateEventEmbed(links, names, dates);
-            const eventEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
+            const eventEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
             if (embeds.length > 1) {
                 try {
                     await eventEmbed.react('⬅️');
@@ -55,11 +55,11 @@ module.exports = {
                         switch (reaction.emoji.name) {
                             case '➡️':
                                 currentPage = (currentPage + 1) % embeds.length;
-                                eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
+                                eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                                 break;
                             case '⬅️':
                                 currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                                eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
+                                eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                                 break;
                             case '⏹':
                                 collector.stop();

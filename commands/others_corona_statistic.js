@@ -107,7 +107,7 @@ module.exports = {
 
             let currentPage = 0;
             const embeds = [corona1, corona2];
-            const coronaEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
+            const coronaEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
 
             try {
                 await coronaEmbed.react('⬅️');
@@ -127,11 +127,11 @@ module.exports = {
                     switch (reaction.emoji.name) {
                         case '➡️':
                             currentPage = (currentPage + 1) % embeds.length;
-                            coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
+                            coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                             break;
                         case '⬅️':
                             currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                            coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
+                            coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                             break;
                         case '⏹':
                             collector.stop();

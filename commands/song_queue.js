@@ -34,7 +34,7 @@ module.exports = {
         }
         let currentPage = 0;
         const embeds = generateQueueEmbed(message.guild.iconURL(), queue.songs);
-        const queueEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
+        const queueEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
         if (embeds.length > 1) {
             try {
                 await queueEmbed.react('⬅️');
@@ -52,11 +52,11 @@ module.exports = {
                     switch (reaction.emoji.name) {
                         case '➡️':
                             currentPage = (currentPage + 1) % embeds.length;
-                            queueEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
+                            queueEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                             break;
                         case '⬅️':
                             currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                            queueEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
+                            queueEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                             break;
                         case '⏹':
                             collector.stop();

@@ -133,7 +133,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                     newVoice.members.size === 2 &&
                     newVoice.members.first().id === client.user.id
                 ) {
-                    newQueue.connection.dispatcher.resume();
+                    newQueue.audioPlayer.unpause();
                     newQueue.textSend('대기열을 다시 재생합니다.');
                     newQueue.playing = true;
                 }
@@ -144,7 +144,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                 if (oldQueue?.connection?.dispatcher && oldVoice.id === oldQueue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.first().id === client.user.id) {
                     // 봇만 음성 채널에 있는 경우
                     if (oldQueue.playing) {
-                        oldQueue.connection.dispatcher.pause(true);
+                        oldQueue.audioPlayer.pause();
                         oldQueue.textSend('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
                         oldQueue.playing = false;
                     }
@@ -153,7 +153,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                         if (queue?.connection?.dispatcher && oldVoice.id === queue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.first().id === client.user.id) {
                             // 5분이 지나도 봇만 음성 채널에 있는 경우
                             queue.songs = [];
-                            queue.connection.dispatcher.end();
+                            queue.audioPlayer.stop(true);
                             queue.textSend('5분 동안 소야봇이 비활성화 되어 대기열을 끝냅니다.');
                         }
                     }, 300000);

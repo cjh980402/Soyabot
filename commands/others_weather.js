@@ -32,7 +32,7 @@ module.exports = {
         } else {
             const locallistEmbed = new MessageEmbed()
                 .setTitle('**검색할 지역의 번호를 알려주세요.**')
-                .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`))
+                .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`).join('\n'))
                 .setColor('#FF9999')
                 .setTimestamp();
             message.channel.send(locallistEmbed);
@@ -81,7 +81,7 @@ module.exports = {
 
         let currentPage = 0;
         const embeds = generateWeatherEmbed(targetLocal[0][0], weatherDesc);
-        const weatherEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
+        const weatherEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
 
         try {
             await weatherEmbed.react('⬅️');
@@ -101,11 +101,11 @@ module.exports = {
                 switch (reaction.emoji.name) {
                     case '➡️':
                         currentPage = (currentPage + 1) % embeds.length;
-                        weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
+                        weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                         break;
                     case '⬅️':
                         currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: embeds[currentPage] });
+                        weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                         break;
                     case '⏹':
                         collector.stop();
