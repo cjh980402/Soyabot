@@ -6,7 +6,7 @@ const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 const ytsr = require('ytsr');
 const scdl = require('soundcloud-downloader').default;
 const scPattern = /^(https?:\/\/)?(www\.)?(m\.)?soundcloud\.(com|app)\/(.+)/i;
-const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?youtube(\.googleapis|-nocookie)?\.com.*(v\/|v=|vi=|vi\/|e\/|shorts\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
+const videoPattern = /^(https?:\/\/)?((music\.)?(www\.)?(m\.)?youtube(\.googleapis|-nocookie)?\.com.*(v\/|v=|vi=|vi\/|e\/|shorts\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
 const playlistPattern = /[&?]list=([\w-]+)/i;
 
 module.exports = {
