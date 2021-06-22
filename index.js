@@ -127,7 +127,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
             if (newVoice) {
                 const newQueue = client.queues.get(newVoice.guild.id);
                 if (
-                    newQueue?.connection?.dispatcher &&
+                    newQueue?.connection.state.status === 'ready' &&
                     !newQueue.playing &&
                     newVoice.id === newQueue.voiceChannel.id &&
                     newVoice.members.size === 2 &&
@@ -141,7 +141,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
             if (oldVoice) {
                 const oldQueue = client.queues.get(oldVoice.guild.id);
-                if (oldQueue?.connection?.dispatcher && oldVoice.id === oldQueue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.first().id === client.user.id) {
+                if (oldQueue?.connection.state.status === 'ready' && oldVoice.id === oldQueue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.first().id === client.user.id) {
                     // 봇만 음성 채널에 있는 경우
                     if (oldQueue.playing) {
                         oldQueue.audioPlayer.pause();
@@ -150,7 +150,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                     }
                     setTimeout(() => {
                         const queue = client.queues.get(oldVoice.guild.id);
-                        if (queue?.connection?.dispatcher && oldVoice.id === queue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.first().id === client.user.id) {
+                        if (queue?.connection.state.status === 'ready' && oldVoice.id === queue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.first().id === client.user.id) {
                             // 5분이 지나도 봇만 음성 채널에 있는 경우
                             queue.songs = [];
                             queue.audioPlayer.stop(true);
