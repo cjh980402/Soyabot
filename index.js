@@ -56,10 +56,6 @@ client.on('error', (e) => {
 
 client.on('message', async (message) => {
     // 각 메시지에 반응, 디스코드는 봇의 메시지도 이 이벤트에 들어옴
-    if (message.channel.type !== 'text' && message.channel.type !== 'dm') {
-        // 텍스트 채널 또는 DM 채널이 아닌 경우는 봇 동작에서 제외
-        return;
-    }
     let commandName;
     try {
         console.log(`(${new Date().toLocaleString()}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username}: ${message.content}\n`);
@@ -77,7 +73,7 @@ client.on('message', async (message) => {
         }
 
         const prefixRegex = new RegExp(`^\\s*(<@!?${client.user.id}>|${escapeRegex(client.prefix)})\\s*`); // 문자열로 정규식 생성하기 위해 생성자 이용
-        // 멘션의 형태: <@${user.id}>
+        // 멘션의 형태: <@${user.id}> 또는 <@!${user.id}>
         const matchedPrefix = prefixRegex.exec(message.content)?.[0]; // 정규식에 대응되는 명령어 접두어 부분을 탐색
         if (!matchedPrefix) {
             // 멘션이나 client.prefix로 시작하지 않는 경우
