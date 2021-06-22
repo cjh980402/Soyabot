@@ -105,13 +105,15 @@ module.exports = {
         try {
             client.queues.set(message.guild.id, newQueue);
             newQueue.connection = await channel.join();
-            newQueue.connection.once('error', () => newQueue.connection.disconnect());
+            newQueue.connection.once('error', () => newQueue.connection.destroy());
+            newQueue.connection.once('destroyed', () => client.queues.delete(message.guild.id));
             newQueue.connection.once('disconnected', () => client.queues.delete(message.guild.id));
+            newQueue.connection.subscribe(newQueue.audioPlayer);
             play(newQueue);
         } catch (e) {
             client.queues.delete(message.guild.id);
             replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
-            channel.leave();
+            // channel.leave();
             return message.channel.send(`채널에 참가할 수 없습니다: ${e.message ?? e}`);
         }
     }

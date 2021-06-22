@@ -32,7 +32,7 @@ module.exports = {
         // results.forEach((video, index) => resultsEmbed.addField(`**${index + 1}. ${video.title.decodeHTML().decodeHTML()}**`, video.shortURL));
         results.forEach((video, index) => resultsEmbed.addField(`**${index + 1}. ${video.title}**`, `https://youtu.be/${video.id}`));
 
-        const resultsMessage = await message.channel.send(resultsEmbed);
+        const resultsMessage = await message.channel.send({ embeds: [resultsEmbed] });
 
         try {
             let songChoice;

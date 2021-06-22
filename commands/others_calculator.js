@@ -47,7 +47,7 @@ module.exports = {
         }
 
         try {
-            return message.channel.send(String(originEvaluate(inputExpression(args.join(' ')))) || '\u200b', { code: 'js' });
+            return message.channel.send({ content: String(originEvaluate(inputExpression(args.join(' ')))) || '\u200b', code: 'js' });
         } catch {
             return message.channel.send('올바르지 않은 수식입니다.');
         }

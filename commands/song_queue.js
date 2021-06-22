@@ -24,7 +24,7 @@ module.exports = {
         }
 
         const queue = client.queues.get(message.guild.id);
-        if (!queue?.connection.dispatcher) {
+        if (!queue || queue.audioPlayer.state.status === 'idle') {
             return message.channel.send('재생 중인 노래가 없습니다.');
         }
         let currentPage = 0;

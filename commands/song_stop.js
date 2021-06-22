@@ -11,7 +11,7 @@ module.exports = {
         }
 
         const queue = client.queues.get(message.guild.id);
-        if (!queue?.connection.dispatcher) {
+        if (!queue || queue.audioPlayer.state.status === 'idle') {
             return message.reply('재생 중인 노래가 없습니다.');
         }
         if (!canModifyQueue(message.member)) {
@@ -20,9 +20,9 @@ module.exports = {
 
         queue.songs = [];
         try {
-            queue.connection.dispatcher.end();
+            queue.audioPlayer.stop(true);
         } catch {
-            queue.connection.disconnect();
+            queue.connection.destroy();
         }
         return message.channel.send(`${message.author} ⏹ 노래를 정지했습니다.`);
     }

@@ -1,3 +1,4 @@
+const { MessageEmbed } = require('../util/discord.js-extend');
 const { ADMIN_ID } = require('../soyabot_config.json');
 
 module.exports.botNotice = async function (data, type = null) {
@@ -11,7 +12,7 @@ module.exports.botNotice = async function (data, type = null) {
                 const target = guildText.find((v) => /소야봇.*(공지|알림)/.test(v.name)) ?? guildText.first();
                 const permissions = target?.permissionsFor(client.user);
                 if (permissions?.has(['VIEW_CHANNEL', 'SEND_MESSAGES'])) {
-                    await target.send(data); // 디스코드 봇은 딜레이 없이 공지 보내기 가능
+                    await target.send(data instanceof MessageEmbed ? { embeds: [data] } : data); // 디스코드 봇은 딜레이 없이 공지 보내기 가능
                 }
             } catch {}
         });
