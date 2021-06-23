@@ -59,14 +59,15 @@ module.exports.play = async function (queue) {
         return queue.textSend('❌ 음악 대기열이 끝났습니다.');
     }
 
-    let resource = null;
+    let stream = null,
+        resource = null;
     try {
         if (song.url.includes('youtube.com')) {
-            resource = ytdl(song.url, { filter: 'audio', quality: 'highestaudio' });
+            stream = ytdl(song.url, { filter: 'audio', quality: 'highestaudio' });
         } else if (song.url.includes('soundcloud.com')) {
-            resource = await scdl.download(song.url);
+            stream = await scdl.download(song.url);
         }
-        resource = createAudioResource(resource, {
+        resource = createAudioResource(stream, {
             inputType: StreamType.Arbitrary,
             inlineVolume: true
         });
@@ -99,7 +100,7 @@ module.exports.play = async function (queue) {
             if (newState.status === 'idle' && oldState.status !== 'idle') {
                 // 재생 중인 노래가 끝난 경우
                 collector?.stop();
-                resource.playStream.destroy();
+                stream.destroy();
                 queue.audioPlayer.removeAllListeners('stateChange');
                 queue.audioPlayer.removeAllListeners('error');
                 if (queue.loop) {
@@ -112,7 +113,7 @@ module.exports.play = async function (queue) {
         })
         .on('error', async (e) => {
             collector?.stop();
-            resource.playStream.destroy();
+            stream.destroy();
             queue.audioPlayer.removeAllListeners('stateChange');
             queue.audioPlayer.removeAllListeners('error');
             queue.textSend('재생할 수 없는 동영상입니다.');
