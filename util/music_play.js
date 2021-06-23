@@ -4,6 +4,7 @@ const scdl = require('soundcloud-downloader').default;
 const { replyAdmin } = require('../admin/bot_control');
 const { STAY_TIME, DEFAULT_VOLUME } = require('../soyabot_config.json');
 const { canModifyQueue } = require('./soyabot_util');
+const { createWriteStream } = require('fs');
 
 module.exports.QueueElement = class {
     textChannel;
@@ -61,7 +62,7 @@ module.exports.play = async function (queue) {
     let resource = null;
     try {
         if (song.url.includes('youtube.com')) {
-            resource = ytdl(song.url, { filter: 'audio', quality: 'highestaudio', highWaterMark: 1<<30 });
+            resource = ytdl(song.url, { filter: 'audio', quality: 'highestaudio' });
         } else if (song.url.includes('soundcloud.com')) {
             resource = await scdl.download(song.url);
         }
