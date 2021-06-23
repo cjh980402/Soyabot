@@ -58,14 +58,14 @@ module.exports.play = async function (queue) {
         return queue.textSend('❌ 음악 대기열이 끝났습니다.');
     }
 
-    let stream = null;
+    let resource = null;
     try {
         if (song.url.includes('youtube.com')) {
-            stream = ytdl(song.url, { filter: 'audio', quality: 'highestaudio' });
+            resource = ytdl(song.url, { filter: 'audio', quality: 'highestaudio', highWaterMark: 1<<30 });
         } else if (song.url.includes('soundcloud.com')) {
-            stream = await scdl.download(song.url);
+            resource = await scdl.download(song.url);
         }
-        stream = createAudioResource(stream, {
+        resource = createAudioResource(resource, {
             inputType: StreamType.Arbitrary,
             inlineVolume: true
         });
@@ -91,13 +91,14 @@ module.exports.play = async function (queue) {
             }
         });
 
-    queue.audioPlayer.play(stream);
+    queue.audioPlayer.play(resource);
     queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
     queue.audioPlayer
         .on('stateChange', (oldState, newState) => {
             if (newState.status === 'idle' && oldState.status !== 'idle') {
                 // 재생 중인 노래가 끝난 경우
                 collector?.stop();
+                resource.playStream.destroy();
                 queue.audioPlayer.removeAllListeners('stateChange');
                 queue.audioPlayer.removeAllListeners('error');
                 if (queue.loop) {
@@ -110,6 +111,7 @@ module.exports.play = async function (queue) {
         })
         .on('error', async (e) => {
             collector?.stop();
+            resource.playStream.destroy();
             queue.audioPlayer.removeAllListeners('stateChange');
             queue.audioPlayer.removeAllListeners('error');
             queue.textSend('재생할 수 없는 동영상입니다.');

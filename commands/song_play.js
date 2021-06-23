@@ -5,8 +5,8 @@ const YouTubeAPI = require('simple-youtube-api');
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 const ytsr = require('ytsr');
 const scdl = require('soundcloud-downloader').default;
-const scPattern = /^(https?:\/\/)?(www\.)?(m\.)?soundcloud\.(com|app)\/(.+)/i;
-const videoPattern = /^(https?:\/\/)?((www\.)?(m\.)?youtube(\.googleapis|-nocookie)?\.com.*(v\/|v=|vi=|vi\/|e\/|shorts\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
+const scPattern = /^(https?:\/\/)?(www|m)?\.?soundcloud\.(com|app)\/(.+)/i;
+const videoPattern = /^(https?:\/\/)?((music|www|m)?\.?youtube(\.googleapis|-nocookie)?\.com.*(v\/|v=|vi=|vi\/|e\/|shorts\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
 const playlistPattern = /[&?]list=([\w-]+)/i;
 
 module.exports = {
@@ -41,8 +41,8 @@ module.exports = {
 
         const url = args[0];
         const search = args.join(' ');
-        const scVideo = scPattern.exec(url)?.[5];
-        let videoID = videoPattern.exec(url)?.[7];
+        const scVideo = scPattern.exec(url)?.[4];
+        let videoID = videoPattern.exec(url)?.[6];
 
         // 재생목록 주소가 주어진 경우는 재생목록 기능을 실행
         if ((!videoID && playlistPattern.test(url)) || (scVideo && url.includes('/sets/'))) {
