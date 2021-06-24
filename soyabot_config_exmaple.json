@@ -4,7 +4,7 @@
     "ADMIN_ID": "",
     "MAX_PLAYLIST_SIZE": 20,
     "STAY_TIME": 30,
-    "DEFAULT_VOLUME": 70,
+    "DEFAULT_VOLUME": 50,
     "NAVER_CLIENT_ID": "",
     "NAVER_CLIENT_SECRET": "",
     "GOOGLE_API_KEY": "",

@@ -1,6 +1,9 @@
 const Discord = require('discord.js-light');
 const { entersState, joinVoiceChannel, VoiceConnectionStatus } = require('@discordjs/voice');
 const fetch = require('node-fetch');
+const YouTubeAPI = require('simple-youtube-api');
+const Constants = require('simple-youtube-api/src/util/Constants');
+const Video = require('simple-youtube-api/src/structures/Video');
 const { decodeHTML } = require('entities');
 const { inspect } = require('util');
 const originReply = Discord.Message.prototype.reply; // 기본으로 정의된 reply 메소드
@@ -63,6 +66,18 @@ Object.defineProperty(Discord.VoiceChannel.prototype, 'join', {
         } catch (e) {
             connection.destroy(); // 에러 발생 시 연결 취소
             throw e;
+        }
+    }
+});
+
+Object.defineProperty(YouTubeAPI.prototype, 'getVideosByIDs', {
+    value: async function (ids, options = {}) {
+        Object.assign(options, { part: Constants.PARTS.Videos, id: ids });
+        const result = await this.request.make(Constants.ENDPOINTS.Videos, options);
+        if (result.items.length > 0) {
+            return result.items.map((v) => (v ? new Video(this, v) : null));
+        } else {
+            throw new Error(`resource ${result.kind} not found`);
         }
     }
 });
