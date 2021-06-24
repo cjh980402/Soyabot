@@ -5,7 +5,8 @@ const { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } = require('../soyabot_config.json');
 const YouTubeAPI = require('simple-youtube-api');
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 const ytsr = require('ytsr');
-const scdl = require('soundcloud-downloader').default;
+const { Client } = require('soundcloud-scraper');
+const scdl = new Client();
 const scPattern = /^(https?:\/\/)?(www|m)?\.?soundcloud\.(com|app)\/(.+)/i;
 const videoPattern = /^(https?:\/\/)?((music|www|m)?\.?youtube(\.googleapis|-nocookie)?\.com.*(v\/|v=|vi=|vi\/|e\/|shorts\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
 const playlistPattern = /[&?]list=([\w-]+)/i;
@@ -54,10 +55,10 @@ module.exports = {
             videos = null;
         try {
             if (scVideo) {
-                playlist = await scdl.getSetInfo(`https://soundcloud.com/${scVideo}`);
+                playlist = await scdl.getPlaylist(`https://soundcloud.com/${scVideo}`);
                 videos = playlist.tracks.slice(0, MAX_PLAYLIST_SIZE).map((track) => ({
                     title: track.title,
-                    url: track.permalink_url,
+                    url: track.url,
                     duration: Math.ceil(track.duration / 1000)
                 }));
             } else {
@@ -86,7 +87,7 @@ module.exports = {
         const playlistEmbed = new MessageEmbed()
             .setTitle(`**${playlist.title.decodeHTML()}**`)
             .setDescription(videos.map((song, index) => `${index + 1}. ${song.title}`))
-            .setURL(playlist.url ?? playlist.permalink_url) // 전자는 유튜브, 후자는 SoundCloud
+            .setURL(playlist.url)
             .setColor('#FF9999')
             .setTimestamp();
 
