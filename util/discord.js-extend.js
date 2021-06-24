@@ -72,7 +72,7 @@ Object.defineProperty(Discord.VoiceChannel.prototype, 'join', {
 
 Object.defineProperty(YouTubeAPI.prototype, 'getVideosByIDs', {
     value: async function (ids, options = {}) {
-        Object.assign(options, { part: Constants.PARTS.Videos, id: ids });
+        Object.assign(options, { part: Constants.PARTS.Videos, id: ids.join(',') });
         const result = await this.request.make(Constants.ENDPOINTS.Videos, options);
         if (result.items.length > 0) {
             return result.items.map((v) => (v ? new Video(this, v) : null));
