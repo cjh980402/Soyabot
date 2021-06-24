@@ -4,7 +4,8 @@ const { GOOGLE_API_KEY } = require('../soyabot_config.json');
 const YouTubeAPI = require('simple-youtube-api');
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 const ytsr = require('ytsr');
-const scdl = require('soundcloud-downloader').default;
+const { Client } = require('soundcloud-scraper');
+const scdl = new Client();
 const scPattern = /^(https?:\/\/)?(www|m)?\.?soundcloud\.(com|app)\/(.+)/i;
 const videoPattern = /^(https?:\/\/)?((music|www|m)?\.?youtube(\.googleapis|-nocookie)?\.com.*(v\/|v=|vi=|vi\/|e\/|shorts\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
 const playlistPattern = /[&?]list=([\w-]+)/i;
@@ -53,10 +54,10 @@ module.exports = {
             song = null;
         try {
             if (scVideo) {
-                songInfo = await scdl.getInfo(`https://soundcloud.com/${scVideo}`);
+                songInfo = await scdl.getSongInfo(`https://soundcloud.com/${scVideo}`);
                 song = {
                     title: songInfo.title,
-                    url: songInfo.permalink_url,
+                    url: songInfo.url,
                     duration: Math.ceil(songInfo.duration / 1000)
                 };
             } else {
