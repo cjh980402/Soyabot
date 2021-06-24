@@ -1,5 +1,8 @@
 const Discord = require('discord.js-light');
 const fetch = require('node-fetch');
+const YouTubeAPI = require('simple-youtube-api');
+const Constants = require('simple-youtube-api/src/util/Constants');
+const Video = require('simple-youtube-api/src/structures/Video');
 const { decodeHTML } = require('entities');
 const { inspect } = require('util');
 const originReply = Discord.Message.prototype.reply; // 기본으로 정의된 reply 메소드
@@ -35,6 +38,18 @@ Object.defineProperty(Discord.Message.prototype, 'reply', {
     value: function (content, options = {}) {
         options.reply = { failIfNotExists: false };
         return originReply.call(this, content, options);
+    }
+});
+
+Object.defineProperty(YouTubeAPI.prototype, 'getVideosByIDs', {
+    value: async function (ids, options = {}) {
+        Object.assign(options, { part: Constants.PARTS.Videos, id: ids });
+        const result = await this.request.make(Constants.ENDPOINTS.Videos, options);
+        if (result.items.length > 0) {
+            return result.items.map((v) => (v ? new Video(this, v) : null));
+        } else {
+            throw new Error(`resource ${result.kind} not found`);
+        }
     }
 });
 

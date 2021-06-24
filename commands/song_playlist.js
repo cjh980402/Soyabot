@@ -55,7 +55,7 @@ module.exports = {
         try {
             if (scVideo) {
                 playlist = await scdl.getSetInfo(`https://soundcloud.com/${scVideo}`);
-                videos = playlist.tracks.slice(0, MAX_PLAYLIST_SIZE ?? 10).map((track) => ({
+                videos = playlist.tracks.slice(0, MAX_PLAYLIST_SIZE).map((track) => ({
                     title: track.title,
                     url: track.permalink_url,
                     duration: Math.ceil(track.duration / 1000)
@@ -70,13 +70,15 @@ module.exports = {
                     }
                 }
                 playlist = await youtube.getPlaylistByID(playlistID, { part: 'snippet' });
-                videos = (await playlist.getVideos(MAX_PLAYLIST_SIZE ?? 10, { part: 'snippet' }))
+                videos = (await playlist.getVideos(MAX_PLAYLIST_SIZE, { part: 'snippet' }))
                     .filter((video) => !/(Private|Deleted) video/.test(video.title)) // 비공개 또는 삭제된 영상 제외하기
-                    .map((video) => ({
-                        title: video.title.decodeHTML(),
-                        url: video.url,
-                        duration: video.durationSeconds
-                    }));
+                    .map((video) => video.id)
+                    .join(',');
+                videos = (await youtube.getVideosByIDs(videos)).map((video) => ({
+                    title: video.title.decodeHTML(),
+                    url: video.url,
+                    duration: video.durationSeconds
+                }));
             }
         } catch {
             return message.reply('재생할 수 없는 재생목록입니다.');
