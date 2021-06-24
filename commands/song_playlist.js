@@ -72,8 +72,7 @@ module.exports = {
                 playlist = await youtube.getPlaylistByID(playlistID, { part: 'snippet' });
                 videos = (await playlist.getVideos(MAX_PLAYLIST_SIZE, { part: 'snippet' }))
                     .filter((video) => !/(Private|Deleted) video/.test(video.title)) // 비공개 또는 삭제된 영상 제외하기
-                    .map((video) => video.id)
-                    .join(',');
+                    .map((video) => video.id);
                 videos = (await youtube.getVideosByIDs(videos)).map((video) => ({
                     title: video.title.decodeHTML(),
                     url: video.url,
