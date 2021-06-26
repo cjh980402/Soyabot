@@ -42,7 +42,7 @@
     "sqlite3": "^5.0.2",
     "string-progressbar": "^1.0.4",
     "utf-8-validate": "^5.0.5",
-    "ytdl-core": "^4.8.2",
+    "ytdl-core": "^4.8.3",
     "ytsr": "^3.5.0",
     "zlib-sync": "^0.1.7"
   },
