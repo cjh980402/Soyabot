@@ -29,6 +29,7 @@ module.exports = {
             return message.reply(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래로 건너뛸 수 있습니다.`);
         }
 
+        message.channel.send(`${message.author} ⏭ ${skipto - 1}개의 노래를 건너뛰었습니다.`);
         queue.playing = true;
         if (queue.loop) {
             for (let i = 0; i < skipto - 2; i++) {
@@ -38,6 +39,5 @@ module.exports = {
             queue.songs = queue.songs.slice(skipto - 2);
         }
         queue.connection.dispatcher.end();
-        return message.channel.send(`${message.author} ⏭ ${skipto - 1}개의 노래를 건너뛰었습니다.`);
     }
 };

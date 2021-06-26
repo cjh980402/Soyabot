@@ -18,12 +18,12 @@ module.exports = {
             return message.reply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
 
+        message.channel.send(`${message.author} ⏹ 노래를 정지했습니다.`);
         queue.songs = [];
         try {
             queue.connection.dispatcher.end();
         } catch {
             queue.connection.disconnect();
         }
-        return message.channel.send(`${message.author} ⏹ 노래를 정지했습니다.`);
     }
 };
