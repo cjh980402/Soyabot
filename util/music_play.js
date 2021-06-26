@@ -155,7 +155,7 @@ module.exports.play = async function (queue) {
                         queue.textSend(`${user} ▶️ 노래를 다시 틀었습니다.`);
                         queue.audioPlayer.unpause();
                     } else {
-                        queue.textSend(`${user} ⏸ 노래를 일시정지했습니다.`);
+                        queue.textSend(`${user} ⏸ 노래를 일시정지 했습니다.`);
                         queue.audioPlayer.pause();
                     }
                     break;
