@@ -247,8 +247,8 @@ module.exports.MapleUser = class {
             return null;
         }
 
-        data = JSON.parse(/\[{.+exp.+}\]/.exec(data.eq(0).html()));
-        date = JSON.parse(/\[\[.+exp.+\]\]/.exec(date.eq(0).html()))[0].slice(1);
+        data = JSON.parse(/\[{.+exp.+}\]/.exec(data.eq(0).html())[0]);
+        date = JSON.parse(/\[\[.+exp.+\]\]/.exec(date.eq(0).html())[0])[0].slice(1);
         data.forEach((v, i) => (v.date = date[i]));
 
         return data; // 배열의 원소 구성: date, level, exp
@@ -260,7 +260,7 @@ module.exports.MapleUser = class {
             return null;
         }
 
-        return JSON.parse(/\[\[.+level.+\]\]/.exec(data.eq(0).html())); // 0번째 배열 = 날짜, 1번째 배열 = 레벨 (각각 0번 인덱스는 제외 필요)
+        return JSON.parse(/\[\[.+level.+\]\]/.exec(data.eq(0).html())[0]); // 0번째 배열 = 날짜, 1번째 배열 = 레벨 (각각 0번 인덱스는 제외 필요)
     }
 
     MurungHistory() {
@@ -302,7 +302,7 @@ module.exports.MapleUser = class {
     }
 
     Level() {
-        return this.#ggData('.user-summary-item').eq(0).text().substr(3);
+        return +/\d+/.exec(this.#ggData('.user-summary-item').eq(0).text());
     }
 
     Job() {
