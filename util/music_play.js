@@ -22,17 +22,15 @@ module.exports.QueueElement = class {
         this.connection = connection;
         this.songs = songs;
 
+        const connectionFinish = () => {
+            client.queues.delete(this.voiceChannel.guild.id);
+            this.songs = [];
+            this.audioPlayer.stop(true);
+        };
+
         this.connection.once('error', () => this.connection.destroy());
-        this.connection.once('destroyed', () => {
-            client.queues.delete(this.voiceChannel.guild.id);
-            this.audioPlayer.state.resource?.playStream.destroy();
-            this.audioPlayer.state.resource?.playStream.read();
-        });
-        this.connection.once('disconnected', () => {
-            client.queues.delete(this.voiceChannel.guild.id);
-            this.audioPlayer.state.resource?.playStream.destroy();
-            this.audioPlayer.state.resource?.playStream.read();
-        });
+        this.connection.once('destroyed', connectionFinish);
+        this.connection.once('disconnected', connectionFinish);
         this.connection.subscribe(this.audioPlayer);
     }
 
@@ -51,9 +49,9 @@ module.exports.QueueElement = class {
     }
 };
 
-module.exports.play = async function (guild) {
-    const queue = client.queues.get(guild.id);
+module.exports.play = async function (queue) {
     const song = queue.songs[0];
+    const { guild } = queue.voiceChannel;
 
     if (!song) {
         client.queues.delete(guild.id);
@@ -83,7 +81,7 @@ module.exports.play = async function (guild) {
         console.error(e);
         queue.songs.shift();
         queue.textSend(`오류 발생: ${e.message ?? e}`);
-        return module.exports.play(guild);
+        return module.exports.play(queue);
     }
 
     const playingMessage = await queue.textSend(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
@@ -115,7 +113,7 @@ module.exports.play = async function (guild) {
                 } else {
                     queue.songs.shift();
                 }
-                module.exports.play(guild); // 재귀적으로 다음 곡 재생
+                module.exports.play(queue); // 재귀적으로 다음 곡 재생
             }
         })
         .on('error', async (e) => {
@@ -125,7 +123,7 @@ module.exports.play = async function (guild) {
             queue.textSend('재생할 수 없는 동영상입니다.');
             replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             queue.songs.shift();
-            module.exports.play(guild);
+            module.exports.play(queue);
         });
 
     try {
@@ -154,40 +152,40 @@ module.exports.play = async function (guild) {
                 case '⏯':
                     queue.playing = !queue.playing;
                     if (queue.playing) {
-                        queue.audioPlayer.unpause();
                         queue.textSend(`${user} ▶️ 노래를 다시 틀었습니다.`);
+                        queue.audioPlayer.unpause();
                     } else {
-                        queue.audioPlayer.pause();
                         queue.textSend(`${user} ⏸ 노래를 일시정지했습니다.`);
+                        queue.audioPlayer.pause();
                     }
                     break;
                 case '⏭':
+                    queue.textSend(`${user} ⏭ 노래를 건너뛰었습니다.`);
                     queue.playing = true;
                     queue.audioPlayer.stop(true);
-                    queue.textSend(`${user} ⏭ 노래를 건너뛰었습니다.`);
                     break;
                 case '🔇':
+                    queue.textSend(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
                     queue.volume = queue.volume <= 0 ? DEFAULT_VOLUME : 0;
                     queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
-                    queue.textSend(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
                     break;
                 case '🔉':
+                    queue.textSend(`${user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
                     queue.volume = Math.max(queue.volume - 10, 0);
                     queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
-                    queue.textSend(`${user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
                     break;
                 case '🔊':
+                    queue.textSend(`${user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
                     queue.volume = Math.min(queue.volume + 10, 100);
                     queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
-                    queue.textSend(`${user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
                     break;
                 case '🔁':
-                    queue.loop = !queue.loop;
                     queue.textSend(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
+                    queue.loop = !queue.loop;
                     break;
                 case '⏹':
-                    queue.songs = [];
                     queue.textSend(`${user} ⏹ 노래를 정지했습니다.`);
+                    queue.songs = [];
                     try {
                         queue.audioPlayer.stop(true);
                     } catch {

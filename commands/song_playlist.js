@@ -106,7 +106,7 @@ module.exports = {
         try {
             const newQueue = new QueueElement(message.channel, channel, await channel.join(), videos);
             client.queues.set(message.guild.id, newQueue);
-            play(message.guild);
+            play(newQueue);
         } catch (e) {
             client.queues.delete(message.guild.id);
             replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
