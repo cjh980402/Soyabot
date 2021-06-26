@@ -23,8 +23,16 @@ module.exports.QueueElement = class {
         this.songs = songs;
 
         this.connection.once('error', () => this.connection.destroy());
-        this.connection.once('destroyed', () => client.queues.delete(this.voiceChannel.guild.id));
-        this.connection.once('disconnected', () => client.queues.delete(this.voiceChannel.guild.id));
+        this.connection.once('destroyed', () => {
+            client.queues.delete(this.voiceChannel.guild.id);
+            this.audioPlayer.state.resource?.playStream.destroy();
+            this.audioPlayer.state.resource?.playStream.read();
+        });
+        this.connection.once('disconnected', () => {
+            client.queues.delete(this.voiceChannel.guild.id);
+            this.audioPlayer.state.resource?.playStream.destroy();
+            this.audioPlayer.state.resource?.playStream.read();
+        });
         this.connection.subscribe(this.audioPlayer);
     }
 
@@ -43,15 +51,16 @@ module.exports.QueueElement = class {
     }
 };
 
-module.exports.play = async function (queue) {
+module.exports.play = async function (guild) {
+    const queue = client.queues.get(guild.id);
     const song = queue.songs[0];
-    const { guild } = queue.voiceChannel;
 
     if (!song) {
         client.queues.delete(guild.id);
         setTimeout(() => {
             // 종료 후 새로운 음악 기능이 수행 중이지 않으면 나감
-            if (queue.audioPlayer.state.status === 'idle' && queue.connection.state.status === 'ready') {
+            const newQueue = client.queues.get(guild.id);
+            if (!newQueue && queue.connection.state.status === 'ready') {
                 queue.connection.destroy();
                 queue.textSend(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
             }
@@ -59,15 +68,14 @@ module.exports.play = async function (queue) {
         return queue.textSend('❌ 음악 대기열이 끝났습니다.');
     }
 
-    let stream = null,
-        resource = null;
+    let resource = null;
     try {
         if (song.url.includes('youtube.com')) {
-            stream = ytdl(song.url, { filter: 'audio', quality: 'highestaudio' });
+            resource = ytdl(song.url, { filter: 'audio', quality: 'highestaudio' });
         } else if (song.url.includes('soundcloud.com')) {
-            stream = await (await scdl.getSongInfo(song.url)).downloadProgressive();
+            resource = await (await scdl.getSongInfo(song.url)).downloadProgressive();
         }
-        resource = createAudioResource(stream, {
+        resource = createAudioResource(resource, {
             inputType: StreamType.Arbitrary,
             inlineVolume: true
         });
@@ -75,7 +83,7 @@ module.exports.play = async function (queue) {
         console.error(e);
         queue.songs.shift();
         queue.textSend(`오류 발생: ${e.message ?? e}`);
-        return module.exports.play(queue);
+        return module.exports.play(guild);
     }
 
     const playingMessage = await queue.textSend(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
@@ -100,7 +108,6 @@ module.exports.play = async function (queue) {
             if (newState.status === 'idle' && oldState.status !== 'idle') {
                 // 재생 중인 노래가 끝난 경우
                 collector?.stop();
-                stream.destroy();
                 queue.audioPlayer.removeAllListeners('stateChange');
                 queue.audioPlayer.removeAllListeners('error');
                 if (queue.loop) {
@@ -108,18 +115,17 @@ module.exports.play = async function (queue) {
                 } else {
                     queue.songs.shift();
                 }
-                module.exports.play(queue); // 재귀적으로 다음 곡 재생
+                module.exports.play(guild); // 재귀적으로 다음 곡 재생
             }
         })
         .on('error', async (e) => {
             collector?.stop();
-            stream.destroy();
             queue.audioPlayer.removeAllListeners('stateChange');
             queue.audioPlayer.removeAllListeners('error');
             queue.textSend('재생할 수 없는 동영상입니다.');
             replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             queue.songs.shift();
-            module.exports.play(queue);
+            module.exports.play(guild);
         });
 
     try {
