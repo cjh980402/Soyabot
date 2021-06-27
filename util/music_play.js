@@ -152,11 +152,11 @@ module.exports.play = async function (queue) {
                 case '⏯':
                     queue.playing = !queue.playing;
                     if (queue.playing) {
-                        queue.textSend(`${user} ▶️ 노래를 다시 틀었습니다.`);
                         queue.audioPlayer.unpause();
+                        queue.textSend(`${user} ▶️ 노래를 다시 틀었습니다.`);
                     } else {
-                        queue.textSend(`${user} ⏸ 노래를 일시정지 했습니다.`);
                         queue.audioPlayer.pause();
+                        queue.textSend(`${user} ⏸ 노래를 일시정지 했습니다.`);
                     }
                     break;
                 case '⏭':
@@ -165,23 +165,23 @@ module.exports.play = async function (queue) {
                     queue.audioPlayer.stop(true);
                     break;
                 case '🔇':
-                    queue.textSend(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
                     queue.volume = queue.volume <= 0 ? DEFAULT_VOLUME : 0;
                     queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
+                    queue.textSend(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
                     break;
                 case '🔉':
-                    queue.textSend(`${user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
                     queue.volume = Math.max(queue.volume - 10, 0);
                     queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
+                    queue.textSend(`${user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
                     break;
                 case '🔊':
-                    queue.textSend(`${user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
                     queue.volume = Math.min(queue.volume + 10, 100);
                     queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
+                    queue.textSend(`${user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
                     break;
                 case '🔁':
-                    queue.textSend(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
                     queue.loop = !queue.loop;
+                    queue.textSend(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
                     break;
                 case '⏹':
                     queue.textSend(`${user} ⏹ 노래를 정지했습니다.`);
