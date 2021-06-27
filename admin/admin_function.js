@@ -23,12 +23,16 @@ module.exports.adminChat = async function (message) {
         // 원하는 방에 봇으로 채팅 전송 (텍스트 채널 ID 이용)
         const rslt = await replyRoomID(room, fullContent.substr(room.length + 3));
         message.channel.send(rslt ? '채팅이 전송되었습니다.' : '존재하지 않는 방입니다.');
-    } else if (message.channel.type === 'dm' && message.author.id === ADMIN_ID && message.reference) {
+    } else if (message.channel.recipient?.id === ADMIN_ID && message.reference) {
         // 건의 답변 기능
-        const suggestRefer = await message.channel.messages.fetch(message.reference.messageID, false);
-        const target = client.suggestionChat[suggestRefer?.content.split('\n')[0]];
-        target?.reply(fullContent);
-        message.channel.send(target ? '건의 답변을 보냈습니다.' : '해당하는 건의의 정보가 존재하지 않습니다.');
+        try {
+            const suggestRefer = await message.channel.messages.fetch(message.reference.messageID, false);
+            const [channelID, messageID] = suggestRefer.content.split(/\s/);
+            await client.channels.forge(channelID).messages.forge(messageID).reply(fullContent);
+            message.channel.send('건의 답변을 보냈습니다.');
+        } catch {
+            message.channel.send('해당하는 건의의 정보가 존재하지 않습니다.');
+        }
     }
 };
 
@@ -59,9 +63,7 @@ module.exports.initClient = async function () {
         "CREATE TABLE IF NOT EXISTS messagedb(channelsenderid text primary key, messagecnt integer default 0, lettercnt integer default 0, lastmessage text default '', lasttime datetime default (datetime('now', 'localtime')))"
     );
 
-    client.suggestionChat = {}; // 건의 기능을 사용한 Message객체 임시 저장
     client.setMaxListeners(20); // 이벤트 개수 제한 증가
-
     startNotice(); // 공지 자동 알림 기능
     startUpdate(); // 업데이트 자동 알림 기능
     startTest(); // 테섭 자동 알림 기능
