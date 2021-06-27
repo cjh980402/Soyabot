@@ -9,8 +9,8 @@ module.exports = {
         if (args.length < 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
-        client.suggestionChat[message.id] = message;
-        const rslt = replyAdmin(`${message.id}\n작성자: ${message.author.username}\n건의 내용: ${args.join(' ')}`);
+
+        const rslt = replyAdmin(`${message.channel.id} ${message.id}\n작성자: ${message.author.username}\n건의 내용: ${args.join(' ')}`);
         return message.reply(rslt ? '건의사항이 전송되었습니다.' : '건의사항 전송을 실패했습니다.');
     }
 };
