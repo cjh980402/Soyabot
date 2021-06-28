@@ -86,18 +86,14 @@ module.exports.play = async function (queue) {
 
     const playingMessage = await queue.textSend(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
     const filter = (_, user) => user.id !== client.user.id;
-    const collector = playingMessage
-        ?.createReactionCollector(filter, {
-            time: song.duration > 0 ? song.duration * 1000 : 600000
-        })
-        .once('end', async () => {
-            const find = await db.get('SELECT * FROM pruningskip WHERE channelid = ?', [guild.id]);
-            if (!find) {
-                try {
-                    await playingMessage.delete();
-                } catch {}
-            }
-        });
+    const collector = playingMessage?.createReactionCollector({ filter, time: song.duration > 0 ? song.duration * 1000 : 600000 }).once('end', async () => {
+        const find = await db.get('SELECT * FROM pruningskip WHERE channelid = ?', [guild.id]);
+        if (!find) {
+            try {
+                await playingMessage.delete();
+            } catch {}
+        }
+    });
 
     queue.audioPlayer.play(resource);
     queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);

@@ -13,7 +13,7 @@ module.exports = {
         await dice.react('🔁');
 
         const filter = (reaction, user) => reaction.emoji.name === '🔁' && message.author.id === user.id;
-        const collector = dice.createReactionCollector(filter, { time: 60000 });
+        const collector = dice.createReactionCollector({ filter, time: 60000 });
 
         collector.once('collect', async () => {
             collector.stop();
