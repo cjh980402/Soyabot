@@ -35,9 +35,10 @@ module.exports = {
                 .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`).join('\n'))
                 .setColor('#FF9999')
                 .setTimestamp();
-            message.channel.send(locallistEmbed);
+            message.channel.send({ embeds: [locallistEmbed] });
 
-            const rslt = await message.channel.awaitMessages((msg) => msg.author.id === message.author.id && !isNaN(msg.content) && 1 <= +msg.content && +msg.content <= searchRslt.length, {
+            const rslt = await message.channel.awaitMessages({
+                filter: (msg) => msg.author.id === message.author.id && !isNaN(msg.content) && 1 <= +msg.content && +msg.content <= searchRslt.length,
                 max: 1,
                 time: 20000,
                 errors: ['time']
