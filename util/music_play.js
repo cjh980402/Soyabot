@@ -30,7 +30,10 @@ module.exports.QueueElement = class {
 
         this.connection.once('error', () => this.connection.destroy());
         this.connection.once('destroyed', connectionFinish);
-        this.connection.once('disconnected', connectionFinish);
+        this.connection.once('disconnected', () => {
+            connectionFinish();
+            this.connection.destroy();
+        });
         this.connection.subscribe(this.audioPlayer);
     }
 
@@ -57,8 +60,7 @@ module.exports.play = async function (queue) {
         client.queues.delete(guild.id);
         setTimeout(() => {
             // 종료 후 새로운 음악 기능이 수행 중이지 않으면 나감
-            const newQueue = client.queues.get(guild.id);
-            if (!newQueue && queue.connection.state.status === 'ready') {
+            if (!client.queues.get(guild.id) && queue.connection.state.status === 'ready') {
                 queue.connection.destroy();
                 queue.textSend(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
             }
