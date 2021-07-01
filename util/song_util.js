@@ -74,7 +74,7 @@ module.exports.getSongInfo = async function (url, search) {
                 duration: songInfo.durationSeconds
             };
         }
-        return songInfo;
+        return song;
     } catch {
         throw new Error('재생할 수 없는 영상입니다.');
     }
