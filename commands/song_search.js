@@ -1,8 +1,5 @@
 const { MessageEmbed, Collection } = require('../util/discord.js-extend');
-// const { GOOGLE_API_KEY } = require("../soyabot_config.json");
-// const YouTubeAPI = require("simple-youtube-api");
-// const youtube = new YouTubeAPI(GOOGLE_API_KEY);
-const ytsr = require('ytsr');
+const { youtubeSearch } = require('../util/song_util');
 
 module.exports = {
     usage: `${client.prefix}search (영상 제목)`,
@@ -21,10 +18,8 @@ module.exports = {
         }
 
         const search = args.join(' ');
-        const filter = (await ytsr.getFilters(search)).get('Type').get('Video').url;
-        const results = filter && (await ytsr(filter, { limit: 10 })).items.filter((v) => v.type === 'video'); // 영상만 가져오기
-        // const results = await youtube.searchVideos(search, 10);
-        if (!results?.length) {
+        const results = await youtubeSearch(search);
+        if (!results) {
             return message.reply('검색 내용에 해당하는 영상을 찾지 못했습니다.');
         }
 

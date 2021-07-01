@@ -128,3 +128,14 @@ module.exports.songDownload = async function (url) {
         throw new Error('This url is unavailable');
     }
 };
+
+module.exports.youtubeSearch = async function (search) {
+    const filter = (await ytsr.getFilters(search)).get('Type').get('Video').url;
+    const results = filter && (await ytsr(filter, { limit: 10 })).items.filter((v) => v.type === 'video'); // 영상만 가져오기
+    // const results = await youtube.searchVideos(search, 10);
+    if (!results?.length) {
+        return null;
+    } else {
+        return results;
+    }
+};
