@@ -1,7 +1,5 @@
 const { createAudioPlayer, createAudioResource, StreamType } = require('@discordjs/voice');
-const ytdl = require('ytdl-core');
-const { Client } = require('soundcloud-scraper');
-const scdl = new Client();
+const { songDownload } = require('./song_util');
 const { replyAdmin } = require('../admin/bot_control');
 const { STAY_TIME, DEFAULT_VOLUME } = require('../soyabot_config.json');
 const { canModifyQueue } = require('./soyabot_util');
@@ -70,12 +68,7 @@ module.exports.play = async function (queue) {
 
     let resource = null;
     try {
-        if (song.url.includes('youtube.com')) {
-            resource = ytdl(song.url, { filter: 'audio', quality: 'highestaudio' });
-        } else if (song.url.includes('soundcloud.com')) {
-            resource = await (await scdl.getSongInfo(song.url)).downloadProgressive();
-        }
-        resource = createAudioResource(resource, {
+        resource = createAudioResource(await songDownload(song.url), {
             inputType: StreamType.Arbitrary,
             inlineVolume: true
         });

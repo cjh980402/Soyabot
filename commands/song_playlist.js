@@ -1,15 +1,7 @@
 const { MessageEmbed } = require('../util/discord.js-extend');
 const { QueueElement, play } = require('../util/music_play');
+const { isValidPlaylist, isValidVideo, getPlaylistInfo } = require('../util/song_util');
 const { replyAdmin } = require('../admin/bot_control');
-const { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } = require('../soyabot_config.json');
-const YouTubeAPI = require('simple-youtube-api');
-const youtube = new YouTubeAPI(GOOGLE_API_KEY);
-const ytsr = require('ytsr');
-const { Client } = require('soundcloud-scraper');
-const scdl = new Client();
-const scPattern = /^(https?:\/\/)?(www|m)?\.?soundcloud\.(com|app)\/(.+)/i;
-const videoPattern = /^(https?:\/\/)?((music|www|m)?\.?youtube(\.googleapis|-nocookie)?\.com.*(v\/|v=|vi=|vi\/|e\/|shorts\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
-const playlistPattern = /[&?]list=([\w-]+)/i;
 
 module.exports = {
     usage: `${client.prefix}playlist (재생목록 주소│재생목록 제목)`,
@@ -43,51 +35,22 @@ module.exports = {
 
         const url = args[0];
         const search = args.join(' ');
-        const scVideo = scPattern.exec(url)?.[4];
-        let playlistID = playlistPattern.exec(url)?.[1];
-
         // 영상 주소가 주어진 경우는 영상 기능을 실행
-        if ((!playlistID && videoPattern.test(url)) || (scVideo && !url.includes('/sets/'))) {
+        if (isValidVideo(url) && !isValidPlaylist(url)) {
             return client.commands.find((cmd) => cmd.command.includes('play')).execute(message, args);
         }
 
-        let playlist = null,
-            videos = null;
+        let videos = null;
         try {
-            if (scVideo) {
-                playlist = await scdl.getPlaylist(`https://soundcloud.com/${scVideo}`);
-                videos = playlist.tracks.slice(0, MAX_PLAYLIST_SIZE).map((track) => ({
-                    title: track.title,
-                    url: track.url,
-                    duration: Math.ceil(track.duration / 1000)
-                }));
-            } else {
-                if (!playlistID) {
-                    const filter = (await ytsr.getFilters(search)).get('Type').get('Playlist').url;
-                    playlistID = filter && (await ytsr(filter, { limit: 1 })).items[0]?.playlistID;
-                    // playlistID = (await youtube.searchPlaylists(search, 1, { part: 'snippet' }))[0]?.id;
-                    if (!playlistID) {
-                        return message.reply('검색 내용에 해당하는 재생목록을 찾지 못했습니다.');
-                    }
-                }
-                playlist = await youtube.getPlaylistByID(playlistID, { part: 'snippet' });
-                videos = (await playlist.getVideos(MAX_PLAYLIST_SIZE, { part: 'snippet' }))
-                    .filter((video) => !/(Private|Deleted) video/.test(video.title)) // 비공개 또는 삭제된 영상 제외하기
-                    .map((video) => video.id);
-                videos = (await youtube.getVideosByIDs(videos)).map((video) => ({
-                    title: video.title.decodeHTML(),
-                    url: video.url,
-                    duration: video.durationSeconds
-                }));
-            }
-        } catch {
-            return message.reply('재생할 수 없는 재생목록입니다.');
+            videos = await getPlaylistInfo(url, search);
+        } catch (e) {
+            return message.reply(e.message);
         }
 
         const playlistEmbed = new MessageEmbed()
-            .setTitle(`**${playlist.title.decodeHTML()}**`)
+            .setTitle(`**${videos.title.decodeHTML()}**`)
             .setDescription(videos.map((song, index) => `${index + 1}. ${song.title}`).join('\n'))
-            .setURL(playlist.url)
+            .setURL(videos.url)
             .setColor('#FF9999')
             .setTimestamp();
 
@@ -104,7 +67,7 @@ module.exports = {
         message.channel.send({ content: `✅ ${message.author}가 재생목록을 시작했습니다.`, embeds: [playlistEmbed] });
 
         try {
-            const newQueue = new QueueElement(message.channel, channel, await channel.join(), videos);
+            const newQueue = new QueueElement(message.channel, channel, await channel.join(), [...videos]);
             client.queues.set(message.guild.id, newQueue);
             play(newQueue);
         } catch (e) {
