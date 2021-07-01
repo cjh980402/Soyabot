@@ -24,8 +24,8 @@ module.exports = {
         }
 
         const resultsEmbed = new MessageEmbed().setTitle('**재생할 노래의 번호를 알려주세요.**').setDescription(`${search}의 검색 결과`).setColor('#FF9999');
-        // results.forEach((video, index) => resultsEmbed.addField(`**${index + 1}. ${video.title.decodeHTML().decodeHTML()}**`, video.shortURL));
         results.forEach((video, index) => resultsEmbed.addField(`**${index + 1}. ${video.title}**`, `https://youtu.be/${video.id}`));
+        // results.forEach((video, index) => resultsEmbed.addField(`**${index + 1}. ${video.title.decodeHTML().decodeHTML()}**`, video.shortURL));
 
         const resultsMessage = await message.channel.send(resultsEmbed);
 
