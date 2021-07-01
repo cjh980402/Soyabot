@@ -1,14 +1,6 @@
 const { QueueElement, play } = require('../util/music_play');
+const { isValidPlaylist, isValidVideo, getSongInfo } = require('../util/song_util');
 const { replyAdmin } = require('../admin/bot_control');
-const { GOOGLE_API_KEY } = require('../soyabot_config.json');
-const YouTubeAPI = require('simple-youtube-api');
-const youtube = new YouTubeAPI(GOOGLE_API_KEY);
-const ytsr = require('ytsr');
-const { Client } = require('soundcloud-scraper');
-const scdl = new Client();
-const scPattern = /^(https?:\/\/)?(www|m)?\.?soundcloud\.(com|app)\/(.+)/i;
-const videoPattern = /^(https?:\/\/)?((music|www|m)?\.?youtube(\.googleapis|-nocookie)?\.com.*(v\/|v=|vi=|vi\/|e\/|shorts\/|embed\/|user\/.*\/u\/\d+\/)|youtu\.be\/)([\w-]{11})/i;
-const playlistPattern = /[&?]list=([\w-]+)/i;
 
 module.exports = {
     usage: `${client.prefix}play (영상 주소│영상 제목)`,
@@ -42,42 +34,16 @@ module.exports = {
 
         const url = args[0];
         const search = args.join(' ');
-        const scVideo = scPattern.exec(url)?.[4];
-        let videoID = videoPattern.exec(url)?.[6];
-
         // 재생목록 주소가 주어진 경우는 재생목록 기능을 실행
-        if ((!videoID && playlistPattern.test(url)) || (scVideo && url.includes('/sets/'))) {
+        if (!isValidVideo(url) && isValidPlaylist(url)) {
             return client.commands.find((cmd) => cmd.command.includes('playlist')).execute(message, args);
         }
 
-        let songInfo = null,
-            song = null;
+        let song = null;
         try {
-            if (scVideo) {
-                songInfo = await scdl.getSongInfo(`https://soundcloud.com/${scVideo}`);
-                song = {
-                    title: songInfo.title,
-                    url: songInfo.url,
-                    duration: Math.ceil(songInfo.duration / 1000)
-                };
-            } else {
-                if (!videoID) {
-                    const filter = (await ytsr.getFilters(search)).get('Type').get('Video').url;
-                    videoID = filter && (await ytsr(filter, { limit: 1 })).items[0]?.id;
-                    // videoID = (await youtube.searchVideos(search, 1, { part: 'snippet' }))[0]?.id;
-                    if (!videoID) {
-                        return message.reply('검색 내용에 해당하는 영상을 찾지 못했습니다.');
-                    }
-                }
-                songInfo = await youtube.getVideoByID(videoID);
-                song = {
-                    title: songInfo.title.decodeHTML(),
-                    url: songInfo.url,
-                    duration: songInfo.durationSeconds
-                };
-            }
-        } catch {
-            return message.reply('재생할 수 없는 영상입니다.');
+            song = await getSongInfo(url, search);
+        } catch (e) {
+            return message.reply(e.message);
         }
 
         if (serverQueue) {

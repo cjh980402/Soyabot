@@ -1,6 +1,4 @@
-const ytdl = require('ytdl-core');
-const { Client } = require('soundcloud-scraper');
-const scdl = new Client();
+const { songDownload } = require('./song_util');
 const { replyAdmin } = require('../admin/bot_control');
 const { STAY_TIME, DEFAULT_VOLUME } = require('../soyabot_config.json');
 const { canModifyQueue } = require('./soyabot_util');
@@ -63,11 +61,7 @@ module.exports.play = async function (queue) {
 
     let stream = null;
     try {
-        if (song.url.includes('youtube.com')) {
-            stream = ytdl(song.url, { filter: 'audio', quality: 'highestaudio' });
-        } else if (song.url.includes('soundcloud.com')) {
-            stream = await (await scdl.getSongInfo(song.url)).downloadProgressive();
-        }
+        stream = await songDownload(song.url);
     } catch (e) {
         console.error(e);
         queue.songs.shift();
