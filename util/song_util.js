@@ -86,11 +86,14 @@ module.exports.getPlaylistInfo = async function (url, search) {
             videos = null;
         if (Util.validateURL(url, 'playlist')) {
             playlist = await scdl.getPlaylist(url);
-            videos = playlist.tracks.slice(0, MAX_PLAYLIST_SIZE).map((track) => ({
-                title: track.title,
-                url: track.url,
-                duration: Math.ceil(track.duration / 1000)
-            }));
+            videos = playlist.tracks
+                .shuffle()
+                .slice(0, MAX_PLAYLIST_SIZE)
+                .map((track) => ({
+                    title: track.title,
+                    url: track.url,
+                    duration: Math.ceil(track.duration / 1000)
+                }));
         } else {
             let playlistID = module.exports.getYoutubeListID(url);
             if (!playlistID) {
@@ -102,8 +105,10 @@ module.exports.getPlaylistInfo = async function (url, search) {
                 }
             }
             playlist = await youtube.getPlaylistByID(playlistID, { part: 'snippet' });
-            videos = (await playlist.getVideos(MAX_PLAYLIST_SIZE, { part: 'snippet' }))
+            videos = (await playlist.getVideos(200, { part: 'snippet' }))
                 .filter((video) => !/(Private|Deleted) video/.test(video.title)) // 비공개 또는 삭제된 영상 제외하기
+                .shuffle()
+                .slice(0, MAX_PLAYLIST_SIZE)
                 .map((video) => video.id);
             videos = (await youtube.getVideosByIDs(videos)).map((video) => ({
                 title: video.title.decodeHTML(),
@@ -125,7 +130,7 @@ module.exports.songDownload = async function (url) {
     } else if (url.includes('soundcloud.com')) {
         return (await scdl.getSongInfo(url)).downloadProgressive();
     } else {
-        throw new Error('This url is unavailable');
+        throw new Error('지원하지 않는 영상 주소입니다.');
     }
 };
 

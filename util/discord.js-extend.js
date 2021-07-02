@@ -61,6 +61,16 @@ Object.defineProperty(Array.prototype, 'asyncFilter', {
     }
 });
 
+Object.defineProperty(Array.prototype, 'shuffle', {
+    value: function (indexStart = 0, indexEnd = this.length) {
+        for (let i = indexEnd - 1; i > indexStart; i--) {
+            const j = Math.floor(Math.random() * (i - indexStart + 1)) + indexStart;
+            [this[i], this[j]] = [this[j], this[i]];
+        }
+        return this; // 메소드 체이닝을 위한 배열 반환
+    }
+});
+
 Object.defineProperty(Number.prototype, 'toLocaleUnitString', {
     value: function (locales = Intl.NumberFormat().resolvedOptions().locale, count = 5) {
         // locales는 출력할 형식의 로케일, count는 출력할 단위의 개수

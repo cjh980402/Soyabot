@@ -18,11 +18,7 @@ module.exports = {
             return message.reply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
 
-        const songs = queue.songs; // 배열도 객체의 일종이므로 songs를 변경시 원본이 변경된다.
-        for (let i = songs.length - 1; i > 1; i--) {
-            let j = 1 + Math.floor(Math.random() * i);
-            [songs[i], songs[j]] = [songs[j], songs[i]];
-        }
+        queue.songs.shuffle(1); // 첫번째 노래를 제외하고 섞기
         return message.channel.send(`${message.author} 🔀 대기열을 섞었습니다.`);
     }
 };
