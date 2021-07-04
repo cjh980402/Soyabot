@@ -28,6 +28,17 @@ module.exports.QueueElement = class {
         });
     }
 
+    streamDestroy() {
+        this.dispatcher?.streams.input.destroy();
+        this.dispatcher?.streams.input.read();
+        this.dispatcher?.streams.opus.destroy();
+        this.dispatcher?.streams.opus.read();
+        this.dispatcher?.streams.ffmpeg.destroy();
+        this.dispatcher?.streams.ffmpeg.read();
+        this.dispatcher?.destroy();
+        this.dispatcher = null;
+    }
+
     async textSend(text) {
         try {
             return await this.textChannel.send(text);
@@ -88,7 +99,7 @@ module.exports.play = async function (queue) {
         .play(stream, { volume: queue.volume / 100 })
         .once('finish', async () => {
             collector?.stop();
-            stream.destroy();
+            queue.streamDestroy();
             if (queue.loop) {
                 queue.songs.push(queue.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣음 -> 루프 발생
             } else {
@@ -98,7 +109,7 @@ module.exports.play = async function (queue) {
         })
         .once('error', async (e) => {
             collector?.stop();
-            stream.destroy();
+            queue.streamDestroy();
             queue.textSend('재생할 수 없는 동영상입니다.');
             replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             queue.songs.shift();
