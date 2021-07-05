@@ -64,12 +64,8 @@ module.exports = {
         const humidity = $('div[data-name="humidity"] .row_graph > .data');
         const wind = $('div[data-name="wind"] .row_graph > .data');
 
-        for (let i = 0, j = 0, rainSpan = 1; i < weather.length - 1; i++) {
-            rainSpan--;
-            weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${weather.eq(i).attr('data-wetr-txt')})│${rainName}: ${rain.eq(j).text().trim()}${rainUnit}│습도: ${humidity.eq(i).text().trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
-            if (rainSpan === 0) {
-                rainSpan = +(rain.eq(++j).attr('colspan') ?? 1);
-            }
+        for (let i = 0; i < weather.length - 1; i++) {
+            weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${weather.eq(i).attr('data-wetr-txt')})│${rainName}: ${rain.eq(i).text().trim()}${rainUnit}│습도: ${humidity.eq(i).text().trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
         }
 
         let currentPage = 0;
