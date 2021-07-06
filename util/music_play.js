@@ -28,13 +28,22 @@ module.exports.QueueElement = class {
         });
     }
 
+    #readableDestroy(type) {
+        const stream = this.dispatcher?.streams[type];
+        stream?.unpipe(); // 'write after end' 에러 방지
+        stream?.destroy();
+        stream?.read(); // 버퍼링된 데이터가 배수되도록 보장하여 memory leak 방지
+    }
+
     streamDestroy() {
-        this.dispatcher?.streams.input.destroy();
-        this.dispatcher?.streams.input.read();
-        this.dispatcher?.streams.opus.destroy();
-        this.dispatcher?.streams.opus.read();
-        this.dispatcher?.streams.ffmpeg.destroy();
-        this.dispatcher?.streams.ffmpeg.read();
+        this.dispatcher?.removeAllListeners('finish');
+        this.dispatcher?.removeAllListeners('error');
+        this.#readableDestroy('input');
+        this.#readableDestroy('ffmpeg');
+        this.#readableDestroy('volume');
+        this.#readableDestroy('opus');
+        this.#readableDestroy('silence');
+        this.dispatcher?.end();
         this.dispatcher?.destroy();
         this.dispatcher = null;
     }
