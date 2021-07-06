@@ -6,7 +6,7 @@ module.exports = {
     type: ['기타'],
     async execute(message) {
         if (!message.guild) {
-            return message.channel.send('사용이 불가능한 채널입니다.');
+            return message.reply('사용이 불가능한 채널입니다.');
         }
 
         let targetInfo;

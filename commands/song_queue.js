@@ -30,7 +30,7 @@ module.exports = {
 
         const queue = client.queues.get(message.guild.id);
         if (queue?.connection.state.status !== 'ready') {
-            return message.channel.send('재생 중인 노래가 없습니다.');
+            return message.reply('재생 중인 노래가 없습니다.');
         }
         let currentPage = 0;
         const embeds = generateQueueEmbed(message.guild.iconURL(), queue.songs);
