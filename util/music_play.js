@@ -61,15 +61,15 @@ module.exports.play = async function (queue) {
 
     if (!song) {
         client.queues.delete(guild.id);
-        clearTimeout(disconnectTimeout[guild.id]); // 기존 시간예약 취소
+        clearTimeout(disconnectTimeout[guild.id]); // 기존 퇴장예약 취소
         disconnectTimeout[guild.id] = setTimeout(() => {
             // 종료 후 새로운 음악 기능이 수행 중이지 않으면 나감
-            delete disconnectTimeout[guild.id]; // 완료된 시간예약 제거
+            delete disconnectTimeout[guild.id]; // 완료된 퇴장예약 제거
             if (!client.queues.get(guild.id) && queue.connection.state.status === 'ready') {
                 queue.connection.destroy();
                 queue.textSend(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
             }
-        }, STAY_TIME * 1000); // 새 시간예약 추가
+        }, STAY_TIME * 1000); // 새 퇴장예약 추가
         return queue.textSend('❌ 음악 대기열이 끝났습니다.');
     }
 
