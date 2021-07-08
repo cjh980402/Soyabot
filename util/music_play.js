@@ -20,8 +20,12 @@ module.exports.QueueElement = class {
         this.connection = connection;
         this.songs = songs;
 
+        this.connection.removeAllListeners('error');
+        this.connection.removeAllListeners('disconnect');
+
         this.connection.once('error', () => this.connection.disconnect());
         this.connection.once('disconnect', () => {
+            client.voice.connections.delete(this.voiceChannel.guild.id);
             client.queues.delete(this.voiceChannel.guild.id);
             this.songs = [];
             this.dispatcher?.end();
