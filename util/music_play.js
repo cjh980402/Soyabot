@@ -26,6 +26,10 @@ module.exports.QueueElement = class {
             this.audioPlayer.stop(true);
         };
 
+        this.connection.removeAllListeners('error');
+        this.connection.removeAllListeners('destroyed');
+        this.connection.removeAllListeners('disconnected');
+
         this.connection.once('error', () => this.connection.destroy());
         this.connection.once('destroyed', connectionFinish);
         this.connection.once('disconnected', () => {
