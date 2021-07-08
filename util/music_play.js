@@ -9,10 +9,10 @@ module.exports.QueueElement = class {
     voiceChannel;
     connection;
     songs;
-    audioPlayer = createAudioPlayer();
-    loop = false;
     volume = DEFAULT_VOLUME;
+    loop = false;
     playing = true;
+    audioPlayer = createAudioPlayer();
 
     constructor(textChannel, voiceChannel, connection, songs) {
         this.textChannel = textChannel;
