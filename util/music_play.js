@@ -2,16 +2,17 @@ const { songDownload } = require('./song_util');
 const { replyAdmin } = require('../admin/bot_control');
 const { STAY_TIME, DEFAULT_VOLUME } = require('../soyabot_config.json');
 const { canModifyQueue } = require('./soyabot_util');
+const disconnectTimeout = {};
 
 module.exports.QueueElement = class {
     textChannel;
     voiceChannel;
     connection;
     songs;
-    dispatcher = null;
-    loop = false;
     volume = DEFAULT_VOLUME;
+    loop = false;
     playing = true;
+    dispatcher = null;
 
     constructor(textChannel, voiceChannel, connection, songs) {
         this.textChannel = textChannel;
@@ -69,13 +70,15 @@ module.exports.play = async function (queue) {
 
     if (!song) {
         client.queues.delete(guild.id);
-        setTimeout(() => {
+        clearTimeout(disconnectTimeout[guild.id]); // 기존 퇴장예약 취소
+        disconnectTimeout[guild.id] = setTimeout(() => {
             // 종료 후 새로운 음악 기능이 수행 중이지 않으면 나감
+            delete disconnectTimeout[guild.id]; // 완료된 퇴장예약 제거
             if (!queue.connection.dispatcher && queue.connection.status === 0) {
                 queue.connection.disconnect();
                 queue.textSend(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
             }
-        }, STAY_TIME * 1000);
+        }, STAY_TIME * 1000); // 새 퇴장예약 추가
         return queue.textSend('❌ 음악 대기열이 끝났습니다.');
     }
 
