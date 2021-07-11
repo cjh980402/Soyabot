@@ -22,7 +22,7 @@ function timeKoreanUnit(num) {
 module.exports = {
     usage: `${client.prefix}상태`,
     command: ['상태', 'ㅅㅌ'],
-    description: '소야봇의 작동 상태를 알려줍니다.',
+    description: `${client.user.username}의 작동 상태를 알려줍니다.`,
     type: ['기타'],
     async execute(message) {
         let memory;
