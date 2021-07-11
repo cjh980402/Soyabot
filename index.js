@@ -3,10 +3,10 @@
  */
 const { Client, Collection, clientOption } = require('./util/discord.js-extend'); // 제일 처음에 import 해야하는 모듈
 const { readdirSync } = require('fs');
-const { TOKEN, PREFIX, ADMIN_ID, DEFAULT_VOLUME } = require('./soyabot_config.json');
+const { TOKEN, PREFIX, ADMIN_ID } = require('./soyabot_config.json');
 const { adminChat, initClient, cmd } = require('./admin/admin_function');
 const { replyAdmin } = require('./admin/bot_control');
-const { canModifyQueue } = require('./util/soyabot_util');
+const { musicReactionControl, musicActiveControl } = require('./util/music_play');
 const cachingMessage = require('./util/message_caching');
 const botChatting = require('./util/bot_chatting');
 const app = require('./util/express_server');
@@ -54,6 +54,10 @@ client.on('error', (e) => {
     console.error(`클라이언트 에러 발생\n에러 내용: ${e}\n${e.stack ?? e._p}`);
     setTimeout(cmd, 30000, 'npm restart'); // 바로 재가동하면 에러가 반복될 수 있으므로 30초 후 실행을 한다
 });
+
+client.on('messageReactionAdd', musicReactionControl); // 각 이모지 리액션 추가에 반응
+
+client.on('voiceStateUpdate', musicActiveControl); // 유저 음성채팅 상태 변경 이벤트
 
 client.on('message', async (message) => {
     // 각 메시지에 반응, 디스코드는 봇의 메시지도 이 이벤트에 들어옴
@@ -114,121 +118,5 @@ client.on('message', async (message) => {
         } catch {}
     } finally {
         await cachingMessage(message); // 들어오는 채팅 항상 캐싱
-    }
-});
-
-client.on('messageReactionAdd', async (reaction, user) => {
-    // 각 이모지 리액션 추가에 반응
-    const { guild } = reaction.message.channel;
-    const queue = client.queues.get(guild?.id);
-    try {
-        if (user.id === client.user.id || queue?.playingMessage?.id !== reaction.message.id) {
-            return;
-        }
-
-        await reaction.users.remove(user);
-        if (queue.audioPlayer.state.status === 'idle' || queue.connection.state.status !== 'ready') {
-            return queue.deleteMessage();
-        }
-        if (!canModifyQueue(await guild.members.fetch(user.id, false))) {
-            return queue.textSend(`${client.user}과 같은 음성 채널에 참가해주세요!`);
-        }
-
-        switch (reaction.emoji.name) {
-            case '⏯':
-                queue.playing = !queue.playing;
-                if (queue.playing) {
-                    queue.audioPlayer.unpause();
-                    queue.textSend(`${user} ▶️ 노래를 다시 틀었습니다.`);
-                } else {
-                    queue.audioPlayer.pause();
-                    queue.textSend(`${user} ⏸ 노래를 일시정지 했습니다.`);
-                }
-                break;
-            case '⏭':
-                queue.textSend(`${user} ⏭ 노래를 건너뛰었습니다.`);
-                queue.playing = true;
-                queue.audioPlayer.stop(true);
-                break;
-            case '🔇':
-                queue.volume = queue.volume <= 0 ? DEFAULT_VOLUME : 0;
-                queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
-                queue.textSend(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
-                break;
-            case '🔉':
-                queue.volume = Math.max(queue.volume - 10, 0);
-                queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
-                queue.textSend(`${user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
-                break;
-            case '🔊':
-                queue.volume = Math.min(queue.volume + 10, 100);
-                queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
-                queue.textSend(`${user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
-                break;
-            case '🔁':
-                queue.loop = !queue.loop;
-                queue.textSend(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
-                break;
-            case '⏹':
-                queue.textSend(`${user} ⏹ 노래를 정지했습니다.`);
-                queue.songs = [];
-                try {
-                    queue.audioPlayer.stop(true);
-                } catch {
-                    queue.connection.destroy();
-                }
-                break;
-        }
-    } catch {
-        return queue.textSend('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
-    }
-});
-
-client.on('voiceStateUpdate', (oldState, newState) => {
-    // 유저 음성채팅 상태 변경 이벤트
-    try {
-        const oldVoice = oldState?.channel;
-        const newVoice = newState?.channel;
-        if (oldVoice !== newVoice) {
-            console.log(!oldVoice ? 'User joined!' : !newVoice ? 'User left!' : 'User switched channels!');
-
-            if (newVoice) {
-                const newQueue = client.queues.get(newVoice.guild.id);
-                if (
-                    newQueue?.connection.state.status === 'ready' &&
-                    !newQueue.playing &&
-                    newVoice.id === newQueue.voiceChannel.id &&
-                    newVoice.members.size === 2 &&
-                    newVoice.members.first().id === client.user.id
-                ) {
-                    newQueue.playing = true;
-                    newQueue.audioPlayer.unpause();
-                    newQueue.textSend('대기열을 다시 재생합니다.');
-                }
-            }
-
-            if (oldVoice) {
-                const oldQueue = client.queues.get(oldVoice.guild.id);
-                if (oldQueue?.connection.state.status === 'ready' && oldVoice.id === oldQueue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.first().id === client.user.id) {
-                    // 봇만 음성 채널에 있는 경우
-                    if (oldQueue.playing) {
-                        oldQueue.playing = false;
-                        oldQueue.audioPlayer.pause();
-                        oldQueue.textSend('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
-                    }
-                    setTimeout(() => {
-                        const queue = client.queues.get(oldVoice.guild.id);
-                        if (queue?.connection.state.status === 'ready' && oldVoice.id === queue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.first().id === client.user.id) {
-                            // 5분이 지나도 봇만 음성 채널에 있는 경우
-                            queue.textSend(`5분 동안 ${client.user.username}이 비활성화 되어 대기열을 끝냅니다.`);
-                            queue.songs = [];
-                            queue.audioPlayer.stop(true);
-                        }
-                    }, 300000);
-                }
-            }
-        }
-    } catch (e) {
-        replyAdmin(`[oldState]\n${oldState?._p}\n[newState]\n${newState?._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
     }
 });
