@@ -3,9 +3,10 @@
  */
 const { Client, Collection, clientOption } = require('./util/discord.js-extend'); // 제일 처음에 import 해야하는 모듈
 const { readdirSync } = require('fs');
-const { TOKEN, PREFIX, ADMIN_ID } = require('./soyabot_config.json');
+const { TOKEN, PREFIX, ADMIN_ID, DEFAULT_VOLUME } = require('./soyabot_config.json');
 const { adminChat, initClient, cmd } = require('./admin/admin_function');
 const { replyAdmin } = require('./admin/bot_control');
+const { canModifyQueue } = require('./util/soyabot_util');
 const cachingMessage = require('./util/message_caching');
 const botChatting = require('./util/bot_chatting');
 const app = require('./util/express_server');
@@ -113,6 +114,73 @@ client.on('message', async (message) => {
         } catch {}
     } finally {
         await cachingMessage(message); // 들어오는 채팅 항상 캐싱
+    }
+});
+
+client.on('messageReactionAdd', async (reaction, user) => {
+    // 각 이모지 리액션 추가에 반응
+    const { guild } = reaction.message.channel;
+    const queue = client.queues.get(guild?.id);
+    try {
+        if (user.id === client.user.id || queue?.playingMessage?.id !== reaction.message.id) {
+            return;
+        }
+
+        await reaction.users.remove(user);
+        if (!queue.connection.dispatcher) {
+            return queue.deleteMessage();
+        }
+        if (!canModifyQueue(await guild.members.fetch(user.id, false))) {
+            return queue.textSend(`${client.user}과 같은 음성 채널에 참가해주세요!`);
+        }
+
+        switch (reaction.emoji.name) {
+            case '⏯':
+                queue.playing = !queue.playing;
+                if (queue.playing) {
+                    queue.connection.dispatcher.resume();
+                    queue.textSend(`${user} ▶️ 노래를 다시 틀었습니다.`);
+                } else {
+                    queue.connection.dispatcher.pause(true);
+                    queue.textSend(`${user} ⏸ 노래를 일시정지 했습니다.`);
+                }
+                break;
+            case '⏭':
+                queue.textSend(`${user} ⏭ 노래를 건너뛰었습니다.`);
+                queue.playing = true;
+                queue.connection.dispatcher.end();
+                break;
+            case '🔇':
+                queue.volume = queue.volume <= 0 ? DEFAULT_VOLUME : 0;
+                queue.connection.dispatcher.setVolume(queue.volume / 100);
+                queue.textSend(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
+                break;
+            case '🔉':
+                queue.volume = Math.max(queue.volume - 10, 0);
+                queue.connection.dispatcher.setVolume(queue.volume / 100);
+                queue.textSend(`${user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
+                break;
+            case '🔊':
+                queue.volume = Math.min(queue.volume + 10, 100);
+                queue.connection.dispatcher.setVolume(queue.volume / 100);
+                queue.textSend(`${user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
+                break;
+            case '🔁':
+                queue.loop = !queue.loop;
+                queue.textSend(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
+                break;
+            case '⏹':
+                queue.textSend(`${user} ⏹ 노래를 정지했습니다.`);
+                queue.songs = [];
+                try {
+                    queue.connection.dispatcher.end();
+                } catch {
+                    queue.connection.disconnect();
+                }
+                break;
+        }
+    } catch {
+        return queue.textSend('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
     }
 });
 
