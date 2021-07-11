@@ -21,7 +21,7 @@ module.exports = {
         if (!message.guild) {
             return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         } else if (message.guild.memberCount < 3) {
-            return message.reply('소야봇을 제외한 방의 인원이 2명 이상일 때 게임을 이용할 수 있습니다.');
+            return message.reply(`${client.user.username}을 제외한 방의 인원이 2명 이상일 때 게임을 이용할 수 있습니다.`);
         }
         const count = Math.trunc(args[0]);
         const bullet = isNaN(count) || count < 2 || count > 20 ? 6 : count; // 탄환 수 지정
