@@ -13,7 +13,7 @@ module.exports = {
             if (proc) {
                 proc.stdin.write(`${args.join(' ')}\n`);
             } else {
-                const sourceCode = message.content.substr(message.content.indexOf(args[0])).trim();
+                const sourceCode = message.content.replace(/\s*.+?\s*.+?\s+/, '').trim();
                 await writeFile(`./other_source/cpp_source.cpp`, sourceCode);
                 const compile = await cmd('g++ -o ./other_source/cpp_result.out ./other_source/cpp_source.cpp', true);
                 if (compile) {
