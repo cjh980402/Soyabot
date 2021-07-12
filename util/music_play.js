@@ -101,10 +101,10 @@ module.exports.play = async function (queue) {
     queue.audioPlayer.play(resource);
     queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
     queue.audioPlayer
-        .on('stateChange', (oldState, newState) => {
+        .on('stateChange', async (oldState, newState) => {
             if (newState.status === 'idle' && oldState.status !== 'idle') {
                 // 재생 중인 노래가 끝난 경우
-                queue.deleteMessage();
+                await queue.deleteMessage();
                 queue.audioPlayer.removeAllListeners('stateChange');
                 queue.audioPlayer.removeAllListeners('error');
                 if (queue.loop) {
@@ -116,7 +116,7 @@ module.exports.play = async function (queue) {
             }
         })
         .on('error', async (e) => {
-            queue.deleteMessage();
+            await queue.deleteMessage();
             queue.audioPlayer.removeAllListeners('stateChange');
             queue.audioPlayer.removeAllListeners('error');
             queue.textSend('재생할 수 없는 동영상입니다.');
