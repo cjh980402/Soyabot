@@ -21,10 +21,10 @@ module.exports = {
                 }
                 proc = spawn('./other_source/cpp_result.out');
                 proc.stderr.on('data', (data) => {
-                    message.channel.send({ content: String(data), split: { char: '' } });
+                    message.channel.splitCodeSend(String(data), { split: { char: '' } });
                 });
                 proc.stdout.on('data', (data) => {
-                    message.channel.send({ content: String(data), split: { char: '' } });
+                    message.channel.splitCodeSend(String(data), { split: { char: '' } });
                 });
                 proc.on('close', (code) => {
                     message.channel.send(`Process exited with code ${code}`);

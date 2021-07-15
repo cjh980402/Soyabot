@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('../util/discord.js-extend');
+const { MessageEmbed, Permissions } = require('../util/discord.js-extend');
 const { QueueElement, play } = require('../util/music_play');
 const { isValidPlaylist, isValidVideo, getPlaylistInfo } = require('../util/song_util');
 const { replyAdmin } = require('../admin/bot_control');
@@ -26,10 +26,10 @@ module.exports = {
         }
 
         const permissions = channel.permissionsFor(client.user);
-        if (!permissions.has('CONNECT')) {
+        if (!permissions.has(Permissions.FLAGS.CONNECT)) {
             return message.reply('권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.');
         }
-        if (!permissions.has('SPEAK')) {
+        if (!permissions.has(Permissions.FLAGS.SPEAK)) {
             return message.reply('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
         }
 

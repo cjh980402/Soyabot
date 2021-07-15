@@ -1,7 +1,7 @@
 /**
  * 모듈 import
  */
-const { Client, Collection, clientOption } = require('./util/discord.js-extend'); // 제일 처음에 import 해야하는 모듈
+const { Client, Collection, clientOption, Permissions } = require('./util/discord.js-extend'); // 제일 처음에 import 해야하는 모듈
 const { readdirSync } = require('fs');
 const { TOKEN, PREFIX, ADMIN_ID } = require('./soyabot_config.json');
 const { adminChat, initClient, cmd } = require('./admin/admin_function');
@@ -69,7 +69,7 @@ client.on('message', async (message) => {
             return;
         }
         const permissions = message.channel.permissionsFor?.(client.user);
-        if (permissions && !permissions.has(['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY'])) {
+        if (permissions && !permissions.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.READ_MESSAGE_HISTORY])) {
             return; // 기본 권한이 없는 채널이므로 바로 종료
         }
         if (message.author.id === ADMIN_ID) {
