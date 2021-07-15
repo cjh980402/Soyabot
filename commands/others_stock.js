@@ -1,7 +1,6 @@
 const { cmd } = require('../admin/admin_function');
 const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
-const { load } = require('cheerio');
 const chartType = {
     '일봉': 'candle/day',
     '주봉': 'candle/week',
@@ -55,10 +54,8 @@ module.exports = {
             const stockEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9999').setURL(`https://m.stock.naver.com${link}`);
             if (stockfind[2][0] === '국내지수') {
                 // 국내 지수
-                const $ = load(await (await fetch(`https://m.stock.naver.com/sise/siseIndex.nhn?code=${identifer}`)).text());
-                const data = $('.total_list > li > span');
+                const data = await (await fetch(`https://m.stock.naver.com/api/index/${identifer}/integration`)).json();
                 const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_INDEX%3A${identifer}`)).json();
-                const trendData = $('.ct_box.dmst_trend .trend_lst');
                 if (nowData.result.areas[0].datas.length === 0) {
                     return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
                 }
@@ -69,12 +66,12 @@ module.exports = {
                 const changeRate = nowData.result.areas[0].datas[0].cr;
                 const isFUT = identifer === 'FUT';
 
-                const minPrice = data.eq(isFUT ? 3 : 1).text().trim() || '0';
-                const maxPrice = data.eq(isFUT ? 2 : 0).text().trim() || '0';
-                const amount = data.eq(isFUT ? 4 : 2).text().trim() || '0';
-                const totalPrice = data.eq(isFUT ? 5 : 3).text().trim();
-                const min_52weeks = data.eq(isFUT ? 7 : 5).text().trim() || '0';
-                const max_52weeks = data.eq(isFUT ? 6 : 4).text().trim() || '0';
+                const minPrice = data.totalInfos[isFUT ? 3 : 1].value;
+                const maxPrice = data.totalInfos[isFUT ? 2 : 0].value;
+                const amount = data.totalInfos[isFUT ? 4 : 2].value;
+                const totalPrice = data.totalInfos[isFUT ? 5 : 3].value;
+                const min_52weeks = data.totalInfos[isFUT ? 7 : 5].value;
+                const max_52weeks = data.totalInfos[isFUT ? 6 : 4].value;
 
                 await cmd(`python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                 // 파이썬 스크립트 실행
@@ -82,17 +79,12 @@ module.exports = {
                 stockEmbed
                     .addField(isFUT ? '**약정수량**' : '**거래량**', amount, true)
                     .addField('**거래대금**', totalPrice, true)
-                    .addField('**개인**', trendData.eq(0).find('span').eq(0).text(), true)
-                    .addField('**외국인**', trendData.eq(0).find('span').eq(1).text(), true)
-                    .addField('**기관**', trendData.eq(0).find('span').eq(2).text(), true);
-
-                const up = trendData.eq(2).find('span').eq(0).text();
-                if (up) {
-                    stockEmbed.addField('**상승**', up, true);
-                }
-                const down = trendData.eq(2).find('span').eq(2).text();
-                if (down) {
-                    stockEmbed.addField('**하락**', down, true);
+                    .addField('**개인**', data.dealTrendInfo.personalValue, true)
+                    .addField('**외국인**', data.dealTrendInfo.foreignValue, true)
+                    .addField('**기관**', data.dealTrendInfo.institutionalValue, true);
+                if (!isFUT) {
+                    stockEmbed.addField('**상승**', `${data.upDownStockInfo.riseCount} (${data.upDownStockInfo.upperCount})`, true);
+                    stockEmbed.addField('**하락**', `${data.upDownStockInfo.fallCount} (${data.upDownStockInfo.lowerCount})`, true);
                 }
             } else if (stockfind[2][0] === '해외지수') {
                 // 해외 지수
@@ -115,8 +107,7 @@ module.exports = {
                 // 파이썬 스크립트 실행
             } else if (stockfind[3][0].startsWith('/item/main')) {
                 // 국내 주식
-                const $ = load(await (await fetch(`https://m.stock.naver.com/api/html/item/getOverallInfo.nhn?code=${identifer}`)).text());
-                const data = $('.total_list > li > span');
+                const data = await (await fetch(`https://m.stock.naver.com/api/stock/${identifer}/integration`)).json();
                 const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_ITEM%3A${identifer}`)).json();
                 if (nowData.result.areas[0].datas.length === 0) {
                     return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
@@ -128,18 +119,18 @@ module.exports = {
                 const changeAmount = nowPrice - beforePrice; // 숫자값
                 const changeRate = (100 * (changeAmount / beforePrice)).toFixed(2);
 
-                const minPrice = data.eq(3).text().trim() || '0';
-                const maxPrice = data.eq(2).text().trim() || '0';
-                const amount = data.eq(4).text().trim() || '0';
-                const totalPrice = data.eq(5).text().trim();
-                const capitalization = data.eq(6).text().trim();
-                const min_52weeks = data.eq(9).contents().first().text().trim() || '0';
-                const max_52weeks = data.eq(8).contents().first().text().trim() || '0';
+                const minPrice = data.totalInfos[3].value;
+                const maxPrice = data.totalInfos[2].value;
+                const amount = data.totalInfos[4].value;
+                const totalPrice = data.totalInfos[5].value;
+                const capitalization = data.totalInfos[6].value;
+                const min_52weeks = data.totalInfos[9].value;
+                const max_52weeks = data.totalInfos[8].value;
 
                 await cmd(`python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                 // 파이썬 스크립트 실행
 
-                stockEmbed.addField('**거래량**', amount, true).addField('**거래대금**', `${totalPrice}원`, true).addField('**시가총액**', `${capitalization}원`, true).addField('**외인소진율**', data.eq(7).text().trim(), true).addField('**PER**', data.eq(10).text().trim(), true).addField('**EPS**', data.eq(11).text().trim(), true).addField('**PBR**', data.eq(14).text().trim(), true).addField('**BPS**', data.eq(15).text().trim(), true).addField('**배당률**', data.eq(16).text().trim(), true).addField('**배당금**', data.eq(17).text().trim(), true);
+                stockEmbed.addField('**거래량**', amount, true).addField('**거래대금**', `${totalPrice}원`, true).addField('**시가총액**', `${capitalization}원`, true).addField('**외인소진율**', data.totalInfos[7].value, true).addField('**PER**', data.totalInfos[10].value, true).addField('**EPS**', data.totalInfos[11].value, true).addField('**PBR**', data.totalInfos[14].value, true).addField('**BPS**', data.totalInfos[15].value, true).addField('**배당률**', data.totalInfos[16].value, true).addField('**배당금**', data.totalInfos[17].value, true);
             } else {
                 // 해외 주식
                 const data = await (await fetch(`https://api.stock.naver.com/stock/${identifer}/basic`)).json();
