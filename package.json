@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@discordjs/opus": "^0.5.3",
-    "@discordjs/voice": "^0.5.3",
+    "@discordjs/voice": "^0.5.4",
     "bufferutil": "^4.0.3",
     "chartjs-node-canvas": "^3.2.0",
     "chartjs-plugin-datalabels": "^1.0.0",
