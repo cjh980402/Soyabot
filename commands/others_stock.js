@@ -118,19 +118,35 @@ module.exports = {
                 const nowPrice = nowData.result.areas[0].datas[0].nv;
                 const changeAmount = nowPrice - beforePrice; // 숫자값
                 const changeRate = (100 * (changeAmount / beforePrice)).toFixed(2);
+                const isETF = data.stockEndType === 'etf';
+                if (isETF && data.totalInfos.length === 18) {
+                    data.totalInfos.splice(7, 3, data.totalInfos[8]);
+                } else if (!isETF && data.totalInfos.length === 20) {
+                    data.totalInfos.splice(9, 3, data.totalInfos[10]);
+                }
 
                 const minPrice = data.totalInfos[3].value;
                 const maxPrice = data.totalInfos[2].value;
                 const amount = data.totalInfos[4].value;
                 const totalPrice = data.totalInfos[5].value;
                 const capitalization = data.totalInfos[6].value;
-                const min_52weeks = data.totalInfos[9].value;
-                const max_52weeks = data.totalInfos[8].value;
+                const min_52weeks = data.totalInfos[isETF ? 7 : 9].value;
+                const max_52weeks = data.totalInfos[isETF ? 6 : 8].value;
 
                 await cmd(`python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
                 // 파이썬 스크립트 실행
 
-                stockEmbed.addField('**거래량**', amount, true).addField('**거래대금**', `${totalPrice}원`, true).addField('**시가총액**', `${capitalization}원`, true).addField('**외인소진율**', data.totalInfos[7].value, true).addField('**PER**', data.totalInfos[10].value, true).addField('**EPS**', data.totalInfos[11].value, true).addField('**PBR**', data.totalInfos[14].value, true).addField('**BPS**', data.totalInfos[15].value, true).addField('**배당률**', data.totalInfos[16].value, true).addField('**배당금**', data.totalInfos[17].value, true);
+                stockEmbed.addField('**거래량**', amount, true).addField('**거래대금**', `${totalPrice}원`, true);
+                if (!isETF) {
+                    stockEmbed.addField('**시가총액**', `${capitalization}원`, true).addField('**외인소진율**', data.totalInfos[7].value, true);
+                }
+                stockEmbed
+                    .addField(isETF ? '**최근 1개월 수익률**' : '**PER**', data.totalInfos[isETF ? 8 : 10].value, true)
+                    .addField(isETF ? '**최근 3개월 수익률**' : '**EPS**', data.totalInfos[isETF ? 9 : 11].value, true)
+                    .addField(isETF ? '**최근 6개월 수익률**' : '**PBR**', data.totalInfos[isETF ? 10 : 14].value, true)
+                    .addField(isETF ? '**최근 1년 수익률**' : '**BPS**', data.totalInfos[isETF ? 11 : 15].value, true)
+                    .addField(isETF ? '**NAV**' : '**배당률**', data.totalInfos[isETF ? 12 : 16].value, true)
+                    .addField(isETF ? '**펀드보수**' : '**배당금**', data.totalInfos[isETF ? 13 : 17].value, true);
             } else {
                 // 해외 주식
                 const data = await (await fetch(`https://api.stock.naver.com/stock/${identifer}/basic`)).json();
