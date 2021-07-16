@@ -35,6 +35,6 @@ module.exports = {
         message.channel.send('정보 가져오는 중...');
         const rslt = `${args[0]} ${args[1]} 길드 (${mapleGuildInfo.MemberCount}명)\n길드원 목록 갱신 ${isLatest ? '성공' : '실패'}\n\n${(await mapleGuildInfo.memberDataList()).join('\n\n')}`;
 
-        return message.channel.splitCodeSend(rslt, { split: { char: '\n' } });
+        return message.channel.sendSplitCode(rslt, { split: { char: '\n' } });
     }
 };

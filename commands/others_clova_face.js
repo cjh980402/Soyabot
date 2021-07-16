@@ -49,7 +49,7 @@ module.exports = {
         if (!imageURL) {
             return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
         } else {
-            return message.channel.splitCodeSend(await clova_face(imageURL), { split: { char: '\n' } });
+            return message.channel.sendSplitCode(await clova_face(imageURL), { split: { char: '\n' } });
         }
     }
 };

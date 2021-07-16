@@ -52,25 +52,24 @@ Object.defineProperty(Discord.Message.prototype, 'reply', {
     }
 });
 
-Object.defineProperty(Discord.Channel.prototype, 'splitCodeSend', {
-    value: async function (content, options) {
-        if (!this.isText()) {
-            return;
-        }
-        if (options.code) {
-            content = `\`\`\`${options.code}\n${Discord.Util.cleanCodeBlockContent(content)}\n\`\`\``;
-            if (options.split) {
-                options.split.prepend = `${options.split.prepend || ''}\`\`\`${options.code}\n`;
-                options.split.append = `\n\`\`\`${options.split.append || ''}`;
+Object.defineProperty(Discord.Channel.prototype, 'sendSplitCode', {
+    value: async function (content, options = {}) {
+        if (this.isText()) {
+            if (options.code) {
+                content = `\`\`\`${options.code}\n${Discord.Util.cleanCodeBlockContent(content)}\n\`\`\``;
+                if (options.split) {
+                    options.split.prepend = `${options.split.prepend || ''}\`\`\`${options.code}\n`;
+                    options.split.append = `\n\`\`\`${options.split.append || ''}`;
+                }
             }
-        }
-        if (options.split) {
-            content = Discord.Util.splitMessage(content, options.split);
-        } else {
-            content = [content];
-        }
-        for (let c of content) {
-            await this.send(c);
+            if (options.split) {
+                content = Discord.Util.splitMessage(content, options.split);
+            } else {
+                content = [content];
+            }
+            for (let c of content) {
+                await this.send(c);
+            }
         }
     }
 });

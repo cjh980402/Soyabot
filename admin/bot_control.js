@@ -22,7 +22,7 @@ module.exports.botNotice = async function (data, type = null) {
 module.exports.replyRoomID = async function (roomID, str) {
     try {
         const target = await client.channels.fetch(roomID, false); // 메세지를 보내고 싶은 방 객체 획득
-        await target?.splitCodeSend(str, { split: { char: '' } }); // 해당 채널에 메시지 전송
+        await target?.sendSplitCode(str, { split: { char: '' } }); // 해당 채널에 메시지 전송
         return target;
     } catch {
         return null;
@@ -32,7 +32,7 @@ module.exports.replyRoomID = async function (roomID, str) {
 module.exports.replyAdmin = async function (str) {
     try {
         const admin = await client.users.fetch(ADMIN_ID); // 관리자 유저 객체 획득
-        await (await admin.createDM()).splitCodeSend(str, { split: { char: '' } }); // 관리자에게 DM으로 보냄
+        await (await admin.createDM()).sendSplitCode(str, { split: { char: '' } }); // 관리자에게 DM으로 보냄
         return admin;
     } catch {
         return null;
