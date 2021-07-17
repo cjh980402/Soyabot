@@ -7,7 +7,7 @@ module.exports = {
     description: '- 현재 한국의 미세먼지(초미세먼지) 현황을 보여줍니다.',
     type: ['기타'],
     async execute(message) {
-        const dustType = !/초미세먼지|ㅊㅁㅅㅁㅈ/.test(message.content) ? '미세먼지' : '초미세먼지';
+        const dustType = /초미세먼지|ㅊㅁㅅㅁㅈ/.test(message.content) ? '초미세먼지' : '미세먼지';
         const $ = load(await (await fetch(`https://m.search.daum.net/search?w=tot&nil_mtopsearch=btn&DA=YZR&q=${encodeURIComponent(dustType)}%EC%98%81%EC%83%81`)).text());
 
         return message.channel.send({ content: `현재 ${dustType} 지도`, files: [$('div.play_video > img').attr('data-original-src')] });
