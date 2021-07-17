@@ -27,7 +27,8 @@ module.exports = {
         const songRemove = args
             .join('')
             .split(',')
-            .map((str) => +str.trim());
+            .map((str) => Math.trunc(str))
+            .deduplication();
         const removed = [];
         if (songRemove.every((v) => !isNaN(v) && 2 <= v && v <= queue.songs.length)) {
             queue.songs = queue.songs.filter((v, i) => {

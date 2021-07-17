@@ -9,7 +9,7 @@ const { inspect } = require('util');
 const originReply = Discord.Message.prototype.reply; // 기본으로 정의된 reply 메소드
 globalThis.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-Object.defineProperty(Discord, 'clientOption', {
+Object.defineProperty(Discord, 'botClientOption', {
     value: {
         cacheGuilds: true, // 전체 길드 캐싱
         cacheOverwrites: true, // 권한 관련 코드 사용 시 필요
@@ -109,6 +109,13 @@ Object.defineProperty(Array.prototype, 'asyncFilter', {
     value: async function (callback) {
         const fail = Symbol();
         return (await Promise.all(this.map(async (v) => ((await callback(v)) ? v : fail)))).filter((v) => v !== fail);
+    }
+});
+
+Object.defineProperty(Array.prototype, 'deduplication', {
+    // 중복된 배열의 원소를 제거한 배열을 반환
+    value: function () {
+        return [...new Set(this)];
     }
 });
 
