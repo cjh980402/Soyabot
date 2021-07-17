@@ -1,4 +1,5 @@
 const Discord = require('discord.js-light');
+const { entersState, joinVoiceChannel, VoiceConnectionStatus } = require('@discordjs/voice');
 const fetch = require('node-fetch');
 const YouTubeAPI = require('simple-youtube-api');
 const Constants = require('simple-youtube-api/src/util/Constants');
@@ -11,15 +12,22 @@ globalThis.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 Object.defineProperty(Discord, 'clientOption', {
     value: {
         cacheGuilds: true, // 전체 길드 캐싱
-        cacheRoles: true, // 권한 관련 코드 사용 시 필요
         cacheOverwrites: true, // 권한 관련 코드 사용 시 필요
+        cacheRoles: true, // 권한 관련 코드 사용 시 필요
         cacheChannels: false,
         cacheEmojis: false,
         cachePresences: false,
+        cacheMembers: false,
         messageCacheMaxSize: 0,
-        messageEditHistoryMaxSize: 0,
         retryLimit: 3,
-        ws: { intents: ['GUILDS', 'GUILD_VOICE_STATES', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'DIRECT_MESSAGES', 'DIRECT_MESSAGE_REACTIONS'] }
+        intents: [
+            Discord.Intents.FLAGS.GUILDS,
+            Discord.Intents.FLAGS.GUILD_VOICE_STATES,
+            Discord.Intents.FLAGS.GUILD_MESSAGES,
+            Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+            Discord.Intents.FLAGS.DIRECT_MESSAGES,
+            Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
+        ]
     }
 });
 
@@ -35,9 +43,64 @@ Object.defineProperty(Discord.Message.prototype, 'fullContent', {
 
 Object.defineProperty(Discord.Message.prototype, 'reply', {
     // failIfNotExists의 값을 false로 하기 위한 메소드 재정의
-    value: function (content, options = {}) {
-        options.reply = { failIfNotExists: false };
-        return originReply.call(this, content, options);
+    value: function (options) {
+        if (options.constructor === String) {
+            options = { content: options };
+        }
+        options.failIfNotExists = false;
+        return originReply.call(this, options);
+    }
+});
+
+Object.defineProperty(Discord.Channel.prototype, 'sendSplitCode', {
+    value: async function (content, options = {}) {
+        if (this.isText()) {
+            if (options.code) {
+                content = `\`\`\`${options.code}\n${Discord.Util.cleanCodeBlockContent(content)}\n\`\`\``;
+                if (options.split) {
+                    options.split.prepend = `${options.split.prepend || ''}\`\`\`${options.code}\n`;
+                    options.split.append = `\n\`\`\`${options.split.append || ''}`;
+                }
+            }
+            if (options.split) {
+                content = Discord.Util.splitMessage(content, options.split);
+            } else {
+                content = [content];
+            }
+            for (let c of content) {
+                await this.send(c);
+            }
+        }
+    }
+});
+
+Object.defineProperty(Discord.VoiceChannel.prototype, 'join', {
+    value: async function () {
+        const connection = joinVoiceChannel({
+            channelId: this.id,
+            guildId: this.guild.id,
+            adapterCreator: this.guild.voiceAdapterCreator
+        });
+
+        try {
+            await entersState(connection, VoiceConnectionStatus.Ready, 30000); // 연결될 때까지 최대 30초 대기
+            return connection;
+        } catch (e) {
+            connection.destroy(); // 에러 발생 시 연결 취소
+            throw e;
+        }
+    }
+});
+
+Object.defineProperty(YouTubeAPI.prototype, 'getVideosByIDs', {
+    value: async function (ids, options = {}) {
+        Object.assign(options, { part: Constants.PARTS.Videos, id: ids.join(',') });
+        const result = await this.request.make(Constants.ENDPOINTS.Videos, options);
+        if (result.items.length > 0) {
+            return result.items.map((v) => (v ? new Video(this, v) : null));
+        } else {
+            throw new Error(`resource ${result.kind} not found`);
+        }
     }
 });
 

@@ -73,7 +73,9 @@ module.exports = {
                 const min_52weeks = data.totalInfos[isFUT ? 7 : 5].value;
                 const max_52weeks = data.totalInfos[isFUT ? 6 : 4].value;
 
-                await cmd(`python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
+                await cmd(
+                    `python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
+                );
                 // 파이썬 스크립트 실행
 
                 stockEmbed
@@ -103,7 +105,9 @@ module.exports = {
                 const min_52weeks = data.stockItemTotalInfos[5].value;
                 const max_52weeks = data.stockItemTotalInfos[4].value;
 
-                await cmd(`python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
+                await cmd(
+                    `python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
+                );
                 // 파이썬 스크립트 실행
             } else if (stockfind[3][0].startsWith('/item/main')) {
                 // 국내 주식
@@ -133,7 +137,9 @@ module.exports = {
                 const min_52weeks = data.totalInfos[isETF ? 7 : 9].value;
                 const max_52weeks = data.totalInfos[isETF ? 6 : 8].value;
 
-                await cmd(`python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
+                await cmd(
+                    `python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
+                );
                 // 파이썬 스크립트 실행
 
                 stockEmbed.addField('**거래량**', amount, true).addField('**거래대금**', `${totalPrice}원`, true);
@@ -167,7 +173,11 @@ module.exports = {
                 const min_52weeks = data.stockItemTotalInfos[9].value;
                 const max_52weeks = data.stockItemTotalInfos[8].value;
 
-                await cmd(`python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' ${data.currencyType.name} ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`);
+                await cmd(
+                    `python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' ${
+                        data.currencyType.name
+                    } ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
+                );
                 // 파이썬 스크립트 실행
 
                 stockEmbed
@@ -184,7 +194,7 @@ module.exports = {
             }
 
             stockEmbed.setImage(`http://${client.botDomain}/image/stock/${encodeURIComponent(code)}.png?time=${Date.now()}`);
-            return message.channel.send(stockEmbed);
+            return message.channel.send({ embeds: [stockEmbed] });
         }
     }
 };

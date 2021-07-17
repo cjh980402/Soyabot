@@ -68,17 +68,24 @@ module.exports = {
             await cmd(`python3 ./util/make_coin_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice} ${changeType} '${changeString}' ${minPrice} ${maxPrice}`);
             // 파이썬 스크립트 실행
 
-            const coinEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9999').setURL(`https://upbit.com/exchange?code=CRIX.UPBIT.KRW-${code}&tab=chart`).setImage(`http://${client.botDomain}/image/coin/${code}.png?time=${Date.now()}`).addField('**거래대금**', `${amount}원`, true);
+            const coinEmbed = new MessageEmbed()
+                .setTitle(`**${name} (${code}) ${type}**`)
+                .setColor('#FF9999')
+                .setURL(`https://upbit.com/exchange?code=CRIX.UPBIT.KRW-${code}&tab=chart`)
+                .setImage(`http://${client.botDomain}/image/coin/${code}.png?time=${Date.now()}`)
+                .addField('**거래대금**', `${amount}원`, true);
 
             const binancePrice = await getCoinBinancePrice(code);
             if (binancePrice !== -1) {
                 const binanceKRW = await usdToKRW(binancePrice);
                 const kimPre = todayData.trade_price - binanceKRW;
                 const kimPrePercent = 100 * (kimPre / binanceKRW);
-                coinEmbed.addField('**바이낸스**', `${binancePrice.toLocaleString()}$\n${binanceKRW.toLocaleString()}원`, true).addField('**김프**', ` ${kimPre.toLocaleString()}원 (${kimPrePercent.toFixed(2)}%)`, true);
+                coinEmbed
+                    .addField('**바이낸스**', `${binancePrice.toLocaleString()}$\n${binanceKRW.toLocaleString()}원`, true)
+                    .addField('**김프**', ` ${kimPre.toLocaleString()}원 (${kimPrePercent.toFixed(2)}%)`, true);
             }
 
-            return message.channel.send(coinEmbed);
+            return message.channel.send({ embeds: [coinEmbed] });
         }
     }
 };

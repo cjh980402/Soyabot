@@ -28,7 +28,8 @@ module.exports = {
         } else {
             const coordiEmbed = new MessageEmbed()
                 .setTitle(`**${mapleUserInfo.Name}님의 코디**`)
-                .setColor('#FF9999').setURL(mapleUserInfo.GGURL)
+                .setColor('#FF9999')
+                .setURL(mapleUserInfo.GGURL)
                 .setImage(mapleUserInfo.userImg())
                 .addField('**헤어**', coordi[1], true)
                 .addField('**성형**', coordi[2], true)
@@ -38,7 +39,7 @@ module.exports = {
                 .addField('**신발**', coordi[5], true)
                 .addField('**무기**', coordi[6], true);
 
-            return message.channel.send(coordiEmbed);
+            return message.channel.send({ embeds: [coordiEmbed] });
         }
     }
 };

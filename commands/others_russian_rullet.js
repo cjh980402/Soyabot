@@ -1,5 +1,10 @@
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-const gameRegExp = [new RegExp(`^${escapeRegex(client.prefix)}\\s*(참가|ㅊㄱ)$`), new RegExp(`^${escapeRegex(client.prefix)}\\s*(시작|ㅅㅈ)$`), new RegExp(`^${escapeRegex(client.prefix)}\\s*(종료|ㅈㄹ)$`), new RegExp(`^${escapeRegex(client.prefix)}\\s*(빵|ㅃ)$`)];
+const gameRegExp = [
+    new RegExp(`^${escapeRegex(client.prefix)}\\s*(참가|ㅊㄱ)$`),
+    new RegExp(`^${escapeRegex(client.prefix)}\\s*(시작|ㅅㅈ)$`),
+    new RegExp(`^${escapeRegex(client.prefix)}\\s*(종료|ㅈㄹ)$`),
+    new RegExp(`^${escapeRegex(client.prefix)}\\s*(빵|ㅃ)$`)
+];
 
 module.exports = {
     usage: `${client.prefix}러시안룰렛 (탄환 수)`,
@@ -23,8 +28,8 @@ module.exports = {
         const gameUser = [message.member]; // 참가자 객체 배열
         message.channel.send(`게임을 시작하셨습니다.\n${client.prefix}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${gameUser[0].nickname ?? gameUser[0].user.username}`);
         for (let gameChatType = 0; ; ) {
-            await message.channel.awaitMessages(
-                (msg) => {
+            await message.channel.awaitMessages({
+                filter: (msg) => {
                     const trimContent = msg.content.trim();
                     if (gameRegExp[0].test(trimContent)) {
                         if (gameUser.some((v) => msg.member.id === v.id)) {
@@ -64,8 +69,10 @@ module.exports = {
                         return false;
                     }
                 },
-                { max: 1, time: 300000, errors: ['time'] }
-            ); // 5분 대기
+                max: 1,
+                time: 300000,
+                errors: ['time']
+            }); // 5분 대기
             if (gameChatType === 1 && gameUser.length === bullet) {
                 await message.channel.send('인원이 가득 차 게임이 자동으로 시작됩니다.');
                 break; // 게임 시작
@@ -80,7 +87,12 @@ module.exports = {
         const die = Math.floor(Math.random() * bullet); // 0번째 ~ (bullet - 1)번째 탄환 중에서 선택
         for (let i = 0; i < bullet; i++) {
             try {
-                await message.channel.awaitMessages((msg) => msg.member.id === gameUser[i % gameUser.length].id && gameRegExp[3].test(msg.content.trim()), { max: 1, time: 60000, errors: ['time'] });
+                await message.channel.awaitMessages({
+                    filter: (msg) => msg.member.id === gameUser[i % gameUser.length].id && gameRegExp[3].test(msg.content.trim()),
+                    max: 1,
+                    time: 60000,
+                    errors: ['time']
+                });
             } catch {} // 시간 초과돼도 에러 throw 안하게 catch를 해줌
             if (i === die) {
                 try {

@@ -6,7 +6,10 @@ const { load } = require('cheerio');
 function calcIncrease($, selector) {
     const today = +$(selector).eq(0).text();
     const dateList = $('stateDt');
-    const yesterday = +$(selector).filter((i) => dateList.eq(i).text() !== dateList.eq(0).text()).eq(0).text();
+    const yesterday = +$(selector)
+        .filter((i) => dateList.eq(i).text() !== dateList.eq(0).text())
+        .eq(0)
+        .text();
     return `${today.toLocaleString()} (${today >= yesterday ? `⬆️ ${(today - yesterday).toLocaleString()}` : `⬇️ ${(yesterday - today).toLocaleString()}`})`;
 }
 
@@ -38,7 +41,7 @@ module.exports = {
                 .addField('**사망자**', calcIncrease($, 'deathCnt'))
                 .addField('**검사 중**', calcIncrease($, 'examCnt'));
 
-            return message.channel.send(coronaEmbed);
+            return message.channel.send({ embeds: [coronaEmbed] });
         } else {
             return message.channel.send('코로나 현황을 조회할 수 없습니다.');
         }

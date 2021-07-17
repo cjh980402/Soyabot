@@ -27,11 +27,16 @@ module.exports = {
         results.forEach((video, index) => resultsEmbed.addField(`**${index + 1}. ${video.title}**`, `https://youtu.be/${video.id}`));
         // results.forEach((video, index) => resultsEmbed.addField(`**${index + 1}. ${video.title.decodeHTML().decodeHTML()}**`, video.shortURL));
 
-        const resultsMessage = await message.channel.send(resultsEmbed);
+        const resultsMessage = await message.channel.send({ embeds: [resultsEmbed] });
 
         try {
             let songChoice;
-            const rslt = await message.channel.awaitMessages((msg) => msg.author.id === message.author.id && (songChoice = msg.content.split(',')).every((v) => !isNaN(v) && 1 <= +v && +v <= results.length), { max: 1, time: 20000, errors: ['time'] });
+            const rslt = await message.channel.awaitMessages({
+                filter: (msg) => msg.author.id === message.author.id && (songChoice = msg.content.split(',')).every((v) => !isNaN(v) && 1 <= +v && +v <= results.length),
+                max: 1,
+                time: 20000,
+                errors: ['time']
+            });
 
             const playCommand = client.commands.find((cmd) => cmd.command.includes('play'));
             for (let song of songChoice) {

@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('../util/discord.js-extend');
+const { MessageEmbed, Permissions } = require('../util/discord.js-extend');
 const { QueueElement, play } = require('../util/music_play');
 const { isValidPlaylist, isValidVideo, getPlaylistInfo } = require('../util/song_util');
 const { replyAdmin } = require('../admin/bot_control');
@@ -26,10 +26,10 @@ module.exports = {
         }
 
         const permissions = channel.permissionsFor(client.user);
-        if (!permissions.has('CONNECT')) {
+        if (!permissions.has(Permissions.FLAGS.CONNECT)) {
             return message.reply('권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.');
         }
-        if (!permissions.has('SPEAK')) {
+        if (!permissions.has(Permissions.FLAGS.SPEAK)) {
             return message.reply('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
         }
 
@@ -49,7 +49,7 @@ module.exports = {
 
         const playlistEmbed = new MessageEmbed()
             .setTitle(`**${videos.title.decodeHTML()}**`)
-            .setDescription(videos.map((song, index) => `${index + 1}. ${song.title}`))
+            .setDescription(videos.map((song, index) => `${index + 1}. ${song.title}`).join('\n'))
             .setURL(videos.url)
             .setColor('#FF9999')
             .setTimestamp();
@@ -61,15 +61,14 @@ module.exports = {
         if (serverQueue) {
             serverQueue.textChannel = message.channel;
             serverQueue.songs.push(...videos);
-            return message.channel.send(`✅ ${message.author}가 재생목록을 추가하였습니다.`, playlistEmbed);
+            return message.channel.send({ content: `✅ ${message.author}가 재생목록을 추가하였습니다.`, embeds: [playlistEmbed] });
         }
 
-        message.channel.send(`✅ ${message.author}가 재생목록을 시작했습니다.`, playlistEmbed);
+        message.channel.send({ content: `✅ ${message.author}가 재생목록을 시작했습니다.`, embeds: [playlistEmbed] });
 
         try {
             const newQueue = new QueueElement(message.channel, channel, await channel.join(), [...videos]);
             client.queues.set(message.guild.id, newQueue);
-            await newQueue.connection.voice.setSelfDeaf(true);
             play(newQueue);
         } catch (e) {
             channel.leave();

@@ -14,7 +14,7 @@ module.exports = {
         }
 
         const queue = client.queues.get(message.guild.id);
-        if (!queue?.connection.dispatcher) {
+        if (queue?.connection.state.status !== 'ready') {
             return message.reply('재생 중인 노래가 없습니다.');
         }
         if (!canModifyQueue(message.member)) {
@@ -24,7 +24,10 @@ module.exports = {
             return message.reply('현재 대기열에서 삭제할 수 있는 노래가 없습니다.');
         }
 
-        const songRemove = args.join('').split(',').map((str) => +str.trim());
+        const songRemove = args
+            .join('')
+            .split(',')
+            .map((str) => +str.trim());
         const removed = [];
         if (songRemove.every((v) => !isNaN(v) && 2 <= v && v <= queue.songs.length)) {
             queue.songs = queue.songs.filter((v, i) => {

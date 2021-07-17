@@ -32,12 +32,17 @@ module.exports = {
         } else {
             const locallistEmbed = new MessageEmbed()
                 .setTitle('**검색할 지역의 번호를 알려주세요.**')
-                .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`))
+                .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`).join('\n'))
                 .setColor('#FF9999')
                 .setTimestamp();
-            message.channel.send(locallistEmbed);
+            message.channel.send({ embeds: [locallistEmbed] });
 
-            const rslt = await message.channel.awaitMessages((msg) => msg.author.id === message.author.id && !isNaN(msg.content) && 1 <= +msg.content && +msg.content <= searchRslt.length, { max: 1, time: 20000, errors: ['time'] });
+            const rslt = await message.channel.awaitMessages({
+                filter: (msg) => msg.author.id === message.author.id && !isNaN(msg.content) && 1 <= +msg.content && +msg.content <= searchRslt.length,
+                max: 1,
+                time: 20000,
+                errors: ['time']
+            });
             targetLocal = searchRslt[Math.trunc(rslt.first().content) - 1];
         }
 
@@ -65,12 +70,15 @@ module.exports = {
         const wind = $('div[data-name="wind"] .row_graph > .data');
 
         for (let i = 0; i < weather.length - 1; i++) {
-            weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${weather.eq(i).attr('data-wetr-txt')})│${rainName}: ${rain.eq(i).text().trim()}${rainUnit}│습도: ${humidity.eq(i).text().trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
+            weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${weather.eq(i).attr('data-wetr-txt')})│${rainName}: ${rain
+                .eq(i)
+                .text()
+                .trim()}${rainUnit}│습도: ${humidity.eq(i).text().trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
         }
 
         let currentPage = 0;
         const embeds = generateWeatherEmbed(targetLocal[0][0], weatherDesc);
-        const weatherEmbed = await message.channel.send(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+        const weatherEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
 
         try {
             await weatherEmbed.react('⬅️');
@@ -80,7 +88,7 @@ module.exports = {
             return message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
         }
         const filter = (_, user) => message.author.id === user.id;
-        const collector = weatherEmbed.createReactionCollector(filter, { time: 60000 });
+        const collector = weatherEmbed.createReactionCollector({ filter, time: 60000 });
 
         collector.on('collect', async (reaction, user) => {
             try {
@@ -90,11 +98,11 @@ module.exports = {
                 switch (reaction.emoji.name) {
                     case '➡️':
                         currentPage = (currentPage + 1) % embeds.length;
-                        weatherEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                        weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                         break;
                     case '⬅️':
                         currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        weatherEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                        weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                         break;
                     case '⏹':
                         collector.stop();

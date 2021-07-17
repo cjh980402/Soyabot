@@ -27,11 +27,13 @@ module.exports = {
             }
         }
 
-        const description = client.commands.filter((cmd) => cmd.description && (cmd.type.includes(args[0]) || !args[0])).map((cmd) => `**${cmd.usage}**\n- 대체 명령어: ${cmd.command.join(', ')}\n${cmd.description}`);
+        const description = client.commands
+            .filter((cmd) => cmd.description && (cmd.type.includes(args[0]) || !args[0]))
+            .map((cmd) => `**${cmd.usage}**\n- 대체 명령어: ${cmd.command.join(', ')}\n${cmd.description}`);
 
         let currentPage = 0;
         const embeds = generateHelpEmbed(description);
-        const helpEmbed = await message.channel.send(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+        const helpEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
         if (embeds.length > 1) {
             try {
                 await helpEmbed.react('⬅️');
@@ -41,7 +43,7 @@ module.exports = {
                 return message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
             }
             const filter = (_, user) => message.author.id === user.id;
-            const collector = helpEmbed.createReactionCollector(filter, { time: 120000 });
+            const collector = helpEmbed.createReactionCollector({ filter, time: 120000 });
 
             collector.on('collect', async (reaction, user) => {
                 try {
@@ -51,11 +53,11 @@ module.exports = {
                     switch (reaction.emoji.name) {
                         case '➡️':
                             currentPage = (currentPage + 1) % embeds.length;
-                            helpEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                            helpEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                             break;
                         case '⬅️':
                             currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                            helpEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                            helpEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                             break;
                         case '⏹':
                             collector.stop();

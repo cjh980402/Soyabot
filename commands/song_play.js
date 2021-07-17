@@ -1,3 +1,4 @@
+const { Permissions } = require('../util/discord.js-extend');
 const { QueueElement, play } = require('../util/music_play');
 const { isValidPlaylist, isValidVideo, getSongInfo } = require('../util/song_util');
 const { replyAdmin } = require('../admin/bot_control');
@@ -25,10 +26,10 @@ module.exports = {
         }
 
         const permissions = channel.permissionsFor(client.user);
-        if (!permissions.has('CONNECT')) {
+        if (!permissions.has(Permissions.FLAGS.CONNECT)) {
             return message.reply('권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.');
         }
-        if (!permissions.has('SPEAK')) {
+        if (!permissions.has(Permissions.FLAGS.SPEAK)) {
             return message.reply('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
         }
 
@@ -55,7 +56,6 @@ module.exports = {
         try {
             const newQueue = new QueueElement(message.channel, channel, await channel.join(), [song]);
             client.queues.set(message.guild.id, newQueue);
-            await newQueue.connection.voice.setSelfDeaf(true);
             play(newQueue);
         } catch (e) {
             channel.leave();

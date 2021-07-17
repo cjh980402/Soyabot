@@ -21,8 +21,22 @@ module.exports = {
             for (let i = 0; i < data.length; i += 3) {
                 const date = data.eq(i).find('th[rowspan="3"]').text();
                 if (date.includes(day)) {
-                    await message.channel.send(`${date}의 점심!\n${data.eq(i + 1).find('td.al').html().decodeHTML().trim()}`);
-                    return message.channel.send(`${date}의 저녁!\n${data.eq(i + 2).find('td.al').html().decodeHTML().trim()}`);
+                    await message.channel.send(
+                        `${date}의 점심!\n${data
+                            .eq(i + 1)
+                            .find('td.al')
+                            .html()
+                            .decodeHTML()
+                            .trim()}`
+                    );
+                    return message.channel.send(
+                        `${date}의 저녁!\n${data
+                            .eq(i + 2)
+                            .find('td.al')
+                            .html()
+                            .decodeHTML()
+                            .trim()}`
+                    );
                 }
             }
             return message.channel.send(`${day}요일은 학식이 제공되지 않습니다.`);

@@ -11,7 +11,7 @@ module.exports = {
         }
 
         const queue = client.queues.get(message.guild.id);
-        if (!queue?.connection.dispatcher) {
+        if (queue?.connection.state.status !== 'ready') {
             return message.reply('재생 중인 노래가 없습니다.');
         }
         if (!canModifyQueue(message.member)) {
@@ -31,7 +31,7 @@ module.exports = {
         }
 
         queue.volume = volume;
-        queue.connection.dispatcher.setVolume(queue.volume / 100);
+        queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
         return message.channel.send(`변경된 음량: **${queue.volume}%**`);
     }
 };

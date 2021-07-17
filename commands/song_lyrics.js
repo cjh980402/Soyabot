@@ -24,7 +24,13 @@ module.exports = {
             const title = $('.song_name').contents().last().text().trim();
             const is19 = $('.song_name .bullet_icons.age_19.large').length;
             const artist = $('.artist').eq(0).text().trim();
-            const lyrics = $('.lyric').contents().get().filter((v) => v.type === 'text' || v.name === 'br').map((v) => (v.type === 'text' ? v.data : '\n')).join('').trim(); // 멜론 사이트 소스 오타 대응
+            const lyrics = $('.lyric')
+                .contents()
+                .get()
+                .filter((v) => v.type === 'text' || v.name === 'br')
+                .map((v) => (v.type === 'text' ? v.data : '\n'))
+                .join('')
+                .trim(); // 멜론 사이트 소스 오타 대응
             lyricsEmbed.setTitle(`**"${title} - ${artist}"의 가사**`).setDescription(lyrics || `${is19 ? '연령 제한이 있는' : '등록된 가사가 없는'} 콘텐츠입니다.`);
         } else {
             lyricsEmbed.setTitle(`**"${search}"의 가사**`).setDescription('검색된 노래가 없습니다.');
@@ -33,6 +39,6 @@ module.exports = {
         if (lyricsEmbed.description.length > 2000) {
             lyricsEmbed.description = `${lyricsEmbed.description.substr(0, 1997)}...`;
         }
-        return message.channel.send(lyricsEmbed);
+        return message.channel.send({ embeds: [lyricsEmbed] });
     }
 };

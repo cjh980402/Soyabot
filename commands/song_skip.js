@@ -11,15 +11,15 @@ module.exports = {
         }
 
         const queue = client.queues.get(message.guild.id);
-        if (!queue?.connection.dispatcher) {
+        if (queue?.connection.state.status !== 'ready') {
             return message.reply('재생 중인 노래가 없습니다.');
         }
         if (!canModifyQueue(message.member)) {
             return message.reply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
 
-        message.channel.send(`${message.author} ⏭ 노래를 건너뛰었습니다.`);
+        message.channel.send(`${message.author} ⏭ 노래를 건너뛰었습니다.`)
         queue.playing = true;
-        queue.connection.dispatcher.end();
+        queue.audioPlayer.stop(true);
     }
 };

@@ -61,7 +61,9 @@ class SuperialItem {
             this.#starforce();
         }
 
-        return `${this.#star}성까지 강화완료\n소비 메소: ${this.#sum.toLocaleString()}메소\n찬스 타임: ${this.#chance.toLocaleString()}회\n실패 횟수: ${this.#fail.toLocaleString()}회\n파괴 횟수: ${this.#dest.toLocaleString()}회`;
+        return `${
+            this.#star
+        }성까지 강화완료\n소비 메소: ${this.#sum.toLocaleString()}메소\n찬스 타임: ${this.#chance.toLocaleString()}회\n실패 횟수: ${this.#fail.toLocaleString()}회\n파괴 횟수: ${this.#dest.toLocaleString()}회`;
     }
 
     #starforce() {

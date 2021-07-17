@@ -118,6 +118,6 @@ module.exports = {
             .addField('**메소마켓**', `${market[market.length - 1][serverList[server]]}메포`)
             .addField('**무통거래**', `${direct[direct.length - 1][serverList[server]]}원`);
 
-        return message.channel.send(mesoEmbed);
+        return message.channel.send({ embeds: [mesoEmbed] });
     }
 };

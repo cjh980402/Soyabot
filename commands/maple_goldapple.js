@@ -140,7 +140,7 @@ module.exports = {
             for (let key in probTable) {
                 rslt += `\n${key}: ${probTable[key] / 100000}%`;
             }
-            return message.channel.send(rslt, { split: true });
+            return message.channel.sendSplitCode(rslt, { split: { char: '\n' } });
         }
 
         const count = Math.trunc(args[0] ?? 1);
@@ -171,6 +171,6 @@ module.exports = {
                 rslt += `\n${key}: ${list[key]}회`;
             }
         }
-        return message.channel.send(rslt, { split: true });
+        return message.channel.sendSplitCode(rslt, { split: { char: '\n' } });
     }
 };

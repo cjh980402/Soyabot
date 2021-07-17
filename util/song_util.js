@@ -130,7 +130,7 @@ module.exports.songDownload = async function (url) {
     } else if (url.includes('soundcloud.com')) {
         return (await scdl.getSongInfo(url)).downloadProgressive();
     } else {
-        throw new Error('지원하지 않는 영상 주소입니다.');
+        throw new Error('This url is unavailable');
     }
 };
 

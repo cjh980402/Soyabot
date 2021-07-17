@@ -26,7 +26,12 @@ function choiceVS(msg) {
         if (splitVS[i] === '') {
             return '빈 항목이 존재합니다.';
         }
-        afterReplace.push(splitVS[i].replace(/[\s`'"~.,;:*+=!?^$@%&{}()<>/|[\]\\-]/g, '').replace('조아', '좋아').replace('시러', '싫어'));
+        afterReplace.push(
+            splitVS[i]
+                .replace(/[\s`'"~.,;:*+=!?^$@%&{}()<>/|[\]\\-]/g, '')
+                .replace('조아', '좋아')
+                .replace('시러', '싫어')
+        );
     }
     for (let i = 0, otherInd; i < splitVS.length / 2; i++) {
         otherInd = afterReplace.lastIndexOf(afterReplace[i]);

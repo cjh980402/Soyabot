@@ -107,7 +107,7 @@ module.exports = {
 
             let currentPage = 0;
             const embeds = [corona1, corona2];
-            const coronaEmbed = await message.channel.send(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+            const coronaEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
 
             try {
                 await coronaEmbed.react('⬅️');
@@ -117,7 +117,7 @@ module.exports = {
                 return message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
             }
             const filter = (_, user) => message.author.id === user.id;
-            const collector = coronaEmbed.createReactionCollector(filter, { time: 60000 });
+            const collector = coronaEmbed.createReactionCollector({ filter, time: 60000 });
 
             collector.on('collect', async (reaction, user) => {
                 try {
@@ -127,11 +127,11 @@ module.exports = {
                     switch (reaction.emoji.name) {
                         case '➡️':
                             currentPage = (currentPage + 1) % embeds.length;
-                            coronaEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                            coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                             break;
                         case '⬅️':
                             currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                            coronaEmbed.edit(`**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds[currentPage]);
+                            coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                             break;
                         case '⏹':
                             collector.stop();

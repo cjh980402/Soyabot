@@ -29,7 +29,13 @@ module.exports = {
         const union = mapleUserInfo.Union();
         const seed = mapleUserInfo.Seed();
 
-        await cmd(`python3 ./util/maple_gg_profile.py ${mapleUserInfo.userImg(false)} ${mapleUserInfo.Name} ${mapleUserInfo.serverName()} ${level[0]} '${level[4]}' ${mapleUserInfo.serverImg()} ${level[2].toLocaleString()} '${level[3] || '(없음)'}' '${rankString}' '${murung ? murung[1] : '기록없음'}' '${murung ? murung[2] : ' '}' '${union ? union[3] : '기록없음'}' '${union ? `Lv.${union[0].toLocaleString()}` : ' '}' '${seed ? seed[1] : '기록없음'}' '${seed ? seed[2] : ' '}'`);
-        return message.channel.send(`${mapleUserInfo.Name}님의 프로필`, { files: ['./pictures/profile.png'] });
+        await cmd(
+            `python3 ./util/maple_gg_profile.py ${mapleUserInfo.userImg(false)} ${mapleUserInfo.Name} ${mapleUserInfo.serverName()} ${level[0]} '${
+                level[4]
+            }' ${mapleUserInfo.serverImg()} ${level[2].toLocaleString()} '${level[3] || '(없음)'}' '${rankString}' '${murung ? murung[1] : '기록없음'}' '${murung ? murung[2] : ' '}' '${
+                union ? union[3] : '기록없음'
+            }' '${union ? `Lv.${union[0].toLocaleString()}` : ' '}' '${seed ? seed[1] : '기록없음'}' '${seed ? seed[2] : ' '}'`
+        );
+        return message.channel.send({ content: `${mapleUserInfo.Name}님의 프로필`, files: ['./pictures/profile.png'] });
     }
 };
