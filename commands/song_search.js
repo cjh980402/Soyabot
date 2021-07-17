@@ -32,7 +32,12 @@ module.exports = {
         try {
             let songChoice;
             const rslt = await message.channel.awaitMessages({
-                filter: (msg) => msg.author.id === message.author.id && (songChoice = msg.content.split(',')).every((v) => !isNaN(v) && 1 <= +v && +v <= results.length),
+                filter: (msg) =>
+                    msg.author.id === message.author.id &&
+                    (songChoice = msg.content
+                        .split(',')
+                        .map((str) => Math.trunc(str))
+                        .deduplication()).every((v) => !isNaN(v) && 1 <= v && v <= results.length),
                 max: 1,
                 time: 20000,
                 errors: ['time']
@@ -40,7 +45,7 @@ module.exports = {
 
             const playCommand = client.commands.find((cmd) => cmd.command.includes('play'));
             for (let song of songChoice) {
-                await playCommand.execute(message, [resultsEmbed.fields[Math.trunc(song) - 1].value]);
+                await playCommand.execute(message, [resultsEmbed.fields[song - 1].value]);
             }
 
             try {

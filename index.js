@@ -1,7 +1,7 @@
 /**
  * 모듈 import
  */
-const { Client, Collection, clientOption, Permissions } = require('./util/discord.js-extend'); // 제일 처음에 import 해야하는 모듈
+const { Client, Collection, Permissions, botClientOption } = require('./util/discord.js-extend'); // 제일 처음에 import 해야하는 모듈
 const { readdirSync } = require('fs');
 const { TOKEN, PREFIX, ADMIN_ID } = require('./soyabot_config.json');
 const { adminChat, initClient, cmd } = require('./admin/admin_function');
@@ -12,7 +12,7 @@ const botChatting = require('./util/bot_chatting');
 const app = require('./util/express_server');
 const sqlite = require('./util/sqlite-handler');
 globalThis.db = new sqlite('./db/soyabot_data.db'); // db와 client는 여러 기능들에 의해 필수로 최상위 전역
-globalThis.client = new Client(clientOption);
+globalThis.client = new Client(botClientOption);
 client.commands = []; // 명령어 객체 저장할 배열
 client.queues = new Map(); // 음악기능 정보 저장용
 client.prefix = PREFIX; // PREFIX는 1글자여야함
