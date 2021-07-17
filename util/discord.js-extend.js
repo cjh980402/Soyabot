@@ -104,18 +104,6 @@ Object.defineProperty(YouTubeAPI.prototype, 'getVideosByIDs', {
     }
 });
 
-Object.defineProperty(YouTubeAPI.prototype, 'getVideosByIDs', {
-    value: async function (ids, options = {}) {
-        Object.assign(options, { part: Constants.PARTS.Videos, id: ids.join(',') });
-        const result = await this.request.make(Constants.ENDPOINTS.Videos, options);
-        if (result.items.length > 0) {
-            return result.items.map((v) => (v ? new Video(this, v) : null));
-        } else {
-            throw new Error(`resource ${result.kind} not found`);
-        }
-    }
-});
-
 Object.defineProperty(Array.prototype, 'asyncFilter', {
     // async 함수를 사용 가능한 Array의 filter 메소드 구현
     value: async function (callback) {
