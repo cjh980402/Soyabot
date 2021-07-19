@@ -58,7 +58,6 @@ module.exports = {
             client.queues.set(message.guild.id, newQueue);
             play(newQueue);
         } catch (e) {
-            channel.leave();
             client.queues.delete(message.guild.id);
             replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             return message.channel.send(`채널에 참가할 수 없습니다: ${e.message ?? e}`);
