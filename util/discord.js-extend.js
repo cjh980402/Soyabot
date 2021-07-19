@@ -55,6 +55,7 @@ Object.defineProperty(Discord.Message.prototype, 'reply', {
 Object.defineProperty(Discord.Channel.prototype, 'sendSplitCode', {
     value: async function (content, options = {}) {
         if (this.isText()) {
+            content = content || '\u200b';
             if (options.code) {
                 content = `\`\`\`${options.code}\n${Discord.Util.cleanCodeBlockContent(content)}\n\`\`\``;
                 if (options.split) {

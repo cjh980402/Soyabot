@@ -138,7 +138,7 @@ module.exports = {
                             break;
                     }
                 } catch {
-                    return message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
+                    message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
                 }
             });
         } else {
