@@ -17,7 +17,7 @@ module.exports = {
         }
         // song.duration: 일반적인 영상 = 노래 길이(초), 생방송 영상 = 0
         const song = queue.songs[0];
-        const seek = queue.audioPlayer.state.playbackDuration / 1000; // 실제로 재생한 시간(초)
+        const seek = (queue.audioPlayer.state.playbackDuration ?? 0) / 1000; // 실제로 재생한 시간(초)
 
         const nowPlaying = new MessageEmbed()
             .setTitle('**현재 재생 중인 노래**')
