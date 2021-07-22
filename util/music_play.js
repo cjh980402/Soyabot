@@ -108,7 +108,7 @@ module.exports.play = async function (queue) {
                 queue.audioPlayer.removeAllListeners('error');
                 await queue.deleteMessage();
                 if (queue.loop) {
-                    queue.songs.push(queue.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣음 -> 루프 발생
+                    queue.songs.push(queue.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣어서 루프 구현
                 } else {
                     queue.songs.shift();
                 }
@@ -140,14 +140,11 @@ module.exports.musicReactionControl = async function (reaction, user) {
     const { guild } = reaction.message.channel;
     const queue = client.queues.get(guild?.id);
     try {
-        if (user.bot || queue?.playingMessage?.id !== reaction.message.id) {
+        if (user.bot || queue?.playingMessage?.id !== reaction.message.id || !queue.audioPlayer.state.resource) {
             return;
         }
 
         await reaction.users.remove(user);
-        if (queue.audioPlayer.state.status === 'idle' || queue.connection.state.status !== 'ready') {
-            return queue.deleteMessage();
-        }
         if (!canModifyQueue(await guild.members.fetch(user.id, false))) {
             return queue.textSend(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
@@ -212,7 +209,7 @@ module.exports.musicActiveControl = function (oldState, newState) {
             if (newVoice) {
                 const newQueue = client.queues.get(newVoice.guild.id);
                 if (
-                    newQueue?.connection.state.status === 'ready' &&
+                    newQueue?.audioPlayer.state.resource &&
                     !newQueue.playing &&
                     newVoice.id === newQueue.voiceChannel.id &&
                     newVoice.members.size === 2 &&
@@ -226,7 +223,7 @@ module.exports.musicActiveControl = function (oldState, newState) {
 
             if (oldVoice) {
                 const oldQueue = client.queues.get(oldVoice.guild.id);
-                if (oldQueue?.connection.state.status === 'ready' && oldVoice.id === oldQueue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.first().id === client.user.id) {
+                if (oldQueue?.audioPlayer.state.resource && oldVoice.id === oldQueue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.first().id === client.user.id) {
                     // 봇만 음성 채널에 있는 경우
                     if (oldQueue.playing) {
                         oldQueue.playing = false;
@@ -235,7 +232,7 @@ module.exports.musicActiveControl = function (oldState, newState) {
                     }
                     setTimeout(() => {
                         const queue = client.queues.get(oldVoice.guild.id);
-                        if (queue?.connection.state.status === 'ready' && oldVoice.id === queue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.first().id === client.user.id) {
+                        if (queue?.audioPlayer.state.resource && oldVoice.id === queue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.first().id === client.user.id) {
                             // 5분이 지나도 봇만 음성 채널에 있는 경우
                             queue.textSend(`5분 동안 ${client.user.username}이 비활성화 되어 대기열을 끝냅니다.`);
                             queue.songs = [];

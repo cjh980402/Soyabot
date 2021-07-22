@@ -29,7 +29,7 @@ module.exports = {
         }
 
         const queue = client.queues.get(message.guild.id);
-        if (queue?.connection.state.status !== 'ready') {
+        if (!queue?.audioPlayer.state.resource) {
             return message.reply('재생 중인 노래가 없습니다.');
         }
         let currentPage = 0;

@@ -12,7 +12,7 @@ module.exports = {
         }
 
         const queue = client.queues.get(message.guild.id);
-        if (queue?.connection.state.status !== 'ready') {
+        if (!queue?.audioPlayer.state.resource) {
             return message.reply('재생 중인 노래가 없습니다.');
         }
         // song.duration: 일반적인 영상 = 노래 길이(초), 생방송 영상 = 0
