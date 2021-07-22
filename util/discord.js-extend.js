@@ -59,8 +59,8 @@ Object.defineProperty(Discord.Channel.prototype, 'sendSplitCode', {
             if (options.code) {
                 content = `\`\`\`${options.code}\n${Discord.Util.cleanCodeBlockContent(content)}\n\`\`\``;
                 if (options.split) {
-                    options.split.prepend = `${options.split.prepend || ''}\`\`\`${options.code}\n`;
-                    options.split.append = `\n\`\`\`${options.split.append || ''}`;
+                    options.split.prepend = `${options.split.prepend ?? ''}\`\`\`${options.code}\n`;
+                    options.split.append = `\n\`\`\`${options.split.append ?? ''}`;
                 }
             }
             if (options.split) {

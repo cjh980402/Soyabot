@@ -18,7 +18,7 @@ module.exports.adminChat = async function (message) {
         // eval의 내부가 async 함수의 리턴값이므로 await까지 해준다. js의 코드 스타일을 적용해서 출력한다.
     } else if (fullContent.startsWith(')')) {
         // 콘솔 명령 실행 후 출력
-        message.channel.sendSplitCode((await module.exports.cmd(fullContent.substr(1).trim(), true)), { code: 'shell', split: { char: '' } });
+        message.channel.sendSplitCode(await module.exports.cmd(fullContent.substr(1).trim(), true), { code: 'shell', split: { char: '' } });
     } else if (room) {
         // 원하는 방에 봇으로 채팅 전송 (텍스트 채널 ID 이용)
         const rslt = await replyRoomID(room, fullContent.substr(room.length + 3));
