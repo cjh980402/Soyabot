@@ -90,16 +90,16 @@ module.exports.play = async function (queue) {
             inputType: StreamType.Arbitrary,
             inlineVolume: true
         });
+        queue.audioPlayer.play(resource);
+        queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
     } catch (e) {
-        console.error(e);
+        queue.textSend('노래 재생에 실패했습니다.');
+        replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
         queue.songs.shift();
-        queue.textSend(`오류 발생: ${e.message ?? e}`);
         return module.exports.play(queue);
     }
 
     queue.playingMessage = await queue.textSend(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
-    queue.audioPlayer.play(resource);
-    queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
     queue.audioPlayer
         .on('stateChange', async (oldState, newState) => {
             if (newState.status === 'idle' && oldState.status !== 'idle') {
@@ -119,7 +119,7 @@ module.exports.play = async function (queue) {
             queue.audioPlayer.removeAllListeners('stateChange');
             queue.audioPlayer.removeAllListeners('error');
             await queue.deleteMessage();
-            queue.textSend('재생할 수 없는 동영상입니다.');
+            queue.textSend('노래 재생에 실패했습니다.');
             replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             queue.songs.shift();
             module.exports.play(queue);
