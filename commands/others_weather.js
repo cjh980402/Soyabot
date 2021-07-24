@@ -62,18 +62,25 @@ module.exports = {
         }
 
         const weather = $('.time_list > .item_time');
-        const rainData = $('div[data-name="rain"] .row_graph').eq(0); // 가끔 적설량이 병기되는 경우에 대응
-        const rainName = rainData.find('.blind').text();
-        const rainUnit = rainName === '적설량' ? '㎝' : '㎜';
-        const rain = rainData.find('.data');
-        const humidity = $('div[data-name="humidity"] .row_graph > .data');
-        const wind = $('div[data-name="wind"] .row_graph > .data');
+        const rain = $('div[data-name="rain"] .row_graph.row_rain > .data');
 
-        for (let i = 0; i < weather.length - 1; i++) {
-            weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${weather.eq(i).attr('data-wetr-txt')})│${rainName}: ${rain
-                .eq(i)
-                .text()
-                .trim()}${rainUnit}│습도: ${humidity.eq(i).text().trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
+        if (rain.length > 0) {
+            const humidity = $('div[data-name="humidity"] .row_graph > .data');
+            const wind = $('div[data-name="wind"] .row_graph > .data');
+            for (let i = 0; i < weather.length - 1; i++) {
+                weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${weather.eq(i).attr('data-wetr-txt')})│강수량: ${rain
+                    .eq(i)
+                    .text()
+                    .trim()}㎜│습도: ${humidity.eq(i).text().trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
+            }
+        } else {
+            let data = $('body > script').filter((_, v) => /\[{.+naverRgnCd.+}\]/.test($(v).html()));
+            data = JSON.parse(/\[{.+naverRgnCd.+}\]/.exec(data.eq(0).html())[0]);
+            for (let i = 0; i < weather.length - 1; i++) {
+                weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${weather.eq(i).attr('data-wetr-txt')})│강수량: ${data[i + 1].rainAmt}㎜│습도: ${
+                    data[i + 1].humd
+                }%│풍속: ${data[i + 1].windSpd}㎧`;
+            }
         }
 
         let currentPage = 0;
