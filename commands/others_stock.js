@@ -165,7 +165,6 @@ module.exports = {
             } else {
                 // 해외 주식
                 const data = await (await fetch(`https://api.stock.naver.com/stock/${identifer}/basic`)).json();
-                const etfData = await (await fetch(`https://api.stock.naver.com/etf/${identifer}/basic`)).json();
                 if (data.code === 'StockConflict') {
                     return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
                 }
@@ -195,6 +194,7 @@ module.exports = {
                     .addField('**거래대금**', `${totalPrice}${data.currencyType.name}`, true)
                     .addField('**시가총액**', `${capitalization}${data.currencyType.name}`, true);
                 if (data.stockEndType === 'etf') {
+                    const etfData = await (await fetch(`https://api.stock.naver.com/etf/${identifer}/basic`)).json();
                     stockEmbed
                         .addField('**최근 1개월 수익률**', etfData.stockItemTotalInfos[8].value, true)
                         .addField('**최근 3개월 수익률**', etfData.stockItemTotalInfos[9].value, true)
