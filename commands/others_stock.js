@@ -27,6 +27,13 @@ function getRedirectURL(url) {
     return afterRedirect ? url.replace(url.substring(0, url.indexOf('?')), afterRedirect) : url;
 }
 
+function getTotalInfoObj(totalInfos) {
+    return totalInfos.reduce((acc, cur) => {
+        acc[cur.key] = cur.value;
+        return acc;
+    }, {});
+}
+
 module.exports = {
     usage: `${client.prefix}주식정보 (검색 내용) (차트 종류)`,
     command: ['주식정보', 'ㅈㅅㅈㅂ'],
@@ -64,14 +71,12 @@ module.exports = {
                 const nowPrice = nowData.result.areas[0].datas[0].nv / 100;
                 const changeAmount = nowData.result.areas[0].datas[0].cv / 100; // 숫자값
                 const changeRate = nowData.result.areas[0].datas[0].cr;
-                const isFUT = identifer === 'FUT';
 
-                const minPrice = data.totalInfos[isFUT ? 3 : 1].value;
-                const maxPrice = data.totalInfos[isFUT ? 2 : 0].value;
-                const amount = data.totalInfos[isFUT ? 4 : 2].value;
-                const totalPrice = data.totalInfos[isFUT ? 5 : 3].value;
-                const min_52weeks = data.totalInfos[isFUT ? 7 : 5].value;
-                const max_52weeks = data.totalInfos[isFUT ? 6 : 4].value;
+                data.totalInfos = getTotalInfoObj(data.totalInfos);
+                const minPrice = data.totalInfos['저가'];
+                const maxPrice = data.totalInfos['고가'];
+                const min_52weeks = data.totalInfos['52주 최저'];
+                const max_52weeks = data.totalInfos['52주 최고'];
 
                 await cmd(
                     `python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
@@ -79,8 +84,8 @@ module.exports = {
                 // 파이썬 스크립트 실행
 
                 stockEmbed
-                    .addField(isFUT ? '**약정수량**' : '**거래량**', amount, true)
-                    .addField('**거래대금**', totalPrice, true)
+                    .addField('**거래량**', data.totalInfos['거래량'], true)
+                    .addField('**거래대금**', data.totalInfos['대금'], true)
                     .addField('**개인**', data.dealTrendInfo.personalValue, true)
                     .addField('**외국인**', data.dealTrendInfo.foreignValue, true)
                     .addField('**기관**', data.dealTrendInfo.institutionalValue, true);
@@ -100,10 +105,11 @@ module.exports = {
                 const changeAmount = data.compareToPreviousClosePrice.replace(/,/g, '');
                 const changeRate = data.fluctuationsRatio;
 
-                const minPrice = data.stockItemTotalInfos[3].value;
-                const maxPrice = data.stockItemTotalInfos[2].value;
-                const min_52weeks = data.stockItemTotalInfos[5].value;
-                const max_52weeks = data.stockItemTotalInfos[4].value;
+                data.stockItemTotalInfos = getTotalInfoObj(data.stockItemTotalInfos);
+                const minPrice = data.stockItemTotalInfos['저가'];
+                const maxPrice = data.stockItemTotalInfos['고가'];
+                const min_52weeks = data.stockItemTotalInfos['52주 최저'];
+                const max_52weeks = data.stockItemTotalInfos['52주 최고'];
 
                 await cmd(
                     `python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
@@ -122,45 +128,37 @@ module.exports = {
                 const nowPrice = nowData.result.areas[0].datas[0].nv;
                 const changeAmount = nowPrice - beforePrice; // 숫자값
                 const changeRate = (100 * (changeAmount / beforePrice)).toFixed(2);
-                const isETF = data.stockEndType === 'etf';
-                if (isETF && data.totalInfos.length === 18) {
-                    data.totalInfos.splice(7, 3, data.totalInfos[8]);
-                } else if (!isETF && data.totalInfos.length === 20) {
-                    data.totalInfos.splice(9, 3, data.totalInfos[10]);
-                }
 
-                const minPrice = data.totalInfos[3].value;
-                const maxPrice = data.totalInfos[2].value;
-                const amount = data.totalInfos[4].value;
-                const totalPrice = data.totalInfos[5].value;
-                const capitalization = data.totalInfos[6].value;
-                const min_52weeks = data.totalInfos[isETF ? 7 : 9].value;
-                const max_52weeks = data.totalInfos[isETF ? 6 : 8].value;
+                data.totalInfos = getTotalInfoObj(data.totalInfos);
+                const minPrice = data.totalInfos['저가'];
+                const maxPrice = data.totalInfos['고가'];
+                const min_52weeks = data.totalInfos['52주 최저'];
+                const max_52weeks = data.totalInfos['52주 최고'];
 
                 await cmd(
                     `python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
                 );
                 // 파이썬 스크립트 실행
 
-                stockEmbed.addField('**거래량**', amount, true).addField('**거래대금**', `${totalPrice}원`, true);
-                if (isETF) {
+                stockEmbed.addField('**거래량**', data.totalInfos['거래량'], true).addField('**거래대금**', `${data.totalInfos['대금']}원`, true);
+                if (data.stockEndType === 'etf') {
                     stockEmbed
-                        .addField('**최근 1개월 수익률**', data.totalInfos[8].value, true)
-                        .addField('**최근 3개월 수익률**', data.totalInfos[9].value, true)
-                        .addField('**최근 6개월 수익률**', data.totalInfos[10].value, true)
-                        .addField('**최근 1년 수익률**', data.totalInfos[11].value, true)
-                        .addField('**NAV**', data.totalInfos[12].value, true)
-                        .addField('**펀드보수**', data.totalInfos[13].value, true);
+                        .addField('**최근 1개월 수익률**', data.totalInfos['최근 1개월 수익률'], true)
+                        .addField('**최근 3개월 수익률**', data.totalInfos['최근 3개월 수익률'], true)
+                        .addField('**최근 6개월 수익률**', data.totalInfos['최근 6개월 수익률'], true)
+                        .addField('**최근 1년 수익률**', data.totalInfos['최근 1년 수익률'], true)
+                        .addField('**NAV**', data.totalInfos['NAV'], true)
+                        .addField('**펀드보수**', data.totalInfos['펀드보수'], true);
                 } else {
                     stockEmbed
-                        .addField('**시가총액**', `${capitalization}원`, true)
-                        .addField('**외인소진율**', data.totalInfos[7].value, true)
-                        .addField('**PER**', data.totalInfos[10].value, true)
-                        .addField('**EPS**', data.totalInfos[11].value, true)
-                        .addField('**PBR**', data.totalInfos[14].value, true)
-                        .addField('**BPS**', data.totalInfos[15].value, true)
-                        .addField('**배당률**', data.totalInfos[16].value, true)
-                        .addField('**배당금**', data.totalInfos[17].value, true);
+                        .addField('**시가총액**', `${data.totalInfos['시총']}원`, true)
+                        .addField('**외인소진율**', data.totalInfos['외인소진율'], true)
+                        .addField('**PER**', data.totalInfos['PER'], true)
+                        .addField('**EPS**', data.totalInfos['EPS'], true)
+                        .addField('**PBR**', data.totalInfos['PBR'], true)
+                        .addField('**BPS**', data.totalInfos['BPS'], true)
+                        .addField('**배당률**', data.totalInfos['배당수익률'], true)
+                        .addField('**배당금**', data.totalInfos['주당배당금'], true);
                 }
             } else {
                 // 해외 주식
@@ -174,13 +172,11 @@ module.exports = {
                 const changeAmount = data.compareToPreviousClosePrice.replace(/,/g, ''); // 숫자값
                 const changeRate = data.fluctuationsRatio;
 
-                const minPrice = data.stockItemTotalInfos[3].value;
-                const maxPrice = data.stockItemTotalInfos[2].value;
-                const amount = data.stockItemTotalInfos[4].value;
-                const totalPrice = data.stockItemTotalInfos[5].value;
-                const capitalization = data.stockItemTotalInfos[6].value;
-                const min_52weeks = data.stockItemTotalInfos[9].value;
-                const max_52weeks = data.stockItemTotalInfos[8].value;
+                data.stockItemTotalInfos = getTotalInfoObj(data.stockItemTotalInfos);
+                const minPrice = data.stockItemTotalInfos['저가'];
+                const maxPrice = data.stockItemTotalInfos['고가'];
+                const min_52weeks = data.stockItemTotalInfos['52주 최저'];
+                const max_52weeks = data.stockItemTotalInfos['52주 최고'];
 
                 await cmd(
                     `python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' ${
@@ -190,27 +186,28 @@ module.exports = {
                 // 파이썬 스크립트 실행
 
                 stockEmbed
-                    .addField('**거래량**', amount, true)
-                    .addField('**거래대금**', `${totalPrice}${data.currencyType.name}`, true)
-                    .addField('**시가총액**', `${capitalization}${data.currencyType.name}`, true);
+                    .addField('**거래량**', data.stockItemTotalInfos['거래량'], true)
+                    .addField('**거래대금**', `${data.stockItemTotalInfos['대금']}${data.currencyType.name}`, true)
+                    .addField('**시가총액**', `${data.stockItemTotalInfos['시총']}${data.currencyType.name}`, true);
                 if (data.stockEndType === 'etf') {
                     const etfData = await (await fetch(`https://api.stock.naver.com/etf/${identifer}/basic`)).json();
+                    etfData.stockItemTotalInfos = getTotalInfoObj(etfData.stockItemTotalInfos);
                     stockEmbed
-                        .addField('**최근 1개월 수익률**', etfData.stockItemTotalInfos[8].value, true)
-                        .addField('**최근 3개월 수익률**', etfData.stockItemTotalInfos[9].value, true)
-                        .addField('**최근 6개월 수익률**', etfData.stockItemTotalInfos[10].value, true)
-                        .addField('**최근 1년 수익률**', etfData.stockItemTotalInfos[11].value, true)
-                        .addField('**NAV**', etfData.stockItemTotalInfos[7].value, true)
-                        .addField('**배당금**', etfData.stockItemTotalInfos[13].value, true);
+                        .addField('**최근 1개월 수익률**', etfData.stockItemTotalInfos['최근 1개월 수익률'], true)
+                        .addField('**최근 3개월 수익률**', etfData.stockItemTotalInfos['최근 3개월 수익률'], true)
+                        .addField('**최근 6개월 수익률**', etfData.stockItemTotalInfos['최근 6개월 수익률'], true)
+                        .addField('**최근 1년 수익률**', etfData.stockItemTotalInfos['최근 1년 수익률'], true)
+                        .addField('**NAV**', etfData.stockItemTotalInfos['NAV'], true)
+                        .addField('**배당금**', etfData.stockItemTotalInfos['배당금'], true);
                 } else {
                     stockEmbed
-                        .addField('**업종**', data.stockItemTotalInfos[7].value, true)
-                        .addField('**PER**', data.stockItemTotalInfos[10].value, true)
-                        .addField('**EPS**', data.stockItemTotalInfos[11].value, true)
-                        .addField('**PBR**', data.stockItemTotalInfos[12].value, true)
-                        .addField('**BPS**', data.stockItemTotalInfos[13].value, true)
-                        .addField('**배당률**', data.stockItemTotalInfos[15].value, true)
-                        .addField('**배당금**', data.stockItemTotalInfos[14].value, true);
+                        .addField('**업종**', data.stockItemTotalInfos['업종'], true)
+                        .addField('**PER**', data.stockItemTotalInfos['PER'], true)
+                        .addField('**EPS**', data.stockItemTotalInfos['EPS'], true)
+                        .addField('**PBR**', data.stockItemTotalInfos['PBR'], true)
+                        .addField('**BPS**', data.stockItemTotalInfos['BPS'], true)
+                        .addField('**배당률**', data.stockItemTotalInfos['배당수익률'], true)
+                        .addField('**배당금**', data.stockItemTotalInfos['주당배당금'], true);
                 }
             }
 
