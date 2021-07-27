@@ -90,8 +90,9 @@ module.exports = {
                     .addField('**외국인**', data.dealTrendInfo.foreignValue, true)
                     .addField('**기관**', data.dealTrendInfo.institutionalValue, true);
                 if (data.upDownStockInfo) {
-                    stockEmbed.addField('**상승**', `${data.upDownStockInfo.riseCount} (${data.upDownStockInfo.upperCount})`, true);
-                    stockEmbed.addField('**하락**', `${data.upDownStockInfo.fallCount} (${data.upDownStockInfo.lowerCount})`, true);
+                    stockEmbed
+                        .addField('**상승**', `${data.upDownStockInfo.riseCount} (${data.upDownStockInfo.upperCount})`, true)
+                        .addField('**하락**', `${data.upDownStockInfo.fallCount} (${data.upDownStockInfo.lowerCount})`, true);
                 }
             } else if (stockfind[2][0] === '해외지수') {
                 // 해외 지수
