@@ -9,7 +9,7 @@ module.exports.botNotice = async function (data, type = null) {
         .filter((v) => !skiplist.includes(v.id))
         .forEach(async (v) => {
             try {
-                const guildText = (await v.channels.fetch(false)).filter((v) => v.type === 'text');
+                const guildText = v.channels.cache.filter((v) => v.type === 'GUILD_TEXT');
                 const target = guildText.find((v) => noticeRegex.test(v.name)) ?? guildText.first();
                 const permissions = target?.permissionsFor(client.user);
                 if (permissions?.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES])) {

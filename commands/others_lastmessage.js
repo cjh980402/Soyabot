@@ -11,7 +11,7 @@ module.exports = {
         let targetInfo;
         if (message.mentions.users.size > 0) {
             try {
-                targetInfo = await message.guild.members.fetch(message.mentions.users.first().id, { cache: false });
+                targetInfo = await message.guild.members.fetch(message.mentions.users.first().id);
             } catch {
                 return message.channel.send('서버에 존재하지 않는 사람입니다.');
             }

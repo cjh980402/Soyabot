@@ -46,9 +46,9 @@ module.exports.QueueElement = class {
             return await this.textChannel.send(text);
         } catch {
             try {
-                const channels = await this.textChannel.guild.channels.fetch(false);
+                const channels = this.textChannel.guild.channels.cache;
                 if (!channels.get(this.textChannel.id)) {
-                    this.textChannel = channels.find((v) => v.type === 'text') ?? this.textChannel;
+                    this.textChannel = channels.find((v) => v.type === 'GUILD_TEXT') ?? this.textChannel;
                 }
                 return await this.textChannel.send(text);
             } catch {}
@@ -145,7 +145,7 @@ module.exports.musicReactionControl = async function (reaction, user) {
         }
 
         await reaction.users.remove(user);
-        if (!canModifyQueue(await guild.members.fetch(user.id, { cache: false }))) {
+        if (!canModifyQueue(await guild.members.fetch(user.id))) {
             return queue.textSend(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
 
@@ -213,7 +213,7 @@ module.exports.musicActiveControl = function (oldState, newState) {
                     !newQueue.playing &&
                     newVoice.id === newQueue.voiceChannel.id &&
                     newVoice.members.size === 2 &&
-                    newVoice.members.first().id === client.user.id
+                    (newVoice.members.first().id === client.user.id || newVoice.members.last().id === client.user.id)
                 ) {
                     newQueue.playing = true;
                     newQueue.audioPlayer.unpause();

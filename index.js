@@ -59,13 +59,13 @@ client.on('messageReactionAdd', musicReactionControl); // 각 이모지 리액�
 
 client.on('voiceStateUpdate', musicActiveControl); // 유저 음성채팅 상태 변경 이벤트
 
-client.on('message', async (message) => {
+client.on('messageCreate', async (message) => {
     // 각 메시지에 반응, 디스코드는 봇의 메시지도 이 이벤트에 들어옴
     let commandName;
     try {
         console.log(`(${new Date().toLocaleString()}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username}: ${message.content}\n`);
-        if (message.author.bot) {
-            // 봇 여부 체크
+        if (message.author.bot || message.partial) {
+            // 봇 또는 partial 여부 체크
             return;
         }
         const permissions = message.channel.permissionsFor?.(client.user);

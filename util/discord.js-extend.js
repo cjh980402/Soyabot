@@ -1,4 +1,4 @@
-const Discord = require('discord.js-light');
+const Discord = require('discord.js');
 const { entersState, joinVoiceChannel, VoiceConnectionStatus } = require('@discordjs/voice');
 const fetch = require('node-fetch');
 const YouTubeAPI = require('simple-youtube-api');
@@ -6,20 +6,13 @@ const Constants = require('simple-youtube-api/src/util/Constants');
 const Video = require('simple-youtube-api/src/structures/Video');
 const { decodeHTML } = require('entities');
 const { inspect } = require('util');
-const originReply = Discord.Message.prototype.reply; // 기본으로 정의된 reply 메소드
 globalThis.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 Object.defineProperty(Discord, 'botClientOption', {
     value: {
-        cacheGuilds: true, // 전체 길드 캐싱
-        cacheOverwrites: true, // 권한 관련 코드 사용 시 필요
-        cacheRoles: true, // 권한 관련 코드 사용 시 필요
-        cacheChannels: false,
-        cacheEmojis: false,
-        cachePresences: false,
-        cacheMembers: false,
-        messageCacheMaxSize: 0,
         retryLimit: 3,
+        failIfNotExists: false,
+        partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
         intents: [
             Discord.Intents.FLAGS.GUILDS,
             Discord.Intents.FLAGS.GUILD_VOICE_STATES,
@@ -27,7 +20,13 @@ Object.defineProperty(Discord, 'botClientOption', {
             Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
             Discord.Intents.FLAGS.DIRECT_MESSAGES,
             Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
-        ]
+        ],
+        makeCache: Discord.Options.cacheWithLimits({
+            MessageManager: 0,
+            PresenceManager: 0,
+            GuildEmojiManager: 0,
+            GuildStickerManager: 0
+        })
     }
 });
 
@@ -38,17 +37,6 @@ Object.defineProperty(Discord.Message.prototype, 'fullContent', {
         } else {
             return this.content;
         }
-    }
-});
-
-Object.defineProperty(Discord.Message.prototype, 'reply', {
-    // failIfNotExists의 값을 false로 하기 위한 메소드 재정의
-    value: function (options) {
-        if (options.constructor === String) {
-            options = { content: options };
-        }
-        options.failIfNotExists = false;
-        return originReply.call(this, options);
     }
 });
 

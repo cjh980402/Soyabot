@@ -26,9 +26,9 @@ module.exports.adminChat = async function (message) {
     } else if (message.channel.recipient?.id === ADMIN_ID && message.reference) {
         // 건의 답변 기능
         try {
-            const suggestRefer = await message.channel.messages.fetch(message.reference.messageID);
-            const [channelID, messageID] = suggestRefer.content.split(/\s/);
-            await client.channels.forge(channelID).messages.forge(messageID).reply(fullContent);
+            const suggestRefer = await message.channel.messages.fetch(message.reference.messageId, { cache: false });
+            const [channelId, messageId] = suggestRefer.content.split(/\s/);
+            await client.channels._add({ id: channelId, type: 1 }, null, false).messages._add({ id: messageId }, false).reply(fullContent);
             message.channel.send('건의 답변을 보냈습니다.');
         } catch {
             message.channel.send('해당하는 건의의 정보가 존재하지 않습니다.');
