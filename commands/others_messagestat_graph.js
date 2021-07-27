@@ -10,18 +10,18 @@ module.exports = {
 - 채팅지수 = (공백 문자 제외 글자 개수) / 채팅량`,
     type: ['기타'],
     async execute(message, args) {
-        const targetChannel = (args.length > 0 && message.author.id === ADMIN_ID && client.guilds.cache.find((v) => v.name.includes(args.join(' ')))) || message.guild;
-        if (!targetChannel) {
+        const targetGuild = (args.length > 0 && message.author.id === ADMIN_ID && client.guilds.cache.find((v) => v.name.includes(args.join(' ')))) || message.guild;
+        if (!targetGuild) {
             return message.reply('사용이 불가능한 채널입니다.');
         }
 
         const roommessage = (
             await (
-                await db.all('SELECT * FROM messagedb WHERE channelsenderid LIKE ?', [`${targetChannel.id}%`])
+                await db.all('SELECT * FROM messagedb WHERE channelsenderid LIKE ?', [`${targetGuild.id}%`])
             ).asyncFilter(async (v) => {
                 try {
                     const senderid = v.channelsenderid.split(' ')[1];
-                    v.member = await targetChannel.members.fetch(senderid, { cache: false });
+                    v.member = await targetGuild.members.fetch(senderid);
                     return v.member && (args[0] !== '-봇' || !v.member.user.bot);
                 } catch {
                     return false;
@@ -92,7 +92,7 @@ module.exports = {
                 title: {
                     display: true,
                     fontSize: 35,
-                    text: `${targetChannel.name} 방의 채팅지수 그래프`
+                    text: `${targetGuild.name} 방의 채팅지수 그래프`
                 },
                 legend: { display: false }
             }
