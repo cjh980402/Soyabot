@@ -13,13 +13,13 @@ module.exports = {
         const random = Math.floor(Math.random() * (max - min + 1)) + min; // 랜덤 선택된 문장의 인덱스
         const choice = matchString[random];
         const choiceLength = Hangul.disassemble(choice).length;
-        message.channel.send(`이번 문장은 ${random <= 1119 ? '한글' : '영어'} 문장입니다.`);
+        await message.channel.send(`이번 문장은 ${random <= 1119 ? '한글' : '영어'} 문장입니다.`);
 
         for (let i = 3; i > 0; i--) {
-            message.channel.send(String(i));
+            await message.channel.send(String(i));
             await sleep(1000); // 3초 카운트 다운 로직
         }
-        message.channel.send(`대결할 문장: ${[...choice].join('\u200b')}\n\n위 문장으로 대결을 수행합니다.`);
+        await message.channel.send(`대결할 문장: ${[...choice].join('\u200b')}\n\n위 문장으로 대결을 수행합니다.`);
 
         const start = Date.now();
         const winMessage = (await message.channel.awaitMessages({ filter: (msg) => msg.content === choice, max: 1, time: 40000, errors: ['time'] })).first();
