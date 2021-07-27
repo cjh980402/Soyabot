@@ -145,7 +145,7 @@ module.exports.musicReactionControl = async function (reaction, user) {
         }
 
         await reaction.users.remove(user);
-        if (!canModifyQueue(await guild.members.fetch(user.id, false))) {
+        if (!canModifyQueue(await guild.members.fetch(user.id, { cache: false }))) {
             return queue.textSend(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
 

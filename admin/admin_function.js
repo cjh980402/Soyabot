@@ -26,7 +26,7 @@ module.exports.adminChat = async function (message) {
     } else if (message.channel.recipient?.id === ADMIN_ID && message.reference) {
         // 건의 답변 기능
         try {
-            const suggestRefer = await message.channel.messages.fetch(message.reference.messageID, false);
+            const suggestRefer = await message.channel.messages.fetch(message.reference.messageID);
             const [channelID, messageID] = suggestRefer.content.split(/\s/);
             await client.channels.forge(channelID).messages.forge(messageID).reply(fullContent);
             message.channel.send('건의 답변을 보냈습니다.');

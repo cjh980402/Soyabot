@@ -21,7 +21,7 @@ module.exports = {
             ).asyncFilter(async (v) => {
                 try {
                     const senderid = v.channelsenderid.split(' ')[1];
-                    v.member = await targetChannel.members.fetch(senderid, false);
+                    v.member = await targetChannel.members.fetch(senderid, { cache: false });
                     return v.member && (args[0] !== '-봇' || !v.member.user.bot);
                 } catch {
                     return false;
