@@ -145,7 +145,7 @@ module.exports.musicReactionControl = async function (reaction, user) {
         }
 
         await reaction.users.remove(user);
-        if (!canModifyQueue(await guild.members.fetch(user.id))) {
+        if (!canModifyQueue(await guild.members.fetch({ user: user.id, cache: false }))) {
             return queue.textSend(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
 
@@ -203,7 +203,7 @@ module.exports.musicActiveControl = function (oldState, newState) {
     try {
         const oldVoice = oldState?.channel;
         const newVoice = newState?.channel;
-        if (oldVoice !== newVoice) {
+        if (oldVoice?.id !== newVoice?.id) {
             console.log(!oldVoice ? 'User joined!' : !newVoice ? 'User left!' : 'User switched channels!');
 
             if (newVoice) {
