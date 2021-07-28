@@ -208,13 +208,7 @@ module.exports.musicActiveControl = function (oldState, newState) {
 
             if (newVoice) {
                 const newQueue = client.queues.get(newVoice.guild.id);
-                if (
-                    newQueue?.audioPlayer.state.resource &&
-                    !newQueue.playing &&
-                    newVoice.id === newQueue.voiceChannel.id &&
-                    newVoice.members.size === 2 &&
-                    (newVoice.members.first().id === client.user.id || newVoice.members.last().id === client.user.id)
-                ) {
+                if (newQueue?.audioPlayer.state.resource && !newQueue.playing && newVoice.id === newQueue.voiceChannel.id && newVoice.members.size === 2 && newVoice.members.has(client.user.id)) {
                     newQueue.playing = true;
                     newQueue.audioPlayer.unpause();
                     newQueue.textSend('대기열을 다시 재생합니다.');
@@ -223,7 +217,7 @@ module.exports.musicActiveControl = function (oldState, newState) {
 
             if (oldVoice) {
                 const oldQueue = client.queues.get(oldVoice.guild.id);
-                if (oldQueue?.audioPlayer.state.resource && oldVoice.id === oldQueue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.first().id === client.user.id) {
+                if (oldQueue?.audioPlayer.state.resource && oldVoice.id === oldQueue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.has(client.user.id)) {
                     // 봇만 음성 채널에 있는 경우
                     if (oldQueue.playing) {
                         oldQueue.playing = false;
@@ -232,7 +226,7 @@ module.exports.musicActiveControl = function (oldState, newState) {
                     }
                     setTimeout(() => {
                         const queue = client.queues.get(oldVoice.guild.id);
-                        if (queue?.audioPlayer.state.resource && oldVoice.id === queue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.first().id === client.user.id) {
+                        if (queue?.audioPlayer.state.resource && oldVoice.id === queue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.has(client.user.id)) {
                             // 5분이 지나도 봇만 음성 채널에 있는 경우
                             queue.textSend(`5분 동안 ${client.user.username}이 비활성화 되어 대기열을 끝냅니다.`);
                             queue.songs = [];
