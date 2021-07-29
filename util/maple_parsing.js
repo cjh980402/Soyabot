@@ -1,10 +1,6 @@
 const fetch = require('node-fetch');
 const { load } = require('cheerio');
 
-function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 async function linkParse(link) {
     return load(await (await fetch(link)).text());
 }

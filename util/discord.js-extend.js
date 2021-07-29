@@ -5,8 +5,8 @@ const YouTubeAPI = require('simple-youtube-api');
 const Constants = require('simple-youtube-api/src/util/Constants');
 const Video = require('simple-youtube-api/src/structures/Video');
 const { decodeHTML } = require('entities');
-const { inspect } = require('util');
-globalThis.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const { inspect, promisify } = require('util');
+globalThis.sleep = promisify(setTimeout);
 
 Object.defineProperty(Discord, 'botClientOption', {
     value: {
@@ -22,10 +22,11 @@ Object.defineProperty(Discord, 'botClientOption', {
             Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
         ],
         makeCache: Discord.Options.cacheWithLimits({
-            MessageManager: 0,
-            PresenceManager: 0,
+            GuildBanManager: 0,
             GuildEmojiManager: 0,
-            GuildStickerManager: 0
+            GuildStickerManager: 0,
+            MessageManager: 0,
+            PresenceManager: 0
         })
     }
 });
