@@ -5,7 +5,7 @@ module.exports.canModifyQueue = function (member) {
 
 module.exports.getMessageImage = async function (message) {
     if (message.reference) {
-        message = await message.channel.messages.fetch(message.reference.messageId, { cache: false });
+        message = await message.fetchReference();
     }
     return message?.attachments.first()?.height ? message.attachments.first().url : null;
 };
