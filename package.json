@@ -27,7 +27,7 @@
     "chartjs-plugin-doughnutlabel": "^2.0.3",
     "cheerio": "^1.0.0-rc.10",
     "deepai": "^1.0.17",
-    "discord.js": "^13.0.0-dev.5e433b5.1627473836",
+    "discord.js": "^13.0.0-dev.4f1f32f.1627517033",
     "entities": "^2.2.0",
     "erlpack": "github:discord/erlpack",
     "express": "^4.17.1",
