@@ -1,4 +1,4 @@
-const { createAudioPlayer, createAudioResource, StreamType } = require('@discordjs/voice');
+const { AudioPlayerStatus, createAudioPlayer, createAudioResource, StreamType, VoiceConnectionStatus } = require('@discordjs/voice');
 const { songDownload } = require('./song_util');
 const { replyAdmin } = require('../admin/bot_control');
 const { STAY_TIME, DEFAULT_VOLUME } = require('../soyabot_config.json');
@@ -76,7 +76,7 @@ module.exports.play = async function (queue) {
         disconnectTimeout[guild.id] = setTimeout(() => {
             // 종료 후 새로운 음악 기능이 수행 중이지 않으면 나감
             delete disconnectTimeout[guild.id]; // 완료된 퇴장예약 제거
-            if (!client.queues.get(guild.id) && queue.connection.state.status === 'ready') {
+            if (!client.queues.get(guild.id) && queue.connection.state.status === VoiceConnectionStatus.Ready) {
                 queue.connection.destroy();
                 queue.textSend(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
             }
@@ -102,7 +102,7 @@ module.exports.play = async function (queue) {
     queue.playingMessage = await queue.textSend(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
     queue.audioPlayer
         .on('stateChange', async (oldState, newState) => {
-            if (newState.status === 'idle' && oldState.status !== 'idle') {
+            if (newState.status === AudioPlayerStatus.Idle && oldState.status !== AudioPlayerStatus.Idle) {
                 // 재생 중인 노래가 끝난 경우
                 queue.audioPlayer.removeAllListeners('stateChange');
                 queue.audioPlayer.removeAllListeners('error');

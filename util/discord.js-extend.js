@@ -22,6 +22,7 @@ Object.defineProperty(Discord, 'botClientOption', {
             Discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
         ],
         makeCache: Discord.Options.cacheWithLimits({
+            BaseGuildEmojiManager: 0,
             GuildBanManager: 0,
             GuildEmojiManager: 0,
             GuildStickerManager: 0,
