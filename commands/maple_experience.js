@@ -1,7 +1,7 @@
 const { levelTable } = require('../util/soyabot_const.json');
 
 module.exports = {
-    usage: `${client.prefix}경험치 (레벨)`,
+    usage: `${client.prefix}경험치 (시작 레벨) (끝 레벨)`,
     command: ['경험치', 'ㄱㅎㅊ'],
     description: `- 시작 레벨에서 끝 레벨을 달성할 때까지의 경험치통과 끝 레벨 기준 누적 경험치 비율을 계산합니다.
 - 끝 레벨을 생략 시 시작 레벨의 경험치통과 누적 경험치 비율을 계산합니다.`,
