@@ -6,7 +6,8 @@ const Constants = require('simple-youtube-api/src/util/Constants');
 const Video = require('simple-youtube-api/src/structures/Video');
 const { decodeHTML } = require('entities');
 const { inspect, promisify } = require('util');
-const { _patch } = Discord.Message.prototype;
+const message_patch = Discord.Message.prototype._patch;
+const guild_patch = Discord.Guild.prototype._patch;
 globalThis.sleep = promisify(setTimeout);
 
 function contentSplitCode(content, options) {
@@ -43,21 +44,31 @@ Object.defineProperty(Discord, 'botClientOption', {
             BaseGuildEmojiManager: 0,
             GuildBanManager: 0,
             GuildEmojiManager: 0,
-            GuildMemberManager: 0,
+            GuildMemberManager: {
+                maxSize: 1,
+                keepOverLimit: (v) => v.id === client.user.id
+            },
             GuildStickerManager: 0,
             MessageManager: 0,
             PresenceManager: 0,
+            RoleManager: 0,
             UserManager: 0
         })
     }
 });
 
-// 하단 4개의 재정의는 비활성화된 멤버캐시 관련 추가작업을 수행
+// 하단 5개의 재정의는 비활성화된 멤버캐시 관련 추가작업을 수행
+Object.defineProperty(Discord.LimitedCollection.prototype, 'forceSet', {
+    value: function (key, value) {
+        return Object.getPrototypeOf(Object.getPrototypeOf(this)).set.call(this, key, value);
+    }
+});
+
 Object.defineProperty(Discord.Message.prototype, '_patch', {
     value: function (data, partial = false) {
-        _patch.call(this, data, partial);
+        message_patch.call(this, data, partial);
         if (data.member && this.guild && this.author) {
-            this._member = this.guild.members._add({ ...data.member, user: this.author }, false);
+            this._member = this.guild.members._add({ user: this.author, ...data.member }, false);
         }
     }
 });
@@ -68,9 +79,16 @@ Object.defineProperty(Discord.Message.prototype, 'member', {
     }
 });
 
-Object.defineProperty(Discord.Guild.prototype, 'me', {
-    get: function () {
-        return this.members.resolve(this.client.user.id) ?? this.members._add({ user: { id: this.client.user.id } }, false);
+Object.defineProperty(Discord.Guild.prototype, '_patch', {
+    value: function (data) {
+        guild_patch.call(this, data);
+        if (data.roles) {
+            const everyone = data.roles.find((role) => role.id === this.id);
+            if (everyone) {
+                this.roles.cache.forceSet(everyone.id, this.roles._add(everyone));
+            }
+            data.roles.filter((role) => this.me._roles.includes(role.id)).forEach((role) => this.roles.cache.forceSet(role.id, this.roles._add(role)));
+        }
     }
 });
 
@@ -94,7 +112,7 @@ Object.defineProperty(Discord.Channel.prototype, 'sendSplitCode', {
     value: async function (content, options = {}) {
         if (this.isText()) {
             const contents = contentSplitCode(content, options);
-            for (let c of contents) {
+            for (const c of contents) {
                 await this.send(c);
             }
         }
@@ -104,7 +122,7 @@ Object.defineProperty(Discord.Channel.prototype, 'sendSplitCode', {
 Object.defineProperty(Discord.CommandInteraction.prototype, 'sendSplitCode', {
     value: async function (content, options = {}) {
         const contents = contentSplitCode(content, options);
-        for (let c of contents) {
+        for (const c of contents) {
             await this.followUp(c);
         }
     }

@@ -59,7 +59,7 @@ module.exports = {
     },
     async interactionExecute(interaction) {
         const queue = client.queues.get(interaction.guildId);
-        const search = interaction.options.get('옵션')?.value ?? queue?.songs[0].title;
+        const search = interaction.options.get('노래_제목')?.value ?? queue?.songs[0].title;
         if (!search) {
             return interaction.editReply('검색할 노래가 없습니다.');
         }

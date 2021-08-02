@@ -22,7 +22,7 @@ module.exports = {
         return message.channel.send(`${message.author} 🔀 대기열을 섞었습니다.`);
     },
     interaction: {
-        name: 'resume',
+        name: 'shuffle',
         description: '가장 최근 노래를 다시 재생합니다.'
     },
     async interactionExecute(interaction) {

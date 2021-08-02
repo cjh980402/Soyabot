@@ -43,7 +43,7 @@ module.exports = {
             return interaction.editReply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
 
-        interaction.editReply(`${message.author} ⏹ 노래를 정지했습니다.`);
+        interaction.editReply(`${interaction.user} ⏹ 노래를 정지했습니다.`);
         queue.songs = [];
         try {
             queue.audioPlayer.stop(true);

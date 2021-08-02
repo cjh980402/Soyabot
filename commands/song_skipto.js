@@ -59,13 +59,13 @@ module.exports = {
 
         const queue = client.queues.get(interaction.guildId);
         if (!queue?.audioPlayer.state.resource) {
-            return message.reply('재생 중인 노래가 없습니다.');
+            return interaction.editReply('재생 중인 노래가 없습니다.');
         }
         if (!canModifyQueue(interaction.member)) {
-            return message.reply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
+            return interaction.editReply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
         if (queue.songs.length < 2) {
-            return message.reply('현재 대기열에서 건너뛸 수 있는 노래가 없습니다.');
+            return interaction.editReply('현재 대기열에서 건너뛸 수 있는 노래가 없습니다.');
         }
 
         const skipto = interaction.options.get('대기열_번호').value;

@@ -97,10 +97,11 @@ module.exports = {
             return interaction.editReply('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
         }
 
-        const url = interaction.options.get('영상_주소_제목')?.value ?? interaction.options.get('재생목록_주소_제목').value;
+        const url = interaction.options.get('영상_주소_제목').value;
         const search = url;
         // 재생목록 주소가 주어진 경우는 재생목록 기능을 실행
         if (!isValidVideo(url) && isValidPlaylist(url)) {
+            interaction.options._hoistedOptions[0] = { name: '재생목록_주소_제목', type: 'STRING', value: url };
             return client.commands.find((cmd) => cmd.command.includes('playlist')).interactionExecute(interaction);
         }
 
@@ -114,11 +115,13 @@ module.exports = {
         if (serverQueue) {
             serverQueue.textChannel = interaction.channel;
             serverQueue.songs.push(song);
-            return interaction.editReply(`✅ ${interaction.user}가 **${song.title}**를 대기열에 추가했습니다.`);
+            return interaction.channel.send(`✅ ${interaction.user}가 **${song.title}**를 대기열에 추가했습니다.`);
         }
 
         try {
-            // await interaction.deleteReply();
+            if (interaction.options._hoistedOptions.length == 1) {
+                await interaction.deleteReply(); // search 기능으로 들어오지 않은 경우만 삭제 수행
+            }
             const newQueue = new QueueElement(interaction.channel, channel, await channel.join(), [song]);
             client.queues.set(interaction.guildId, newQueue);
             play(newQueue);

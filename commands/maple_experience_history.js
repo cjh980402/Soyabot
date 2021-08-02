@@ -26,7 +26,7 @@ module.exports = {
             return message.channel.send(`[${mapleUserInfo.Name}]\n경험치 히스토리를 가져오지 못했습니다.`);
         } else {
             let rslt = `[${mapleUserInfo.Name}]`;
-            for (let expData of data) {
+            for (const expData of data) {
                 rslt += `\n${expData.date}: Lv.${expData.level} (${expData.exp}%)`;
             }
             return message.channel.send(rslt);
@@ -62,7 +62,7 @@ module.exports = {
             return interaction.editReply(`[${mapleUserInfo.Name}]\n경험치 히스토리를 가져오지 못했습니다.`);
         } else {
             let rslt = `[${mapleUserInfo.Name}]`;
-            for (let expData of data) {
+            for (const expData of data) {
                 rslt += `\n${expData.date}: Lv.${expData.level} (${expData.exp}%)`;
             }
             return interaction.editReply(rslt);

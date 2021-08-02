@@ -44,7 +44,7 @@ module.exports = {
             });
 
             const playCommand = client.commands.find((cmd) => cmd.command.includes('play'));
-            for (let song of songChoice) {
+            for (const song of songChoice) {
                 await playCommand.messageExecute(message, [resultsEmbed.fields[song - 1].value]);
             }
 
@@ -108,8 +108,8 @@ module.exports = {
             });
 
             const playCommand = client.commands.find((cmd) => cmd.command.includes('play'));
-            for (let song of songChoice) {
-                interaction.options._hoistedOptions[0] = { name: '영상_주소_제목', type: 'STRING', value: resultsEmbed.fields[song - 1].value };
+            for (const song of songChoice) {
+                interaction.options._hoistedOptions[1] = { name: '영상_주소_제목', type: 'STRING', value: resultsEmbed.fields[song - 1].value };
                 await playCommand.interactionExecute(interaction);
             }
 

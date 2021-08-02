@@ -82,7 +82,7 @@ module.exports = {
             return interaction.editReply('재생 중인 노래가 없습니다.');
         }
         let currentPage = 0;
-        const embeds = getQueueEmbed(message.guild.iconURL(), queue.songs);
+        const embeds = getQueueEmbed(interaction.guild.iconURL(), queue.songs);
         const queueEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], fetchReply: true });
         if (embeds.length > 1) {
             try {
