@@ -6,8 +6,7 @@ const Constants = require('simple-youtube-api/src/util/Constants');
 const Video = require('simple-youtube-api/src/structures/Video');
 const { decodeHTML } = require('entities');
 const { inspect, promisify } = require('util');
-const message_patch = Discord.Message.prototype._patch;
-const guild_patch = Discord.Guild.prototype._patch;
+const { _patch } = Discord.Message.prototype;
 globalThis.sleep = promisify(setTimeout);
 
 function contentSplitCode(content, options) {
@@ -62,7 +61,10 @@ Object.defineProperty(Discord, 'botClientOption', {
             GuildStickerManager: 0,
             MessageManager: 0,
             PresenceManager: 0,
-            RoleManager: 0,
+            RoleManager: {
+                maxSize: 1,
+                keepOverLimit: (v) => v.id === v.guild.id || v.guild.me._roles.includes(v.id)
+            },
             UserManager: 0,
             VoiceStateManager: {
                 maxSize: Infinity,
@@ -73,16 +75,10 @@ Object.defineProperty(Discord, 'botClientOption', {
     }
 });
 
-// 하단 5개의 재정의는 비활성화된 멤버캐시 관련 추가작업을 수행
-Object.defineProperty(Discord.LimitedCollection.prototype, 'forceSet', {
-    value: function (key, value) {
-        return Object.getPrototypeOf(Object.getPrototypeOf(this)).set.call(this, key, value);
-    }
-});
-
+// 하단 3개의 재정의는 비활성화된 멤버캐시 관련 추가작업을 수행
 Object.defineProperty(Discord.Message.prototype, '_patch', {
     value: function (data, partial = false) {
-        message_patch.call(this, data, partial);
+        _patch.call(this, data, partial);
         if (data.member && this.guild && this.author) {
             this._member = this.guild.members._add({ user: this.author, ...data.member }, false);
         }
@@ -92,19 +88,6 @@ Object.defineProperty(Discord.Message.prototype, '_patch', {
 Object.defineProperty(Discord.Message.prototype, 'member', {
     get: function () {
         return this.guild?.members.resolve(this.author) ?? this._member ?? null;
-    }
-});
-
-Object.defineProperty(Discord.Guild.prototype, '_patch', {
-    value: function (data) {
-        guild_patch.call(this, data);
-        if (data.roles) {
-            const everyone = data.roles.find((role) => role.id === this.id);
-            if (everyone) {
-                this.roles.cache.forceSet(everyone.id, this.roles._add(everyone));
-            }
-            data.roles.forEach((role) => this.me._roles.includes(role.id) && this.roles.cache.forceSet(role.id, this.roles._add(role)));
-        }
     }
 });
 
