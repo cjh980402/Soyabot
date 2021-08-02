@@ -17,107 +17,126 @@ const serverList = {
     노바: 'server12'
 };
 
+async function getMesoEmbed(server) {
+    const response = await fetch('https://commapi.gamemarket.kr/comm/graph', {
+        method: 'POST',
+        headers: {
+            'Host': 'commapi.gamemarket.kr',
+            'Connection': 'keep-alive',
+            'Content-Length': 0,
+            'Accept': 'application/json',
+            'Origin': 'https://talk.gamemarket.kr',
+            'Referer': 'https://talk.gamemarket.kr/',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept-Language': 'ko,en;q=0.9,en-US;q=0.8'
+        }
+    });
+
+    const data = await response.json();
+    const market = data.dbo;
+    const direct = data.dbo2;
+    // 각각 배열, 길이는 15, 앞에서부터 과거 날짜
+
+    const config = {
+        type: 'line',
+        data: {
+            labels: market.map((v) => new Date(v.reg_date).toLocaleDateString().substr(6)),
+            datasets: [
+                {
+                    label: '메소마켓(메포)',
+                    data: market.map((v) => v[serverList[server]]),
+                    lineTension: 0.4,
+                    fill: false,
+                    borderColor: 'rgb(153, 102, 255)',
+                    borderWidth: 6,
+                    pointBackgroundColor: 'rgb(153, 102, 255)',
+                    pointRadius: 6
+                },
+                {
+                    label: '무통거래(원)',
+                    data: direct.map((v) => v[serverList[server]]),
+                    lineTension: 0.4,
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    borderWidth: 6,
+                    pointBackgroundColor: 'rgb(75, 192, 192)',
+                    pointRadius: 6
+                }
+            ]
+        },
+        options: {
+            plugins: {
+                datalabels: {
+                    // 데이터 값 표시
+                    color: 'black',
+                    display: true,
+                    anchor: 'end',
+                    align: 'end',
+                    font: { size: 23 }
+                }
+            },
+            scales: {
+                xAxes: [
+                    {
+                        gridLines: { lineWidth: 3 },
+                        ticks: { fontSize: 23 }
+                    }
+                ],
+                yAxes: [
+                    {
+                        gridLines: { lineWidth: 3 },
+                        ticks: { fontSize: 23 }
+                    }
+                ]
+            },
+            title: {
+                display: true,
+                fontSize: 26,
+                text: `${server} 서버 메소시세`
+            },
+            legend: {
+                labels: { fontSize: 23 }
+            }
+        }
+    };
+
+    await writeFile(`./pictures/chart/meso_${serverList[server]}.png`, await renderChart(config, 1200, 975));
+
+    return new MessageEmbed()
+        .setTitle(`**${server} 서버 메소 시세**`)
+        .setURL('https://talk.gamemarket.kr/maple/graph')
+        .setColor('#FF9999')
+        .setImage(`http://${client.botDomain}/image/chart/meso_${serverList[server]}.png?time=${Date.now()}`)
+        .addField('**메소마켓**', `${market[market.length - 1][serverList[server]]}메포`)
+        .addField('**무통거래**', `${direct[direct.length - 1][serverList[server]]}원`);
+}
+
 module.exports = {
     usage: `${client.prefix}메소 (서버)`,
     command: ['메소', 'ㅁㅅ'],
     description: '- 해당 서버의 메소 시세를 알려줍니다. 서버 이름은 정확히 입력해야 합니다.',
     type: ['메이플'],
-    async execute(message, args) {
+    async messageExecute(message, args) {
         if (args.length !== 1 || !serverList[args[0]]) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
-        const response = await fetch('https://commapi.gamemarket.kr/comm/graph', {
-            method: 'POST',
-            headers: {
-                'Host': 'commapi.gamemarket.kr',
-                'Connection': 'keep-alive',
-                'Content-Length': 0,
-                'Accept': 'application/json',
-                'Origin': 'https://talk.gamemarket.kr',
-                'Referer': 'https://talk.gamemarket.kr/',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Accept-Language': 'ko,en;q=0.9,en-US;q=0.8'
+
+        return message.channel.send({ embeds: [await getMesoEmbed(args[0])] });
+    },
+    interaction: {
+        name: '메소',
+        description: '해당 서버의 메소 시세를 알려줍니다.',
+        options: [
+            {
+                name: '서버',
+                type: 'STRING',
+                description: '메소 시세를 검색할 서버',
+                required: true,
+                choices: Object.keys(serverList).map((v) => ({ name: v, value: v }))
             }
-        });
-        const data = await response.json();
-        const market = data.dbo;
-        const direct = data.dbo2;
-        // 각각 배열, 길이는 15, 앞에서부터 과거 날짜
-        const server = args[0];
-
-        const config = {
-            type: 'line',
-            data: {
-                labels: market.map((v) => new Date(v.reg_date).toLocaleDateString().substr(6)),
-                datasets: [
-                    {
-                        label: '메소마켓(메포)',
-                        data: market.map((v) => v[serverList[server]]),
-                        lineTension: 0.4,
-                        fill: false,
-                        borderColor: 'rgb(153, 102, 255)',
-                        borderWidth: 6,
-                        pointBackgroundColor: 'rgb(153, 102, 255)',
-                        pointRadius: 6
-                    },
-                    {
-                        label: '무통거래(원)',
-                        data: direct.map((v) => v[serverList[server]]),
-                        lineTension: 0.4,
-                        fill: false,
-                        borderColor: 'rgb(75, 192, 192)',
-                        borderWidth: 6,
-                        pointBackgroundColor: 'rgb(75, 192, 192)',
-                        pointRadius: 6
-                    }
-                ]
-            },
-            options: {
-                plugins: {
-                    datalabels: {
-                        // 데이터 값 표시
-                        color: 'black',
-                        display: true,
-                        anchor: 'end',
-                        align: 'end',
-                        font: { size: 23 }
-                    }
-                },
-                scales: {
-                    xAxes: [
-                        {
-                            gridLines: { lineWidth: 3 },
-                            ticks: { fontSize: 23 }
-                        }
-                    ],
-                    yAxes: [
-                        {
-                            gridLines: { lineWidth: 3 },
-                            ticks: { fontSize: 23 }
-                        }
-                    ]
-                },
-                title: {
-                    display: true,
-                    fontSize: 26,
-                    text: `${server} 서버 메소시세`
-                },
-                legend: {
-                    labels: { fontSize: 23 }
-                }
-            }
-        };
-
-        await writeFile(`./pictures/chart/meso_${serverList[server]}.png`, await renderChart(config, 1200, 975));
-
-        const mesoEmbed = new MessageEmbed()
-            .setTitle(`**${server} 서버 메소 시세**`)
-            .setURL('https://talk.gamemarket.kr/maple/graph')
-            .setColor('#FF9999')
-            .setImage(`http://${client.botDomain}/image/chart/meso_${serverList[server]}.png?time=${Date.now()}`)
-            .addField('**메소마켓**', `${market[market.length - 1][serverList[server]]}메포`)
-            .addField('**무통거래**', `${direct[direct.length - 1][serverList[server]]}원`);
-
-        return message.channel.send({ embeds: [mesoEmbed] });
+        ]
+    },
+    async interactionExecute(interaction) {
+        return interaction.editReply({ embeds: [await getMesoEmbed(interaction.options.get('서버').value)] });
     }
 };

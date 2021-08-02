@@ -52,7 +52,7 @@ module.exports = {
     description: `- 카카오 i를 이용한 언어 번역을 수행합니다. 한국어 → 영어의 경우 두번째 매개변수는 한영으로 입력하면 됩니다.
 - 참고. ${client.prefix}번역 목록`,
     type: ['기타'],
-    async execute(message, args) {
+    async messageExecute(message, args) {
         if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
             return message.channel.send(
                 `<지원하는 언어 종류>\n${Object.values(langList)
@@ -73,6 +73,48 @@ module.exports = {
             return message.channel.send('5000자를 초과하는 내용은 번역하지 않습니다.');
         } else {
             return message.channel.send(await tran(langCode[0], langCode[1], text));
+        }
+    },
+    interaction: {
+        name: '번역',
+        description: `카카오 i를 이용한 언어 번역을 수행합니다. 한국어 → 영어의 경우 두번째 매개변수는 한영으로 입력하면 됩니다.(참고. ${client.prefix}번역 목록)`,
+        options: [
+            {
+                name: '대상언어_결과언어',
+                type: 'STRING',
+                description: '대상 언어 첫글자 + 결과 언어 첫글자 입력',
+                required: true
+            },
+            {
+                name: '내용',
+                type: 'STRING',
+                description: '번역할 문장'
+            }
+        ]
+    },
+    async interactionExecute(interaction) {
+        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+
+        if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
+            return interaction.editReply(
+                `<지원하는 언어 종류>\n${Object.values(langList)
+                    .map((v) => v[0])
+                    .join(', ')}`
+            );
+        }
+        if (!args[1]) {
+            return interaction.editReply(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        }
+        const langCode = findLangCode(args[0][0], args[0][1]);
+        if (!langCode) {
+            return interaction.editReply(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 "${this.usage}"입니다.\n언어의 목록은 ${client.prefix}번역 목록을 확인해주세요.`);
+        }
+
+        const text = args[1];
+        if (text.length > 5000) {
+            return interaction.editReply('5000자를 초과하는 내용은 번역하지 않습니다.');
+        } else {
+            return interaction.editReply(await tran(langCode[0], langCode[1], text));
         }
     }
 };

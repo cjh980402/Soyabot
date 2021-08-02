@@ -5,7 +5,7 @@ module.exports = {
     command: ['skip'],
     description: '- 지금 재생 중인 노래 건너뜁니다.',
     type: ['음악'],
-    async execute(message) {
+    async messageExecute(message) {
         if (!message.guild) {
             return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
@@ -19,6 +19,27 @@ module.exports = {
         }
 
         message.channel.send(`${message.author} ⏭ 노래를 건너뛰었습니다.`);
+        queue.playing = true;
+        queue.audioPlayer.stop(true);
+    },
+    interaction: {
+        name: 'skip',
+        description: '지금 재생 중인 노래 건너뜁니다.'
+    },
+    async interactionExecute(interaction) {
+        if (!interaction.guild) {
+            return interaction.editReply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
+        }
+
+        const queue = client.queues.get(interaction.guildId);
+        if (!queue?.audioPlayer.state.resource) {
+            return interaction.editReply('재생 중인 노래가 없습니다.');
+        }
+        if (!canModifyQueue(interaction.member)) {
+            return interaction.editReply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
+        }
+
+        interaction.editReply(`${interaction.user} ⏭ 노래를 건너뛰었습니다.`);
         queue.playing = true;
         queue.audioPlayer.stop(true);
     }

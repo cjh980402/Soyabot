@@ -10,7 +10,7 @@ module.exports = {
 - 적용 중인 헤어가 목록에 존재할 경우 나머지 헤어만 뜹니다.(처음 헤어는 목록에 없다 가정)
 - 참고. ${client.prefix}헤어 확률`,
     type: ['메이플'],
-    async execute(message, args) {
+    async messageExecute(message, args) {
         if (args.length === 1 && (args[0] === '확률' || args[0] === 'ㅎㄹ')) {
             const rslt = `<로얄 헤어 확률>\n\n- 남자 헤어\n${hairList['남'].map((v) => `${v}: 16.67%`).join('\n')}\n\n- 여자 헤어\n${hairList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
             return message.channel.send(rslt);
@@ -35,5 +35,49 @@ module.exports = {
 
         const rslt = `로얄 헤어 (목표: ${hairList[gender][goalhair]}) 결과\n\n수행 횟수: ${list.length}회\n\n진행 과정\n${list.map((v, i) => `${i + 1}번째: ${hairList[gender][v]}`).join('\n')}`;
         return message.channel.send(rslt);
+    },
+    interaction: {
+        name: '헤어',
+        description: `해당 성별의 목표 헤어를 얻을 때까지 로얄 헤어 시뮬을 수행합니다.(참고. ${client.prefix}헤어 확률)`,
+        options: [
+            {
+                name: '성별',
+                type: 'STRING',
+                description: '헤어 시뮬레이션을 수행할 성별',
+                required: true,
+                choices: ['남', '여', '확률'].map((v) => ({ name: v, value: v }))
+            },
+            {
+                name: '목표_헤어_이름',
+                type: 'STRING',
+                description: '시뮬레이션의 목표 헤어',
+                choices: [...hairList['남'], ...hairList['여']].deduplication().map((v) => ({ name: v, value: v }))
+            }
+        ]
+    },
+    async interactionExecute(interaction) {
+        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+
+        if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
+            const rslt = `<로얄 헤어 확률>\n\n- 남자 헤어\n${hairList['남'].map((v) => `${v}: 16.67%`).join('\n')}\n\n- 여자 헤어\n${hairList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
+            return interaction.editReply(rslt);
+        }
+        const gender = args.shift();
+        const goalhair = (hairList[gender] ?? []).findIndex((v) => v.replace(/\s+/, '').includes(args.join('')));
+        if (goalhair === -1) {
+            return interaction.editReply(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        }
+        // gender은 성별, goalhair는 목표 헤어의 인덱스
+        // random은 0이상 1미만
+        const list = []; // 진행 과정 담을 배열 (인덱스 저장)
+
+        while (list[list.length - 1] !== goalhair) {
+            // 목표 헤어을 띄웠으면 종료
+            const now = Math.floor(Math.random() * (hairList[gender].length - +(list.length > 0)));
+            list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 헤어의 인덱스 저장, now 뒤에 더하는 이유는 최근 헤어 제외 목적
+        }
+
+        const rslt = `로얄 헤어 (목표: ${hairList[gender][goalhair]}) 결과\n\n수행 횟수: ${list.length}회\n\n진행 과정\n${list.map((v, i) => `${i + 1}번째: ${hairList[gender][v]}`).join('\n')}`;
+        return interaction.editReply(rslt);
     }
 };

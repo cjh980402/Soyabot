@@ -22,9 +22,9 @@ function timeKoreanUnit(num) {
 module.exports = {
     usage: `${client.prefix}상태`,
     command: ['상태', 'ㅅㅌ'],
-    description: `${client.user.username}의 작동 상태를 알려줍니다.`,
+    description: `- ${client.user.username}의 작동 상태를 알려줍니다.`,
     type: ['기타'],
-    async execute(message) {
+    async messageExecute(message) {
         let memory;
         if (process.platform === 'linux') {
             const memorycmd = (await cmd('free', true)).split(/\s+/);
@@ -34,5 +34,20 @@ module.exports = {
         }
 
         return message.channel.send(`작동 시간: ${timeKoreanUnit(Math.floor(client.uptime / 1000))}\n메모리 사용량: ${memory}%`);
+    },
+    interaction: {
+        name: '상태',
+        description: `${client.user.username}의 작동 상태를 알려줍니다.`
+    },
+    async interactionExecute(interaction) {
+        let memory;
+        if (process.platform === 'linux') {
+            const memorycmd = (await cmd('free', true)).split(/\s+/);
+            memory = 100 - Math.round((memorycmd[13] / memorycmd[8]) * 100);
+        } else {
+            memory = 100 - Math.round((OS.freemem() / OS.totalmem()) * 100);
+        }
+
+        return interaction.editReply(`작동 시간: ${timeKoreanUnit(Math.floor(client.uptime / 1000))}\n메모리 사용량: ${memory}%`);
     }
 };

@@ -5,7 +5,7 @@ module.exports = {
     usage: `${client.prefix}학식 (요일)`,
     command: ['학식', 'ㅎㅅ'],
     type: ['기타'],
-    async execute(message, args) {
+    async messageExecute(message, args) {
         const week = ['일', '월', '화', '수', '목', '금', '토'];
         const day = args[0]?.[0] ?? week[new Date().getDay()];
 

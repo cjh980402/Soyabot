@@ -12,7 +12,7 @@ module.exports = {
     description: `- 입력한 카테고리(${Object.keys(noticematch).join(', ')})에 따른 자동알림 기능 상태를 전환합니다.
 카테고리 생략 시 현재 알림상태를 알려줍니다.`,
     type: ['메이플'],
-    async execute(message, args) {
+    async messageExecute(message, args) {
         if (!message.guild) {
             return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
@@ -37,6 +37,47 @@ module.exports = {
             // 기존상태: ON
             await db.insert(`${noticematch[args[0]]}skip`, { channelid: message.guild.id, name: message.guild.name });
             return message.channel.send(`${args[0]} 자동알림: **ON → OFF**`);
+        }
+    },
+    interaction: {
+        name: '자동알림',
+        description: `입력한 카테고리(${Object.keys(noticematch).join(', ')})에 따른 자동알림 기능 상태를 전환합니다. 카테고리 생략 시 현재 알림상태를 알려줍니다.`,
+        options: [
+            {
+                name: '카테고리',
+                type: 'STRING',
+                description: '자동알림 상태를 변경할 카테고리',
+                choices: Object.keys(noticematch).map((v) => ({ name: v, value: v }))
+            }
+        ]
+    },
+    async interactionExecute(interaction) {
+        if (!interaction.guild) {
+            return interaction.editReply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
+        }
+
+        const category = interaction.options.get('카테고리')?.value;
+        if (!noticematch[category]) {
+            const notice = [];
+            for (let i in noticematch) {
+                if (await db.get(`SELECT * FROM ${noticematch[i]}skip WHERE channelid = ?`, [interaction.guildId])) {
+                    // 현재 꺼짐
+                    notice.push(`${i} 자동알림: OFF`);
+                } else {
+                    notice.push(`${i} 자동알림: ON`);
+                }
+            }
+            return message.channel.send(notice.join('\n'));
+        }
+        const find = await db.get(`SELECT * FROM ${noticematch[category]}skip WHERE channelid = ?`, [interaction.guildId]);
+        if (find) {
+            // 기존상태: OFF
+            await db.run(`DELETE FROM ${noticematch[category]}skip WHERE channelid = ?`, [interaction.guildId]);
+            return interaction.editReply(`${category} 자동알림: **OFF → ON**`);
+        } else {
+            // 기존상태: ON
+            await db.insert(`${noticematch[category]}skip`, { channelid: interaction.guildId, name: interaction.guild.name });
+            return interaction.editReply(`${category} 자동알림: **ON → OFF**`);
         }
     }
 };

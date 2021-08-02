@@ -6,7 +6,7 @@ module.exports = {
     command: ['코디', 'ㅋㄷ'],
     description: '- 해당 캐릭터가 착용한 코디템과 헤어, 성형을 출력합니다.',
     type: ['메이플'],
-    async execute(message, args) {
+    async messageExecute(message, args) {
         if (args.length !== 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
@@ -40,6 +40,51 @@ module.exports = {
                 .addField('**무기**', coordi[6], true);
 
             return message.channel.send({ embeds: [coordiEmbed] });
+        }
+    },
+    interaction: {
+        name: '코디',
+        description: '해당 캐릭터가 착용한 코디템과 헤어, 성형을 출력합니다.',
+        options: [
+            {
+                name: '닉네임',
+                type: 'STRING',
+                description: '코디 정보를 출력할 캐릭터의 닉네임',
+                required: true
+            }
+        ]
+    },
+    async interactionExecute(interaction) {
+        const mapleUserInfo = new MapleUser(interaction.options.get('닉네임').value);
+
+        if (!(await mapleUserInfo.homeLevel())) {
+            return interaction.editReply(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
+        }
+        if (!(await mapleUserInfo.isLatest())) {
+            interaction.editReply('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
+            if (!(await mapleUserInfo.updateGG())) {
+                interaction.editReply('제한시간 내에 갱신 작업을 실패하였습니다.');
+            }
+        }
+
+        const coordi = mapleUserInfo.Coordi();
+        if (!coordi) {
+            return interaction.editReply(`[${mapleUserInfo.Name}]\n코디 정보가 없습니다.`);
+        } else {
+            const coordiEmbed = new MessageEmbed()
+                .setTitle(`**${mapleUserInfo.Name}님의 코디**`)
+                .setColor('#FF9999')
+                .setURL(mapleUserInfo.GGURL)
+                .setImage(mapleUserInfo.userImg())
+                .addField('**헤어**', coordi[1], true)
+                .addField('**성형**', coordi[2], true)
+                .addField('**모자**', coordi[0], true)
+                .addField('**상의**', coordi[3], true)
+                .addField('**하의**', coordi[4], true)
+                .addField('**신발**', coordi[5], true)
+                .addField('**무기**', coordi[6], true);
+
+            return interaction.editReply({ embeds: [coordiEmbed] });
         }
     }
 };

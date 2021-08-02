@@ -36,7 +36,7 @@ module.exports = {
     command: ['닮은꼴', 'ㄷㅇㄲ'],
     description: '- 원하는 사진과 함께 명령어를 사용하면 얼굴을 분석한 후 닮은 유명인을 알려줍니다.',
     type: ['기타'],
-    async execute(message) {
+    async messageExecute(message) {
         const imageURL = await getMessageImage(message);
         if (!imageURL) {
             return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');

@@ -6,7 +6,7 @@ module.exports = {
     command: ['녜힁', 'ㄴㅎ', 'ㄶ'],
     description: '- 메이플스토리 닉네임을 추천합니다. (2 ~ 6글자)',
     type: ['메이플'],
-    async execute(message, args) {
+    async messageExecute(message, args) {
         const count = Math.trunc(args[0] ?? 2);
         if (isNaN(count) || count < 2 || count > 6) {
             return message.reply('닉네임은 2 ~ 6 글자만 가능합니다.');
@@ -18,5 +18,29 @@ module.exports = {
             rslt += list[Math.floor(Math.random() * list.length)];
         }
         return message.reply(`${count}글자 닉네임 추천: ${rslt}`);
+    },
+    interaction: {
+        name: '녜힁',
+        description: '메이플스토리 닉네임을 추천합니다. (2 ~ 6글자)',
+        options: [
+            {
+                name: '글자_수',
+                type: 'INTEGER',
+                description: '추천받을 닉네임의 글자 수'
+            }
+        ]
+    },
+    async interactionExecute(interaction) {
+        const count = interaction.options.get('글자_수')?.value ?? 2;
+        if (count < 2 || count > 6) {
+            return interaction.editReply('닉네임은 2 ~ 6 글자만 가능합니다.');
+        }
+
+        let rslt = '';
+
+        for (let i = 0; i < count; i++) {
+            rslt += list[Math.floor(Math.random() * list.length)];
+        }
+        return interaction.editReply(`${count}글자 닉네임 추천: ${rslt}`);
     }
 };

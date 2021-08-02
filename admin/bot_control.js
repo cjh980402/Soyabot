@@ -11,7 +11,7 @@ module.exports.botNotice = async function (data, type = null) {
             try {
                 const guildText = v.channels.cache.filter((v) => v.type === 'GUILD_TEXT');
                 const target = guildText.find((v) => noticeRegex.test(v.name)) ?? guildText.first();
-                const permissions = target?.permissionsFor(client.user);
+                const permissions = target?.permissionsFor(v.me);
                 if (permissions?.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES])) {
                     await target.send(data instanceof MessageEmbed ? { embeds: [data] } : String(data)); // 디스코드 봇은 딜레이 없이 공지 보내기 가능
                 }
@@ -21,7 +21,7 @@ module.exports.botNotice = async function (data, type = null) {
 
 module.exports.replyRoomID = async function (roomID, str) {
     try {
-        const target = await client.channels.fetch(roomID, { cache: false }); // 메세지를 보내고 싶은 방 객체 획득
+        const target = client.channels._add({ id: roomID, type: 1 }, null, { cache: false }); // 메세지를 보내고 싶은 방 객체 획득
         await target.sendSplitCode(str, { split: { char: '' } }); // 해당 채널에 메시지 전송
         return target;
     } catch {
@@ -31,7 +31,7 @@ module.exports.replyRoomID = async function (roomID, str) {
 
 module.exports.replyAdmin = async function (str) {
     try {
-        const admin = await client.users.fetch(ADMIN_ID); // 관리자 유저 객체 획득
+        const admin = client.users._add({ id: ADMIN_ID }); // 관리자 유저 객체 획득
         await (await admin.createDM()).sendSplitCode(str, { split: { char: '' } }); // 관리자에게 DM으로 보냄
         return admin;
     } catch {

@@ -3,7 +3,7 @@ module.exports = {
     command: ['최근챗', 'ㅊㄱㅊ'],
     channelCool: true,
     type: ['기타'],
-    async execute(message) {
+    async messageExecute(message) {
         if (!message.guild) {
             return message.reply('사용이 불가능한 채널입니다.');
         }

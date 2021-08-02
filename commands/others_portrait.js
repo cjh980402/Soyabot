@@ -7,7 +7,7 @@ module.exports = {
     command: ['그림', 'ㄱㄹ'],
     // description: '- 사진을 흑백 스케치화 해줍니다.',
     type: ['기타'],
-    async execute(message) {
+    async messageExecute(message) {
         const imageURL = await getMessageImage(message);
         if (!imageURL) {
             return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');

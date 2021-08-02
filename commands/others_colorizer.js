@@ -8,7 +8,7 @@ module.exports = {
     command: ['채색', 'ㅊㅅ'],
     description: '- 원하는 흑백 사진과 함께 명령어를 사용하면 사진을 채색한 결과를 보여줍니다.',
     type: ['기타'],
-    async execute(message) {
+    async messageExecute(message) {
         const imageURL = await getMessageImage(message);
         if (!imageURL) {
             return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');

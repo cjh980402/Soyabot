@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('../util/discord.js-extend');
 
-function generateHelpEmbed(help) {
+function getHelpEmbed(help) {
     const embeds = [];
     for (let i = 0; i < help.length; i += 7) {
         const info = help.slice(i, i + 7).join('\n');
@@ -16,7 +16,7 @@ module.exports = {
     description: `- 카테고리나 명령어 이름을 입력하면 해당하는 명령어의 도움말을 출력합니다.
 카테고리는 메이플, 음악, 기타가 있으며 카테고리나 명령어 이름을 생략 시 모든 명령어의 도움말을 출력합니다.`,
     type: ['메이플', '음악', '기타'],
-    async execute(message, args) {
+    async messageExecute(message, args) {
         // description이 없는 명령어는 히든 명령어
         if (args[0] && !this.type.includes(args[0])) {
             const target = client.commands.find((cmd) => cmd.command.includes(args[0]));
@@ -32,7 +32,7 @@ module.exports = {
             .map((cmd) => `**${cmd.usage}**\n- 대체 명령어: ${cmd.command.join(', ')}\n${cmd.description}`);
 
         let currentPage = 0;
-        const embeds = generateHelpEmbed(description);
+        const embeds = getHelpEmbed(description);
         const helpEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
         if (embeds.length > 1) {
             try {
@@ -65,6 +65,71 @@ module.exports = {
                     }
                 } catch {
                     message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
+                }
+            });
+        }
+    },
+    interaction: {
+        name: 'help',
+        description: '카테고리나 명령어 이름을 입력하면 해당하는 명령어의 도움말을, 생략 시 모든 명령어의 도움말을 출력합니다.',
+        options: [
+            {
+                name: '세부항목',
+                type: 'STRING',
+                description: '도움말을 출력할 카테고리나 명령어 대상'
+            }
+        ]
+    },
+    async interactionExecute(interaction) {
+        // description이 없는 명령어는 히든 명령어
+        const detail = interaction.options.get('세부항목')?.value;
+        if (detail && !this.type.includes(detail)) {
+            const target = client.commands.find((cmd) => cmd.command.includes(detail));
+            if (!target?.description) {
+                return interaction.editReply('지원하지 않는 도움말입니다.');
+            } else {
+                return interaction.editReply(`**${target.usage}**\n- 대체 명령어: ${target.command.join(', ')}\n${target.description}`);
+            }
+        }
+
+        const description = client.commands
+            .filter((cmd) => cmd.description && (cmd.type.includes(detail) || !detail))
+            .map((cmd) => `**${cmd.usage}**\n- 대체 명령어: ${cmd.command.join(', ')}\n${cmd.description}`);
+
+        let currentPage = 0;
+        const embeds = getHelpEmbed(description);
+        const helpEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], fetchReply: true });
+        if (embeds.length > 1) {
+            try {
+                await helpEmbed.react('⬅️');
+                await helpEmbed.react('⏹');
+                await helpEmbed.react('➡️');
+            } catch {
+                return interaction.followUp('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
+            }
+            const filter = (_, user) => interaction.user.id === user.id;
+            const collector = helpEmbed.createReactionCollector({ filter, time: 120000 });
+
+            collector.on('collect', async (reaction, user) => {
+                try {
+                    if (interaction.guild) {
+                        await reaction.users.remove(user);
+                    }
+                    switch (reaction.emoji.name) {
+                        case '➡️':
+                            currentPage = (currentPage + 1) % embeds.length;
+                            helpEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                            break;
+                        case '⬅️':
+                            currentPage = (currentPage - 1 + embeds.length) % embeds.length;
+                            helpEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                            break;
+                        case '⏹':
+                            collector.stop();
+                            break;
+                    }
+                } catch {
+                    interaction.followUp('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
                 }
             });
         }

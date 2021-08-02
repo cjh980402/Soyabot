@@ -2,7 +2,7 @@ const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
 const { load } = require('cheerio');
 
-function generateEventEmbed(links, names, dates) {
+function getEventEmbed(links, names, dates) {
     const embeds = [];
     for (let i = 0; i < links.length; i += 5) {
         const curLinks = links.slice(i, i + 5);
@@ -23,7 +23,7 @@ module.exports = {
     command: ['이벤트', 'ㅇㅂㅌ'],
     description: '- 현재 진행 중인 이벤트를 알려줍니다.',
     type: ['메이플'],
-    async execute(message) {
+    async messageExecute(message) {
         const $ = load(await (await fetch('https://maplestory.nexon.com/News/Event')).text());
         const eventdata = $('.event_all_banner li dl');
         const links = eventdata.find('dt a').map((_, v) => $(v).attr('href'));
@@ -34,7 +34,7 @@ module.exports = {
             return message.channel.send('현재 진행중인 이벤트가 없습니다.');
         } else {
             let currentPage = 0;
-            const embeds = generateEventEmbed(links, names, dates);
+            const embeds = getEventEmbed(links, names, dates);
             const eventEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
             if (embeds.length > 1) {
                 try {
@@ -67,6 +67,59 @@ module.exports = {
                         }
                     } catch {
                         message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
+                    }
+                });
+            }
+        }
+    },
+    interaction: {
+        name: '이벤트',
+        description: '현재 진행 중인 이벤트를 알려줍니다.'
+    },
+    async interactionExecute(interaction) {
+        const $ = load(await (await fetch('https://maplestory.nexon.com/News/Event')).text());
+        const eventdata = $('.event_all_banner li dl');
+        const links = eventdata.find('dt a').map((_, v) => $(v).attr('href'));
+        const names = eventdata.find('dt a').map((_, v) => $(v).text());
+        const dates = eventdata.find('dd a').map((_, v) => $(v).text());
+
+        if (links.length === 0) {
+            return interaction.editReply('현재 진행중인 이벤트가 없습니다.');
+        } else {
+            let currentPage = 0;
+            const embeds = getEventEmbed(links, names, dates);
+            const eventEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], fetchReply: true });
+            if (embeds.length > 1) {
+                try {
+                    await eventEmbed.react('⬅️');
+                    await eventEmbed.react('⏹');
+                    await eventEmbed.react('➡️');
+                } catch {
+                    return interaction.followUp('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
+                }
+                const filter = (_, user) => interaction.user.id === user.id;
+                const collector = eventEmbed.createReactionCollector({ filter, time: 60000 });
+
+                collector.on('collect', async (reaction, user) => {
+                    try {
+                        if (interaction.guild) {
+                            await reaction.users.remove(user);
+                        }
+                        switch (reaction.emoji.name) {
+                            case '➡️':
+                                currentPage = (currentPage + 1) % embeds.length;
+                                eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                                break;
+                            case '⬅️':
+                                currentPage = (currentPage - 1 + embeds.length) % embeds.length;
+                                eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                                break;
+                            case '⏹':
+                                collector.stop();
+                                break;
+                        }
+                    } catch {
+                        interaction.followUp('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
                     }
                 });
             }

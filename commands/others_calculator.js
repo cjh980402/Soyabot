@@ -41,7 +41,7 @@ module.exports = {
     command: ['ev', '계산기', 'ㄱㅅㄱ', 'ㄳㄱ'],
     description: '- 계산식에 해당하는 결과값을 보여줍니다.',
     type: ['기타'],
-    async execute(message, args) {
+    async messageExecute(message, args) {
         if (args.length < 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
@@ -50,6 +50,25 @@ module.exports = {
             return message.channel.sendSplitCode(String(originEvaluate(inputExpression(args.join(' ')))), { code: 'js' });
         } catch {
             return message.channel.send('올바르지 않은 수식입니다.');
+        }
+    },
+    interaction: {
+        name: 'ev',
+        description: '계산식에 해당하는 결과값을 보여줍니다.',
+        options: [
+            {
+                name: '계산식',
+                type: 'STRING',
+                description: '결과값을 계산할 계산식',
+                required: true
+            }
+        ]
+    },
+    async interactionExecute(interaction) {
+        try {
+            return interaction.sendSplitCode(String(originEvaluate(inputExpression(interaction.options.get('계산식').value))), { code: 'js' });
+        } catch {
+            return interaction.editReply('올바르지 않은 수식입니다.');
         }
     }
 };

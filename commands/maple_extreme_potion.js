@@ -87,7 +87,7 @@ module.exports = {
 - 200레벨 이상의 경우 시작 레벨만 입력해주세요.
 - 참고. ${client.prefix}익성비 확률 (시작 레벨)`,
     type: ['메이플'],
-    async execute(message, args) {
+    async messageExecute(message, args) {
         if (args.length !== 1 && args.length !== 2) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
@@ -121,6 +121,57 @@ module.exports = {
             const exp199 = levelTable[199] - levelTable[198];
             const expNow = levelTable[startlev] - levelTable[startlev - 1];
             return message.channel.send(`Lv.${startlev} 익성비 효과\n경험치: ${((exp199 / expNow) * 100).toFixed(3)}%`);
+        }
+    },
+    interaction: {
+        name: '익성비',
+        description: `시작 레벨 ~ 목표 레벨의 익성비 시뮬레이션을 수행, 200레벨 이상의 경우 시작 레벨만 입력해야합니다. 참고. ${client.prefix}익성비 확률 (시작 레벨)`,
+        options: [
+            {
+                name: '시작_레벨',
+                type: 'STRING',
+                description: '익성비 시뮬을 시작할 시작 레벨',
+                required: true
+            },
+            {
+                name: '목표_레벨',
+                type: 'INTEGER',
+                description: '익성비 시뮬의 목표 레벨'
+            }
+        ]
+    },
+    async interactionExecute(interaction) {
+        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+
+        if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
+            const startlev = Math.trunc(args[1]);
+            let rslt = `<${startlev}레벨 기준 확률>`;
+            if (isNaN(startlev) || startlev < 141 || startlev > 199) {
+                return interaction.editReply('141 ~ 199 범위의 기준 레벨을 입력해주세요.');
+            }
+            for (let i = 0; i < 10; i++) {
+                rslt += `\n${i + 1} 레벨업 확률: ${probTable[startlev - 141][i]}%`;
+            }
+            return interaction.editReply(rslt);
+        }
+
+        const startlev = Math.trunc(args[0]);
+        if (args[1]) {
+            const endlev = Math.trunc(args[1]);
+            if (isNaN(startlev) || startlev < 141 || startlev > 199) {
+                return interaction.editReply('141 ~ 199 범위의 시작 레벨을 입력해주세요.');
+            }
+            if (isNaN(endlev) || endlev < startlev || endlev > 200) {
+                return interaction.editReply('시작 레벨 ~ 200 범위의 목표 레벨을 입력해주세요.');
+            }
+            return interaction.editReply(extremePotion(startlev, endlev));
+        } else {
+            if (isNaN(startlev) || startlev < 200 || startlev > 299) {
+                return interaction.editReply('200 ~ 299 범위의 시작 레벨을 입력해주세요.');
+            }
+            const exp199 = levelTable[199] - levelTable[198];
+            const expNow = levelTable[startlev] - levelTable[startlev - 1];
+            return interaction.editReply(`Lv.${startlev} 익성비 효과\n경험치: ${((exp199 / expNow) * 100).toFixed(3)}%`);
         }
     }
 };

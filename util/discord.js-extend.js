@@ -6,7 +6,25 @@ const Constants = require('simple-youtube-api/src/util/Constants');
 const Video = require('simple-youtube-api/src/structures/Video');
 const { decodeHTML } = require('entities');
 const { inspect, promisify } = require('util');
+const { _patch } = Discord.Message.prototype;
 globalThis.sleep = promisify(setTimeout);
+
+function contentSplitCode(content, options) {
+    content = content || '\u200b';
+    if (options.code) {
+        content = `\`\`\`${options.code}\n${Discord.Util.cleanCodeBlockContent(content)}\n\`\`\``;
+        if (options.split) {
+            options.split.prepend = `${options.split.prepend ?? ''}\`\`\`${options.code}\n`;
+            options.split.append = `\n\`\`\`${options.split.append ?? ''}`;
+        }
+    }
+    if (options.split) {
+        content = Discord.Util.splitMessage(content, options.split);
+    } else {
+        content = [content];
+    }
+    return content;
+}
 
 Object.defineProperty(Discord, 'botClientOption', {
     value: {
@@ -25,10 +43,40 @@ Object.defineProperty(Discord, 'botClientOption', {
             BaseGuildEmojiManager: 0,
             GuildBanManager: 0,
             GuildEmojiManager: 0,
+            GuildMemberManager: 0,
             GuildStickerManager: 0,
             MessageManager: 0,
-            PresenceManager: 0
+            PresenceManager: 0,
+            UserManager: 0
         })
+    }
+});
+
+// 하단 4개의 재정의는 비활성화된 멤버캐시 관련 추가작업을 수행
+Object.defineProperty(Discord.Message.prototype, '_patch', {
+    value: function (data, partial = false) {
+        _patch.call(this, data, partial);
+        if (data.member && this.guild && this.author) {
+            this._member = this.guild.members._add({ ...data.member, user: this.author }, false);
+        }
+    }
+});
+
+Object.defineProperty(Discord.Message.prototype, 'member', {
+    get: function () {
+        return this.guild?.members.resolve(this.author) ?? this._member ?? null;
+    }
+});
+
+Object.defineProperty(Discord.Guild.prototype, 'me', {
+    get: function () {
+        return this.members.resolve(this.client.user.id) ?? this.members._add({ user: { id: this.client.user.id } }, false);
+    }
+});
+
+Object.defineProperty(Discord.VoiceState.prototype, 'member', {
+    get: function () {
+        return this.guild.members.resolve(this.id) ?? this.guild.members._add({ user: { id: this.id } }, false);
     }
 });
 
@@ -45,22 +93,19 @@ Object.defineProperty(Discord.Message.prototype, 'fullContent', {
 Object.defineProperty(Discord.Channel.prototype, 'sendSplitCode', {
     value: async function (content, options = {}) {
         if (this.isText()) {
-            content = content || '\u200b';
-            if (options.code) {
-                content = `\`\`\`${options.code}\n${Discord.Util.cleanCodeBlockContent(content)}\n\`\`\``;
-                if (options.split) {
-                    options.split.prepend = `${options.split.prepend ?? ''}\`\`\`${options.code}\n`;
-                    options.split.append = `\n\`\`\`${options.split.append ?? ''}`;
-                }
-            }
-            if (options.split) {
-                content = Discord.Util.splitMessage(content, options.split);
-            } else {
-                content = [content];
-            }
-            for (let c of content) {
+            const contents = contentSplitCode(content, options);
+            for (let c of contents) {
                 await this.send(c);
             }
+        }
+    }
+});
+
+Object.defineProperty(Discord.CommandInteraction.prototype, 'sendSplitCode', {
+    value: async function (content, options = {}) {
+        const contents = contentSplitCode(content, options);
+        for (let c of contents) {
+            await this.followUp(c);
         }
     }
 });

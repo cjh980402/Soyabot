@@ -28,7 +28,7 @@ module.exports.adminChat = async function (message) {
         try {
             const suggestRefer = await message.fetchReference();
             const [channelId, messageId] = suggestRefer.content.split(/\s/);
-            await client.channels._add({ id: channelId, type: 1 }, null, { cache: false }).messages._add({ id: messageId }, false).reply(fullContent);
+            await client.channels._add({ id: channelId, type: 1 }, null, { cache: false }).messages._add({ id: messageId }, false).reply(`[건의 답변]\n${fullContent}`);
             message.channel.send('건의 답변을 보냈습니다.');
         } catch {
             message.channel.send('해당하는 건의의 정보가 존재하지 않습니다.');
@@ -63,6 +63,7 @@ module.exports.initClient = async function () {
         "CREATE TABLE IF NOT EXISTS messagedb(channelsenderid text primary key, messagecnt integer default 0, lettercnt integer default 0, lastmessage text default '', lasttime datetime default (datetime('now', 'localtime')))"
     );
 
+    await client.application.fetch();
     client.setMaxListeners(20); // 이벤트 개수 제한 증가
     startNotice(); // 공지 자동 알림 기능
     startUpdate(); // 업데이트 자동 알림 기능

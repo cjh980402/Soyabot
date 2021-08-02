@@ -33,6 +33,7 @@ const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((reso
                 client.commands.push(require(`./commands/${file}`)); // 걸러낸 js파일의 명령 객체를 배열에 push
             }
         });
+        await client.application.commands.set(client.commands.map((v) => v.interaction).filter((v) => v));
     } catch (e) {
         console.error(`로그인 에러 발생\n에러 내용: ${e}\n${e.stack ?? e._p}`);
         await cmd('npm stop');
@@ -68,7 +69,7 @@ client.on('messageCreate', async (message) => {
             // 봇 또는 partial 여부 체크
             return;
         }
-        const permissions = message.channel.permissionsFor?.(client.user);
+        const permissions = message.channel.permissionsFor?.(message.guild.me);
         if (permissions && !permissions.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.READ_MESSAGE_HISTORY])) {
             return; // 기본 권한이 없는 채널이므로 바로 종료
         }
@@ -101,7 +102,7 @@ client.on('messageCreate', async (message) => {
             return message.channel.send(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
-        await (botModule.channelCool ? botModule.execute(message, args) : promiseTimeout(botModule.execute(message, args), 300000)); // 명령어 수행 부분
+        await (botModule.channelCool ? botModule.messageExecute(message, args) : promiseTimeout(botModule.messageExecute(message, args), 300000)); // 명령어 수행 부분
         cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
     } catch (e) {
         cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
@@ -118,5 +119,51 @@ client.on('messageCreate', async (message) => {
         } catch {}
     } finally {
         await cachingMessage(message); // 들어오는 채팅 항상 캐싱
+    }
+});
+
+client.on('interactionCreate', async (interaction) => {
+    // 각 슬래시 커맨드에 반응
+    if (!interaction.isCommand()) {
+        return;
+    }
+    let { commandName } = interaction;
+    try {
+        console.log(`(${new Date().toLocaleString()}) ${interaction.channelId} ${interaction.channel.name} ${interaction.user.id} ${interaction.user.username}: ${interaction.options._i()}\n`);
+
+        await interaction.defer(); // defer를 하지 않으면 3초 내로 슬래시 커맨드 응답을 해야함
+        const permissions = interaction.channel.permissionsFor?.(interaction.guild.me);
+        if (permissions && !permissions.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.READ_MESSAGE_HISTORY])) {
+            return; // 기본 권한이 없는 채널이므로 바로 종료
+        }
+
+        const botModule = client.commands.find((cmd) => cmd.command.includes(commandName)); // 해당하는 명령어 찾기
+
+        if (!botModule) {
+            return; // 해당하는 명령어 없으면 종료
+        }
+
+        commandName = botModule.channelCool ? `${commandName}_${interaction.channelId}` : commandName;
+
+        if (cooldowns.has(commandName)) {
+            // 명령이 수행 중인 경우
+            return interaction.editReply(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
+        }
+        cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
+        await (botModule.channelCool ? botModule.interactionExecute(interaction) : promiseTimeout(botModule.interactionExecute(interaction), 300000)); // 명령어 수행 부분
+        cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
+    } catch (e) {
+        cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
+        try {
+            if (e instanceof Collection) {
+                // awaitMessages에서 시간초과한 경우
+                await interaction.followUp(`"${commandName.split('_')[0]}"의 입력 대기 시간이 초과되었습니다.`);
+            } else if (e.message?.startsWith('메이플')) {
+                await interaction.editReply(e.message);
+            } else {
+                await interaction.editReply('에러로그가 전송되었습니다.');
+                replyAdmin(`작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction.options._i()}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+            }
+        } catch {}
     }
 });

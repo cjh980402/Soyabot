@@ -5,7 +5,7 @@ module.exports = {
     command: ['loop', 'l'],
     description: '- 반복 재생 상태를 전환합니다.',
     type: ['음악'],
-    async execute(message) {
+    async messageExecute(message) {
         if (!message.guild) {
             return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
@@ -20,5 +20,25 @@ module.exports = {
 
         queue.loop = !queue.loop; // 반복 재생 상태 전환
         return message.channel.send(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
+    },
+    interaction: {
+        name: 'loop',
+        description: '반복 재생 상태를 전환합니다.'
+    },
+    async interactionExecute(interaction) {
+        if (!interaction.guild) {
+            return interaction.editReply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
+        }
+
+        const queue = client.queues.get(interaction.guildId);
+        if (!queue?.audioPlayer.state.resource) {
+            return interaction.editReply('재생 중인 노래가 없습니다.');
+        }
+        if (!canModifyQueue(interaction.member)) {
+            return interaction.editReply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
+        }
+
+        queue.loop = !queue.loop; // 반복 재생 상태 전환
+        return interaction.editReply(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
     }
 };

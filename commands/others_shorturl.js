@@ -25,11 +25,26 @@ module.exports = {
     command: ['단축주소', 'ㄷㅊㅈㅅ'],
     description: '- 입력한 주소를 짧은 형태의 주소로 변환합니다.',
     type: ['기타'],
-    async execute(message, args) {
+    async messageExecute(message, args) {
         if (args.length !== 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
         return message.channel.send(await shortURL(args[0]));
+    },
+    interaction: {
+        name: '단축주소',
+        description: '입력한 주소를 짧은 형태의 주소로 변환합니다.',
+        options: [
+            {
+                name: '대상_주소',
+                type: 'STRING',
+                description: '짧은 형태의 주소로 변환할 주소',
+                required: true
+            }
+        ]
+    },
+    async interactionExecute(interaction) {
+        return interaction.editReply(await shortURL(interaction.options.get('대상_주소').value));
     }
 };

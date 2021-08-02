@@ -8,7 +8,7 @@ module.exports = {
     usage: `${client.prefix}cpp (소스코드)`,
     command: ['cpp'],
     type: ['기타'],
-    async execute(message, args) {
+    async messageExecute(message, args) {
         if (message.author.id === ADMIN_ID && args.length > 0) {
             if (proc) {
                 proc.stdin.write(`${args.join(' ')}\n`);

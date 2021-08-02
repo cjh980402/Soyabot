@@ -29,13 +29,48 @@ async function usdToKRW(usd) {
     return usd * usdData[0].basePrice;
 }
 
+async function getCoinEmbed(searchRslt, type) {
+    const name = searchRslt.korean_name;
+    const code = searchRslt.market.split('-')[1];
+
+    const todayData = (await (await fetch(`https://api.upbit.com/v1/ticker?markets=${searchRslt.market}`)).json())[0];
+    const chartURL = getChartImage(code, type);
+    const nowPrice = todayData.trade_price.toLocaleString();
+    const changeType = todayData.change; // RISE, EVEN, FALL
+    const changeString = `${todayData.change_price.toLocaleString()} (${(100 * todayData.signed_change_rate).toFixed(2)}%)`;
+
+    const minPrice = todayData.low_price.toLocaleString();
+    const maxPrice = todayData.high_price.toLocaleString();
+    const amount = todayData.acc_trade_price_24h.toLocaleUnitString('ko-KR', 2);
+
+    await cmd(`python3 ./util/make_coin_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice} ${changeType} '${changeString}' ${minPrice} ${maxPrice}`);
+    // 파이썬 스크립트 실행
+
+    const coinEmbed = new MessageEmbed()
+        .setTitle(`**${name} (${code}) ${type}**`)
+        .setColor('#FF9999')
+        .setURL(`https://upbit.com/exchange?code=CRIX.UPBIT.KRW-${code}&tab=chart`)
+        .setImage(`http://${client.botDomain}/image/coin/${code}.png?time=${Date.now()}`)
+        .addField('**거래대금**', `${amount}원`, true);
+
+    const binancePrice = await getCoinBinancePrice(code);
+    if (binancePrice !== -1) {
+        const binanceKRW = await usdToKRW(binancePrice);
+        const kimPre = todayData.trade_price - binanceKRW;
+        const kimPrePercent = 100 * (kimPre / binanceKRW);
+        coinEmbed
+            .addField('**바이낸스**', `${binancePrice.toLocaleString()}$\n${binanceKRW.toLocaleString()}원`, true)
+            .addField('**김프**', ` ${kimPre.toLocaleString()}원 (${kimPrePercent.toFixed(2)}%)`, true);
+    }
+}
+
 module.exports = {
     usage: `${client.prefix}코인정보 (검색 내용) (차트 종류)`,
     command: ['코인정보', 'ㅋㅇㅈㅂ'],
     description: `- 검색 내용에 해당하는 코인의 정보를 보여줍니다.
 - (차트 종류): ${Object.keys(chartType).join(', ')} 입력가능 (생략 시 1일로 적용)`,
     type: ['기타'],
-    async execute(message, args) {
+    async messageExecute(message, args) {
         if (args.length < 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
@@ -52,40 +87,41 @@ module.exports = {
         if (!searchRslt) {
             return message.channel.send('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
         } else {
-            const name = searchRslt.korean_name;
-            const code = searchRslt.market.split('-')[1];
-
-            const todayData = (await (await fetch(`https://api.upbit.com/v1/ticker?markets=${searchRslt.market}`)).json())[0];
-            const chartURL = getChartImage(code, type);
-            const nowPrice = todayData.trade_price.toLocaleString();
-            const changeType = todayData.change; // RISE, EVEN, FALL
-            const changeString = `${todayData.change_price.toLocaleString()} (${(100 * todayData.signed_change_rate).toFixed(2)}%)`;
-
-            const minPrice = todayData.low_price.toLocaleString();
-            const maxPrice = todayData.high_price.toLocaleString();
-            const amount = todayData.acc_trade_price_24h.toLocaleUnitString('ko-KR', 2);
-
-            await cmd(`python3 ./util/make_coin_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice} ${changeType} '${changeString}' ${minPrice} ${maxPrice}`);
-            // 파이썬 스크립트 실행
-
-            const coinEmbed = new MessageEmbed()
-                .setTitle(`**${name} (${code}) ${type}**`)
-                .setColor('#FF9999')
-                .setURL(`https://upbit.com/exchange?code=CRIX.UPBIT.KRW-${code}&tab=chart`)
-                .setImage(`http://${client.botDomain}/image/coin/${code}.png?time=${Date.now()}`)
-                .addField('**거래대금**', `${amount}원`, true);
-
-            const binancePrice = await getCoinBinancePrice(code);
-            if (binancePrice !== -1) {
-                const binanceKRW = await usdToKRW(binancePrice);
-                const kimPre = todayData.trade_price - binanceKRW;
-                const kimPrePercent = 100 * (kimPre / binanceKRW);
-                coinEmbed
-                    .addField('**바이낸스**', `${binancePrice.toLocaleString()}$\n${binanceKRW.toLocaleString()}원`, true)
-                    .addField('**김프**', ` ${kimPre.toLocaleString()}원 (${kimPrePercent.toFixed(2)}%)`, true);
+            return message.channel.send({ embeds: [await getCoinEmbed(searchList, type)] });
+        }
+    },
+    interaction: {
+        name: '코인정보',
+        description: '검색 내용에 해당하는 코인의 정보를 보여줍니다.',
+        options: [
+            {
+                name: '검색_내용',
+                type: 'STRING',
+                description: '코인정보를 검색할 내용',
+                required: true
+            },
+            {
+                name: '차트_종류',
+                type: 'STRING',
+                description: '출력할 차트의 종류 (생략 시 1일로 적용)',
+                choices: Object.keys(chartType).map((v) => ({ name: v, value: v }))
             }
+        ]
+    },
+    async interactionExecute(interaction) {
+        const type = interaction.options.get('차트_종류')?.value ?? '1일'; // 차트 종류
+        const krSearch = interaction.options.get('검색_내용').value;
+        const enSearch = krSearch.toUpperCase();
+        const searchList = await (await fetch('https://api.upbit.com/v1/market/all')).json();
+        const searchRslt = searchList.find((v) => {
+            const [currency, code] = v.market.split('-');
+            return currency === 'KRW' && (code.includes(enSearch) || v.korean_name.includes(krSearch) || v.english_name.toUpperCase().includes(enSearch));
+        });
 
-            return message.channel.send({ embeds: [coinEmbed] });
+        if (!searchRslt) {
+            return interaction.editReply('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
+        } else {
+            return interaction.editReply({ embeds: [await getCoinEmbed(searchList, type)] });
         }
     }
 };

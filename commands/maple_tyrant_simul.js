@@ -7,11 +7,40 @@ module.exports = {
 - B: 목표 스타포스 개수
 - C: 스타캐치 미적용 = 0 / 스타캐치 적용 = 1`,
     type: ['메이플'],
-    async execute(message, args) {
+    async messageExecute(message, args) {
         if (!args[0]) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const result = new SuperialItem();
         return message.channel.send(result.doingStarforce(args.map((v) => +v)));
+    },
+    interaction: {
+        name: '타일런트시뮬',
+        description: '무기의 작으로 상승한 공격력을 계산합니다.',
+        options: [
+            {
+                name: '시작_스타포스_개수',
+                type: 'INTEGER',
+                description: '시뮬레이션 시작 스타포스 개수',
+                required: true
+            },
+            {
+                name: '목표_스타포스_개수',
+                type: 'INTEGER',
+                description: '시뮬레이션 목표 스타포스 개수',
+                required: true
+            },
+            {
+                name: '스타캐치',
+                type: 'INTEGER',
+                description: '스타캐치 미적용 = 0 / 스타캐치 적용 = 1'
+            }
+        ]
+    },
+    async interactionExecute(interaction) {
+        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+
+        const result = new SuperialItem();
+        return interaction.editReply(result.doingStarforce(args));
     }
 };

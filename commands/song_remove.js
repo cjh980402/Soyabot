@@ -5,7 +5,7 @@ module.exports = {
     command: ['remove', 'rm'],
     description: '- 대기열에서 지정한 노래를 삭제합니다. (,로 구분하여 여러 노래 삭제 가능)',
     type: ['음악'],
-    async execute(message, args) {
+    async messageExecute(message, args) {
         if (!message.guild) {
             return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
@@ -44,5 +44,54 @@ module.exports = {
         }
 
         return message.channel.send(`❌ ${message.author}가 대기열에서 **${removed.map((song, i) => `${songRemove[i]}. ${song.title}`)}**을 삭제했습니다.`);
+    },
+    interaction: {
+        name: 'remove',
+        description: '대기열에서 지정한 노래를 삭제합니다. (,로 구분하여 여러 노래 삭제 가능)',
+        options: [
+            {
+                name: '대기열_번호',
+                type: 'STRING',
+                description: '삭제할 노래의 번호',
+                required: true
+            }
+        ]
+    },
+    async interactionExecute(interaction) {
+        if (!interaction.guild) {
+            return interaction.editReply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
+        }
+
+        const queue = client.queues.get(interaction.guildId);
+        if (!queue?.audioPlayer.state.resource) {
+            return interaction.editReply('재생 중인 노래가 없습니다.');
+        }
+        if (!canModifyQueue(interaction.member)) {
+            return interaction.editReply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
+        }
+        if (queue.songs.length < 2) {
+            return interaction.editReply('현재 대기열에서 삭제할 수 있는 노래가 없습니다.');
+        }
+
+        const songRemove = interaction.options
+            .get('대기열_번호')
+            .value.split(',')
+            .map((str) => Math.trunc(str))
+            .deduplication();
+        const removed = [];
+        if (songRemove.every((v) => !isNaN(v) && 2 <= v && v <= queue.songs.length)) {
+            queue.songs = queue.songs.filter((v, i) => {
+                if (songRemove.includes(i + 1)) {
+                    removed.push(v);
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+        } else {
+            return interaction.editReply(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래를 삭제할 수 있습니다.`);
+        }
+
+        return interaction.editReply(`❌ ${interaction.user}가 대기열에서 **${removed.map((song, i) => `${songRemove[i]}. ${song.title}`)}**을 삭제했습니다.`);
     }
 };

@@ -5,7 +5,7 @@ module.exports = {
     command: ['데굴데굴', 'ㄷㄱㄷㄱ'],
     description: '- 추억의 메이플스토리 주사위!',
     type: ['메이플'],
-    async execute(message) {
+    async messageExecute(message) {
         const nickname = message.member?.nickname ?? message.author.username;
         await cmd(`python3 ./util/maple_stats_drawer.py '${nickname.replace(/'/g, '$&"$&"$&')}'`);
         // 파이썬 스크립트 실행, 쉘에서 작은 따옴표로 감싸서 쉘 특수문자 이스케이핑, 닉네임의 작은 따옴표는 별도로 이스케이핑
@@ -19,7 +19,29 @@ module.exports = {
             collector.stop();
             try {
                 await dice.delete();
-                await this.execute(message);
+                await this.messageExecute(message);
+            } catch {}
+        });
+    },
+    interaction: {
+        name: '데굴데굴',
+        description: '추억의 메이플스토리 주사위!'
+    },
+    async interactionExecute(interaction) {
+        const nickname = interaction.member?.nickname ?? interaction.user.username;
+        await cmd(`python3 ./util/maple_stats_drawer.py '${nickname.replace(/'/g, '$&"$&"$&')}'`);
+        // 파이썬 스크립트 실행, 쉘에서 작은 따옴표로 감싸서 쉘 특수문자 이스케이핑, 닉네임의 작은 따옴표는 별도로 이스케이핑
+        const dice = await interaction.followUp({ content: `${nickname}님의 스탯`, files: ['./pictures/dice_result.png'], fetchReply: true });
+        await dice.react('🔁');
+
+        const filter = (reaction, user) => reaction.emoji.name === '🔁' && interaction.user.id === user.id;
+        const collector = dice.createReactionCollector({ filter, time: 60000 });
+
+        collector.once('collect', async () => {
+            collector.stop();
+            try {
+                await dice.delete();
+                await this.interactionExecute(interaction);
             } catch {}
         });
     }

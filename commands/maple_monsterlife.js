@@ -150,7 +150,7 @@ module.exports = {
 - ${client.prefix}농장 추가 (끝나는 날짜) (농장 이름) (몬스터 이름)
 - 참고. 끝나는 날짜의 형식은 YYMMDD 형식입니다. (무한유지를 하는 몬스터는 "무한유지")`,
     type: ['메이플'],
-    async execute(message, args) {
+    async messageExecute(message, args) {
         if (args.length < 2) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
@@ -168,6 +168,53 @@ module.exports = {
             return message.channel.send(await farm_add(args[1], args[2], args.slice(3).join('')));
         } else {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        }
+    },
+    interaction: {
+        name: '농장',
+        description: '몬스터라이프 관련 기능을 수행합니다.',
+        options: [
+            {
+                name: '명령어_종류',
+                type: 'STRING',
+                description: '수행할 농장 명령어의 종류',
+                required: true,
+                choices: ['목록', '조합식', '정보', '추가'].map((v) => ({ name: v, value: v }))
+            },
+            {
+                name: '이름_날짜',
+                type: 'STRING',
+                description: '목록 또는 조합식 → 몬스터 이름, 정보 → 농장 이름, 추가 → 끝나는 날짜',
+                required: true
+            },
+            {
+                name: '추가_농장_이름',
+                type: 'STRING',
+                description: '추가 명령어 사용 시 입력할 농장 이름'
+            },
+            {
+                name: '추가_몬스터_이름',
+                type: 'STRING',
+                description: '추가 명령어 사용 시 입력할 몬스터 이름'
+            }
+        ]
+    },
+    async interactionExecute(interaction) {
+        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+
+        if (args[0] === '목록') {
+            return interaction.sendSplitCode(await farm_read(args.slice(1).join('')), { split: { char: '\n' } });
+        } else if (args[0] === '조합식') {
+            return interaction.editReply(await farm_sex(args.slice(1).join('')));
+        } else if (args[0] === '정보') {
+            return interaction.sendSplitCode(await farm_info(args.slice(1).join('')), { split: { char: '\n' } });
+        } else if (args[0] === '추가') {
+            if (!args[3]) {
+                return interaction.editReply(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            }
+            return interaction.editReply(await farm_add(args[1], args[2], args.slice(3).join('')));
+        } else {
+            return interaction.editReply(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
     }
 };
