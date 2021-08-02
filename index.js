@@ -147,7 +147,7 @@ client.on('interactionCreate', async (interaction) => {
 
         if (cooldowns.has(commandName)) {
             // 명령이 수행 중인 경우
-            return interaction.editReply(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
+            return interaction.followUp(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
         await (botModule.channelCool ? botModule.interactionExecute(interaction) : promiseTimeout(botModule.interactionExecute(interaction), 300000)); // 명령어 수행 부분

@@ -84,11 +84,11 @@ module.exports = {
         const dates = eventdata.find('dd a').map((_, v) => $(v).text());
 
         if (links.length === 0) {
-            return interaction.editReply('현재 진행중인 이벤트가 없습니다.');
+            return interaction.followUp('현재 진행중인 이벤트가 없습니다.');
         } else {
             let currentPage = 0;
             const embeds = getEventEmbed(links, names, dates);
-            const eventEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], fetchReply: true });
+            const eventEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
             if (embeds.length > 1) {
                 try {
                     await eventEmbed.react('⬅️');

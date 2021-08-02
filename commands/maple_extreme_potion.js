@@ -141,37 +141,37 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+        const args = interaction.options._hoistedOptions.map((v) => v.value);
 
         if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
             const startlev = Math.trunc(args[1]);
             let rslt = `<${startlev}레벨 기준 확률>`;
             if (isNaN(startlev) || startlev < 141 || startlev > 199) {
-                return interaction.editReply('141 ~ 199 범위의 기준 레벨을 입력해주세요.');
+                return interaction.followUp('141 ~ 199 범위의 기준 레벨을 입력해주세요.');
             }
             for (let i = 0; i < 10; i++) {
                 rslt += `\n${i + 1} 레벨업 확률: ${probTable[startlev - 141][i]}%`;
             }
-            return interaction.editReply(rslt);
+            return interaction.followUp(rslt);
         }
 
         const startlev = Math.trunc(args[0]);
         if (args[1]) {
             const endlev = Math.trunc(args[1]);
             if (isNaN(startlev) || startlev < 141 || startlev > 199) {
-                return interaction.editReply('141 ~ 199 범위의 시작 레벨을 입력해주세요.');
+                return interaction.followUp('141 ~ 199 범위의 시작 레벨을 입력해주세요.');
             }
             if (isNaN(endlev) || endlev < startlev || endlev > 200) {
-                return interaction.editReply('시작 레벨 ~ 200 범위의 목표 레벨을 입력해주세요.');
+                return interaction.followUp('시작 레벨 ~ 200 범위의 목표 레벨을 입력해주세요.');
             }
-            return interaction.editReply(extremePotion(startlev, endlev));
+            return interaction.followUp(extremePotion(startlev, endlev));
         } else {
             if (isNaN(startlev) || startlev < 200 || startlev > 299) {
-                return interaction.editReply('200 ~ 299 범위의 시작 레벨을 입력해주세요.');
+                return interaction.followUp('200 ~ 299 범위의 시작 레벨을 입력해주세요.');
             }
             const exp199 = levelTable[199] - levelTable[198];
             const expNow = levelTable[startlev] - levelTable[startlev - 1];
-            return interaction.editReply(`Lv.${startlev} 익성비 효과\n경험치: ${((exp199 / expNow) * 100).toFixed(3)}%`);
+            return interaction.followUp(`Lv.${startlev} 익성비 효과\n경험치: ${((exp199 / expNow) * 100).toFixed(3)}%`);
         }
     }
 };

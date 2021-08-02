@@ -136,7 +136,7 @@ module.exports = {
         const searchRslt = (await (await fetch(`https://ac.weather.naver.com/ac?q_enc=utf-8&r_format=json&r_enc=utf-8&r_lt=1&st=1&q=${encodeURIComponent(search)}`)).json()).items[0];
         let targetLocal;
         if (!searchRslt?.length) {
-            return interaction.editReply('검색된 지역이 없습니다.');
+            return interaction.followUp('검색된 지역이 없습니다.');
         } else if (searchRslt.length === 1) {
             targetLocal = searchRslt[0];
         } else {
@@ -158,7 +158,7 @@ module.exports = {
 
         let currentPage = 0;
         const embeds = await getWeatherEmbed(targetLocal);
-        const weatherEmbed = await interaction.followUp({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], fetchReply: true });
+        const weatherEmbed = await interaction.followUp({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
 
         try {
             await weatherEmbed.react('⬅️');

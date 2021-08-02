@@ -55,7 +55,7 @@ module.exports = {
 
         const level = await mapleUserInfo.homeLevel();
         if (!level) {
-            return interaction.editReply(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
+            return interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await mapleUserInfo.isLatest())) {
             interaction.editReply('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
@@ -77,6 +77,6 @@ module.exports = {
                 union ? union[3] : '기록없음'
             }' '${union ? `Lv.${union[0].toLocaleString()}` : ' '}' '${seed ? seed[1] : '기록없음'}' '${seed ? seed[2] : ' '}'`
         );
-        return interaction.editReply({ content: `${mapleUserInfo.Name}님의 프로필`, files: ['./pictures/profile.png'] });
+        return interaction.followUp({ content: `${mapleUserInfo.Name}님의 프로필`, files: ['./pictures/profile.png'] });
     }
 };

@@ -74,16 +74,16 @@ module.exports = {
     },
     async interactionExecute(interaction) {
         if (!interaction.guild) {
-            return interaction.editReply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
+            return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
         const queue = client.queues.get(interaction.guildId);
         if (!queue?.audioPlayer.state.resource) {
-            return interaction.editReply('재생 중인 노래가 없습니다.');
+            return interaction.followUp('재생 중인 노래가 없습니다.');
         }
         let currentPage = 0;
         const embeds = getQueueEmbed(interaction.guild.iconURL(), queue.songs);
-        const queueEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], fetchReply: true });
+        const queueEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
         if (embeds.length > 1) {
             try {
                 await queueEmbed.react('⬅️');

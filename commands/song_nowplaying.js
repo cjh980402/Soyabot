@@ -43,12 +43,12 @@ module.exports = {
     },
     async interactionExecute(interaction) {
         if (!interaction.guild) {
-            return interaction.editReply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
+            return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
         const queue = client.queues.get(interaction.guildId);
         if (!queue?.audioPlayer.state.resource) {
-            return interaction.editReply('재생 중인 노래가 없습니다.');
+            return interaction.followUp('재생 중인 노래가 없습니다.');
         }
         // song.duration: 일반적인 영상 = 노래 길이(초), 생방송 영상 = 0
         const song = queue.songs[0];
@@ -70,6 +70,6 @@ module.exports = {
             nowPlaying.setFooter(`남은 시간: ${new Date((song.duration - seek) * 1000).toISOString().substr(11, 8)}`);
         }
 
-        return interaction.editReply({ embeds: [nowPlaying] });
+        return interaction.followUp({ embeds: [nowPlaying] });
     }
 };

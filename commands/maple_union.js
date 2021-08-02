@@ -35,9 +35,9 @@ module.exports = {
 
         const union = await mapleUserInfo.homeUnion();
         if (!union) {
-            return interaction.editReply(`[${mapleUserInfo.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
+            return interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
         } else {
-            return interaction.editReply(`[${mapleUserInfo.Name}]\n직업: ${union[3]}\n유니온 레벨: ${union[0].toLocaleString()}\n전투력: ${union[1].toLocaleString()}\n일일 코인 수급량: ${union[2]}`);
+            return interaction.followUp(`[${mapleUserInfo.Name}]\n직업: ${union[3]}\n유니온 레벨: ${union[0].toLocaleString()}\n전투력: ${union[1].toLocaleString()}\n일일 코인 수급량: ${union[2]}`);
         }
     }
 };

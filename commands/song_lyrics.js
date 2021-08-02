@@ -61,9 +61,9 @@ module.exports = {
         const queue = client.queues.get(interaction.guildId);
         const search = interaction.options.get('노래_제목')?.value ?? queue?.songs[0].title;
         if (!search) {
-            return interaction.editReply('검색할 노래가 없습니다.');
+            return interaction.followUp('검색할 노래가 없습니다.');
         }
 
-        return interaction.editReply({ embeds: [await getLyricsEmbed(search)] });
+        return interaction.followUp({ embeds: [await getLyricsEmbed(search)] });
     }
 };

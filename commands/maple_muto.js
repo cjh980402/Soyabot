@@ -45,6 +45,6 @@ module.exports = {
     },
     async interactionExecute(interaction) {
         const food = interaction.options.get('요리_이름').value;
-        return interaction.editReply({ content: `${food} 요리의 레시피`, files: [`./pictures/muto/${picmatch[food]}.png`] });
+        return interaction.followUp({ content: `${food} 요리의 레시피`, files: [`./pictures/muto/${picmatch[food]}.png`] });
     }
 };

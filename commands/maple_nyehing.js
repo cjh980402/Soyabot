@@ -33,7 +33,7 @@ module.exports = {
     async interactionExecute(interaction) {
         const count = interaction.options.get('글자_수')?.value ?? 2;
         if (count < 2 || count > 6) {
-            return interaction.editReply('닉네임은 2 ~ 6 글자만 가능합니다.');
+            return interaction.followUp('닉네임은 2 ~ 6 글자만 가능합니다.');
         }
 
         let rslt = '';
@@ -41,6 +41,6 @@ module.exports = {
         for (let i = 0; i < count; i++) {
             rslt += list[Math.floor(Math.random() * list.length)];
         }
-        return interaction.editReply(`${count}글자 닉네임 추천: ${rslt}`);
+        return interaction.followUp(`${count}글자 닉네임 추천: ${rslt}`);
     }
 };

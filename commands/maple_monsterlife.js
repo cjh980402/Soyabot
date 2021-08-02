@@ -200,21 +200,21 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+        const args = interaction.options._hoistedOptions.map((v) => v.value);
 
         if (args[0] === '목록') {
             return interaction.sendSplitCode(await farm_read(args.slice(1).join('')), { split: { char: '\n' } });
         } else if (args[0] === '조합식') {
-            return interaction.editReply(await farm_sex(args.slice(1).join('')));
+            return interaction.followUp(await farm_sex(args.slice(1).join('')));
         } else if (args[0] === '정보') {
             return interaction.sendSplitCode(await farm_info(args.slice(1).join('')), { split: { char: '\n' } });
         } else if (args[0] === '추가') {
             if (!args[3]) {
-                return interaction.editReply(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+                return interaction.followUp(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
             }
-            return interaction.editReply(await farm_add(args[1], args[2], args.slice(3).join('')));
+            return interaction.followUp(await farm_add(args[1], args[2], args.slice(3).join('')));
         } else {
-            return interaction.editReply(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            return interaction.followUp(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
     }
 };

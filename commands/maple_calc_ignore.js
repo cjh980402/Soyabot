@@ -55,23 +55,23 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+        const args = interaction.options._hoistedOptions.map((v) => v.value);
 
         const igList = args.filter((v) => v);
         const monster = igList.shift();
         if (monster < 0) {
-            return interaction.editReply('입력한 값이 잘못되었습니다.');
+            return interaction.followUp('입력한 값이 잘못되었습니다.');
         }
 
         let sum = 1;
         for (const ig of igList) {
             sum = ig >= 0 ? sum * (1 - ig / 100) : sum / (1 + ig / 100); // sum은 실제로 무시하고 남은 양의 비율
             if (sum > 1 || ig < -100 || ig > 100) {
-                return interaction.editReply('입력한 값이 잘못되었습니다.');
+                return interaction.followUp('입력한 값이 잘못되었습니다.');
             }
         }
 
         const boss_damage = Math.max(100 - monster * sum, 0);
-        return interaction.editReply(`총 합 방무: ${((1 - sum) * 100).toFixed(2)}%\n방어율 ${monster}%인 대상에게 딜량: ${boss_damage.toFixed(2)}%`);
+        return interaction.followUp(`총 합 방무: ${((1 - sum) * 100).toFixed(2)}%\n방어율 ${monster}%인 대상에게 딜량: ${boss_damage.toFixed(2)}%`);
     }
 };

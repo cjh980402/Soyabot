@@ -86,9 +86,9 @@ module.exports = {
         if (detail && !this.type.includes(detail)) {
             const target = client.commands.find((cmd) => cmd.command.includes(detail));
             if (!target?.description) {
-                return interaction.editReply('지원하지 않는 도움말입니다.');
+                return interaction.followUp('지원하지 않는 도움말입니다.');
             } else {
-                return interaction.editReply(`**${target.usage}**\n- 대체 명령어: ${target.command.join(', ')}\n${target.description}`);
+                return interaction.followUp(`**${target.usage}**\n- 대체 명령어: ${target.command.join(', ')}\n${target.description}`);
             }
         }
 
@@ -98,7 +98,7 @@ module.exports = {
 
         let currentPage = 0;
         const embeds = getHelpEmbed(description);
-        const helpEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], fetchReply: true });
+        const helpEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
         if (embeds.length > 1) {
             try {
                 await helpEmbed.react('⬅️');

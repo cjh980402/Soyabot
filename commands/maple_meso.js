@@ -137,6 +137,6 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        return interaction.editReply({ embeds: [await getMesoEmbed(interaction.options.get('서버').value)] });
+        return interaction.followUp({ embeds: [await getMesoEmbed(interaction.options.get('서버').value)] });
     }
 };

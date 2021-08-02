@@ -60,12 +60,12 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const [startlev, endlev] = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+        const [startlev, endlev] = interaction.options._hoistedOptions.map((v) => v.value);
         if (isNaN(startlev) || startlev < 1 || startlev > 20) {
-            return interaction.editReply('1 ~ 20 범위의 시작 레벨을 입력해주세요.');
+            return interaction.followUp('1 ~ 20 범위의 시작 레벨을 입력해주세요.');
         }
         if (isNaN(endlev) || endlev < startlev || endlev > 20) {
-            return interaction.editReply('시작 레벨 ~ 20 범위의 목표 레벨을 입력해주세요.');
+            return interaction.followUp('시작 레벨 ~ 20 범위의 목표 레벨을 입력해주세요.');
         }
 
         let total_req1 = 0,
@@ -83,7 +83,7 @@ module.exports = {
             }
         }
 
-        return interaction.editReply(
+        return interaction.followUp(
             `아케인 심볼 Lv.${startlev} → Lv.${endlev}\n요구량: ${total_req1}\n여로: ${total_meso1.toLocaleString()}메소\n여로 제외: ${total_meso2.toLocaleString()}메소\n\n어센틱 심볼 Lv.${Math.min(
                 11,
                 startlev

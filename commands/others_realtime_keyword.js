@@ -15,6 +15,6 @@ module.exports = {
     },
     async interactionExecute(interaction) {
         const data = await (await fetch('https://api.signal.bz/news/realtime')).json();
-        return interaction.editReply(`실시간 검색어\n${new Date().toLocaleString()}\n\n${data.top10.map((v) => `${v.rank}. ${v.keyword}`).join('\n')}`);
+        return interaction.followUp(`실시간 검색어\n${new Date().toLocaleString()}\n\n${data.top10.map((v) => `${v.rank}. ${v.keyword}`).join('\n')}`);
     }
 };

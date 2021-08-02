@@ -43,19 +43,19 @@ module.exports = {
     },
     async interactionExecute(interaction) {
         if (!interaction.guild) {
-            return interaction.editReply('사용이 불가능한 채널입니다.');
+            return interaction.followUp('사용이 불가능한 채널입니다.');
         }
 
         const targetInfo = interaction.options.get('멘션')?.member ?? interaction.member;
 
         const messagestat = await db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [`${interaction.guildId} ${targetInfo.user.id}`]);
         if (messagestat) {
-            return interaction.editReply(`[${targetInfo.nickname ?? targetInfo.user.username}]
+            return interaction.followUp(`[${targetInfo.nickname ?? targetInfo.user.username}]
 채팅 건수: ${messagestat.messagecnt.toLocaleString()}
 문자 개수: ${messagestat.lettercnt.toLocaleString()}
 채팅 지수: ${(messagestat.lettercnt / messagestat.messagecnt).toFixed(2)}`);
         } else {
-            return interaction.editReply(`[${targetInfo.nickname ?? targetInfo.user.username}]\n채팅 건수: 0\n문자 개수: 0\n채팅 지수: 0.00`);
+            return interaction.followUp(`[${targetInfo.nickname ?? targetInfo.user.username}]\n채팅 건수: 0\n문자 개수: 0\n채팅 지수: 0.00`);
         }
     }
 };

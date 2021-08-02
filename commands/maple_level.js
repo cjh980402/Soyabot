@@ -57,7 +57,7 @@ module.exports = {
 
         const level = await mapleUserInfo.homeLevel();
         if (!level) {
-            return interaction.editReply(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
+            return interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
 
         const char_lv = level[0];
@@ -80,6 +80,6 @@ module.exports = {
             }
             rslt += `\n잔여량 (~300): ${req_300}\n진행률 (~300): ${((sumExp / levelTable[299]) * 100).toFixed(3)}%`;
         }
-        return interaction.editReply(rslt);
+        return interaction.followUp(rslt);
     }
 };

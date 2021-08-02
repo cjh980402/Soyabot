@@ -59,18 +59,18 @@ module.exports = {
     },
     async interactionExecute(interaction) {
         if (!interaction.guild) {
-            return interaction.editReply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
+            return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
         const queue = client.queues.get(interaction.guildId);
         if (!queue?.audioPlayer.state.resource) {
-            return interaction.editReply('재생 중인 노래가 없습니다.');
+            return interaction.followUp('재생 중인 노래가 없습니다.');
         }
         if (!canModifyQueue(interaction.member)) {
-            return interaction.editReply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
+            return interaction.followUp(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
         if (queue.songs.length < 2) {
-            return interaction.editReply('현재 대기열에서 삭제할 수 있는 노래가 없습니다.');
+            return interaction.followUp('현재 대기열에서 삭제할 수 있는 노래가 없습니다.');
         }
 
         const songRemove = interaction.options
@@ -89,9 +89,9 @@ module.exports = {
                 }
             });
         } else {
-            return interaction.editReply(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래를 삭제할 수 있습니다.`);
+            return interaction.followUp(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래를 삭제할 수 있습니다.`);
         }
 
-        return interaction.editReply(`❌ ${interaction.user}가 대기열에서 **${removed.map((song, i) => `${songRemove[i]}. ${song.title}`)}**을 삭제했습니다.`);
+        return interaction.followUp(`❌ ${interaction.user}가 대기열에서 **${removed.map((song, i) => `${songRemove[i]}. ${song.title}`)}**을 삭제했습니다.`);
     }
 };

@@ -53,7 +53,7 @@ module.exports = {
     },
     async interactionExecute(interaction) {
         if (!interaction.guild) {
-            return interaction.editReply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
+            return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
         const category = interaction.options.get('카테고리')?.value;
@@ -73,11 +73,11 @@ module.exports = {
         if (find) {
             // 기존상태: OFF
             await db.run(`DELETE FROM ${noticematch[category]}skip WHERE channelid = ?`, [interaction.guildId]);
-            return interaction.editReply(`${category} 자동알림: **OFF → ON**`);
+            return interaction.followUp(`${category} 자동알림: **OFF → ON**`);
         } else {
             // 기존상태: ON
             await db.insert(`${noticematch[category]}skip`, { channelid: interaction.guildId, name: interaction.guild.name });
-            return interaction.editReply(`${category} 자동알림: **ON → OFF**`);
+            return interaction.followUp(`${category} 자동알림: **ON → OFF**`);
         }
     }
 };

@@ -42,11 +42,11 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+        const args = interaction.options._hoistedOptions.map((v) => v.value);
 
         const bossName = args[0];
         if (!bossData[bossName]) {
-            return interaction.editReply('데이터가 없는 보스입니다.');
+            return interaction.followUp('데이터가 없는 보스입니다.');
         }
         const bossGrade = !bossData[bossName][args[1]] ? Object.keys(bossData[bossName])[0] : args[1];
 
@@ -55,6 +55,6 @@ module.exports = {
             .setColor('#FF9999')
             .setDescription(`**보상**\n${bossData[bossName][bossGrade][0].join('\n\n')}\n\n**정보**\n${bossData[bossName][bossGrade][1].join('\n\n')}`);
 
-        return interaction.editReply({ embeds: [bossEmbed] });
+        return interaction.followUp({ embeds: [bossEmbed] });
     }
 };

@@ -32,15 +32,15 @@ module.exports = {
         const $ = load(iconv.decode(await (await fetch('http://www.koreawqi.go.kr/wQSCHomeLayout_D.wq?action_type=T#')).buffer(), 'euc-kr'));
         // 수질 정보 사이트 인코딩: euc-kr
         if ($('tr.site_S01004 > td').length !== 8) {
-            return interaction.editReply('측정소 운전이 정지됐습니다.');
+            return interaction.followUp('측정소 운전이 정지됐습니다.');
         }
 
         const temper = $('tr.site_S01004 > td').eq(0).text().trim();
         if (isNaN(temper)) {
-            return interaction.editReply(`측정소가 "${temper}" 상태입니다.`);
+            return interaction.followUp(`측정소가 "${temper}" 상태입니다.`);
         } else {
             const search_time = $('span.data > script').html().trim().split('\n')[0].replace(/\D+/g, '');
-            return interaction.editReply(
+            return interaction.followUp(
                 `지금 한강온도: ${temper}°C\n업데이트 시간: ${search_time.substr(0, 4)}년 ${+search_time.substr(4, 2)}월 ${+search_time.substr(6, 2)}일 ${+search_time.substr(8, 2)}시`
             );
         }

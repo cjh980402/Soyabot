@@ -185,7 +185,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+        const args = interaction.options._hoistedOptions.map((v) => v.value);
 
         if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
             let rslt = `<골드애플 확률>`;
@@ -197,7 +197,7 @@ module.exports = {
 
         const count = Math.trunc(args[0] ?? 1);
         if (isNaN(count) || count < 1 || count > 20000) {
-            return interaction.editReply('1 ~ 20000 범위의 숫자만 입력가능합니다.');
+            return interaction.followUp('1 ~ 20000 범위의 숫자만 입력가능합니다.');
         }
 
         // count는 골드애플 횟수

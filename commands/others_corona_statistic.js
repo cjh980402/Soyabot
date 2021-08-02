@@ -160,7 +160,7 @@ module.exports = {
         if (countData.resultCode === '0' && countryData.resultCode === '0') {
             let currentPage = 0;
             const embeds = await getCoronaEmbed(countData, countryData);
-            const coronaEmbed = await interaction.followUp({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], fetchReply: true });
+            const coronaEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
 
             try {
                 await coronaEmbed.react('⬅️');
@@ -174,7 +174,7 @@ module.exports = {
 
             collector.on('collect', async (reaction, user) => {
                 try {
-                    if (message.guild) {
+                    if (interaction.guild) {
                         await reaction.users.remove(user);
                     }
                     switch (reaction.emoji.name) {

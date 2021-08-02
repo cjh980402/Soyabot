@@ -11,6 +11,6 @@ module.exports = {
         description: '길드 지하수로 휴가 신청서를 보여줍니다.'
     },
     async interactionExecute(interaction) {
-        return interaction.editReply({ content: '수로 휴가 신청서', files: ['./pictures/guild_vacation.png'] });
+        return interaction.followUp({ content: '수로 휴가 신청서', files: ['./pictures/guild_vacation.png'] });
     }
 };

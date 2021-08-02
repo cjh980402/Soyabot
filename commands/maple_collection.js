@@ -46,7 +46,7 @@ module.exports = {
         const mapleUserInfo = new MapleUser(interaction.options.get('닉네임').value);
 
         if (!(await mapleUserInfo.homeLevel())) {
-            return interaction.editReply(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);
+            return interaction.followUp(`[${args[0]}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await mapleUserInfo.isLatest())) {
             interaction.editReply('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
@@ -57,10 +57,10 @@ module.exports = {
 
         const collection = mapleUserInfo.Collection();
         if (!collection) {
-            return interaction.editReply(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못하였습니다.`);
+            return interaction.followUp(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못하였습니다.`);
         } else {
             await cmd(`python3 ./util/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(' ')} ${collection[1].join(' ')}`);
-            return interaction.editReply({ content: `${mapleUserInfo.Name}님의 코디 컬렉션`, files: ['./pictures/collection.png'] });
+            return interaction.followUp({ content: `${mapleUserInfo.Name}님의 코디 컬렉션`, files: ['./pictures/collection.png'] });
         }
     }
 };

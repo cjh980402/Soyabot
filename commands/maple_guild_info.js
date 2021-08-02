@@ -56,12 +56,12 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+        const args = interaction.options._hoistedOptions.map((v) => v.value);
 
         const mapleGuildInfo = new MapleGuild(serverEngName[args[0]], args[1]);
         const isLatest = await mapleGuildInfo.isLatest();
         if (mapleGuildInfo.MemberCount === 0) {
-            return interaction.editReply('존재하지 않는 길드입니다.');
+            return interaction.followUp('존재하지 않는 길드입니다.');
         }
 
         interaction.editReply('정보 가져오는 중...');

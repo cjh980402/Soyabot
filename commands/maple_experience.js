@@ -58,14 +58,14 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const [startlev, endlev] = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+        const [startlev, endlev] = interaction.options._hoistedOptions.map((v) => v.value);
 
         if (endlev) {
             if (isNaN(startlev) || startlev < 1 || startlev > 299) {
-                return interaction.editReply('1 ~ 299 범위의 시작 레벨을 입력해주세요.');
+                return interaction.followUp('1 ~ 299 범위의 시작 레벨을 입력해주세요.');
             }
             if (isNaN(endlev) || endlev < startlev || endlev > 300) {
-                return interaction.editReply('시작 레벨 ~ 300 범위의 끝 레벨을 입력해주세요.');
+                return interaction.followUp('시작 레벨 ~ 300 범위의 끝 레벨을 입력해주세요.');
             }
 
             const rslt = `Lv.${startlev} → Lv.${endlev} 경험치통: ${(levelTable[endlev - 1] - levelTable[startlev - 1]).toLocaleString()}
@@ -73,10 +73,10 @@ module.exports = {
 진행률 (~250): ${(Math.min(levelTable[endlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
 진행률 (~275): ${(Math.min(levelTable[endlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
 진행률 (~300): ${((levelTable[endlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
-            return interaction.editReply(rslt);
+            return interaction.followUp(rslt);
         } else {
             if (isNaN(startlev) || startlev < 1 || startlev > 300) {
-                return interaction.editReply('1 ~ 300 범위의 시작 레벨을 입력해주세요.');
+                return interaction.followUp('1 ~ 300 범위의 시작 레벨을 입력해주세요.');
             }
 
             const rslt = `Lv.${startlev} 경험치통: ${(levelTable[startlev] - levelTable[startlev - 1]).toLocaleString()}
@@ -84,7 +84,7 @@ module.exports = {
 진행률 (~250): ${(Math.min(levelTable[startlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
 진행률 (~275): ${(Math.min(levelTable[startlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
 진행률 (~300): ${((levelTable[startlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
-            return interaction.editReply(rslt);
+            return interaction.followUp(rslt);
         }
     }
 };

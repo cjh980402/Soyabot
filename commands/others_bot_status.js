@@ -48,6 +48,6 @@ module.exports = {
             memory = 100 - Math.round((OS.freemem() / OS.totalmem()) * 100);
         }
 
-        return interaction.editReply(`작동 시간: ${timeKoreanUnit(Math.floor(client.uptime / 1000))}\n메모리 사용량: ${memory}%`);
+        return interaction.followUp(`작동 시간: ${timeKoreanUnit(Math.floor(client.uptime / 1000))}\n메모리 사용량: ${memory}%`);
     }
 };

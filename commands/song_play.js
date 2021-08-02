@@ -77,24 +77,24 @@ module.exports = {
     },
     async interactionExecute(interaction) {
         if (!interaction.guild) {
-            return interaction.editReply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
+            return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
         const { channel } = interaction.member.voice;
         const serverQueue = client.queues.get(interaction.guildId);
         if (!channel) {
-            return interaction.editReply('음성 채널에 먼저 참가해주세요!');
+            return interaction.followUp('음성 채널에 먼저 참가해주세요!');
         }
         if (serverQueue && channel.id !== interaction.guild.me.voice.channel.id) {
-            return interaction.editReply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
+            return interaction.followUp(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
 
         const permissions = channel.permissionsFor(interaction.guild.me);
         if (!permissions.has(Permissions.FLAGS.CONNECT)) {
-            return interaction.editReply('권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.');
+            return interaction.followUp('권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.');
         }
         if (!permissions.has(Permissions.FLAGS.SPEAK)) {
-            return interaction.editReply('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
+            return interaction.followUp('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
         }
 
         const url = interaction.options.get('영상_주소_제목').value;
@@ -109,9 +109,14 @@ module.exports = {
         try {
             song = await getSongInfo(url, search);
         } catch (e) {
-            return interaction.editReply(e.message);
+            return interaction.followUp(e.message);
         }
 
+        if (interaction.options._hoistedOptions.length === 1) {
+            try {
+                await interaction.deleteReply(); // search 기능으로 들어오지 않은 경우만 삭제 수행
+            } catch {}
+        }
         if (serverQueue) {
             serverQueue.textChannel = interaction.channel;
             serverQueue.songs.push(song);
@@ -119,16 +124,13 @@ module.exports = {
         }
 
         try {
-            if (interaction.options._hoistedOptions.length == 1) {
-                await interaction.deleteReply(); // search 기능으로 들어오지 않은 경우만 삭제 수행
-            }
             const newQueue = new QueueElement(interaction.channel, channel, await channel.join(), [song]);
             client.queues.set(interaction.guildId, newQueue);
             play(newQueue);
         } catch (e) {
             client.queues.delete(interaction.guildId);
             replyAdmin(`작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction.options._i()}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
-            return interaction.editReply(`채널에 참가할 수 없습니다: ${e.message ?? e}`);
+            return interaction.followUp(`채널에 참가할 수 없습니다: ${e.message ?? e}`);
         }
     }
 };

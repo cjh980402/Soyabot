@@ -47,27 +47,27 @@ module.exports = {
     },
     async interactionExecute(interaction) {
         if (!interaction.guild) {
-            return interaction.editReply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
+            return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
         const queue = client.queues.get(interaction.guildId);
         if (!queue?.audioPlayer.state.resource) {
-            return interaction.editReply('재생 중인 노래가 없습니다.');
+            return interaction.followUp('재생 중인 노래가 없습니다.');
         }
         if (!canModifyQueue(interaction.member)) {
-            return interaction.editReply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
+            return interaction.followUp(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
 
         const volume = interaction.options.get('변경할_음량')?.value;
         if (!volume) {
-            return interaction.editReply(`🔊 현재 음량: **${queue.volume}%**`);
+            return interaction.followUp(`🔊 현재 음량: **${queue.volume}%**`);
         }
         if (volume > 100 || volume < 0) {
-            return interaction.editReply('0 ~ 100 범위의 음량만 가능합니다.');
+            return interaction.followUp('0 ~ 100 범위의 음량만 가능합니다.');
         }
 
         queue.volume = volume;
         queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
-        return interaction.editReply(`변경된 음량: **${queue.volume}%**`);
+        return interaction.followUp(`변경된 음량: **${queue.volume}%**`);
     }
 };

@@ -44,7 +44,7 @@ module.exports = {
         const mapleUserInfo = new MapleUser(interaction.options.get('닉네임').value);
 
         if (!(await mapleUserInfo.homeLevel())) {
-            return interaction.editReply(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
+            return interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await mapleUserInfo.isLatest())) {
             interaction.editReply('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
@@ -55,9 +55,9 @@ module.exports = {
 
         const murung = mapleUserInfo.Murung();
         if (!murung) {
-            return interaction.editReply(`[${mapleUserInfo.Name}]\n기록이 없습니다.`);
+            return interaction.followUp(`[${mapleUserInfo.Name}]\n기록이 없습니다.`);
         } else {
-            return interaction.editReply(`[${mapleUserInfo.Name}]\n${murung[0]}\n기록: ${murung[1]}\n시간: ${murung[2]}\n날짜: ${murung[3]}`);
+            return interaction.followUp(`[${mapleUserInfo.Name}]\n${murung[0]}\n기록: ${murung[1]}\n시간: ${murung[2]}\n날짜: ${murung[3]}`);
         }
     }
 };

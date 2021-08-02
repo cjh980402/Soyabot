@@ -126,9 +126,9 @@ module.exports = {
     },
     async interactionExecute(interaction) {
         if (!interaction.guild) {
-            return interaction.editReply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
+            return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         } else if (interaction.guild.memberCount < 3) {
-            return interaction.editReply(`${client.user.username}을 제외한 방의 인원이 2명 이상일 때 게임을 이용할 수 있습니다.`);
+            return interaction.followUp(`${client.user.username}을 제외한 방의 인원이 2명 이상일 때 게임을 이용할 수 있습니다.`);
         }
         const bullet = interaction.options.get('탄환_수')?.value ?? 6; // 탄환 수 지정
         const gameUser = [interaction.member]; // 참가자 객체 배열

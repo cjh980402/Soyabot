@@ -19,6 +19,6 @@ module.exports = {
     async interactionExecute(interaction) {
         const $ = load(await (await fetch(`https://m.search.daum.net/search?w=tot&nil_mtopsearch=btn&DA=YZR&q=${encodeURIComponent('미세먼지')}%EC%98%81%EC%83%81`)).text());
 
-        return interaction.editReply({ content: '현재 미세먼지 지도', files: [$('div.play_video > img').attr('data-original-src')] });
+        return interaction.followUp({ content: '현재 미세먼지 지도', files: [$('div.play_video > img').attr('data-original-src')] });
     }
 };

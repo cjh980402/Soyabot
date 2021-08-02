@@ -39,7 +39,7 @@ module.exports = {
         const mapleUserInfo = new MapleUser(interaction.options.get('닉네임').value);
 
         if (!(await mapleUserInfo.homeLevel())) {
-            return interaction.editReply(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
+            return interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await mapleUserInfo.isLatest())) {
             interaction.editReply('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
@@ -48,6 +48,6 @@ module.exports = {
             }
         }
 
-        return interaction.editReply({ content: `${mapleUserInfo.Name}님의 캐릭터 이미지`, files: [mapleUserInfo.userImg()] });
+        return interaction.followUp({ content: `${mapleUserInfo.Name}님의 캐릭터 이미지`, files: [mapleUserInfo.userImg()] });
     }
 };

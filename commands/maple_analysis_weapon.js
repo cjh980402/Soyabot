@@ -77,7 +77,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+        const args = interaction.options._hoistedOptions.map((v) => v.value);
 
         const starforce = {
             130: [6, 7, 7, 8, 9],
@@ -90,18 +90,18 @@ module.exports = {
             args[0] -= args[4]; // 추옵 수치를 빼준다.
         }
         if (!starforce[args[2]]) {
-            return interaction.editReply('130제, 140제, 150제, 160제, 200제 아이템만 가능합니다.');
+            return interaction.followUp('130제, 140제, 150제, 160제, 200제 아이템만 가능합니다.');
         }
         if (args[2] === 130 && args[3] > 20) {
-            return interaction.editReply('130제는 20성까지만 가능합니다.');
+            return interaction.followUp('130제는 20성까지만 가능합니다.');
         }
         if (args[3] < 0 || args[3] > 25) {
-            return interaction.editReply('강화 단계가 올바르지 않습니다.');
+            return interaction.followUp('강화 단계가 올바르지 않습니다.');
         }
         for (let i = args[3]; i >= 1; i--) {
             args[0] -= i >= 16 ? starforce[args[2]][i - 16] : Math.floor((args[0] + 50) / 51); // 스타포스 상승 수치를 없애는 과정
         }
 
-        return interaction.editReply(`${args[2]}제 ${args[3]}성 강화\n작으로 상승한 공: ${args[0] - args[1]}`);
+        return interaction.followUp(`${args[2]}제 ${args[3]}성 강화\n작으로 상승한 공: ${args[0] - args[1]}`);
     }
 };

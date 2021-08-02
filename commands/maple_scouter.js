@@ -101,13 +101,13 @@ module.exports = {
                 rslt += `\n${scoreGrade[i][0]} ~ ${scoreGrade[i + 1][0] - 1}점: ${scoreGrade[i][1]}`;
             }
             rslt += `\n${scoreGrade[scoreGrade.length - 2][0]}점 이상: ${scoreGrade[scoreGrade.length - 2][1]}`;
-            return interaction.editReply(rslt);
+            return interaction.followUp(rslt);
         }
 
         const mapleUserInfo = new MapleUser(nickname);
         const union = (await mapleUserInfo.homeUnion())?.[0];
         if (!union) {
-            return interaction.editReply(`[${mapleUserInfo.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
+            return interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
         }
 
         if (!(await mapleUserInfo.isLatest())) {
@@ -117,6 +117,6 @@ module.exports = {
             }
         }
 
-        return interaction.editReply({ embeds: [getScouterEmbed(mapleUserInfo)] });
+        return interaction.followUp({ embeds: [getScouterEmbed(mapleUserInfo)] });
     }
 };

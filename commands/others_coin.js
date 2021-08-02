@@ -119,9 +119,9 @@ module.exports = {
         });
 
         if (!searchRslt) {
-            return interaction.editReply('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
+            return interaction.followUp('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
         } else {
-            return interaction.editReply({ embeds: [await getCoinEmbed(searchList, type)] });
+            return interaction.followUp({ embeds: [await getCoinEmbed(searchRslt, type)] });
         }
     }
 };

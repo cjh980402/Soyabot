@@ -93,28 +93,28 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+        const args = interaction.options._hoistedOptions.map((v) => v.value);
 
         if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
-            return interaction.editReply(
+            return interaction.followUp(
                 `<지원하는 언어 종류>\n${Object.values(langList)
                     .map((v) => v[0])
                     .join(', ')}`
             );
         }
         if (!args[1]) {
-            return interaction.editReply(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            return interaction.followUp(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const langCode = findLangCode(args[0][0], args[0][1]);
         if (!langCode) {
-            return interaction.editReply(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 "${this.usage}"입니다.\n언어의 목록은 ${client.prefix}번역 목록을 확인해주세요.`);
+            return interaction.followUp(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 "${this.usage}"입니다.\n언어의 목록은 ${client.prefix}번역 목록을 확인해주세요.`);
         }
 
         const text = args[1];
         if (text.length > 5000) {
-            return interaction.editReply('5000자를 초과하는 내용은 번역하지 않습니다.');
+            return interaction.followUp('5000자를 초과하는 내용은 번역하지 않습니다.');
         } else {
-            return interaction.editReply(await tran(langCode[0], langCode[1], text));
+            return interaction.followUp(await tran(langCode[0], langCode[1], text));
         }
     }
 };

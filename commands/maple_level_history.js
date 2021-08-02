@@ -49,7 +49,7 @@ module.exports = {
         const mapleUserInfo = new MapleUser(interaction.options.get('닉네임').value);
 
         if (!(await mapleUserInfo.homeLevel())) {
-            return interaction.editReply(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
+            return interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await mapleUserInfo.isLatest())) {
             interaction.editReply('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
@@ -60,14 +60,14 @@ module.exports = {
 
         const data = mapleUserInfo.LevelHistory();
         if (!data) {
-            return interaction.editReply(`[${mapleUserInfo.Name}]\n레벨 히스토리를 가져오지 못했습니다.`);
+            return interaction.followUp(`[${mapleUserInfo.Name}]\n레벨 히스토리를 가져오지 못했습니다.`);
         } else {
             const len = data[0].length;
             let rslt = `[${mapleUserInfo.Name}]`;
             for (let i = 1; i < len; i++) {
                 rslt += `\nLv.${data[1][i]} 달성일: ${data[0][i]}`;
             }
-            return interaction.editReply(rslt);
+            return interaction.followUp(rslt);
         }
     }
 };

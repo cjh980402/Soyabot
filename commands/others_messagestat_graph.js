@@ -119,9 +119,9 @@ module.exports = {
         const option = interaction.options.get('옵션')?.value;
         const targetGuild = (option > 0 && interaction.user.id === ADMIN_ID && client.guilds.cache.find((v) => v.name.includes(option))) || interaction.guild;
         if (!targetGuild) {
-            return interaction.editReply('사용이 불가능한 채널입니다.');
+            return interaction.followUp('사용이 불가능한 채널입니다.');
         }
 
-        return interaction.editReply({ files: [await getMessageCountGraph(targetGuild, option)] });
+        return interaction.followUp({ files: [await getMessageCountGraph(targetGuild, option)] });
     }
 };

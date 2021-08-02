@@ -104,6 +104,6 @@ module.exports = {
             .addField('**종합 랭킹**', char_rank ? `전체: ${char_rank[0]}\n월드: ${char_rank[1]}` : '-', true)
             .addField('**직업 랭킹**', char_rank ? `전체: ${char_rank[3]}\n월드: ${char_rank[2]}` : '-', true);
 
-        return interaction.editReply({ embeds: [infoEmbed] });
+        return interaction.followUp({ embeds: [infoEmbed] });
     }
 };

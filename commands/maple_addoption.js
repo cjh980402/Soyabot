@@ -46,6 +46,6 @@ module.exports = {
     },
     async interactionExecute(interaction) {
         const weapon = interaction.options.get('무기종류').value;
-        return interaction.editReply({ content: `${weapon} 무기의 추옵표`, files: [`./pictures/add_option/${picmatch[weapon]}.png`] });
+        return interaction.followUp({ content: `${weapon} 무기의 추옵표`, files: [`./pictures/add_option/${picmatch[weapon]}.png`] });
     }
 };

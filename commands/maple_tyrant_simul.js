@@ -38,9 +38,9 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+        const args = interaction.options._hoistedOptions.map((v) => v.value);
 
         const result = new SuperialItem();
-        return interaction.editReply(result.doingStarforce(args));
+        return interaction.followUp(result.doingStarforce(args));
     }
 };

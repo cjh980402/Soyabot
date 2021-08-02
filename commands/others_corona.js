@@ -73,9 +73,9 @@ module.exports = {
                 .addField('**사망자**', calcIncrease($, 'deathCnt'))
                 .addField('**검사 중**', calcIncrease($, 'examCnt'));
 
-            return interaction.editReply({ embeds: [coronaEmbed] });
+            return interaction.followUp({ embeds: [coronaEmbed] });
         } else {
-            return interaction.editReply('코로나 현황을 조회할 수 없습니다.');
+            return interaction.followUp('코로나 현황을 조회할 수 없습니다.');
         }
     }
 };

@@ -87,7 +87,7 @@ Object.defineProperty(Discord.Guild.prototype, '_patch', {
             if (everyone) {
                 this.roles.cache.forceSet(everyone.id, this.roles._add(everyone));
             }
-            data.roles.filter((role) => this.me._roles.includes(role.id)).forEach((role) => this.roles.cache.forceSet(role.id, this.roles._add(role)));
+            data.roles.forEach((role) => this.me._roles.includes(role.id) && this.roles.cache.forceSet(role.id, this.roles._add(role)));
         }
     }
 });

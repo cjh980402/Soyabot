@@ -243,9 +243,9 @@ module.exports = {
         const searchRslt = (await (await fetch(`https://ac.finance.naver.com/ac?q=${encodeURIComponent(search)}&t_koreng=1&st=111&r_lt=111`)).json()).items[0];
 
         if (!searchRslt?.length) {
-            return interaction.editReply('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
+            return interaction.followUp('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
         } else {
-            return interaction.editReply({ embeds: [await getStockEmbed(search, searchRslt, type)] });
+            return interaction.followUp({ embeds: [await getStockEmbed(search, searchRslt, type)] });
         }
     }
 };

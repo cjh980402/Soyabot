@@ -58,7 +58,7 @@ module.exports = {
         const mapleUserInfo = new MapleUser(interaction.options.get('닉네임').value);
 
         if (!(await mapleUserInfo.homeLevel())) {
-            return interaction.editReply(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
+            return interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await mapleUserInfo.isLatest())) {
             interaction.editReply('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
@@ -69,7 +69,7 @@ module.exports = {
 
         const coordi = mapleUserInfo.Coordi();
         if (!coordi) {
-            return interaction.editReply(`[${mapleUserInfo.Name}]\n코디 정보가 없습니다.`);
+            return interaction.followUp(`[${mapleUserInfo.Name}]\n코디 정보가 없습니다.`);
         } else {
             const coordiEmbed = new MessageEmbed()
                 .setTitle(`**${mapleUserInfo.Name}님의 코디**`)
@@ -84,7 +84,7 @@ module.exports = {
                 .addField('**신발**', coordi[5], true)
                 .addField('**무기**', coordi[6], true);
 
-            return interaction.editReply({ embeds: [coordiEmbed] });
+            return interaction.followUp({ embeds: [coordiEmbed] });
         }
     }
 };

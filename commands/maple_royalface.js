@@ -56,16 +56,16 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+        const args = interaction.options._hoistedOptions.map((v) => v.value);
 
         if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
             const rslt = `<로얄 성형 확률>\n\n- 남자 성형\n${faceList['남'].map((v) => `${v}: 16.67%`).join('\n')}\n\n- 여자 성형\n${faceList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
-            return interaction.editReply(rslt);
+            return interaction.followUp(rslt);
         }
         const gender = args.shift();
-        const goalface = (faceList[gender] ?? []).findIndex((v) => v.replace(/\s+/, '').includes(args.join('')));
+        const goalface = (faceList[gender] ?? []).findIndex((v) => v === args[0]);
         if (goalface === -1) {
-            return interaction.editReply(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            return interaction.followUp(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         // gender은 성별, goalface는 목표 성형의 인덱스
         // random은 0이상 1미만
@@ -78,6 +78,6 @@ module.exports = {
         }
 
         const rslt = `로얄 성형 (목표: ${faceList[gender][goalface]}) 결과\n\n수행 횟수: ${list.length}회\n\n진행 과정\n${list.map((v, i) => `${i + 1}번째: ${faceList[gender][v]}`).join('\n')}`;
-        return interaction.editReply(rslt);
+        return interaction.followUp(rslt);
     }
 };

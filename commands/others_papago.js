@@ -94,26 +94,26 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+        const args = interaction.options._hoistedOptions.map((v) => v.value);
 
         if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
             const list =
                 '한국어(ko)-영어(en), 한국어(ko)-일본어(ja), 한국어(ko)-중국어 간체(zh-CN), 한국어(ko)-중국어 번체(zh-TW), 한국어(ko)-스페인어(es), 한국어(ko)-프랑스어(fr), 한국어(ko)-러시아어(ru), 한국어(ko)-베트남어(vi), 한국어(ko)-태국어(th), 한국어(ko)-인도네시아어(id), 한국어(ko)-독일어(de), 한국어(ko)-이탈리아어(it), 중국어 간체(zh-CN) - 중국어 번체(zh-TW), 중국어 간체(zh-CN) - 일본어(ja), 중국어 번체(zh-TW) - 일본어(ja), 영어(en)-일본어(ja), 영어(en)-중국어 간체(zh-CN), 영어(en)-중국어 번체(zh-TW), 영어(en)-프랑스어(fr)';
-            return interaction.editReply(`<지원하는 번역 종류>\n\n${list.replace(/, /g, '\n')}\n\n순서는 바뀌어도 됩니다.`);
+            return interaction.followUp(`<지원하는 번역 종류>\n\n${list.replace(/, /g, '\n')}\n\n순서는 바뀌어도 됩니다.`);
         }
         if (!args[2]) {
-            return interaction.editReply(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            return interaction.followUp(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
         if (!checkLan(args[0], args[1]) && !checkLan(args[1], args[0])) {
-            return interaction.editReply(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 "${this.usage}"입니다.\n언어의 형식은 ${client.prefix}파파고 목록을 확인해주세요.`);
+            return interaction.followUp(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 "${this.usage}"입니다.\n언어의 형식은 ${client.prefix}파파고 목록을 확인해주세요.`);
         }
 
         const text = args[2];
         if (text.length > 1000) {
-            return interaction.editReply('1000자를 초과하는 내용은 번역하지 않습니다.');
+            return interaction.followUp('1000자를 초과하는 내용은 번역하지 않습니다.');
         } else {
-            return interaction.editReply(await tran(args[0], args[1], text));
+            return interaction.followUp(await tran(args[0], args[1], text));
         }
     }
 };

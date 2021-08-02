@@ -75,23 +75,23 @@ module.exports = {
     },
     async interactionExecute(interaction) {
         if (!interaction.guild) {
-            return interaction.editReply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
+            return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
         if (!interaction.member.voice.channel) {
-            return interaction.editReply('음성 채널에 먼저 참가해주세요!');
+            return interaction.followUp('음성 채널에 먼저 참가해주세요!');
         }
 
         const search = interaction.options.get('영상_제목').value;
         const results = await youtubeSearch(search);
         if (!results) {
-            return interaction.editReply('검색 내용에 해당하는 영상을 찾지 못했습니다.');
+            return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
         }
 
         const resultsEmbed = new MessageEmbed().setTitle('**재생할 노래의 번호를 알려주세요.**').setDescription(`${search}의 검색 결과`).setColor('#FF9999');
         results.forEach((video, index) => resultsEmbed.addField(`**${index + 1}. ${video.title}**`, `https://youtu.be/${video.id}`));
         // results.forEach((video, index) => resultsEmbed.addField(`**${index + 1}. ${video.title.decodeHTML().decodeHTML()}**`, video.shortURL));
 
-        const resultsMessage = await interaction.editReply({ embeds: [resultsEmbed], fetchReply: true });
+        const resultsMessage = await interaction.editReply({ embeds: [resultsEmbed] });
 
         try {
             let songChoice;

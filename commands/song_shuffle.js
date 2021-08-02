@@ -27,18 +27,18 @@ module.exports = {
     },
     async interactionExecute(interaction) {
         if (!interaction.guild) {
-            return interaction.editReply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
+            return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
         const queue = client.queues.get(interaction.guildId);
         if (!queue?.audioPlayer.state.resource) {
-            return interaction.editReply('재생 중인 노래가 없습니다.');
+            return interaction.followUp('재생 중인 노래가 없습니다.');
         }
         if (!canModifyQueue(interaction.member)) {
-            return interaction.editReply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
+            return interaction.followUp(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
 
         queue.songs.shuffle(1); // 첫번째 노래를 제외하고 섞기
-        return interaction.editReply(`${interaction.user} 🔀 대기열을 섞었습니다.`);
+        return interaction.followUp(`${interaction.user} 🔀 대기열을 섞었습니다.`);
     }
 };

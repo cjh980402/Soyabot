@@ -100,7 +100,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = this.interaction.options.map((v) => interaction.options.get(v.name)?.value);
+        const args = interaction.options._hoistedOptions.map((v) => v.value);
 
         const category = args[0];
         if (args[1] === '확률' || args[1] === 'ㅎㄹ') {
@@ -108,12 +108,12 @@ module.exports = {
             for (let key in probTable[category]) {
                 rslt += `\n${key}: ${probTable[category][key] / 100}%`;
             }
-            return interaction.editReply(rslt);
+            return interaction.followUp(rslt);
         }
 
         const count = Math.trunc(args[1] ?? 1);
         if (isNaN(count) || count < 1 || count > 20000) {
-            return interaction.editReply('1 ~ 20000 범위의 숫자만 입력가능합니다.');
+            return interaction.followUp('1 ~ 20000 범위의 숫자만 입력가능합니다.');
         }
 
         // category는 루나크리스탈 종류, count는 루나크리스탈 횟수
@@ -139,6 +139,6 @@ module.exports = {
                 rslt += `\n${key}: ${list[key]}회`;
             }
         }
-        return interaction.editReply(rslt);
+        return interaction.followUp(rslt);
     }
 };

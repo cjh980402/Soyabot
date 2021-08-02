@@ -11,6 +11,6 @@ module.exports = {
         description: '일반 장비의 놀장강 강화 능력치를 출력합니다.'
     },
     async interactionExecute(interaction) {
-        return interaction.editReply({ content: '놀장강 강화 능력치 표', files: ['./pictures/noljang.png'] });
+        return interaction.followUp({ content: '놀장강 강화 능력치 표', files: ['./pictures/noljang.png'] });
     }
 };

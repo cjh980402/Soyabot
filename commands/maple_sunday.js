@@ -38,7 +38,7 @@ module.exports = {
             .filter((_, v) => /^썬데이\s*메이플$/.test($(v).text()))
             .attr('href');
         if (!sunday) {
-            return interaction.editReply('썬데이 메이플 공지가 아직 없습니다.');
+            return interaction.followUp('썬데이 메이플 공지가 아직 없습니다.');
         }
 
         const sundayTitle = `${eventdata
@@ -48,6 +48,6 @@ module.exports = {
             .substr(0, 14)}의 썬데이 메이플`;
         const imgLink = load(await (await fetch(`https://maplestory.nexon.com${sunday}`)).text())('img[alt="썬데이 메이플!"]').attr('src');
 
-        return interaction.editReply({ content: sundayTitle, files: [imgLink] });
+        return interaction.followUp({ content: sundayTitle, files: [imgLink] });
     }
 };
