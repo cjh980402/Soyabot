@@ -42,8 +42,19 @@ Object.defineProperty(Discord, 'botClientOption', {
         ],
         makeCache: Discord.Options.cacheWithLimits({
             BaseGuildEmojiManager: 0,
+            ChannelManager: {
+                maxSize: Infinity,
+                sweepFilter: () => (v) => !/^(DM|GUILD_TEXT|GUILD_VOICE)$/.test(v.type),
+                sweepInterval: 3600
+            },
             GuildBanManager: 0,
+            GuildChannelManager: {
+                maxSize: Infinity,
+                sweepFilter: () => (v) => !/^(DM|GUILD_TEXT|GUILD_VOICE)$/.test(v.type),
+                sweepInterval: 3600
+            },
             GuildEmojiManager: 0,
+            GuildInviteManager: 0,
             GuildMemberManager: {
                 maxSize: 1,
                 keepOverLimit: (v) => v.id === client.user.id
@@ -52,7 +63,12 @@ Object.defineProperty(Discord, 'botClientOption', {
             MessageManager: 0,
             PresenceManager: 0,
             RoleManager: 0,
-            UserManager: 0
+            UserManager: 0,
+            VoiceStateManager: {
+                maxSize: Infinity,
+                sweepFilter: () => (v) => v.id !== client.user.id && !client.queues.get(v.guild.id),
+                sweepInterval: 3600
+            }
         })
     }
 });
@@ -111,8 +127,7 @@ Object.defineProperty(Discord.Message.prototype, 'fullContent', {
 Object.defineProperty(Discord.Channel.prototype, 'sendSplitCode', {
     value: async function (content, options = {}) {
         if (this.isText()) {
-            const contents = contentSplitCode(content, options);
-            for (const c of contents) {
+            for (const c of contentSplitCode(content, options)) {
                 await this.send(c);
             }
         }
@@ -121,8 +136,7 @@ Object.defineProperty(Discord.Channel.prototype, 'sendSplitCode', {
 
 Object.defineProperty(Discord.CommandInteraction.prototype, 'sendSplitCode', {
     value: async function (content, options = {}) {
-        const contents = contentSplitCode(content, options);
-        for (const c of contents) {
+        for (const c of contentSplitCode(content, options)) {
             await this.followUp(c);
         }
     }

@@ -67,7 +67,7 @@ module.exports = {
                     notice.push(`${i} 자동알림: ON`);
                 }
             }
-            return message.channel.send(notice.join('\n'));
+            return interaction.followUp(notice.join('\n'));
         }
         const find = await db.get(`SELECT * FROM ${noticematch[category]}skip WHERE channelid = ?`, [interaction.guildId]);
         if (find) {

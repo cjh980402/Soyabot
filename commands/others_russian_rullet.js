@@ -180,7 +180,7 @@ module.exports = {
                 errors: ['time']
             }); // 5분 대기
             if (gameChatType === 1 && gameUser.length === bullet) {
-                await message.channel.send('인원이 가득 차 게임이 자동으로 시작됩니다.');
+                await interaction.channel.send('인원이 가득 차 게임이 자동으로 시작됩니다.');
                 break; // 게임 시작
             } else if (gameChatType === 2) {
                 break; // 게임 시작
