@@ -23,7 +23,7 @@ module.exports = {
     },
     interaction: {
         name: 'shuffle',
-        description: '가장 최근 노래를 다시 재생합니다.'
+        description: '대기열 순서를 랜덤하게 섞어줍니다.'
     },
     async interactionExecute(interaction) {
         if (!interaction.guild) {

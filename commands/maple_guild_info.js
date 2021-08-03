@@ -45,7 +45,8 @@ module.exports = {
                 name: '서버_이름',
                 type: 'STRING',
                 description: '검색할 길드의 서버',
-                required: true
+                required: true,
+                choices: Object.keys(serverEngName).map((v) => ({ name: v, value: v }))
             },
             {
                 name: '길드_이름',

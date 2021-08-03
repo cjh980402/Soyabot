@@ -91,7 +91,7 @@ client.on('messageCreate', async (message) => {
 
         const botModule = client.commands.find((cmd) => cmd.command.includes(commandName)); // 해당하는 명령어 찾기
 
-        if (!botModule) {
+        if (!botModule?.messageExecute) {
             return; // 해당하는 명령어 없으면 종료
         }
 
@@ -129,9 +129,9 @@ client.on('interactionCreate', async (interaction) => {
     }
     let { commandName } = interaction;
     try {
+        await interaction.defer(); // defer를 하지 않으면 3초 내로 슬래시 커맨드 응답을 해야함
         console.log(`(${new Date().toLocaleString()}) ${interaction.channelId} ${interaction.channel.name} ${interaction.user.id} ${interaction.user.username}: ${interaction.options._i()}\n`);
 
-        await interaction.defer(); // defer를 하지 않으면 3초 내로 슬래시 커맨드 응답을 해야함
         const permissions = interaction.channel.permissionsFor?.(interaction.guild.me);
         if (permissions && !permissions.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.READ_MESSAGE_HISTORY])) {
             return; // 기본 권한이 없는 채널이므로 바로 종료
@@ -139,7 +139,7 @@ client.on('interactionCreate', async (interaction) => {
 
         const botModule = client.commands.find((cmd) => cmd.command.includes(commandName)); // 해당하는 명령어 찾기
 
-        if (!botModule) {
+        if (!botModule?.interactionExecute) {
             return; // 해당하는 명령어 없으면 종료
         }
 

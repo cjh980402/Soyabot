@@ -26,15 +26,13 @@ module.exports = {
             {
                 name: '글자_수',
                 type: 'INTEGER',
-                description: '추천받을 닉네임의 글자 수'
+                description: '추천받을 닉네임의 글자 수',
+                choices: [2, 3, 4, 5, 6].map((v) => ({ name: v, value: v }))
             }
         ]
     },
     async interactionExecute(interaction) {
         const count = interaction.options.get('글자_수')?.value ?? 2;
-        if (count < 2 || count > 6) {
-            return interaction.followUp('닉네임은 2 ~ 6 글자만 가능합니다.');
-        }
 
         let rslt = '';
 
