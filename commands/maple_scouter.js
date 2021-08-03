@@ -13,7 +13,7 @@ const scoreGrade = [
     [Infinity, '']
 ];
 
-function getScouterEmbed(mapleUserInfo) {
+function getScouterEmbed(mapleUserInfo, union) {
     const level = mapleUserInfo.Level();
     const job = mapleUserInfo.Job();
 
@@ -80,7 +80,7 @@ module.exports = {
             }
         }
 
-        return message.channel.send({ embeds: [getScouterEmbed(mapleUserInfo)] });
+        return message.channel.send({ embeds: [getScouterEmbed(mapleUserInfo, union)] });
     },
     interaction: {
         name: '스카우터',
@@ -117,6 +117,6 @@ module.exports = {
             }
         }
 
-        return interaction.followUp({ embeds: [getScouterEmbed(mapleUserInfo)] });
+        return interaction.followUp({ embeds: [getScouterEmbed(mapleUserInfo, union)] });
     }
 };

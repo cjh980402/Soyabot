@@ -62,6 +62,8 @@ async function getCoinEmbed(searchRslt, type) {
             .addField('**바이낸스**', `${binancePrice.toLocaleString()}$\n${binanceKRW.toLocaleString()}원`, true)
             .addField('**김프**', ` ${kimPre.toLocaleString()}원 (${kimPrePercent.toFixed(2)}%)`, true);
     }
+
+    return coinEmbed;
 }
 
 module.exports = {
@@ -87,7 +89,7 @@ module.exports = {
         if (!searchRslt) {
             return message.channel.send('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
         } else {
-            return message.channel.send({ embeds: [await getCoinEmbed(searchList, type)] });
+            return message.channel.send({ embeds: [await getCoinEmbed(searchRslt, type)] });
         }
     },
     interaction: {

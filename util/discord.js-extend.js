@@ -63,7 +63,7 @@ Object.defineProperty(Discord, 'botClientOption', {
             PresenceManager: 0,
             RoleManager: {
                 maxSize: 1,
-                keepOverLimit: (v) => v.id === v.guild.id || v.guild.me._roles.includes(v.id)
+                keepOverLimit: (v) => v.id === v.guild.id || v.guild.me?._roles.includes(v.id)
             },
             UserManager: 0,
             VoiceStateManager: {

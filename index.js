@@ -165,5 +165,7 @@ client.on('interactionCreate', async (interaction) => {
                 replyAdmin(`작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction.options._i()}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             }
         } catch {}
+    } finally {
+        await cachingMessage(interaction); // 들어오는 슬래시 커맨드 항상 캐싱
     }
 });
