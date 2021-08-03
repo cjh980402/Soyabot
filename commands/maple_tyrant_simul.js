@@ -16,7 +16,7 @@ module.exports = {
     },
     interaction: {
         name: '타일런트시뮬',
-        description: '무기의 작으로 상승한 공격력을 계산합니다.',
+        description: '타일런트 장비템의 스타포스 시뮬레이션을 수행합니다.',
         options: [
             {
                 name: '시작_스타포스_개수',
@@ -33,7 +33,11 @@ module.exports = {
             {
                 name: '스타캐치',
                 type: 'INTEGER',
-                description: '스타캐치 미적용 = 0 / 스타캐치 적용 = 1'
+                description: '스타캐치 적용 유무',
+                choices: [
+                    { name: '스타캐치 미적용', value: 0 },
+                    { name: '스타캐치 적용', value: 1 }
+                ]
             }
         ]
     },

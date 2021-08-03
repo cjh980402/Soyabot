@@ -24,7 +24,7 @@ module.exports = {
     },
     interaction: {
         name: '스타포스시뮬',
-        description: '무기의 작으로 상승한 공격력을 계산합니다.',
+        description: '일반 장비템의 스타포스 시뮬레이션을 수행합니다.',
         options: [
             {
                 name: '아이템_레벨_제한',
@@ -47,17 +47,32 @@ module.exports = {
             {
                 name: '스타캐치',
                 type: 'INTEGER',
-                description: '스타캐치 미적용 = 0 / 스타캐치 적용 = 1'
+                description: '스타캐치 적용 유무',
+                choices: [
+                    { name: '스타캐치 미적용', value: 0 },
+                    { name: '스타캐치 적용', value: 1 }
+                ]
             },
             {
                 name: '할인_이벤트',
                 type: 'INTEGER',
-                description: '이벤트 미적용 = 0 / 30퍼 할인 이벤트 = 1 / 5, 10, 15성 100% 성공 이벤트 = 2 / 10성 이하 1 + 1 이벤트 = 3'
+                description: '적용할 스타포스 할인 이벤트',
+                choices: [
+                    { name: '이벤트 미적용', value: 0 },
+                    { name: '30퍼 할인 이벤트', value: 1 },
+                    { name: '5, 10, 15성 100% 성공 이벤트', value: 2 },
+                    { name: '10성 이하 1 + 1 이벤트', value: 3 }
+                ]
             },
             {
-                name: '파괴방지',
+                name: '파괴_방지',
                 type: 'INTEGER',
-                description: '파괴 방지 미적용 = 0 / 파괴 방지 (12 ~ 17성 적용) = 1 / 파괴 방지 (15 ~ 17성 적용) = 2'
+                description: '적용할 파괴 방지의 종류',
+                choices: [
+                    { name: '파괴 방지 미적용', value: 0 },
+                    { name: '파괴 방지 (12 ~ 17성 적용)', value: 1 },
+                    { name: '파괴 방지 (15 ~ 17성 적용)', value: 2 }
+                ]
             }
         ]
     },
