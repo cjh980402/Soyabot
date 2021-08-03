@@ -68,7 +68,7 @@ Object.defineProperty(Discord, 'botClientOption', {
             UserManager: 0,
             VoiceStateManager: {
                 maxSize: Infinity,
-                sweepFilter: () => (v) => v.id !== client.user.id && !client.queues.get(v.guild.id),
+                sweepFilter: () => (v) => v.id !== client.user.id && !v.channelId,
                 sweepInterval: 3600
             }
         })
