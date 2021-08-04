@@ -201,8 +201,8 @@ module.exports.musicReactionControl = async function (reaction, user) {
 
 module.exports.musicActiveControl = function (oldState, newState) {
     try {
-        const oldVoice = oldState?.channel;
-        const newVoice = newState?.channel;
+        const oldVoice = oldState.channel;
+        const newVoice = newState.channel;
         if (oldVoice?.id !== newVoice?.id) {
             console.log(!oldVoice ? 'User joined!' : !newVoice ? 'User left!' : 'User switched channels!');
 

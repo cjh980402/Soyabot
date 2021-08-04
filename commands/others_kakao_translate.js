@@ -102,7 +102,7 @@ module.exports = {
                     .join(', ')}`
             );
         }
-        if (!args[1]) {
+        if (args.length < 2) {
             return interaction.followUp(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const langCode = findLangCode(args[0][0], args[0][1]);

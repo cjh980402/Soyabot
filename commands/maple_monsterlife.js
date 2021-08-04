@@ -209,7 +209,7 @@ module.exports = {
         } else if (args[0] === '정보') {
             return interaction.sendSplitCode(await farm_info(args.slice(1).join('')), { split: { char: '\n' } });
         } else if (args[0] === '추가') {
-            if (!args[3]) {
+            if (args.length < 4) {
                 return interaction.followUp(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
             }
             return interaction.followUp(await farm_add(args[1], args[2], args.slice(3).join('')));

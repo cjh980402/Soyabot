@@ -21,7 +21,7 @@ module.exports.botNotice = async function (data, type = null) {
 
 module.exports.replyRoomID = async function (roomID, str) {
     try {
-        const target = client.channels._add({ id: roomID, type: 1 }, null, { cache: false }); // 메세지를 보내고 싶은 방 객체 획득
+        const target = client.channels._add({ id: roomID, type: 1 }, null, { cache: false }); // 메세지를 보내고 싶은 방 객체 생성
         await target.sendSplitCode(str, { split: { char: '' } }); // 해당 채널에 메시지 전송
         return target;
     } catch {
@@ -31,7 +31,7 @@ module.exports.replyRoomID = async function (roomID, str) {
 
 module.exports.replyAdmin = async function (str) {
     try {
-        const admin = client.users._add({ id: ADMIN_ID }); // 관리자 유저 객체 획득
+        const admin = client.users._add({ id: ADMIN_ID }, false); // 관리자 유저 객체 생성
         await (await admin.createDM()).sendSplitCode(str, { split: { char: '' } }); // 관리자에게 DM으로 보냄
         return admin;
     } catch {

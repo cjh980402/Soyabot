@@ -80,7 +80,7 @@ Object.defineProperty(Discord.Message.prototype, '_patch', {
     value: function (data, partial = false) {
         _patch.call(this, data, partial);
         if (data.member && this.guild && this.author) {
-            this._member = this.guild.members._add({ user: this.author, ...data.member }, false);
+            this._member = this.guild.members._add({ ...data.member, user: this.author }, false);
         }
     }
 });

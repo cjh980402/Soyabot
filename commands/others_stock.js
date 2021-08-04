@@ -28,10 +28,7 @@ function getRedirectURL(url) {
 }
 
 function getTotalInfoObj(totalInfos) {
-    return totalInfos.reduce((acc, cur) => {
-        acc[cur.key] = cur.value;
-        return acc;
-    }, {});
+    return totalInfos.reduce((acc, cur) => ({ ...acc, [cur.key]: cur.value }), {});
 }
 
 async function getStockEmbed(search, searchRslt, type) {
