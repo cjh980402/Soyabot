@@ -85,9 +85,9 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = interaction.options.data.map((v) => v.value);
+        const countString = interaction.options.getString('횟수');
 
-        if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
+        if (countString === '확률' || countString === 'ㅎㄹ') {
             let rslt = '<로얄스타일 확률>';
             for (const key in probTable) {
                 rslt += `\n${key}: ${probTable[key] / 10}%`;
@@ -95,7 +95,7 @@ module.exports = {
             return interaction.followUp(rslt);
         }
 
-        const count = Math.trunc(args[0] ?? 1);
+        const count = Math.trunc(countString ?? 1);
         if (isNaN(count) || count < 1 || count > 20000) {
             return interaction.followUp('1 ~ 20000 범위의 숫자만 입력가능합니다.');
         }
