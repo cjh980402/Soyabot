@@ -235,8 +235,8 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const type = interaction.options.get('차트_종류')?.value ?? '일봉'; // 차트 종류
-        const search = interaction.options.get('검색_내용').value;
+        const type = interaction.options.getString('차트_종류') ?? '일봉'; // 차트 종류
+        const search = interaction.options.getString('검색_내용');
         const searchRslt = (await (await fetch(`https://ac.finance.naver.com/ac?q=${encodeURIComponent(search)}&t_koreng=1&st=111&r_lt=111`)).json()).items[0];
 
         if (!searchRslt?.length) {

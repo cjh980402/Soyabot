@@ -57,7 +57,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = interaction.options._hoistedOptions.map((v) => v.value);
+        const args = interaction.options.data.map((v) => v.value);
 
         const mapleGuildInfo = new MapleGuild(serverEngName[args[0]], args[1]);
         const isLatest = await mapleGuildInfo.isLatest();

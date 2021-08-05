@@ -37,7 +37,7 @@ module.exports = {
         }
         if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
             let rslt = '<로얄스타일 확률>';
-            for (let key in probTable) {
+            for (const key in probTable) {
                 rslt += `\n${key}: ${probTable[key] / 10}%`;
             }
             return message.channel.send(rslt);
@@ -56,7 +56,7 @@ module.exports = {
         for (let i = 0; i < count; i++) {
             const now = Math.floor(Math.random() * propsum + 1);
             let sum = 0;
-            for (let key in probTable) {
+            for (const key in probTable) {
                 sum += probTable[key];
                 if (now <= sum) {
                     list[key] = (list[key] ?? 0) + 1;
@@ -66,7 +66,7 @@ module.exports = {
         }
 
         let rslt = `로얄 ${count}회 결과\n`;
-        for (let key in probTable) {
+        for (const key in probTable) {
             if (list[key]) {
                 rslt += `\n${key}: ${list[key]}회`;
             }
@@ -85,11 +85,11 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = interaction.options._hoistedOptions.map((v) => v.value);
+        const args = interaction.options.data.map((v) => v.value);
 
         if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
             let rslt = '<로얄스타일 확률>';
-            for (let key in probTable) {
+            for (const key in probTable) {
                 rslt += `\n${key}: ${probTable[key] / 10}%`;
             }
             return interaction.followUp(rslt);
@@ -108,7 +108,7 @@ module.exports = {
         for (let i = 0; i < count; i++) {
             const now = Math.floor(Math.random() * propsum + 1);
             let sum = 0;
-            for (let key in probTable) {
+            for (const key in probTable) {
                 sum += probTable[key];
                 if (now <= sum) {
                     list[key] = (list[key] ?? 0) + 1;
@@ -118,7 +118,7 @@ module.exports = {
         }
 
         let rslt = `로얄 ${count}회 결과\n`;
-        for (let key in probTable) {
+        for (const key in probTable) {
             if (list[key]) {
                 rslt += `\n${key}: ${list[key]}회`;
             }

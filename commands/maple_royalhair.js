@@ -56,7 +56,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = interaction.options._hoistedOptions.map((v) => v.value);
+        const args = interaction.options.data.map((v) => v.value);
 
         if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
             const rslt = `<로얄 헤어 확률>\n\n- 남자 헤어\n${hairList['남'].map((v) => `${v}: 16.67%`).join('\n')}\n\n- 여자 헤어\n${hairList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;

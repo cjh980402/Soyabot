@@ -6,14 +6,14 @@ module.exports = {
     description: '- 번호로 선택한 대기열의 노래로 건너뜁니다.',
     type: ['음악'],
     async messageExecute(message, args) {
-        if (!message.guild) {
+        if (!message.guildId) {
             return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
         if (args.length < 1 || isNaN(args[0])) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const queue = client.queues.get(message.guild.id);
+        const queue = client.queues.get(message.guildId);
         if (!queue?.audioPlayer.state.resource) {
             return message.reply('재생 중인 노래가 없습니다.');
         }
@@ -53,7 +53,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        if (!interaction.guild) {
+        if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
@@ -68,7 +68,7 @@ module.exports = {
             return interaction.followUp('현재 대기열에서 건너뛸 수 있는 노래가 없습니다.');
         }
 
-        const skipto = interaction.options.get('대기열_번호').value;
+        const skipto = interaction.options.getInteger('대기열_번호');
         if (skipto < 2 || skipto > queue.songs.length) {
             return interaction.followUp(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래로 건너뛸 수 있습니다.`);
         }

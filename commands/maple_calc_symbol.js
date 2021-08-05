@@ -60,7 +60,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const [startlev, endlev] = interaction.options._hoistedOptions.map((v) => v.value);
+        const [startlev, endlev] = interaction.options.data.map((v) => v.value);
         if (isNaN(startlev) || startlev < 1 || startlev > 20) {
             return interaction.followUp('1 ~ 20 범위의 시작 레벨을 입력해주세요.');
         }

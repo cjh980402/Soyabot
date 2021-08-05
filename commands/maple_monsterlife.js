@@ -200,7 +200,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = interaction.options._hoistedOptions.map((v) => v.value);
+        const args = interaction.options.data.map((v) => v.value);
 
         if (args[0] === '목록') {
             return interaction.sendSplitCode(await farm_read(args.slice(1).join('')), { split: { char: '\n' } });

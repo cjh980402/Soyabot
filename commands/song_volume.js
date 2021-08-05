@@ -6,11 +6,11 @@ module.exports = {
     description: '- 지금 재생 중인 노래의 음량(0 ~ 100 범위)을 변경합니다. 음량을 생략 시 현재 음량을 알려줍니다.',
     type: ['음악'],
     async messageExecute(message, args) {
-        if (!message.guild) {
+        if (!message.guildId) {
             return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
-        const queue = client.queues.get(message.guild.id);
+        const queue = client.queues.get(message.guildId);
         if (!queue?.audioPlayer.state.resource) {
             return message.reply('재생 중인 노래가 없습니다.');
         }
@@ -46,7 +46,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        if (!interaction.guild) {
+        if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
@@ -58,8 +58,8 @@ module.exports = {
             return interaction.followUp(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
 
-        const volume = interaction.options.get('변경할_음량')?.value;
-        if (!volume) {
+        const volume = interaction.options.getNumber('변경할_음량');
+        if (volume === null) {
             return interaction.followUp(`🔊 현재 음량: **${queue.volume}%**`);
         }
         if (volume > 100 || volume < 0) {

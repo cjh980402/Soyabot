@@ -58,7 +58,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const [startlev, endlev] = interaction.options._hoistedOptions.map((v) => v.value);
+        const [startlev, endlev] = interaction.options.data.map((v) => v.value);
 
         if (endlev) {
             if (isNaN(startlev) || startlev < 1 || startlev > 299) {

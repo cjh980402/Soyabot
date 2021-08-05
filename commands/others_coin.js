@@ -16,9 +16,9 @@ function getChartImage(code, type) {
 async function getCoinBinancePrice(code) {
     const binance = await (await fetch('https://api.binance.com/api/v1/ticker/allPrices')).json();
     const coinName = `${code}USDT`;
-    for (let i = 0; i < binance.length; i++) {
-        if (coinName === binance[i].symbol) {
-            return +binance[i].price;
+    for (const coin of binance) {
+        if (coinName === coin.symbol) {
+            return +coin.price;
         }
     }
     return -1; // 바이낸스 미상장인 경우
@@ -111,8 +111,8 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const type = interaction.options.get('차트_종류')?.value ?? '1일'; // 차트 종류
-        const krSearch = interaction.options.get('검색_내용').value;
+        const type = interaction.options.getString('차트_종류') ?? '1일'; // 차트 종류
+        const krSearch = interaction.options.getString('검색_내용');
         const enSearch = krSearch.toUpperCase();
         const searchList = await (await fetch('https://api.upbit.com/v1/market/all')).json();
         const searchRslt = searchList.find((v) => {

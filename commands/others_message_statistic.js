@@ -5,7 +5,7 @@ module.exports = {
     channelCool: true,
     type: ['기타'],
     async messageExecute(message) {
-        if (!message.guild) {
+        if (!message.guildId) {
             return message.reply('사용이 불가능한 채널입니다.');
         }
 
@@ -20,7 +20,7 @@ module.exports = {
             targetInfo = message.member;
         }
 
-        const messagestat = await db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [`${message.guild.id} ${targetInfo.user.id}`]);
+        const messagestat = await db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [`${message.guildId} ${targetInfo.user.id}`]);
         if (messagestat) {
             return message.channel.send(`[${targetInfo.nickname ?? targetInfo.user.username}]
 채팅 건수: ${messagestat.messagecnt.toLocaleString()}
@@ -42,11 +42,11 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        if (!interaction.guild) {
+        if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.');
         }
 
-        const targetInfo = interaction.options.get('멘션')?.member ?? interaction.member;
+        const targetInfo = interaction.options.getMember('멘션') ?? interaction.member;
 
         const messagestat = await db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [`${interaction.guildId} ${targetInfo.user.id}`]);
         if (messagestat) {

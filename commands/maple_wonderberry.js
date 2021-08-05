@@ -1,12 +1,12 @@
 const probTable = {
-    '[원더블랙] 리틀 울프룻': 332,
-    '[원더블랙] 리틀 무토': 332,
-    '[원더블랙] 리틀 램나나': 332,
-    '픽팽이': 1200,
-    '픽라임': 1200,
-    '픽주벗': 1200,
-    '설탕탕': 1200,
-    '초코코': 1200,
+    '[원더블랙] 피치버블': 332,
+    '[원더블랙] 리프버블': 332,
+    '[원더블랙] 민트버블': 332,
+    '멈뭄미': 1200,
+    '먀몸미': 1200,
+    '햄미': 1200,
+    '녹는다곰': 1200,
+    '러버덕튜브': 1200,
     '고농축 프리미엄 생명의 물': 1502,
     '오가닉 원더 쿠키': 1502
 };
@@ -22,7 +22,7 @@ module.exports = {
         }
         if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
             let rslt = '<원더베리 확률>';
-            for (let key in probTable) {
+            for (const key in probTable) {
                 rslt += `\n${key}: ${probTable[key] / 100}%`;
             }
             return message.channel.send(rslt);
@@ -41,7 +41,7 @@ module.exports = {
         for (let i = 0; i < count; i++) {
             const now = Math.floor(Math.random() * propsum + 1);
             let sum = 0;
-            for (let key in probTable) {
+            for (const key in probTable) {
                 sum += probTable[key];
                 if (now <= sum) {
                     list[key] = (list[key] ?? 0) + 1;
@@ -51,7 +51,7 @@ module.exports = {
         }
 
         let rslt = `원더베리 ${count}회 결과\n`;
-        for (let key in probTable) {
+        for (const key in probTable) {
             if (list[key]) {
                 rslt += `\n${key}: ${list[key]}회`;
             }
@@ -70,11 +70,11 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = interaction.options._hoistedOptions.map((v) => v.value);
+        const args = interaction.options.data.map((v) => v.value);
 
         if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
             let rslt = '<원더베리 확률>';
-            for (let key in probTable) {
+            for (const key in probTable) {
                 rslt += `\n${key}: ${probTable[key] / 100}%`;
             }
             return interaction.followUp(rslt);
@@ -93,7 +93,7 @@ module.exports = {
         for (let i = 0; i < count; i++) {
             const now = Math.floor(Math.random() * propsum + 1);
             let sum = 0;
-            for (let key in probTable) {
+            for (const key in probTable) {
                 sum += probTable[key];
                 if (now <= sum) {
                     list[key] = (list[key] ?? 0) + 1;
@@ -103,7 +103,7 @@ module.exports = {
         }
 
         let rslt = `원더베리 ${count}회 결과\n`;
-        for (let key in probTable) {
+        for (const key in probTable) {
             if (list[key]) {
                 rslt += `\n${key}: ${list[key]}회`;
             }

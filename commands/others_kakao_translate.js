@@ -35,7 +35,7 @@ async function tran(source, target, text) {
         body: params
     });
     const data = await response.json(); // 번역 성공 시 translated_text에 문단(문장의 배열)의 배열이 들어옴
-    return data.translated_text?.map((v) => v.join(' ')).join('\n') ?? '번역에 실패하였습니다.';
+    return data.translated_text?.map((v) => v.join(' ')).join('\n') || '번역에 실패하였습니다.'; // 빈 문자열 대응
 }
 
 function findLangCode(src, tar) {
@@ -93,7 +93,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = interaction.options._hoistedOptions.map((v) => v.value);
+        const args = interaction.options.data.map((v) => v.value);
 
         if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
             return interaction.followUp(

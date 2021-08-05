@@ -30,7 +30,7 @@ Object.defineProperty(Discord, 'botClientOption', {
     value: {
         retryLimit: 3,
         failIfNotExists: false,
-        partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
+        partials: ['USER', 'CHANNEL', 'MESSAGE', 'REACTION'],
         intents: [
             Discord.Intents.FLAGS.GUILDS,
             Discord.Intents.FLAGS.GUILD_VOICE_STATES,
@@ -43,13 +43,13 @@ Object.defineProperty(Discord, 'botClientOption', {
             BaseGuildEmojiManager: 0,
             ChannelManager: {
                 maxSize: Infinity,
-                sweepFilter: () => (v) => !/^(DM|GUILD_TEXT|GUILD_VOICE)$/.test(v.type),
+                sweepFilter: () => (v) => !v.isText() && v.type !== 'GUILD_VOICE',
                 sweepInterval: 3600
             },
             GuildBanManager: 0,
             GuildChannelManager: {
                 maxSize: Infinity,
-                sweepFilter: () => (v) => !/^(DM|GUILD_TEXT|GUILD_VOICE)$/.test(v.type),
+                sweepFilter: () => (v) => !v.isText() && v.type !== 'GUILD_VOICE',
                 sweepInterval: 3600
             },
             GuildEmojiManager: 0,

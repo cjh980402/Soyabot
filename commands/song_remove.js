@@ -6,14 +6,14 @@ module.exports = {
     description: '- 대기열에서 지정한 노래를 삭제합니다. (,로 구분하여 여러 노래 삭제 가능)',
     type: ['음악'],
     async messageExecute(message, args) {
-        if (!message.guild) {
+        if (!message.guildId) {
             return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
         if (args.length < 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const queue = client.queues.get(message.guild.id);
+        const queue = client.queues.get(message.guildId);
         if (!queue?.audioPlayer.state.resource) {
             return message.reply('재생 중인 노래가 없습니다.');
         }
@@ -58,7 +58,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        if (!interaction.guild) {
+        if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
@@ -74,8 +74,8 @@ module.exports = {
         }
 
         const songRemove = interaction.options
-            .get('대기열_번호')
-            .value.split(',')
+            .getString('대기열_번호')
+            .split(',')
             .map((str) => Math.trunc(str))
             .deduplication();
         const removed = [];

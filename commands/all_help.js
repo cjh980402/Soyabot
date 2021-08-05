@@ -47,7 +47,7 @@ module.exports = {
 
             collector.on('collect', async (reaction, user) => {
                 try {
-                    if (message.guild) {
+                    if (message.guildId) {
                         await reaction.users.remove(user);
                     }
                     switch (reaction.emoji.name) {
@@ -82,7 +82,7 @@ module.exports = {
     },
     async interactionExecute(interaction) {
         // description이 없는 명령어는 히든 명령어
-        const detail = interaction.options.get('세부항목')?.value;
+        const detail = interaction.options.getString('세부항목');
         if (detail && !this.type.includes(detail)) {
             const target = client.commands.find((cmd) => cmd.command.includes(detail));
             if (!target?.description) {
@@ -112,7 +112,7 @@ module.exports = {
 
             collector.on('collect', async (reaction, user) => {
                 try {
-                    if (interaction.guild) {
+                    if (interaction.guildId) {
                         await reaction.users.remove(user);
                     }
                     switch (reaction.emoji.name) {

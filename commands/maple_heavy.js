@@ -35,7 +35,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const mapleUserInfo = new MapleUser(interaction.options.get('닉네임').value);
+        const mapleUserInfo = new MapleUser(interaction.options.getString('닉네임'));
 
         const rslt = await mapleUserInfo.homeLevel();
         if (!rslt) {

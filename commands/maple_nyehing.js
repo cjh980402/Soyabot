@@ -32,7 +32,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const count = interaction.options.get('글자_수')?.value ?? 2;
+        const count = interaction.options.getInteger('글자_수') ?? 2;
 
         let rslt = '';
 

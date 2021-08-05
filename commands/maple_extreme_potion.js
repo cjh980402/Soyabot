@@ -141,7 +141,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = interaction.options._hoistedOptions.map((v) => v.value);
+        const args = interaction.options.data.map((v) => v.value);
 
         if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
             const startlev = Math.trunc(args[1]);

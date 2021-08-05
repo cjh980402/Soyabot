@@ -116,7 +116,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const option = interaction.options.get('옵션')?.value;
+        const option = interaction.options.getString('옵션');
         const targetGuild = (option && interaction.user.id === ADMIN_ID && client.guilds.cache.find((v) => v.name.includes(option))) || interaction.guild;
         if (!targetGuild) {
             return interaction.followUp('사용이 불가능한 채널입니다.');

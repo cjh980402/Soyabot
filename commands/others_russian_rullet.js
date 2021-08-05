@@ -18,7 +18,7 @@ module.exports = {
     channelCool: true,
     type: ['기타'],
     async messageExecute(message, args) {
-        if (!message.guild) {
+        if (!message.guildId) {
             return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         } else if (message.guild.memberCount < 3) {
             return message.reply(`${client.user.username}을 제외한 방의 인원이 2명 이상일 때 게임을 이용할 수 있습니다.`);
@@ -125,12 +125,12 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        if (!interaction.guild) {
+        if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         } else if (interaction.guild.memberCount < 3) {
             return interaction.followUp(`${client.user.username}을 제외한 방의 인원이 2명 이상일 때 게임을 이용할 수 있습니다.`);
         }
-        const bullet = interaction.options.get('탄환_수')?.value ?? 6; // 탄환 수 지정
+        const bullet = interaction.options.getInteger('탄환_수') ?? 6; // 탄환 수 지정
         const gameUser = [interaction.member]; // 참가자 객체 배열
         interaction.editReply(`게임을 시작하셨습니다.\n${client.prefix}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${gameUser[0].nickname ?? gameUser[0].user.username}`);
         for (let gameChatType = 0; ; ) {

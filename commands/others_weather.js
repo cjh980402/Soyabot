@@ -41,8 +41,8 @@ async function getWeatherEmbed(targetLocal) {
     }
 
     const embeds = [];
-    for (let i = 0; i < weatherDesc.length; i++) {
-        const embed = new MessageEmbed().setTitle(`**${targetLocal[0][0]}**`).setColor('#FF9999').setDescription(weatherDesc[i]).setTimestamp();
+    for (const desc of weatherDesc) {
+        const embed = new MessageEmbed().setTitle(`**${targetLocal[0][0]}**`).setColor('#FF9999').setDescription(desc).setTimestamp();
 
         if (embed.description.length > 2000) {
             embed.description = `${embed.description.substr(0, 1997)}...`;
@@ -99,7 +99,7 @@ module.exports = {
 
         collector.on('collect', async (reaction, user) => {
             try {
-                if (message.guild) {
+                if (message.guildId) {
                     await reaction.users.remove(user);
                 }
                 switch (reaction.emoji.name) {
@@ -132,7 +132,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const search = interaction.options.get('지역')?.value ?? '동대문구 전농동';
+        const search = interaction.options.getString('지역') ?? '동대문구 전농동';
         const searchRslt = (await (await fetch(`https://ac.weather.naver.com/ac?q_enc=utf-8&r_format=json&r_enc=utf-8&r_lt=1&st=1&q=${encodeURIComponent(search)}`)).json()).items[0];
         let targetLocal;
         if (!searchRslt?.length) {
@@ -172,7 +172,7 @@ module.exports = {
 
         collector.on('collect', async (reaction, user) => {
             try {
-                if (interaction.guild) {
+                if (interaction.guildId) {
                     await reaction.users.remove(user);
                 }
                 switch (reaction.emoji.name) {

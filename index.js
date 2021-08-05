@@ -38,7 +38,7 @@ const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((reso
                 }
             }
         });
-        await client.application.commands.set(interactions);
+        //await client.application.commands.set(interactions);
     } catch (e) {
         console.error(`로그인 에러 발생\n에러 내용: ${e}\n${e.stack ?? e._p}`);
         await cmd('npm stop');
@@ -69,9 +69,9 @@ client.on('messageCreate', async (message) => {
     // 각 메시지에 반응, 디스코드는 봇의 메시지도 이 이벤트에 들어옴
     let commandName;
     try {
-        console.log(`(${new Date().toLocaleString()}) ${message.channel.id} ${message.channel.name} ${message.author.id} ${message.author.username}: ${message.content}\n`);
-        if (message.author.bot || message.partial) {
-            // 봇 또는 partial 여부 체크
+        console.log(`(${new Date().toLocaleString()}) ${message.channelId} ${message.channel.name} ${message.author.id} ${message.author.username}: ${message.content}\n`);
+        if (message.author.bot) {
+            // 봇 여부 체크
             return;
         }
         const permissions = message.channel.permissionsFor?.(message.guild.me);
@@ -100,7 +100,7 @@ client.on('messageCreate', async (message) => {
             return; // 해당하는 명령어 없으면 종료
         }
 
-        commandName = botModule.channelCool ? `${botModule.command[0]}_${message.channel.id}` : botModule.command[0];
+        commandName = botModule.channelCool ? `${botModule.command[0]}_${message.channelId}` : botModule.command[0];
 
         if (cooldowns.has(commandName)) {
             // 명령이 수행 중인 경우
@@ -119,7 +119,7 @@ client.on('messageCreate', async (message) => {
                 await message.reply(e.message);
             } else {
                 await message.reply('에러로그가 전송되었습니다.');
-                replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channel.id}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+                replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             }
         } catch {}
     } finally {

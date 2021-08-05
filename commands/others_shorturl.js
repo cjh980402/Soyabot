@@ -45,6 +45,6 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        return interaction.followUp(await shortURL(interaction.options.get('대상_주소').value));
+        return interaction.followUp(await shortURL(interaction.options.getString('대상_주소')));
     }
 };

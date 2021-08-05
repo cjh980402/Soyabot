@@ -66,7 +66,7 @@ module.exports = {
     },
     async interactionExecute(interaction) {
         try {
-            return interaction.sendSplitCode(String(originEvaluate(inputExpression(interaction.options.get('계산식').value))), { code: 'js' });
+            return interaction.sendSplitCode(String(originEvaluate(inputExpression(interaction.options.getString('계산식')))), { code: 'js' });
         } catch {
             return interaction.followUp('올바르지 않은 수식입니다.');
         }

@@ -36,7 +36,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const mapleUserInfo = new MapleUser(interaction.options.get('닉네임').value);
+        const mapleUserInfo = new MapleUser(interaction.options.getString('닉네임'));
 
         if (!(await mapleUserInfo.homeLevel())) {
             return interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);

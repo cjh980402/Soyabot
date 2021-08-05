@@ -7,7 +7,7 @@ module.exports = {
     description: '- 재생할 노래를 검색하고 선택합니다. (,로 구분하여 여러 노래 선택 가능)',
     type: ['음악'],
     async messageExecute(message, args) {
-        if (!message.guild) {
+        if (!message.guildId) {
             return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
         if (args.length < 1) {
@@ -74,14 +74,14 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        if (!interaction.guild) {
+        if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
         if (!interaction.member.voice.channel) {
             return interaction.followUp('음성 채널에 먼저 참가해주세요!');
         }
 
-        const search = interaction.options.get('영상_제목').value;
+        const search = interaction.options.getString('영상_제목');
         const results = await youtubeSearch(search);
         if (!results) {
             return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
@@ -107,7 +107,7 @@ module.exports = {
                 errors: ['time']
             });
 
-            const playCommand = client.commands.find((cmd) => cmd.command.includes('play'));
+            const playCommand = client.commands.find((cmd) => cmd.interaction?.name === 'play');
             for (const song of songChoice) {
                 interaction.options._hoistedOptions[1] = { name: '영상_주소_제목', type: 'STRING', value: resultsEmbed.fields[song - 1].value };
                 await playCommand.interactionExecute(interaction);

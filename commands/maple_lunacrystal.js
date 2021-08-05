@@ -1,29 +1,29 @@
 const probTable = {
     스윗: {
-        '초크삐': 960,
-        '블루삐': 960,
-        '체리삐': 960,
         '은하': 960,
         '하랑': 960,
         '랑월': 960,
         '눈냥냥': 960,
         '토냥냥': 960,
         '판냥냥': 960,
+        '리틀 울프룻': 960,
+        '리틀 무토': 960,
+        '리틀 램나나': 960,
         '[루나 쁘띠] 쁘띠 초롱': 388,
         '[루나 쁘띠] 신야': 388,
         '[루나 쁘띠] 황혼': 388,
         '루나 크리스탈 키': 196
     },
     드림: {
-        '초크삐': 840,
-        '블루삐': 840,
-        '체리삐': 840,
         '은하': 840,
         '하랑': 840,
         '랑월': 840,
         '눈냥냥': 840,
         '토냥냥': 840,
         '판냥냥': 840,
+        '리틀 울프룻': 840,
+        '리틀 무토': 840,
+        '리틀 램나나': 840,
         '[루나 쁘띠] 쁘띠 초롱': 680,
         '[루나 쁘띠] 신야': 680,
         '[루나 쁘띠] 황혼': 680,
@@ -44,7 +44,7 @@ module.exports = {
         const category = args[0];
         if (args[1] === '확률' || args[1] === 'ㅎㄹ') {
             let rslt = `<루나크리스탈 ${category} 확률>`;
-            for (let key in probTable[category]) {
+            for (const key in probTable[category]) {
                 rslt += `\n${key}: ${probTable[category][key] / 100}%`;
             }
             return message.channel.send(rslt);
@@ -63,7 +63,7 @@ module.exports = {
         for (let i = 0; i < count; i++) {
             const now = Math.floor(Math.random() * probSum + 1);
             let sum = 0;
-            for (let key in probTable[category]) {
+            for (const key in probTable[category]) {
                 sum += probTable[category][key];
                 if (now <= sum) {
                     list[key] = (list[key] ?? 0) + 1;
@@ -73,7 +73,7 @@ module.exports = {
         }
 
         let rslt = `루나크리스탈 ${category} ${count}회 결과\n`;
-        for (let key in probTable[category]) {
+        for (const key in probTable[category]) {
             if (list[key]) {
                 rslt += `\n${key}: ${list[key]}회`;
             }
@@ -100,12 +100,12 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const args = interaction.options._hoistedOptions.map((v) => v.value);
+        const args = interaction.options.data.map((v) => v.value);
 
         const category = args[0];
         if (args[1] === '확률' || args[1] === 'ㅎㄹ') {
             let rslt = `<루나크리스탈 ${category} 확률>`;
-            for (let key in probTable[category]) {
+            for (const key in probTable[category]) {
                 rslt += `\n${key}: ${probTable[category][key] / 100}%`;
             }
             return interaction.followUp(rslt);
@@ -124,7 +124,7 @@ module.exports = {
         for (let i = 0; i < count; i++) {
             const now = Math.floor(Math.random() * probSum + 1);
             let sum = 0;
-            for (let key in probTable[category]) {
+            for (const key in probTable[category]) {
                 sum += probTable[category][key];
                 if (now <= sum) {
                     list[key] = (list[key] ?? 0) + 1;
@@ -134,7 +134,7 @@ module.exports = {
         }
 
         let rslt = `루나크리스탈 ${category} ${count}회 결과\n`;
-        for (let key in probTable[category]) {
+        for (const key in probTable[category]) {
             if (list[key]) {
                 rslt += `\n${key}: ${list[key]}회`;
             }

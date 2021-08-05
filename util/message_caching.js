@@ -2,10 +2,10 @@ const { CommandInteraction, Message } = require('./discord.js-extend');
 
 module.exports = async function (messageOrInteraction) {
     if (messageOrInteraction instanceof Message) {
-        if (!messageOrInteraction.guild) {
+        if (!messageOrInteraction.guildId) {
             return;
         }
-        const senderKey = `${messageOrInteraction.guild.id} ${messageOrInteraction.author.id}`;
+        const senderKey = `${messageOrInteraction.guildId} ${messageOrInteraction.author.id}`;
         const messagestat = await db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [senderKey]);
         await db.replace('messagedb', {
             channelsenderid: senderKey,
@@ -14,12 +14,12 @@ module.exports = async function (messageOrInteraction) {
             lastmessage: messageOrInteraction.content
         });
     } else if (messageOrInteraction instanceof CommandInteraction) {
-        if (!messageOrInteraction.guild) {
+        if (!messageOrInteraction.guildId) {
             return;
         }
-        const senderKey = `${messageOrInteraction.guild.id} ${messageOrInteraction.user.id}`;
+        const senderKey = `${messageOrInteraction.guildId} ${messageOrInteraction.user.id}`;
         const messagestat = await db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [senderKey]);
-        const content = `/${messageOrInteraction.commandName}${messageOrInteraction.options._hoistedOptions.map((v) => ` ${v.value}`).join('')}`;
+        const content = `/${messageOrInteraction.commandName}${messageOrInteraction.options.data.map((v) => ` ${v.value}`).join('')}`;
         await db.replace('messagedb', {
             channelsenderid: senderKey,
             messagecnt: (messagestat?.messagecnt ?? 0) + 1,

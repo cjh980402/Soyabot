@@ -125,7 +125,7 @@ module.exports = {
 
             collector.on('collect', async (reaction, user) => {
                 try {
-                    if (message.guild) {
+                    if (message.guildId) {
                         await reaction.users.remove(user);
                     }
                     switch (reaction.emoji.name) {
@@ -174,7 +174,7 @@ module.exports = {
 
             collector.on('collect', async (reaction, user) => {
                 try {
-                    if (interaction.guild) {
+                    if (interaction.guildId) {
                         await reaction.users.remove(user);
                     }
                     switch (reaction.emoji.name) {

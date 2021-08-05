@@ -1,6 +1,6 @@
 {
   "name": "soyabot",
-  "version": "6.2.1",
+  "version": "6.2.2",
   "description": "MapleStory, Music Discord Bot",
   "main": "index.js",
   "author": "9804cjh@naver.com",
@@ -27,7 +27,7 @@
     "chartjs-plugin-doughnutlabel": "^2.0.3",
     "cheerio": "^1.0.0-rc.10",
     "deepai": "^1.0.17",
-    "discord.js": "^13.0.0-dev.t1628035429.00d5cee",
+    "discord.js": "^13.0.0-dev.t1628121868.3eb4140",
     "entities": "^2.2.0",
     "erlpack": "github:discord/erlpack",
     "express": "^4.17.1",
@@ -43,8 +43,8 @@
     "string-progressbar": "^1.0.4",
     "tweetnacl": "^1.0.3",
     "utf-8-validate": "^5.0.5",
-    "ytdl-core": "^4.9.0",
-    "ytsr": "^3.5.0",
+    "ytdl-core": "^4.9.1",
+    "ytsr": "^3.5.2",
     "zlib-sync": "^0.1.7"
   },
   "scripts": {

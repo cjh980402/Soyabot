@@ -6,11 +6,11 @@ module.exports = {
     description: '- 지금 재생 중인 노래를 일시정지합니다.',
     type: ['음악'],
     async messageExecute(message) {
-        if (!message.guild) {
+        if (!message.guildId) {
             return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
-        const queue = client.queues.get(message.guild.id);
+        const queue = client.queues.get(message.guildId);
         if (!queue?.audioPlayer.state.resource) {
             return message.reply('재생 중인 노래가 없습니다.');
         }
@@ -31,7 +31,7 @@ module.exports = {
         description: '지금 재생 중인 노래를 일시정지합니다.'
     },
     async interactionExecute(interaction) {
-        if (!interaction.guild) {
+        if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 

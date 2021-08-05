@@ -55,7 +55,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const igList = interaction.options._hoistedOptions.map((v) => v.value);
+        const igList = interaction.options.data.map((v) => v.value);
         const monster = igList.shift();
         if (monster < 0) {
             return interaction.followUp('입력한 값이 잘못되었습니다.');

@@ -94,7 +94,7 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const nickname = interaction.options.get('닉네임')?.value;
+        const nickname = interaction.options.getString('닉네임');
         if (!nickname) {
             let rslt = '스카우터 기준 점수표';
             for (let i = 0; i < scoreGrade.length - 2; i++) {
