@@ -43,13 +43,13 @@ Object.defineProperty(Discord, 'botClientOption', {
             BaseGuildEmojiManager: 0,
             ChannelManager: {
                 maxSize: Infinity,
-                sweepFilter: () => (v) => !v.isText() && v.type !== 'GUILD_VOICE',
+                sweepFilter: () => (v) => !v.isText() && !v.isVoice(),
                 sweepInterval: 3600
             },
             GuildBanManager: 0,
             GuildChannelManager: {
                 maxSize: Infinity,
-                sweepFilter: () => (v) => !v.isText() && v.type !== 'GUILD_VOICE',
+                sweepFilter: () => (v) => !v.isText() && !v.isVoice(),
                 sweepInterval: 3600
             },
             GuildEmojiManager: 0,
@@ -75,25 +75,24 @@ Object.defineProperty(Discord, 'botClientOption', {
     }
 });
 
-// 하단 3개의 재정의는 비활성화된 멤버캐시 관련 추가작업을 수행
 Object.defineProperty(Discord.Message.prototype, '_patch', {
     value: function (data, partial = false) {
         _patch.call(this, data, partial);
         if (data.member && this.guild && this.author) {
-            this._member = this.guild.members._add({ ...data.member, user: this.author }, false);
+            this._member = this.guild.members._add({ ...data.member, user: this.author }, false); // 임시 멤버 객체 할당
         }
     }
 });
 
 Object.defineProperty(Discord.Message.prototype, 'member', {
     get: function () {
-        return this.guild?.members.resolve(this.author) ?? this._member ?? null;
+        return this.guild?.members.resolve(this.author) ?? this._member ?? null; // 할당된 임시 멤버 객체 반환
     }
 });
 
 Object.defineProperty(Discord.VoiceState.prototype, 'member', {
     get: function () {
-        return this.guild.members.resolve(this.id) ?? this.guild.members._add({ user: { id: this.id } }, false);
+        return this.guild.members.resolve(this.id) ?? this.guild.members._add({ user: { id: this.id } }, false); // 임시 멤버 객체 생성 후 반환
     }
 });
 
@@ -125,7 +124,7 @@ Object.defineProperty(Discord.CommandInteraction.prototype, 'sendSplitCode', {
     }
 });
 
-Object.defineProperty(Discord.VoiceChannel.prototype, 'join', {
+Object.defineProperty(Discord.BaseGuildVoiceChannel.prototype, 'join', {
     value: async function () {
         const connection = joinVoiceChannel({
             channelId: this.id,

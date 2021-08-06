@@ -134,7 +134,7 @@ client.on('interactionCreate', async (interaction) => {
     }
     let { commandName } = interaction;
     try {
-        await interaction.defer(); // defer를 하지 않으면 3초 내로 슬래시 커맨드 응답을 해야함
+        await interaction.deferReply(); // deferReply를 하지 않으면 3초 내로 슬래시 커맨드 응답을 해야함
         console.log(`(${new Date().toLocaleString()}) ${interaction.channelId} ${interaction.channel.name} ${interaction.user.id} ${interaction.user.username}: ${interaction.options._i()}\n`);
 
         const permissions = interaction.channel.permissionsFor?.(interaction.guild.me);
