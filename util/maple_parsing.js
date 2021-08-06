@@ -1,3 +1,4 @@
+const { setTimeout } = require('timers/promises');
 const fetch = require('node-fetch');
 const { load } = require('cheerio');
 
@@ -143,7 +144,7 @@ module.exports.MapleUser = class {
             if (Date.now() - start >= 20000) {
                 return false; // 20초가 지나도 갱신 못했으면 갱신실패 판정
             }
-            await sleep(100);
+            await setTimeout(100);
         }
     }
 
@@ -401,7 +402,7 @@ module.exports.MapleGuild = class {
             if (Date.now() - start >= 20000) {
                 return false; // 20초가 지나도 갱신 못했으면 갱신실패 판정
             }
-            await sleep(100);
+            await setTimeout(100);
         }
     }
 };

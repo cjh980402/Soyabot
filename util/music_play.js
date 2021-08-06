@@ -1,4 +1,4 @@
-const { AudioPlayerStatus, createAudioPlayer, createAudioResource, StreamType, VoiceConnectionStatus } = require('@discordjs/voice');
+const { AudioPlayerStatus, createAudioPlayer, VoiceConnectionStatus } = require('@discordjs/voice');
 const { songDownload } = require('./song_util');
 const { replyAdmin } = require('../admin/bot_control');
 const { STAY_TIME, DEFAULT_VOLUME } = require('../soyabot_config.json');
@@ -84,13 +84,8 @@ module.exports.play = async function (queue) {
         return queue.textSend('❌ 음악 대기열이 끝났습니다.');
     }
 
-    let resource = null;
     try {
-        resource = createAudioResource(await songDownload(song.url), {
-            inputType: StreamType.Arbitrary,
-            inlineVolume: true
-        });
-        queue.subscription.player.play(resource);
+        queue.subscription.player.play(await songDownload(song.url));
         queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
     } catch (e) {
         queue.textSend('노래 재생에 실패했습니다.');

@@ -1,3 +1,4 @@
+const { setTimeout } = require('timers/promises');
 const { matchString } = require('../util/soyabot_const.json');
 const Hangul = require('hangul-js');
 
@@ -17,7 +18,7 @@ module.exports = {
 
         for (let i = 3; i > 0; i--) {
             await message.channel.send(String(i));
-            await sleep(1000); // 3초 카운트 다운 로직
+            await setTimeout(1000); // 3초 카운트 다운 로직
         }
         await message.channel.send(`대결할 문장: ${[...choice].join('\u200b')}\n\n위 문장으로 대결을 수행합니다.`);
 
@@ -49,7 +50,7 @@ module.exports = {
 
         for (let i = 3; i > 0; i--) {
             await interaction.channel.send(String(i));
-            await sleep(1000); // 3초 카운트 다운 로직
+            await setTimeout(1000); // 3초 카운트 다운 로직
         }
         await interaction.channel.send(`대결할 문장: ${[...choice].join('\u200b')}\n\n위 문장으로 대결을 수행합니다.`);
 

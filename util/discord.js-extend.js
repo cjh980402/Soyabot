@@ -5,9 +5,8 @@ const YouTubeAPI = require('simple-youtube-api');
 const Constants = require('simple-youtube-api/src/util/Constants');
 const Video = require('simple-youtube-api/src/structures/Video');
 const { decodeHTML } = require('entities');
-const { inspect, promisify } = require('util');
+const { inspect } = require('util');
 const { _patch } = Discord.Message.prototype;
-globalThis.sleep = promisify(setTimeout);
 
 function contentSplitCode(content, options) {
     content = content || '\u200b';
