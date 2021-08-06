@@ -11,7 +11,7 @@ module.exports = {
         }
 
         const queue = client.queues.get(message.guildId);
-        if (!queue?.audioPlayer.state.resource) {
+        if (!queue?.subscription.player.state.resource) {
             return message.reply('재생 중인 노래가 없습니다.');
         }
         if (!canModifyQueue(message.member)) {
@@ -31,7 +31,7 @@ module.exports = {
         }
 
         queue.volume = volume;
-        queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
+        queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
         return message.channel.send(`변경된 음량: **${queue.volume}%**`);
     },
     interaction: {
@@ -51,7 +51,7 @@ module.exports = {
         }
 
         const queue = client.queues.get(interaction.guildId);
-        if (!queue?.audioPlayer.state.resource) {
+        if (!queue?.subscription.player.state.resource) {
             return interaction.followUp('재생 중인 노래가 없습니다.');
         }
         if (!canModifyQueue(interaction.member)) {
@@ -67,7 +67,7 @@ module.exports = {
         }
 
         queue.volume = volume;
-        queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
+        queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
         return interaction.followUp(`변경된 음량: **${queue.volume}%**`);
     }
 };

@@ -11,7 +11,7 @@ module.exports = {
         }
 
         const queue = client.queues.get(message.guildId);
-        if (!queue?.audioPlayer.state.resource) {
+        if (!queue?.subscription.player.state.resource) {
             return message.reply('재생 중인 노래가 없습니다.');
         }
         if (!canModifyQueue(message.member)) {
@@ -20,7 +20,7 @@ module.exports = {
 
         if (queue.playing) {
             queue.playing = false;
-            queue.audioPlayer.pause();
+            queue.subscription.player.pause();
             return message.channel.send(`${message.author} ⏸ 노래를 일시정지 했습니다.`);
         }
 
@@ -36,7 +36,7 @@ module.exports = {
         }
 
         const queue = client.queues.get(interaction.guildId);
-        if (!queue?.audioPlayer.state.resource) {
+        if (!queue?.subscription.player.state.resource) {
             return interaction.followUp('재생 중인 노래가 없습니다.');
         }
         if (!canModifyQueue(interaction.member)) {
@@ -45,7 +45,7 @@ module.exports = {
 
         if (queue.playing) {
             queue.playing = false;
-            queue.audioPlayer.pause();
+            queue.subscription.player.pause();
             return interaction.followUp(`${interaction.user} ⏸ 노래를 일시정지 했습니다.`);
         }
 

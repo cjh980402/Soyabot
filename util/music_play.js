@@ -8,37 +8,36 @@ const disconnectTimeout = {};
 module.exports.QueueElement = class {
     textChannel;
     voiceChannel;
-    connection;
+    subscription;
     songs;
     volume = DEFAULT_VOLUME;
     loop = false;
     playing = true;
-    audioPlayer = createAudioPlayer();
     playingMessage = null;
 
     constructor(textChannel, voiceChannel, connection, songs) {
         this.textChannel = textChannel;
         this.voiceChannel = voiceChannel;
-        this.connection = connection;
+        this.subscription = connection.subscribe(createAudioPlayer());
         this.songs = songs;
 
-        const connectionFinish = () => {
-            client.queues.delete(this.voiceChannel.guild.id);
-            this.songs = [];
-            this.audioPlayer.stop(true);
-        };
+        connection.removeAllListeners('error');
+        connection.removeAllListeners('destroyed');
+        connection.removeAllListeners('disconnected');
 
-        this.connection.removeAllListeners('error');
-        this.connection.removeAllListeners('destroyed');
-        this.connection.removeAllListeners('disconnected');
-
-        this.connection.once('error', () => this.connection.destroy());
-        this.connection.once('destroyed', connectionFinish);
-        this.connection.once('disconnected', () => {
-            connectionFinish();
-            this.connection.destroy();
+        connection.once('error', () => connection.destroy());
+        connection.once('destroyed', () => this.clearStop());
+        connection.once('disconnected', () => {
+            this.clearStop();
+            connection.destroy();
         });
-        this.connection.subscribe(this.audioPlayer);
+    }
+
+    clearStop() {
+        client.queues.delete(this.voiceChannel.guild.id);
+        this.subscription.unsubscribe();
+        this.songs = [];
+        this.subscription.player.stop(true);
     }
 
     async textSend(text) {
@@ -71,13 +70,14 @@ module.exports.play = async function (queue) {
     const { guild } = queue.voiceChannel;
 
     if (!song) {
-        client.queues.delete(guild.id);
+        queue.clearStop();
         clearTimeout(disconnectTimeout[guild.id]); // 기존 퇴장예약 취소
         disconnectTimeout[guild.id] = setTimeout(() => {
             // 종료 후 새로운 음악 기능이 수행 중이지 않으면 나감
             delete disconnectTimeout[guild.id]; // 완료된 퇴장예약 제거
-            if (!client.queues.get(guild.id) && queue.connection.state.status === VoiceConnectionStatus.Ready) {
-                queue.connection.destroy();
+            const { connection } = queue.subscription;
+            if (!connection.state.subscription && connection.state.status === VoiceConnectionStatus.Ready) {
+                connection.destroy();
                 queue.textSend(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
             }
         }, STAY_TIME * 1000); // 새 퇴장예약 추가
@@ -90,8 +90,8 @@ module.exports.play = async function (queue) {
             inputType: StreamType.Arbitrary,
             inlineVolume: true
         });
-        queue.audioPlayer.play(resource);
-        queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
+        queue.subscription.player.play(resource);
+        queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
     } catch (e) {
         queue.textSend('노래 재생에 실패했습니다.');
         replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
@@ -100,12 +100,12 @@ module.exports.play = async function (queue) {
     }
 
     queue.playingMessage = await queue.textSend(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
-    queue.audioPlayer
+    queue.subscription.player
         .on('stateChange', async (oldState, newState) => {
             if (newState.status === AudioPlayerStatus.Idle && oldState.status !== AudioPlayerStatus.Idle) {
                 // 재생 중인 노래가 끝난 경우
-                queue.audioPlayer.removeAllListeners('stateChange');
-                queue.audioPlayer.removeAllListeners('error');
+                queue.subscription.player.removeAllListeners('stateChange');
+                queue.subscription.player.removeAllListeners('error');
                 await queue.deleteMessage();
                 if (queue.loop) {
                     queue.songs.push(queue.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣어서 루프 구현
@@ -116,8 +116,8 @@ module.exports.play = async function (queue) {
             }
         })
         .on('error', async (e) => {
-            queue.audioPlayer.removeAllListeners('stateChange');
-            queue.audioPlayer.removeAllListeners('error');
+            queue.subscription.player.removeAllListeners('stateChange');
+            queue.subscription.player.removeAllListeners('error');
             await queue.deleteMessage();
             queue.textSend('노래 재생에 실패했습니다.');
             replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
@@ -140,7 +140,7 @@ module.exports.musicReactionControl = async function (reaction, user) {
     const { guild } = reaction.message.channel;
     const queue = client.queues.get(guild?.id);
     try {
-        if (user.bot || queue?.playingMessage?.id !== reaction.message.id || !queue.audioPlayer.state.resource) {
+        if (user.bot || queue?.playingMessage?.id !== reaction.message.id || !queue.subscription.player.state.resource) {
             return;
         }
 
@@ -153,31 +153,31 @@ module.exports.musicReactionControl = async function (reaction, user) {
             case '⏯':
                 queue.playing = !queue.playing;
                 if (queue.playing) {
-                    queue.audioPlayer.unpause();
+                    queue.subscription.player.unpause();
                     queue.textSend(`${user} ▶️ 노래를 다시 틀었습니다.`);
                 } else {
-                    queue.audioPlayer.pause();
+                    queue.subscription.player.pause();
                     queue.textSend(`${user} ⏸ 노래를 일시정지 했습니다.`);
                 }
                 break;
             case '⏭':
                 queue.textSend(`${user} ⏭ 노래를 건너뛰었습니다.`);
                 queue.playing = true;
-                queue.audioPlayer.stop(true);
+                queue.subscription.player.stop(true);
                 break;
             case '🔇':
                 queue.volume = queue.volume <= 0 ? DEFAULT_VOLUME : 0;
-                queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
+                queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
                 queue.textSend(queue.volume ? `${user} 🔊 음소거를 해제했습니다.` : `${user} 🔇 노래를 음소거 했습니다.`);
                 break;
             case '🔉':
                 queue.volume = Math.max(queue.volume - 10, 0);
-                queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
+                queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
                 queue.textSend(`${user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
                 break;
             case '🔊':
                 queue.volume = Math.min(queue.volume + 10, 100);
-                queue.audioPlayer.state.resource.volume.setVolume(queue.volume / 100);
+                queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
                 queue.textSend(`${user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
                 break;
             case '🔁':
@@ -186,12 +186,7 @@ module.exports.musicReactionControl = async function (reaction, user) {
                 break;
             case '⏹':
                 queue.textSend(`${user} ⏹ 노래를 정지했습니다.`);
-                queue.songs = [];
-                try {
-                    queue.audioPlayer.stop(true);
-                } catch {
-                    queue.connection.destroy();
-                }
+                queue.clearStop();
                 break;
         }
     } catch {
@@ -208,33 +203,34 @@ module.exports.musicActiveControl = function (oldState, newState) {
 
             if (newVoice) {
                 const newQueue = client.queues.get(newVoice.guild.id);
-                if (newQueue?.audioPlayer.state.resource && !newQueue.playing && newVoice.id === newQueue.voiceChannel.id && newVoice.members.size === 2 && newVoice.members.has(client.user.id)) {
+                if (
+                    newQueue?.subscription.player.state.resource &&
+                    !newQueue.playing &&
+                    newVoice.id === newQueue.voiceChannel.id &&
+                    newVoice.members.size === 2 &&
+                    newVoice.members.has(client.user.id)
+                ) {
                     newQueue.playing = true;
-                    newQueue.audioPlayer.unpause();
+                    newQueue.subscription.player.unpause();
                     newQueue.textSend('대기열을 다시 재생합니다.');
                 }
             }
 
             if (oldVoice) {
                 const oldQueue = client.queues.get(oldVoice.guild.id);
-                if (oldQueue?.audioPlayer.state.resource && oldVoice.id === oldQueue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.has(client.user.id)) {
+                if (oldQueue?.subscription.player.state.resource && oldVoice.id === oldQueue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.has(client.user.id)) {
                     // 봇만 음성 채널에 있는 경우
                     if (oldQueue.playing) {
                         oldQueue.playing = false;
-                        oldQueue.audioPlayer.pause();
+                        oldQueue.subscription.player.pause();
                         oldQueue.textSend('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
                     }
                     setTimeout(() => {
                         const queue = client.queues.get(oldVoice.guild.id);
-                        if (queue?.audioPlayer.state.resource && oldVoice.id === queue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.has(client.user.id)) {
+                        if (queue?.subscription.player.state.resource && oldVoice.id === queue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.has(client.user.id)) {
                             // 5분이 지나도 봇만 음성 채널에 있는 경우
                             queue.textSend(`5분 동안 ${client.user.username}이 비활성화 되어 대기열을 끝냅니다.`);
-                            queue.songs = [];
-                            try {
-                                queue.audioPlayer.stop(true);
-                            } catch {
-                                queue.connection.destroy();
-                            }
+                            queue.clearStop();
                         }
                     }, 300000);
                 }

@@ -126,7 +126,7 @@ module.exports.getPlaylistInfo = async function (url, search) {
 
 module.exports.songDownload = async function (url) {
     if (url.includes('youtube.com')) {
-        return ytdl(url, { filter: 'audio', quality: 'highestaudio' });
+        return ytdl(url, { filter: 'audio', quality: 'highestaudio', dlChunkSize: 0 });
     } else if (url.includes('soundcloud.com')) {
         return (await scdl.getSongInfo(url)).downloadProgressive();
     } else {
