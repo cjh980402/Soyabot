@@ -1,4 +1,3 @@
-const { createAudioResource, StreamType } = require('@discordjs/voice');
 const { Client, Util } = require('soundcloud-scraper');
 const scdl = new Client();
 const ytdl = require('ytdl-core');
@@ -126,18 +125,13 @@ module.exports.getPlaylistInfo = async function (url, search) {
 };
 
 module.exports.songDownload = async function (url) {
-    let stream = null;
     if (url.includes('youtube.com')) {
-        stream = ytdl(url, { filter: 'audio', quality: 'highestaudio', dlChunkSize: 0 });
+        return ytdl(url, { filter: 'audio', quality: 'highestaudio', highWaterMark: 1 << 25, dlChunkSize: 0 });
     } else if (url.includes('soundcloud.com')) {
-        stream = (await scdl.getSongInfo(url)).downloadProgressive();
+        return (await scdl.getSongInfo(url)).downloadProgressive();
     } else {
         throw new Error('지원하지 않는 영상 주소입니다.');
     }
-    return createAudioResource(stream, {
-        inputType: StreamType.Arbitrary,
-        inlineVolume: true
-    });
 };
 
 module.exports.youtubeSearch = async function (search) {
