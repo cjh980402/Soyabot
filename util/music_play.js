@@ -96,22 +96,19 @@ module.exports.play = async function (queue) {
 
     queue.playingMessage = await queue.textSend(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
     queue.subscription.player
-        .on('stateChange', async (oldState, newState) => {
-            if (newState.status === AudioPlayerStatus.Idle && oldState.status !== AudioPlayerStatus.Idle) {
-                // 재생 중인 노래가 끝난 경우
-                queue.subscription.player.removeAllListeners('stateChange');
-                queue.subscription.player.removeAllListeners('error');
-                await queue.deleteMessage();
-                if (queue.loop) {
-                    queue.songs.push(queue.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣어서 루프 구현
-                } else {
-                    queue.songs.shift();
-                }
-                module.exports.play(queue); // 재귀적으로 다음 곡 재생
+        .on(AudioPlayerStatus.Idle, async () => {
+            queue.subscription.player.removeAllListeners(AudioPlayerStatus.Idle);
+            queue.subscription.player.removeAllListeners('error');
+            await queue.deleteMessage();
+            if (queue.loop) {
+                queue.songs.push(queue.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣어서 루프 구현
+            } else {
+                queue.songs.shift();
             }
+            module.exports.play(queue); // 재귀적으로 다음 곡 재생
         })
         .on('error', async (e) => {
-            queue.subscription.player.removeAllListeners('stateChange');
+            queue.subscription.player.removeAllListeners(AudioPlayerStatus.Idle);
             queue.subscription.player.removeAllListeners('error');
             await queue.deleteMessage();
             queue.textSend('노래 재생에 실패했습니다.');
