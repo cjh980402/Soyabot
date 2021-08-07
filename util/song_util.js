@@ -1,15 +1,18 @@
+const { createAudioResource, demuxProbe, StreamType } = require('@discordjs/voice');
 const { Client, Util } = require('soundcloud-scraper');
 const scdl = new Client();
-const ytdl = require('ytdl-core');
+const ytdl = require('youtube-dl-exec');
 const { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } = require('../soyabot_config.json');
 const YouTubeAPI = require('simple-youtube-api');
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 const ytsr = require('ytsr');
+const idRegex = /^[a-zA-Z0-9-_]{11}$/;
 const listRegex = /^[\w-]+$/;
+const validPathDomains = /^https?:\/\/(youtu\.be\/|(www\.)?youtube\.com\/(embed|v|shorts)\/)/;
 const validQueryDomains = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com', 'gaming.youtube.com'];
 
 module.exports.isValidVideo = function (url) {
-    if (Util.validateURL(url, 'track') || ytdl.validateURL(url)) {
+    if (Util.validateURL(url, 'track') || module.exports.getYoutubeVideoID(url)) {
         return true;
     } else {
         return false;
@@ -26,7 +29,19 @@ module.exports.isValidPlaylist = function (url) {
 
 module.exports.getYoutubeVideoID = function (url) {
     try {
-        return ytdl.getVideoID(url);
+        const parsed = new URL(url);
+        let id = parsed.searchParams.get('v');
+        if (validPathDomains.test(url) && !id) {
+            const paths = parsed.pathname.split('/');
+            id = paths[parsed.hostname === 'youtu.be' ? 1 : 2];
+        } else if (!validQueryDomains.includes(parsed.hostname)) {
+            return null;
+        }
+        id = id?.substring(0, 11);
+        if (!idRegex.test(id)) {
+            return null;
+        }
+        return id;
     } catch {
         return null;
     }
@@ -126,9 +141,45 @@ module.exports.getPlaylistInfo = async function (url, search) {
 
 module.exports.songDownload = async function (url) {
     if (url.includes('youtube.com')) {
-        return ytdl(url, { filter: 'audio', quality: 'highestaudio', highWaterMark: 1 << 25, dlChunkSize: 0 });
+        return new Promise((resolve, reject) => {
+            const process = ytdl.raw(
+                url,
+                {
+                    o: '-',
+                    q: '',
+                    f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
+                    r: '100K'
+                },
+                { stdio: ['ignore', 'pipe', 'ignore'] }
+            );
+            if (!process.stdout) {
+                reject(new Error('출력 스트림이 존재하지 않습니다.'));
+                return;
+            }
+            const stream = process.stdout;
+            const onError = (e) => {
+                if (!process.killed) {
+                    process.kill();
+                }
+                stream.resume();
+                reject(e);
+            };
+            process
+                .once('spawn', async () => {
+                    try {
+                        const probe = await demuxProbe(stream);
+                        resolve(createAudioResource(probe.stream, { inputType: probe.type, inlineVolume: true }));
+                    } catch (e) {
+                        onError(e);
+                    }
+                })
+                .catch(onError);
+        });
     } else if (url.includes('soundcloud.com')) {
-        return (await scdl.getSongInfo(url)).downloadProgressive();
+        return reateAudioResource((await scdl.getSongInfo(url)).downloadProgressive(), {
+            inputType: StreamType.Arbitrary,
+            inlineVolume: true
+        });
     } else {
         throw new Error('지원하지 않는 영상 주소입니다.');
     }

@@ -84,15 +84,8 @@ module.exports.play = async function (queue) {
         return queue.textSend('❌ 음악 대기열이 끝났습니다.');
     }
 
-    let stream = null;
     try {
-        stream = await songDownload(song.url);
-        queue.subscription.player.play(
-            createAudioResource(stream, {
-                inputType: StreamType.Arbitrary,
-                inlineVolume: true
-            })
-        );
+        queue.subscription.player.play(await songDownload(song.url));
         queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
     } catch (e) {
         queue.textSend('노래 재생에 실패했습니다.');
@@ -108,7 +101,6 @@ module.exports.play = async function (queue) {
                 // 재생 중인 노래가 끝난 경우
                 queue.subscription.player.removeAllListeners('stateChange');
                 queue.subscription.player.removeAllListeners('error');
-                stream.destroy();
                 await queue.deleteMessage();
                 if (queue.loop) {
                     queue.songs.push(queue.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣어서 루프 구현
@@ -121,7 +113,6 @@ module.exports.play = async function (queue) {
         .on('error', async (e) => {
             queue.subscription.player.removeAllListeners('stateChange');
             queue.subscription.player.removeAllListeners('error');
-            stream.destroy();
             await queue.deleteMessage();
             queue.textSend('노래 재생에 실패했습니다.');
             replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
