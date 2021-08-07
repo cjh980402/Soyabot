@@ -144,9 +144,9 @@ module.exports = {
         const args = interaction.options.data.map((v) => v.value);
 
         if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
-            const startlev = Math.trunc(args[1]);
+            const startlev = args[1];
             let rslt = `<${startlev}레벨 기준 확률>`;
-            if (isNaN(startlev) || startlev < 141 || startlev > 199) {
+            if (startlev < 141 || startlev > 199) {
                 return interaction.followUp('141 ~ 199 범위의 기준 레벨을 입력해주세요.');
             }
             for (let i = 0; i < 10; i++) {
@@ -156,12 +156,12 @@ module.exports = {
         }
 
         const startlev = Math.trunc(args[0]);
-        if (args[1]) {
-            const endlev = Math.trunc(args[1]);
+        if (args.length === 2) {
+            const endlev = args[1];
             if (isNaN(startlev) || startlev < 141 || startlev > 199) {
                 return interaction.followUp('141 ~ 199 범위의 시작 레벨을 입력해주세요.');
             }
-            if (isNaN(endlev) || endlev < startlev || endlev > 200) {
+            if (endlev < startlev || endlev > 200) {
                 return interaction.followUp('시작 레벨 ~ 200 범위의 목표 레벨을 입력해주세요.');
             }
             return interaction.followUp(extremePotion(startlev, endlev));

@@ -77,44 +77,56 @@ module.exports = {
     },
     interaction: {
         name: '번역',
-        description: `카카오 i를 이용한 언어 번역을 수행합니다. 한국어 → 영어의 경우 두번째 매개변수는 한영으로 입력하면 됩니다.(참고. ${client.prefix}번역 목록)`,
+        description: '카카오 i를 이용한 언어 번역을 수행합니다.',
         options: [
             {
-                name: '대상언어_결과언어',
-                type: 'STRING',
-                description: '대상 언어 첫글자 + 결과 언어 첫글자 입력',
-                required: true
+                name: '언어목록',
+                type: 'SUB_COMMAND',
+                description: '번역 가능한 언어 목록을 보여줍니다.'
             },
             {
-                name: '내용',
-                type: 'STRING',
-                description: '번역할 문장'
+                name: '언어번역',
+                type: 'SUB_COMMAND',
+                description: '언어 번역을 수행합니다.',
+                options: [
+                    {
+                        name: '대상언어_결과언어',
+                        type: 'STRING',
+                        description: '대상 언어 첫글자 + 결과 언어 첫글자 입력',
+                        required: true
+                    },
+                    {
+                        name: '내용',
+                        type: 'STRING',
+                        description: '번역할 문장',
+                        required: true
+                    }
+                ]
             }
         ]
     },
     async interactionExecute(interaction) {
-        const args = interaction.options.data.map((v) => v.value);
+        const subcommnd = interaction.options.getSubcommand();
 
-        if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
+        if (subcommnd === '언어목록') {
             return interaction.followUp(
                 `<지원하는 언어 종류>\n${Object.values(langList)
                     .map((v) => v[0])
                     .join(', ')}`
             );
-        }
-        if (args.length < 2) {
-            return interaction.followUp(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
-        }
-        const langCode = findLangCode(args[0][0], args[0][1]);
-        if (!langCode) {
-            return interaction.followUp(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 "${this.usage}"입니다.\n언어의 목록은 ${client.prefix}번역 목록을 확인해주세요.`);
-        }
+        } else if (subcommnd === '언어번역') {
+            const translang = interaction.options.getString('대상언어_결과언어');
+            const langCode = findLangCode(translang[0], translang[1]);
+            if (!langCode) {
+                return interaction.followUp('지원하지 않는 번역입니다.');
+            }
 
-        const text = args[1];
-        if (text.length > 5000) {
-            return interaction.followUp('5000자를 초과하는 내용은 번역하지 않습니다.');
-        } else {
-            return interaction.followUp(await tran(langCode[0], langCode[1], text));
+            const text = interaction.options.getString('내용');
+            if (text.length > 5000) {
+                return interaction.followUp('5000자를 초과하는 내용은 번역하지 않습니다.');
+            } else {
+                return interaction.followUp(await tran(langCode[0], langCode[1], text));
+            }
         }
     }
 };

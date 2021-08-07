@@ -60,11 +60,12 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const [startlev, endlev] = interaction.options.data.map((v) => v.value);
-        if (isNaN(startlev) || startlev < 1 || startlev > 20) {
+        const startlev = interaction.options.getInteger('시작_레벨');
+        const endlev = interaction.options.getInteger('목표_레벨');
+        if (startlev < 1 || startlev > 20) {
             return interaction.followUp('1 ~ 20 범위의 시작 레벨을 입력해주세요.');
         }
-        if (isNaN(endlev) || endlev < startlev || endlev > 20) {
+        if (endlev < startlev || endlev > 20) {
             return interaction.followUp('시작 레벨 ~ 20 범위의 목표 레벨을 입력해주세요.');
         }
 

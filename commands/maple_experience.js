@@ -58,13 +58,14 @@ module.exports = {
         ]
     },
     async interactionExecute(interaction) {
-        const [startlev, endlev] = interaction.options.data.map((v) => v.value);
+        const startlev = interaction.options.getInteger('시작_레벨');
+        const endlev = interaction.options.getInteger('끝_레벨');
 
         if (endlev) {
-            if (isNaN(startlev) || startlev < 1 || startlev > 299) {
+            if (startlev < 1 || startlev > 299) {
                 return interaction.followUp('1 ~ 299 범위의 시작 레벨을 입력해주세요.');
             }
-            if (isNaN(endlev) || endlev < startlev || endlev > 300) {
+            if (endlev < startlev || endlev > 300) {
                 return interaction.followUp('시작 레벨 ~ 300 범위의 끝 레벨을 입력해주세요.');
             }
 
@@ -75,7 +76,7 @@ module.exports = {
 진행률 (~300): ${((levelTable[endlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
             return interaction.followUp(rslt);
         } else {
-            if (isNaN(startlev) || startlev < 1 || startlev > 300) {
+            if (startlev < 1 || startlev > 300) {
                 return interaction.followUp('1 ~ 300 범위의 시작 레벨을 입력해주세요.');
             }
 
