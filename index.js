@@ -39,7 +39,7 @@ const promiseTimeout = (promise, ms) => Promise.race([promise, setTimeout(ms)]);
                 }
             }
         });
-        await client.application.commands.set(interactions);
+        // await client.application.commands.set(interactions); // 인터랙션 데이터 변경 시에만 활성화하기
     } catch (e) {
         console.error(`로그인 에러 발생\n에러 내용: ${e}\n${e.stack ?? e._p}`);
         await cmd('npm stop');
