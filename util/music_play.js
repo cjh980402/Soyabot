@@ -1,4 +1,4 @@
-const { AudioPlayerStatus, createAudioPlayer, createAudioResource, StreamType, VoiceConnectionStatus } = require('@discordjs/voice');
+const { AudioPlayerStatus, createAudioPlayer, VoiceConnectionStatus } = require('@discordjs/voice');
 const { songDownload } = require('./song_util');
 const { replyAdmin } = require('../admin/bot_control');
 const { STAY_TIME, DEFAULT_VOLUME } = require('../soyabot_config.json');
@@ -63,10 +63,30 @@ module.exports.QueueElement = class {
         }
         this.playingMessage = null;
     }
+
+    async onFinish() {
+        this.subscription.player.removeAllListeners(AudioPlayerStatus.Idle);
+        this.subscription.player.removeAllListeners('error');
+        await this.deleteMessage();
+        if (this.loop) {
+            this.songs.push(this.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣어서 루프 구현
+        } else {
+            this.songs.shift();
+        }
+    }
+
+    async onError(e) {
+        this.subscription.player.removeAllListeners(AudioPlayerStatus.Idle);
+        this.subscription.player.removeAllListeners('error');
+        await this.deleteMessage();
+        this.textSend('노래 재생에 실패했습니다.');
+        replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+        this.songs.shift();
+    }
 };
 
 module.exports.play = async function (queue) {
-    const song = queue.songs[0];
+    const [song] = queue.songs;
     const { guild } = queue.voiceChannel;
 
     if (!song) {
@@ -84,47 +104,33 @@ module.exports.play = async function (queue) {
         return queue.textSend('❌ 음악 대기열이 끝났습니다.');
     }
 
-    try {
-        queue.subscription.player.play(await songDownload(song.url));
-        queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
-    } catch (e) {
-        queue.textSend('노래 재생에 실패했습니다.');
-        replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
-        queue.songs.shift();
-        return module.exports.play(queue);
-    }
-
     queue.playingMessage = await queue.textSend(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
     queue.subscription.player
         .on(AudioPlayerStatus.Idle, async () => {
-            queue.subscription.player.removeAllListeners(AudioPlayerStatus.Idle);
-            queue.subscription.player.removeAllListeners('error');
-            await queue.deleteMessage();
-            if (queue.loop) {
-                queue.songs.push(queue.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣어서 루프 구현
-            } else {
-                queue.songs.shift();
-            }
-            module.exports.play(queue); // 재귀적으로 다음 곡 재생
+            await queue.onFinish();
+            module.exports.play(queue);
         })
         .on('error', async (e) => {
-            queue.subscription.player.removeAllListeners(AudioPlayerStatus.Idle);
-            queue.subscription.player.removeAllListeners('error');
-            await queue.deleteMessage();
-            queue.textSend('노래 재생에 실패했습니다.');
-            replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
-            queue.songs.shift();
+            await queue.onError(e);
             module.exports.play(queue);
         });
 
     try {
-        await queue.playingMessage.react('⏯');
-        await queue.playingMessage.react('⏭');
-        await queue.playingMessage.react('🔇');
-        await queue.playingMessage.react('🔉');
-        await queue.playingMessage.react('🔊');
-        await queue.playingMessage.react('🔁');
-        await queue.playingMessage.react('⏹');
+        queue.subscription.player.play(await songDownload(song.url));
+        queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
+    } catch (e) {
+        await queue.onError(e);
+        return module.exports.play(queue);
+    }
+
+    try {
+        await queue.playingMessage?.react('⏯');
+        await queue.playingMessage?.react('⏭');
+        await queue.playingMessage?.react('🔇');
+        await queue.playingMessage?.react('🔉');
+        await queue.playingMessage?.react('🔊');
+        await queue.playingMessage?.react('🔁');
+        await queue.playingMessage?.react('⏹');
     } catch {}
 };
 
