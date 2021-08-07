@@ -2,6 +2,7 @@
  * 모듈 import
  */
 const { Client, Collection, Permissions, botClientOption } = require('./util/discord.js-extend'); // 제일 처음에 import 해야하는 모듈
+const { setTimeout } = require('timers/promises');
 const { readdirSync } = require('fs');
 const { TOKEN, PREFIX, ADMIN_ID } = require('./soyabot_config.json');
 const { adminChat, initClient, cmd } = require('./admin/admin_function');
@@ -18,7 +19,7 @@ client.queues = new Map(); // 음악기능 정보 저장용
 client.prefix = PREFIX; // PREFIX는 1글자여야함
 const cooldowns = new Set(); // 중복 명령 방지할 set
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // 정규식 내부에서 일부 특수 문자를 그대로 취급하기 위해 사용자 입력을 이스케이프로 치환하는 함수
-const promiseTimeout = (promise, ms) => Promise.race([promise, new Promise((resolve) => setTimeout(resolve, ms))]);
+const promiseTimeout = (promise, ms) => Promise.race([promise, setTimeout(ms)]);
 
 (async () => {
     try {
@@ -56,9 +57,10 @@ ${app.locals.port}번 포트에서 http 서버가 작동 중입니다.
 재가동 경로: <http://${client.botDomain}/restart/${app.locals.restartPath}>`);
 });
 
-client.on('error', (e) => {
+client.on('error', async (e) => {
     console.error(`클라이언트 에러 발생\n에러 내용: ${e}\n${e.stack ?? e._p}`);
-    setTimeout(cmd, 30000, 'npm restart'); // 바로 재가동하면 에러가 반복될 수 있으므로 30초 후 실행을 한다
+    await setTimeout(30000); // 30초 대기
+    await cmd('npm restart'); // 재시작
 });
 
 client.on('messageReactionAdd', musicReactionControl); // 각 이모지 리액션 추가에 반응
