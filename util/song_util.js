@@ -1,4 +1,4 @@
-const { createAudioResource, demuxProbe, StreamType } = require('@discordjs/voice');
+const { createAudioResource, demuxProbe } = require('@discordjs/voice');
 const { Client, Util } = require('soundcloud-scraper');
 const scdl = new Client();
 const ytdl = require('youtube-dl-exec');
@@ -139,50 +139,40 @@ module.exports.getPlaylistInfo = async function (url, search) {
     }
 };
 
-module.exports.songDownload = async function (url) {
-    if (url.includes('youtube.com')) {
-        return new Promise((resolve, reject) => {
-            const process = ytdl.raw(
-                url,
-                {
-                    o: '-',
-                    q: '',
-                    f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
-                    r: '100K'
-                },
-                { stdio: ['ignore', 'pipe', 'ignore'] }
-            );
-            if (!process.stdout) {
-                reject(new Error('출력 스트림이 존재하지 않습니다.'));
-                return;
+module.exports.songDownload = function (url) {
+    return new Promise((resolve, reject) => {
+        const process = ytdl.raw(
+            url,
+            {
+                o: '-',
+                q: '',
+                f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
+                r: '100K'
+            },
+            { stdio: ['ignore', 'pipe', 'ignore'] }
+        );
+        if (!process.stdout) {
+            return reject(new Error('출력 스트림이 존재하지 않습니다.'));
+        }
+        const stream = process.stdout;
+        const onError = (e) => {
+            if (!process.killed) {
+                process.kill();
             }
-            const stream = process.stdout;
-            const onError = (e) => {
-                if (!process.killed) {
-                    process.kill();
+            stream.resume();
+            reject(e);
+        };
+        process
+            .once('spawn', async () => {
+                try {
+                    const probe = await demuxProbe(stream);
+                    resolve(createAudioResource(probe.stream, { inputType: probe.type, inlineVolume: true }));
+                } catch (e) {
+                    onError(e);
                 }
-                stream.resume();
-                reject(e);
-            };
-            process
-                .once('spawn', async () => {
-                    try {
-                        const probe = await demuxProbe(stream);
-                        resolve(createAudioResource(probe.stream, { inputType: probe.type, inlineVolume: true }));
-                    } catch (e) {
-                        onError(e);
-                    }
-                })
-                .catch(onError);
-        });
-    } else if (url.includes('soundcloud.com')) {
-        return createAudioResource((await scdl.getSongInfo(url)).downloadProgressive(), {
-            inputType: StreamType.Arbitrary,
-            inlineVolume: true
-        });
-    } else {
-        throw new Error('지원하지 않는 영상 주소입니다.');
-    }
+            })
+            .catch(onError);
+    });
 };
 
 module.exports.youtubeSearch = async function (search) {
