@@ -176,7 +176,7 @@ module.exports.songDownload = async function (url) {
                 .catch(onError);
         });
     } else if (url.includes('soundcloud.com')) {
-        return reateAudioResource((await scdl.getSongInfo(url)).downloadProgressive(), {
+        return createAudioResource((await scdl.getSongInfo(url)).downloadProgressive(), {
             inputType: StreamType.Arbitrary,
             inlineVolume: true
         });
