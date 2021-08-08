@@ -37,7 +37,7 @@ module.exports.QueueElement = class {
         client.queues.delete(this.voiceChannel.guild.id);
         this.subscription.unsubscribe();
         this.songs = [];
-        this.subscription.player.stop(true);
+        this.subscription.player.stop();
     }
 
     async textSend(text) {
@@ -161,7 +161,7 @@ module.exports.musicReactionControl = async function (reaction, user) {
             case '⏭':
                 queue.textSend(`${user} ⏭ 노래를 건너뛰었습니다.`);
                 queue.playing = true;
-                queue.subscription.player.stop(true);
+                queue.subscription.player.stop();
                 break;
             case '🔇':
                 queue.volume = queue.volume <= 0 ? DEFAULT_VOLUME : 0;

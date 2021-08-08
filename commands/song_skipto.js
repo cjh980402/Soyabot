@@ -38,7 +38,7 @@ module.exports = {
         } else {
             queue.songs = queue.songs.slice(skipto - 2);
         }
-        queue.subscription.player.stop(true);
+        queue.subscription.player.stop();
     },
     interaction: {
         name: 'skipto',
@@ -82,6 +82,6 @@ module.exports = {
         } else {
             queue.songs = queue.songs.slice(skipto - 2);
         }
-        queue.subscription.player.stop(true);
+        queue.subscription.player.stop();
     }
 };
