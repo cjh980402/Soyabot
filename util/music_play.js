@@ -1,9 +1,8 @@
-const { AudioPlayerStatus, createAudioPlayer, VoiceConnectionStatus } = require('@discordjs/voice');
+const { AudioPlayerStatus, createAudioPlayer } = require('@discordjs/voice');
 const { songDownload } = require('./song_util');
 const { replyAdmin } = require('../admin/bot_control');
-const { STAY_TIME, DEFAULT_VOLUME } = require('../soyabot_config.json');
+const { DEFAULT_VOLUME } = require('../soyabot_config.json');
 const { canModifyQueue } = require('./soyabot_util');
-const disconnectTimeout = {};
 
 module.exports.QueueElement = class {
     textChannel;
@@ -25,19 +24,57 @@ module.exports.QueueElement = class {
         connection.removeAllListeners('destroyed');
         connection.removeAllListeners('disconnected');
 
-        connection.once('error', () => connection.destroy());
-        connection.once('destroyed', () => this.clearStop());
-        connection.once('disconnected', () => {
-            this.clearStop();
-            connection.destroy();
-        });
+        connection
+            .once('error', () => connection.destroy())
+            .once('destroyed', () => this.clearStop())
+            .once('disconnected', () => {
+                this.clearStop();
+                connection.destroy();
+            });
+
+        this.subscription.player
+            .on(AudioPlayerStatus.Idle, async () => {
+                await this.onFinish();
+                this.playSong();
+            })
+            .on('error', async (e) => {
+                await this.onError(e);
+                this.playSong();
+            });
     }
 
     clearStop() {
         client.queues.delete(this.voiceChannel.guild.id);
         this.subscription.unsubscribe();
         this.songs = [];
-        this.subscription.player.stop();
+        this.subscription.player.stop(true);
+    }
+
+    async playSong() {
+        if (this.songs.length === 0) {
+            this.clearStop();
+            this.subscription.connection.destroy();
+            return this.textSend('❌ 음악 대기열이 끝났습니다.');
+        }
+
+        this.playingMessage = await this.textSend(`🎶 노래 재생 시작: **${this.songs[0].title}**\n${this.songs[0].url}`);
+        try {
+            this.subscription.player.play(await songDownload(this.songs[0].url));
+            this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
+        } catch (e) {
+            await this.onError(e);
+            return this.playSong();
+        }
+
+        try {
+            await this.playingMessage?.react('⏯');
+            await this.playingMessage?.react('⏭');
+            await this.playingMessage?.react('🔇');
+            await this.playingMessage?.react('🔉');
+            await this.playingMessage?.react('🔊');
+            await this.playingMessage?.react('🔁');
+            await this.playingMessage?.react('⏹');
+        } catch {}
     }
 
     async textSend(text) {
@@ -65,8 +102,6 @@ module.exports.QueueElement = class {
     }
 
     async onFinish() {
-        this.subscription.player.removeAllListeners(AudioPlayerStatus.Idle);
-        this.subscription.player.removeAllListeners('error');
         await this.deleteMessage();
         if (this.loop) {
             this.songs.push(this.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣어서 루프 구현
@@ -76,62 +111,11 @@ module.exports.QueueElement = class {
     }
 
     async onError(e) {
-        this.subscription.player.removeAllListeners(AudioPlayerStatus.Idle);
-        this.subscription.player.removeAllListeners('error');
         await this.deleteMessage();
         this.textSend('노래 재생에 실패했습니다.');
-        replyAdmin(`노래 재생 에러\nsong 객체: ${song._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+        replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
         this.songs.shift();
     }
-};
-
-module.exports.play = async function (queue) {
-    const [song] = queue.songs;
-    const { guild } = queue.voiceChannel;
-
-    if (!song) {
-        queue.clearStop();
-        clearTimeout(disconnectTimeout[guild.id]); // 기존 퇴장예약 취소
-        disconnectTimeout[guild.id] = setTimeout(() => {
-            // 종료 후 새로운 음악 기능이 수행 중이지 않으면 나감
-            delete disconnectTimeout[guild.id]; // 완료된 퇴장예약 제거
-            const { connection } = queue.subscription;
-            if (!connection.state.subscription && connection.state.status === VoiceConnectionStatus.Ready) {
-                connection.destroy();
-                queue.textSend(`${STAY_TIME}초가 지나서 음성 채널을 떠납니다.`);
-            }
-        }, STAY_TIME * 1000); // 새 퇴장예약 추가
-        return queue.textSend('❌ 음악 대기열이 끝났습니다.');
-    }
-
-    queue.playingMessage = await queue.textSend(`🎶 노래 재생 시작: **${song.title}**\n${song.url}`);
-    queue.subscription.player
-        .on(AudioPlayerStatus.Idle, async () => {
-            await queue.onFinish();
-            module.exports.play(queue);
-        })
-        .on('error', async (e) => {
-            await queue.onError(e);
-            module.exports.play(queue);
-        });
-
-    try {
-        queue.subscription.player.play(await songDownload(song.url));
-        queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
-    } catch (e) {
-        await queue.onError(e);
-        return module.exports.play(queue);
-    }
-
-    try {
-        await queue.playingMessage?.react('⏯');
-        await queue.playingMessage?.react('⏭');
-        await queue.playingMessage?.react('🔇');
-        await queue.playingMessage?.react('🔉');
-        await queue.playingMessage?.react('🔊');
-        await queue.playingMessage?.react('🔁');
-        await queue.playingMessage?.react('⏹');
-    } catch {}
 };
 
 module.exports.musicReactionControl = async function (reaction, user) {

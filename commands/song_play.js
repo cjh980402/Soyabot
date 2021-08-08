@@ -1,5 +1,5 @@
 const { Permissions } = require('../util/discord.js-extend');
-const { QueueElement, play } = require('../util/music_play');
+const { QueueElement } = require('../util/music_play');
 const { isValidPlaylist, isValidVideo, getSongInfo } = require('../util/song_util');
 const { replyAdmin } = require('../admin/bot_control');
 
@@ -56,7 +56,7 @@ module.exports = {
         try {
             const newQueue = new QueueElement(message.channel, channel, await channel.join(), [song]);
             client.queues.set(message.guildId, newQueue);
-            play(newQueue);
+            newQueue.playSong();
         } catch (e) {
             client.queues.delete(message.guildId);
             replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
@@ -126,7 +126,7 @@ module.exports = {
         try {
             const newQueue = new QueueElement(interaction.channel, channel, await channel.join(), [song]);
             client.queues.set(interaction.guildId, newQueue);
-            play(newQueue);
+            newQueue.playSong();
         } catch (e) {
             client.queues.delete(interaction.guildId);
             replyAdmin(`작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction.options._i()}\n에러 내용: ${e}\n${e.stack ?? e._p}`);

@@ -146,7 +146,7 @@ module.exports.songDownload = function (url) {
             {
                 o: '-',
                 q: '',
-                f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio/best',
+                f: 'bestaudio[ext=webm+acodec=opus+asr=44100]/bestaudio/best',
                 r: '100K'
             },
             { stdio: ['ignore', 'pipe', 'ignore'] }
