@@ -34,11 +34,17 @@ module.exports.QueueElement = class {
 
         this.subscription.player
             .on(AudioPlayerStatus.Idle, async () => {
-                await this.onFinish();
+                await this.deleteMessage();
+                if (this.loop) {
+                    this.songs.push(this.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣어서 루프 구현
+                } else {
+                    this.songs.shift();
+                }
                 this.playSong();
             })
             .on('error', (e) => {
-                this.onError(e);
+                this.textSend('노래 재생에 실패했습니다.');
+                replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             });
     }
 
@@ -49,20 +55,6 @@ module.exports.QueueElement = class {
         this.subscription.player.stop(true);
     }
 
-    onError(e) {
-        this.textSend('노래 재생에 실패했습니다.');
-        replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
-    }
-
-    async onFinish() {
-        await this.deleteMessage();
-        if (this.loop) {
-            this.songs.push(this.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣어서 루프 구현
-        } else {
-            this.songs.shift();
-        }
-    }
-
     async playSong() {
         if (this.songs.length === 0) {
             this.clearStop();
@@ -70,12 +62,13 @@ module.exports.QueueElement = class {
             return this.textSend('❌ 음악 대기열이 끝났습니다.');
         }
 
-        this.playingMessage = await this.textSend(`🎶 노래 재생 시작: **${this.songs[0].title}**\n${this.songs[0].url}`);
         try {
+            this.playingMessage = await this.textSend(`🎶 노래 재생 시작: **${this.songs[0].title}**\n${this.songs[0].url}`);
             this.subscription.player.play(await songDownload(this.songs[0].url));
             this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
         } catch (e) {
-            this.onError(e);
+            this.textSend('노래 재생에 실패했습니다.');
+            replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             this.songs.shift();
             return this.playSong();
         }
@@ -217,6 +210,6 @@ module.exports.musicActiveControl = function (oldState, newState) {
             }
         }
     } catch (e) {
-        replyAdmin(`[oldState]\n${oldState?._p}\n[newState]\n${newState?._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+        replyAdmin(`[oldState]\n${oldState._p}\n[newState]\n${newState._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
     }
 };
