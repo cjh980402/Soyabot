@@ -28,7 +28,7 @@ module.exports.adminChat = async function (message) {
         try {
             const suggestRefer = await message.fetchReference();
             const [channelId, messageId] = suggestRefer.content.split(/\s/);
-            await client.channels._add({ id: channelId, type: 1 }, null, { cache: false }).messages._add({ id: messageId }, false).reply(`[건의 답변]\n${fullContent}`);
+            await new Discord.Message(client, { id: messageId, channel_id: channelId }).reply(`[건의 답변]\n${fullContent}`);
             message.channel.send('건의 답변을 보냈습니다.');
         } catch {
             message.channel.send('해당하는 건의의 정보가 존재하지 않습니다.');
