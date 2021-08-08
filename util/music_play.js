@@ -27,10 +27,7 @@ module.exports.QueueElement = class {
         connection
             .once('error', () => connection.destroy())
             .once('destroyed', () => this.clearStop())
-            .once('disconnected', () => {
-                this.clearStop();
-                connection.destroy();
-            });
+            .once('disconnected', () => this.clearStop());
 
         this.subscription.player
             .on(AudioPlayerStatus.Idle, async () => {
@@ -56,7 +53,7 @@ module.exports.QueueElement = class {
     }
 
     async playSong() {
-        if (this.songs.length === 0) {
+        if (!this.songs[0]) {
             this.clearStop();
             this.subscription.connection.destroy();
             return this.textSend('❌ 음악 대기열이 끝났습니다.');
