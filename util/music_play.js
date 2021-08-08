@@ -20,12 +20,12 @@ module.exports.QueueElement = class {
         this.subscription = connection.subscribe(createAudioPlayer());
         this.songs = songs;
 
-        connection.removeAllListeners('error');
-        connection.removeAllListeners('destroyed');
-        connection.removeAllListeners('disconnected');
+        this.subscription.connection.removeAllListeners('error');
+        this.subscription.connection.removeAllListeners('destroyed');
+        this.subscription.connection.removeAllListeners('disconnected');
 
-        connection
-            .once('error', () => connection.destroy())
+        this.subscription.connection
+            .once('error', () => this.clearStop())
             .once('destroyed', () => this.clearStop())
             .once('disconnected', () => this.clearStop());
 
