@@ -37,9 +37,8 @@ module.exports.QueueElement = class {
                 await this.onFinish();
                 this.playSong();
             })
-            .on('error', async (e) => {
-                await this.onError(e);
-                this.playSong();
+            .on('error', (e) => {
+                this.onError(e);
             });
     }
 
@@ -48,6 +47,20 @@ module.exports.QueueElement = class {
         this.subscription.unsubscribe();
         this.songs = [];
         this.subscription.player.stop(true);
+    }
+
+    onError(e) {
+        this.textSend('노래 재생에 실패했습니다.');
+        replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+    }
+
+    async onFinish() {
+        await this.deleteMessage();
+        if (this.loop) {
+            this.songs.push(this.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣어서 루프 구현
+        } else {
+            this.songs.shift();
+        }
     }
 
     async playSong() {
@@ -62,7 +75,8 @@ module.exports.QueueElement = class {
             this.subscription.player.play(await songDownload(this.songs[0].url));
             this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
         } catch (e) {
-            await this.onError(e);
+            this.onError(e);
+            this.songs.shift();
             return this.playSong();
         }
 
@@ -99,22 +113,6 @@ module.exports.QueueElement = class {
             } catch {}
         }
         this.playingMessage = null;
-    }
-
-    async onFinish() {
-        await this.deleteMessage();
-        if (this.loop) {
-            this.songs.push(this.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣어서 루프 구현
-        } else {
-            this.songs.shift();
-        }
-    }
-
-    async onError(e) {
-        await this.deleteMessage();
-        this.textSend('노래 재생에 실패했습니다.');
-        replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
-        this.songs.shift();
     }
 };
 
