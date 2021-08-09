@@ -32,10 +32,12 @@ module.exports.QueueElement = class {
         this.subscription.player
             .on(AudioPlayerStatus.Idle, async () => {
                 await this.deleteMessage();
-                if (this.loop) {
-                    this.songs.push(this.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣어서 루프 구현
-                } else {
-                    this.songs.shift();
+                if (this.songs.length > 0) {
+                    if (this.loop) {
+                        this.songs.push(this.songs.shift()); // 현재 노래를 대기열의 마지막에 다시 넣어서 루프 구현
+                    } else {
+                        this.songs.shift();
+                    }
                 }
                 this.playSong();
             })
@@ -53,7 +55,7 @@ module.exports.QueueElement = class {
     }
 
     async playSong() {
-        if (!this.songs[0]) {
+        if (this.songs.length === 0) {
             this.clearStop();
             this.subscription.connection.destroy();
             return this.textSend('❌ 음악 대기열이 끝났습니다.');
