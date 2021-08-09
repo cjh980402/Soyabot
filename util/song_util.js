@@ -139,42 +139,40 @@ module.exports.getPlaylistInfo = async function (url, search) {
     }
 };
 
-module.exports.songDownload = function (url) {
-    return new Promise(async (resolve, reject) => {
-        const process = ytdl.raw(
-            url,
-            {
-                o: '-',
-                q: '',
-                f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio/best',
-                r: '100K'
-            },
-            { stdio: ['ignore', 'pipe', 'ignore'] }
-        );
+module.exports.songDownload = async function (url) {
+    const ytdlProcess = ytdl.raw(
+        url,
+        {
+            o: '-',
+            q: '',
+            f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
+            r: '100K'
+        },
+        { stdio: ['ignore', 'pipe', 'ignore'] }
+    );
 
-        const stream = process.stdout;
-        if (!stream) {
-            return reject(new Error('출력 스트림이 존재하지 않습니다.'));
+    const stream = ytdlProcess.stdout;
+    if (!stream) {
+        throw new Error('출력 스트림이 존재하지 않습니다.');
+    }
+
+    stream.on('error', () => {
+        if (!ytdlProcess.killed) {
+            ytdlProcess.kill();
         }
-
-        stream.on('error', () => {
-            if (!process.killed) {
-                process.kill();
-            }
-            stream.resume();
-        });
-
-        try {
-            const probe = await demuxProbe(stream);
-            resolve(createAudioResource(probe.stream, { inputType: probe.type, inlineVolume: true }));
-        } catch (e) {
-            if (!process.killed) {
-                process.kill();
-            }
-            stream.resume();
-            reject(e);
-        }
+        stream.resume();
     });
+
+    try {
+        const probe = await demuxProbe(stream);
+        return createAudioResource(probe.stream, { inputType: probe.type, inlineVolume: true });
+    } catch (e) {
+        if (!ytdlProcess.killed) {
+            ytdlProcess.kill();
+        }
+        stream.resume();
+        throw e;
+    }
 };
 
 module.exports.youtubeSearch = async function (search) {
