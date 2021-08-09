@@ -140,38 +140,40 @@ module.exports.getPlaylistInfo = async function (url, search) {
 };
 
 module.exports.songDownload = function (url) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const process = ytdl.raw(
             url,
             {
                 o: '-',
                 q: '',
-                f: 'bestaudio[ext=webm+acodec=opus+asr=44100]/bestaudio/best',
+                f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio/best',
                 r: '100K'
             },
             { stdio: ['ignore', 'pipe', 'ignore'] }
         );
-        if (!process.stdout) {
+
+        const stream = process.stdout;
+        if (!stream) {
             return reject(new Error('출력 스트림이 존재하지 않습니다.'));
         }
-        const stream = process.stdout;
-        const onError = (e) => {
+
+        stream.on('error', () => {
+            if (!process.killed) {
+                process.kill();
+            }
+            stream.resume();
+        });
+
+        try {
+            const probe = await demuxProbe(stream);
+            resolve(createAudioResource(probe.stream, { inputType: probe.type, inlineVolume: true }));
+        } catch (e) {
             if (!process.killed) {
                 process.kill();
             }
             stream.resume();
             reject(e);
-        };
-        process
-            .once('spawn', async () => {
-                try {
-                    const probe = await demuxProbe(stream);
-                    resolve(createAudioResource(probe.stream, { inputType: probe.type, inlineVolume: true }));
-                } catch (e) {
-                    onError(e);
-                }
-            })
-            .catch(onError);
+        }
     });
 };
 
