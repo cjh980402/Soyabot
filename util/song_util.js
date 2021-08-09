@@ -6,7 +6,7 @@ const { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } = require('../soyabot_config.json');
 const YouTubeAPI = require('simple-youtube-api');
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 const ytsr = require('ytsr');
-const idRegex = /^[a-zA-Z0-9-_]{11}$/;
+const idRegex = /^[\w-]{11}$/;
 const listRegex = /^[\w-]+$/;
 const validPathDomains = /^https?:\/\/(youtu\.be\/|(www\.)?youtube\.com\/(embed|v|shorts)\/)/;
 const validQueryDomains = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com', 'gaming.youtube.com'];
@@ -33,15 +33,11 @@ module.exports.getYoutubeVideoID = function (url) {
         let id = parsed.searchParams.get('v');
         if (validPathDomains.test(url) && !id) {
             const paths = parsed.pathname.split('/');
-            id = paths[parsed.hostname === 'youtu.be' ? 1 : 2];
+            id = paths[parsed.hostname === 'youtu.be' ? 1 : 2].substring(0, 11);
         } else if (!validQueryDomains.includes(parsed.hostname)) {
             return null;
         }
-        id = id?.substring(0, 11);
-        if (!idRegex.test(id)) {
-            return null;
-        }
-        return id;
+        return idRegex.test(id ?? '') ? id : null;
     } catch {
         return null;
     }
@@ -51,11 +47,7 @@ module.exports.getYoutubeListID = function (url) {
     try {
         const parsed = new URL(url);
         const id = parsed.searchParams.get('list');
-        if (validQueryDomains.includes(parsed.hostname) && listRegex.test(id ?? '')) {
-            return id;
-        } else {
-            return null;
-        }
+        return validQueryDomains.includes(parsed.hostname) && listRegex.test(id ?? '') ? id : null;
     } catch {
         return null;
     }
