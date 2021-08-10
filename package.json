@@ -1,6 +1,6 @@
 {
   "name": "soyabot",
-  "version": "6.3.2",
+  "version": "6.3.3",
   "description": "MapleStory, Music Discord Bot",
   "main": "index.js",
   "author": "9804cjh@naver.com",
@@ -28,7 +28,7 @@
     "cheerio": "^1.0.0-rc.10",
     "deepai": "^1.0.17",
     "discord.js": "^13.0.1",
-    "entities": "^3.0.0",
+    "entities": "^3.0.1",
     "express": "^4.17.1",
     "ffmpeg-static": "^4.4.0",
     "form-data": "^4.0.0",
