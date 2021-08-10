@@ -34,7 +34,7 @@ async function getWeatherEmbed(targetLocal) {
         let data = $('body > script').filter((_, v) => /\[{.+naverRgnCd.+}\]/.test($(v).html()));
         data = JSON.parse(/\[{.+naverRgnCd.+}\]/.exec(data.eq(0).html())[0]);
         for (let i = 0; i < weather.length - 1; i++) {
-            weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${weather.eq(i).attr('data-wetr-txt')})│강수량: ${data[i + 1].rainAmt}㎜│습도: ${
+            weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${data[i + 1].wetrTxt})│강수량: ${data[i + 1].rainAmt}㎜│습도: ${
                 data[i + 1].humd
             }%│풍속: ${data[i + 1].windSpd}㎧`;
         }
