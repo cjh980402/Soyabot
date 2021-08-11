@@ -80,7 +80,7 @@ module.exports.getSongInfo = async function (url, search) {
                 title: songInfo.title.decodeHTML(),
                 url: songInfo.url,
                 duration: songInfo.durationSeconds,
-                thumbnail: songInfo.thumbnails.high.url
+                thumbnail: songInfo.maxRes.url
             };
         }
         return song;
@@ -124,7 +124,7 @@ module.exports.getPlaylistInfo = async function (url, search) {
                 title: video.title.decodeHTML(),
                 url: video.url,
                 duration: video.durationSeconds,
-                thumbnail: video.thumbnails.high.url
+                thumbnail: video.maxRes.url
             }));
         }
         videos.title = playlist.title;
