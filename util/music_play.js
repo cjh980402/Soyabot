@@ -43,7 +43,7 @@ module.exports.QueueElement = class {
                 this.playSong();
             })
             .on('error', (e) => {
-                this.sendMessage('노래 재생에 실패했습니다.');
+                this.sendMessage('노래 재생을 실패했습니다.');
                 replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             });
     }
