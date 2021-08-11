@@ -76,7 +76,7 @@ module.exports = {
         name: '이벤트',
         description: '현재 진행 중인 이벤트를 알려줍니다.'
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const $ = load(await (await fetch('https://maplestory.nexon.com/News/Event')).text());
         const eventdata = $('.event_all_banner li dl');
         const links = eventdata.find('dt a').map((_, v) => $(v).attr('href'));

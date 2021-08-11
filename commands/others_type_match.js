@@ -40,7 +40,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const option = interaction.options.getString('옵션');
         const [min, max] = option === '한' ? [0, 1119] : option === '영' ? [1120, matchString.length - 1] : [0, matchString.length - 1];
         const random = Math.floor(Math.random() * (max - min + 1)) + min; // 랜덤 선택된 문장의 인덱스

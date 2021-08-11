@@ -54,7 +54,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const igList = interaction.options.data.map((v) => v.value);
         const monster = igList.shift();
         if (monster < 0) {

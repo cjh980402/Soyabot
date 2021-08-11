@@ -140,7 +140,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const args = interaction.options.data.map((v) => v.value);
 
         if (args[0] === '확률' || args[0] === 'ㅎㄹ') {

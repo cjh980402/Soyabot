@@ -124,7 +124,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         } else if (interaction.guild.memberCount < 3) {

@@ -25,7 +25,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const rslt = replyAdmin(`${interaction.channelId} ${interaction.id}\n작성자: ${interaction.user.username}\n건의 내용: ${interaction.options.getString('건의_사항')}`);
         return interaction.followUp(rslt ? '건의사항이 전송되었습니다.' : '건의사항 전송을 실패했습니다.');
     }

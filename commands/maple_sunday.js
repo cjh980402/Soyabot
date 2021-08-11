@@ -30,7 +30,7 @@ module.exports = {
         name: '썬데이',
         description: '현재 진행 (예정) 중인 썬데이 메이플을 공지합니다.'
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const $ = load(await (await fetch('https://maplestory.nexon.com/News/Event')).text());
         const eventdata = $('.event_all_banner li dl');
         const sunday = eventdata

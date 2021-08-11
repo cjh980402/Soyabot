@@ -41,7 +41,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.');
         }

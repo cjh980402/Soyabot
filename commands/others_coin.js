@@ -110,7 +110,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const type = interaction.options.getString('차트_종류') ?? '1일'; // 차트 종류
         const krSearch = interaction.options.getString('검색_내용');
         const enSearch = krSearch.toUpperCase();

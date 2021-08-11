@@ -73,7 +73,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
@@ -110,7 +110,7 @@ module.exports = {
             const playCommand = client.commands.find((cmd) => cmd.interaction?.name === 'play');
             for (const song of songChoice) {
                 interaction.options._hoistedOptions[1] = { name: '영상_주소_제목', type: 'STRING', value: resultsEmbed.fields[song - 1].value };
-                await playCommand.interactionExecute(interaction);
+                await playCommand.commandExecute(interaction);
             }
 
             try {

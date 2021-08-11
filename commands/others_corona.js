@@ -50,7 +50,7 @@ module.exports = {
         name: '코로나2',
         description: '최신 기준 코로나 국내 현황을 알려줍니다.'
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const today = new Date();
         const startday = new Date(Date.now() - 604800000); // 일주일 전을 시작일로 설정
         const params = new URLSearchParams();

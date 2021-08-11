@@ -153,7 +153,7 @@ module.exports = {
         name: '코로나',
         description: '최신 기준 코로나 국내 현황 통계를 알려줍니다.'
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const countData = await (await fetch(`https://api.corona-19.kr/korea/?serviceKey=${CORONA_API_KEY}`)).json();
         const countryData = await (await fetch(`https://api.corona-19.kr/korea/country/new/?serviceKey=${CORONA_API_KEY}`)).json();
 

@@ -136,7 +136,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         return interaction.followUp({ embeds: [await getMesoEmbed(interaction.options.getString('서버'))] });
     }
 };

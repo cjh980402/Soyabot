@@ -44,7 +44,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         return interaction.followUp(await shortURL(interaction.options.getString('대상_주소')));
     }
 };

@@ -13,7 +13,7 @@ module.exports = {
         name: '실검',
         description: 'https://www.signal.bz 기준 네이버 실시간 검색어를 보여줍니다.'
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const data = await (await fetch('https://api.signal.bz/news/realtime')).json();
         return interaction.followUp(`실시간 검색어\n${new Date().toLocaleString()}\n\n${data.top10.map((v) => `${v.rank}. ${v.keyword}`).join('\n')}`);
     }

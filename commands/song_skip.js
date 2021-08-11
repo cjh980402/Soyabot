@@ -26,7 +26,7 @@ module.exports = {
         name: 'skip',
         description: '지금 재생 중인 노래 건너뜁니다.'
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }

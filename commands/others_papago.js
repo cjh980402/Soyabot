@@ -107,7 +107,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const subcommnd = interaction.options.getSubcommand();
 
         if (subcommnd === '언어목록') {

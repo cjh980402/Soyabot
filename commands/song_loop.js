@@ -25,7 +25,7 @@ module.exports = {
         name: 'loop',
         description: '반복 재생 상태를 전환합니다.'
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }

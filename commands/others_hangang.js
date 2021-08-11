@@ -28,7 +28,7 @@ module.exports = {
         name: '한강',
         description: '현재 한강의 수온을 알려줍니다.'
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const $ = load(iconv.decode(await (await fetch('http://www.koreawqi.go.kr/wQSCHomeLayout_D.wq?action_type=T#')).buffer(), 'euc-kr'));
         // 수질 정보 사이트 인코딩: euc-kr
         if ($('tr.site_S01004 > td').length !== 8) {

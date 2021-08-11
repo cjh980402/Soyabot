@@ -57,7 +57,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const queue = client.queues.get(interaction.guildId);
         const search = interaction.options.getString('노래_제목') ?? queue?.songs[0].title;
         if (!search) {

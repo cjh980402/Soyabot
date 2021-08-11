@@ -10,7 +10,7 @@ module.exports = {
         name: '수로휴가',
         description: '길드 지하수로 휴가 신청서를 보여줍니다.'
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         return interaction.followUp({ content: '수로 휴가 신청서', files: ['./pictures/guild_vacation.png'] });
     }
 };

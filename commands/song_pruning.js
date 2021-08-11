@@ -23,7 +23,7 @@ module.exports = {
         name: 'pruning',
         description: '봇의 음악 메시지 자동정리 기능 상태를 전환합니다.'
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }

@@ -7,7 +7,7 @@ const { readdirSync } = require('fs');
 const { TOKEN, PREFIX, ADMIN_ID } = require('./soyabot_config.json');
 const { adminChat, initClient, cmd } = require('./admin/admin_function');
 const { replyAdmin } = require('./admin/bot_control');
-const { musicReactionControl, musicActiveControl } = require('./util/music_play');
+const { musicActiveControl, musicButtonControl } = require('./util/music_play');
 const cachingMessage = require('./util/message_caching');
 const botChatting = require('./util/bot_chatting');
 const app = require('./util/express_server');
@@ -62,8 +62,6 @@ client.on('error', async (e) => {
     await setTimeout(30000); // 30초 대기
     await cmd('npm restart'); // 재시작
 });
-
-client.on('messageReactionAdd', musicReactionControl); // 각 이모지 리액션 추가에 반응
 
 client.on('voiceStateUpdate', musicActiveControl); // 유저 음성채팅 상태 변경 이벤트
 
@@ -130,49 +128,50 @@ client.on('messageCreate', async (message) => {
 });
 
 client.on('interactionCreate', async (interaction) => {
-    // 각 슬래시 커맨드에 반응
-    if (!interaction.isCommand()) {
-        return;
-    }
-    let { commandName } = interaction;
-    try {
-        await interaction.deferReply(); // deferReply를 하지 않으면 3초 내로 슬래시 커맨드 응답을 해야함
-        console.log(`(${new Date().toLocaleString()}) ${interaction.channelId} ${interaction.channel.name} ${interaction.user.id} ${interaction.user.username}: ${interaction.options._i()}\n`);
-
-        const permissions = interaction.channel.permissionsFor?.(interaction.guild.me);
-        if (permissions && !permissions.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.READ_MESSAGE_HISTORY])) {
-            return; // 기본 권한이 없는 채널이므로 바로 종료
-        }
-
-        const botModule = client.commands.find((cmd) => cmd.interaction?.name === commandName); // 해당하는 명령어 찾기
-
-        if (!botModule?.interactionExecute) {
-            return; // 해당하는 명령어 없으면 종료
-        }
-
-        commandName = botModule.channelCool ? `${commandName}_${interaction.channelId}` : commandName;
-
-        if (cooldowns.has(commandName)) {
-            // 명령이 수행 중인 경우
-            return interaction.followUp(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
-        }
-        cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
-        await (botModule.channelCool ? botModule.interactionExecute(interaction) : promiseTimeout(botModule.interactionExecute(interaction), 300000)); // 명령어 수행 부분
-        cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
-    } catch (e) {
-        cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
+    // 각 인터랙션에 반응
+    if (interaction.isButton()) {
+        musicButtonControl(interaction);
+    } else if (interaction.isCommand()) {
+        let { commandName } = interaction;
         try {
-            if (e instanceof Collection) {
-                // awaitMessages에서 시간초과한 경우
-                await interaction.followUp(`"${commandName.split('_')[0]}"의 입력 대기 시간이 초과되었습니다.`);
-            } else if (e.message?.startsWith('메이플')) {
-                await interaction.editReply(e.message);
-            } else {
-                await interaction.editReply('에러로그가 전송되었습니다.');
-                replyAdmin(`작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction.options._i()}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+            await interaction.deferReply(); // deferReply를 하지 않으면 3초 내로 슬래시 커맨드 응답을 해야함
+            console.log(`(${new Date().toLocaleString()}) ${interaction.channelId} ${interaction.channel.name} ${interaction.user.id} ${interaction.user.username}: ${interaction.options._i()}\n`);
+
+            const permissions = interaction.channel.permissionsFor?.(interaction.guild.me);
+            if (permissions && !permissions.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.READ_MESSAGE_HISTORY])) {
+                return; // 기본 권한이 없는 채널이므로 바로 종료
             }
-        } catch {}
-    } finally {
-        await cachingMessage(interaction); // 들어오는 슬래시 커맨드 항상 캐싱
+
+            const botModule = client.commands.find((cmd) => cmd.interaction?.name === commandName); // 해당하는 명령어 찾기
+
+            if (!botModule?.commandExecute) {
+                return; // 해당하는 명령어 없으면 종료
+            }
+
+            commandName = botModule.channelCool ? `${commandName}_${interaction.channelId}` : commandName;
+
+            if (cooldowns.has(commandName)) {
+                // 명령이 수행 중인 경우
+                return interaction.followUp(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
+            }
+            cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
+            await (botModule.channelCool ? botModule.commandExecute(interaction) : promiseTimeout(botModule.commandExecute(interaction), 300000)); // 명령어 수행 부분
+            cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
+        } catch (e) {
+            cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
+            try {
+                if (e instanceof Collection) {
+                    // awaitMessages에서 시간초과한 경우
+                    await interaction.followUp(`"${commandName.split('_')[0]}"의 입력 대기 시간이 초과되었습니다.`);
+                } else if (e.message?.startsWith('메이플')) {
+                    await interaction.editReply(e.message);
+                } else {
+                    await interaction.editReply('에러로그가 전송되었습니다.');
+                    replyAdmin(`작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction.options._i()}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+                }
+            } catch {}
+        } finally {
+            await cachingMessage(interaction); // 들어오는 슬래시 커맨드 항상 캐싱
+        }
     }
 });

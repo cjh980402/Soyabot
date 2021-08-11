@@ -30,7 +30,7 @@ module.exports = {
         name: 'resume',
         description: '가장 최근 노래를 다시 재생합니다.'
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }

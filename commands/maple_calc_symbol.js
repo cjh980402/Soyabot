@@ -59,7 +59,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const startlev = interaction.options.getInteger('시작_레벨');
         const endlev = interaction.options.getInteger('목표_레벨');
         if (startlev < 1 || startlev > 20) {

@@ -30,7 +30,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const mapleUserInfo = new MapleUser(interaction.options.getString('닉네임'));
 
         const union = await mapleUserInfo.homeUnion();

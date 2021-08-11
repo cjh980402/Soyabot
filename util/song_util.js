@@ -62,7 +62,8 @@ module.exports.getSongInfo = async function (url, search) {
             song = {
                 title: songInfo.title,
                 url: songInfo.url,
-                duration: Math.ceil(songInfo.duration / 1000)
+                duration: Math.ceil(songInfo.duration / 1000),
+                thumbnail: songInfo.thumbnail
             };
         } else {
             let videoID = module.exports.getYoutubeVideoID(url);
@@ -78,7 +79,8 @@ module.exports.getSongInfo = async function (url, search) {
             song = {
                 title: songInfo.title.decodeHTML(),
                 url: songInfo.url,
-                duration: songInfo.durationSeconds
+                duration: songInfo.durationSeconds,
+                thumbnail: songInfo.thumbnails.high.url
             };
         }
         return song;
@@ -99,7 +101,8 @@ module.exports.getPlaylistInfo = async function (url, search) {
                 .map((track) => ({
                     title: track.title,
                     url: track.url,
-                    duration: Math.ceil(track.duration / 1000)
+                    duration: Math.ceil(track.duration / 1000),
+                    thumbnail: track.thumbnail
                 }));
         } else {
             let playlistID = module.exports.getYoutubeListID(url);
@@ -120,7 +123,8 @@ module.exports.getPlaylistInfo = async function (url, search) {
             videos = (await youtube.getVideosByIDs(videos)).map((video) => ({
                 title: video.title.decodeHTML(),
                 url: video.url,
-                duration: video.durationSeconds
+                duration: video.durationSeconds,
+                thumbnail: video.thumbnails.high.url
             }));
         }
         videos.title = playlist.title;

@@ -76,7 +76,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const args = interaction.options.data.map((v) => v.value);
 
         const starforce = {

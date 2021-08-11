@@ -131,7 +131,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const search = interaction.options.getString('지역') ?? '동대문구 전농동';
         const searchRslt = (await (await fetch(`https://ac.weather.naver.com/ac?q_enc=utf-8&r_format=json&r_enc=utf-8&r_lt=1&st=1&q=${encodeURIComponent(search)}`)).json()).items[0];
         let targetLocal;

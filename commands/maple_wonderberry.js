@@ -69,7 +69,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const countString = interaction.options.getString('횟수');
 
         if (countString === '확률' || countString === 'ㅎㄹ') {

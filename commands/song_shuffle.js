@@ -25,7 +25,7 @@ module.exports = {
         name: 'shuffle',
         description: '대기열 순서를 랜덤하게 섞어줍니다.'
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }

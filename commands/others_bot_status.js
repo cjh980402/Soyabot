@@ -39,7 +39,7 @@ module.exports = {
         name: '상태',
         description: `${client.user.username}의 작동 상태를 알려줍니다.`
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         let memory;
         if (process.platform === 'linux') {
             const memorycmd = (await cmd('free', true)).split(/\s+/);

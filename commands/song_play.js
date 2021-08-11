@@ -75,7 +75,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
@@ -102,7 +102,7 @@ module.exports = {
         // 재생목록 주소가 주어진 경우는 playlist 기능을 실행
         if (!isValidVideo(url) && isValidPlaylist(url)) {
             interaction.options._hoistedOptions[0].name = '재생목록_주소_제목';
-            return client.commands.find((cmd) => cmd.interaction?.name === 'playlist').interactionExecute(interaction);
+            return client.commands.find((cmd) => cmd.interaction?.name === 'playlist').commandExecute(interaction);
         }
 
         let song = null;

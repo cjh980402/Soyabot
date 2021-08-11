@@ -80,7 +80,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         // description이 없는 명령어는 히든 명령어
         const detail = interaction.options.getString('세부항목');
         if (detail && !this.type.includes(detail)) {

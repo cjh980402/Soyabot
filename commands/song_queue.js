@@ -72,7 +72,7 @@ module.exports = {
         name: 'queue',
         description: '대기열과 지금 재생 중인 노래 출력합니다.'
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }

@@ -114,7 +114,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const option = interaction.options.getString('옵션');
         const targetGuild = (option && interaction.user.id === ADMIN_ID && client.guilds.cache.find((v) => v.name.includes(option))) || interaction.guild;
         if (!targetGuild) {

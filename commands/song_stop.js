@@ -25,7 +25,7 @@ module.exports = {
         name: 'stop',
         description: '지금 재생 중인 노래를 정지하고 대기열을 비웁니다.'
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         if (!interaction.guildId) {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }

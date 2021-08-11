@@ -31,7 +31,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const count = interaction.options.getInteger('글자_수') ?? 2;
 
         let rslt = '';

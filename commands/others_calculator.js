@@ -64,7 +64,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         try {
             return interaction.sendSplitCode(String(originEvaluate(inputExpression(interaction.options.getString('계산식')))), { code: 'js' });
         } catch {

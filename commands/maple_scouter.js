@@ -93,7 +93,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const nickname = interaction.options.getString('닉네임');
         if (!nickname) {
             let rslt = '스카우터 기준 점수표';

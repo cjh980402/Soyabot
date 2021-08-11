@@ -43,7 +43,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const food = interaction.options.getString('요리_이름');
         return interaction.followUp({ content: `${food} 요리의 레시피`, files: [`./pictures/muto/${picmatch[food]}.png`] });
     }

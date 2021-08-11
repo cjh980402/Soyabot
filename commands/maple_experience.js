@@ -57,7 +57,7 @@ module.exports = {
             }
         ]
     },
-    async interactionExecute(interaction) {
+    async commandExecute(interaction) {
         const startlev = interaction.options.getInteger('시작_레벨');
         const endlev = interaction.options.getInteger('끝_레벨');
 
