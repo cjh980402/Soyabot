@@ -28,7 +28,7 @@ module.exports = {
             return message.channel.send(`[${mapleUserInfo.Name}]\n종합 랭킹(전체): ${rank[0]}\n종합 랭킹(월드): ${rank[1]}\n직업 랭킹(전체): ${rank[3]}\n직업 랭킹(월드): ${rank[2]}`);
         }
     },
-    interaction: {
+    commandData: {
         name: '랭킹',
         description: '캐릭터의 랭킹을 출력합니다.',
         options: [

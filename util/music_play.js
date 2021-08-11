@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
+const { MessageActionRow, MessageButton, MessageEmbed } = require('./discord.js-extend');
 const { AudioPlayerStatus, createAudioPlayer } = require('@discordjs/voice');
 const { songDownload } = require('./song_util');
 const { replyAdmin } = require('../admin/bot_control');
@@ -64,7 +64,7 @@ module.exports.QueueElement = class {
 
         try {
             const embed = new MessageEmbed()
-                .setTitle('**🎶 노래 재생 시작**')
+                .setTitle('**🎶 노래 재생 중 🎶**')
                 .setColor('#FF9999')
                 .setImage(this.songs[0].thumbnail)
                 .setDescription(`**${this.songs[0].title}**\n${this.songs[0].url}`)
@@ -170,9 +170,7 @@ module.exports.musicButtonControl = async function (interaction) {
                 queue.clearStop();
                 break;
         }
-    } catch (e) {
-        replyAdmin(`작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
-    }
+    } catch {}
 };
 
 module.exports.musicActiveControl = function (oldState, newState) {

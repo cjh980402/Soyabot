@@ -26,7 +26,7 @@ module.exports = {
 
         return message.reply('대기열이 재생 상태가 아닙니다.');
     },
-    interaction: {
+    commandData: {
         name: 'pause',
         description: '지금 재생 중인 노래를 일시정지합니다.'
     },

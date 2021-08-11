@@ -46,7 +46,7 @@ module.exports = {
 
         return message.channel.send({ embeds: [await getLyricsEmbed(search)] });
     },
-    interaction: {
+    commandData: {
         name: 'lyrics',
         description: '입력한 노래의 가사를 출력합니다. 노래 제목을 생략 시에는 현재 재생 중인 노래의 가사를 출력합니다.',
         options: [

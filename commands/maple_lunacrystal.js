@@ -80,7 +80,7 @@ module.exports = {
         }
         return message.channel.send(rslt);
     },
-    interaction: {
+    commandData: {
         name: '루나크리스탈',
         description: `카테고리(스윗, 드림)와 1 ~ 20000 범위의 횟수를 입력하면 그만큼의 루나크리스탈 시뮬을 수행합니다.(참고. ${client.prefix}루나크리스탈 (카테고리) 확률)`,
         options: [

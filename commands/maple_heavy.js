@@ -22,7 +22,7 @@ module.exports = {
             return message.channel.send(`${rslt[4]}조아.\n그렇지만 "${mapleUserInfo.Name}"님은 너무 무겁습니다!`);
         }
     },
-    interaction: {
+    commandData: {
         name: '헤비',
         description: '헤비...',
         options: [

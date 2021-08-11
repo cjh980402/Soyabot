@@ -103,7 +103,7 @@ module.exports = {
 
         return message.channel.send({ files: [await getMessageCountGraph(targetGuild, args[0])] });
     },
-    interaction: {
+    commandData: {
         name: '채팅량그래프',
         description: '상위 180명의 채팅량 통계를 그래프로 보여줍니다.',
         options: [

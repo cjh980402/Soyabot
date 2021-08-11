@@ -21,7 +21,7 @@ module.exports = {
         queue.songs.shuffle(1); // 첫번째 노래를 제외하고 섞기
         return message.channel.send(`${message.author} 🔀 대기열을 섞었습니다.`);
     },
-    interaction: {
+    commandData: {
         name: 'shuffle',
         description: '대기열 순서를 랜덤하게 섞어줍니다.'
     },

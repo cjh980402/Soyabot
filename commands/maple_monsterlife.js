@@ -170,7 +170,7 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
     },
-    interaction: {
+    commandData: {
         name: '농장',
         description: '몬스터라이프 관련 기능을 수행합니다.',
         options: [

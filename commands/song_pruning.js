@@ -19,7 +19,7 @@ module.exports = {
             return message.channel.send('현재 메시지 자동정리: **ON → OFF**');
         }
     },
-    interaction: {
+    commandData: {
         name: 'pruning',
         description: '봇의 음악 메시지 자동정리 기능 상태를 전환합니다.'
     },

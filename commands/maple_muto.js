@@ -30,7 +30,7 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
     },
-    interaction: {
+    commandData: {
         name: '무토',
         description: '해당하는 요리의 레시피를 출력합니다.',
         options: [

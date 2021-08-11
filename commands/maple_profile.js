@@ -38,7 +38,7 @@ module.exports = {
         );
         return message.channel.send({ content: `${mapleUserInfo.Name}님의 프로필`, files: ['./pictures/profile.png'] });
     },
-    interaction: {
+    commandData: {
         name: '프로필',
         description: '캐릭터의 메이플 gg 프로필을 출력합니다.',
         options: [

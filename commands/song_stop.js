@@ -21,7 +21,7 @@ module.exports = {
         message.channel.send(`${message.author} ⏹ 노래를 정지했습니다.`);
         queue.clearStop();
     },
-    interaction: {
+    commandData: {
         name: 'stop',
         description: '지금 재생 중인 노래를 정지하고 대기열을 비웁니다.'
     },

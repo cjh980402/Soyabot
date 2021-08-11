@@ -28,7 +28,7 @@ module.exports = {
             return message.channel.send(`[${mapleUserInfo.Name}]\n등급: ${rslt[0]}\n업적점수: ${rslt[1]}\n월드랭킹: ${rslt[2]}\n전체랭킹: ${rslt[3]}`);
         }
     },
-    interaction: {
+    commandData: {
         name: '업적',
         description: '캐릭터의 업적 등급, 점수, 랭킹을 출력합니다.',
         options: [

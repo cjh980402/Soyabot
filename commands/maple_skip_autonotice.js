@@ -39,7 +39,7 @@ module.exports = {
             return message.channel.send(`${args[0]} 자동알림: **ON → OFF**`);
         }
     },
-    interaction: {
+    commandData: {
         name: '자동알림',
         description: `입력한 카테고리(${Object.keys(noticematch).join(', ')})에 따른 자동알림 기능 상태를 전환합니다. 카테고리 생략 시 현재 알림상태를 알려줍니다.`,
         options: [

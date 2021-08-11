@@ -123,7 +123,7 @@ module.exports = {
             return message.channel.send(`Lv.${startlev} 익성비 효과\n경험치: ${((exp199 / expNow) * 100).toFixed(3)}%`);
         }
     },
-    interaction: {
+    commandData: {
         name: '익성비',
         description: `시작 레벨 ~ 목표 레벨의 익성비 시뮬레이션을 수행, 200레벨 이상의 경우 시작 레벨만 입력해야합니다. 참고. ${client.prefix}익성비 확률 (시작 레벨)`,
         options: [

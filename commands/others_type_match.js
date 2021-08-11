@@ -28,7 +28,7 @@ module.exports = {
         return winMessage.reply(`${winMessage.member?.nickname ?? winMessage.author.username}님이 승리하였습니다!
 소요시간: ${time.toFixed(2)}초\n분당타수: ${((choiceLength * 60) / time).toFixed(2)}타`);
     },
-    interaction: {
+    commandData: {
         name: '타자대결',
         description: '임의의 문장을 빨리 치는 사람이 승리하는 타자 대결을 수행합니다.',
         options: [

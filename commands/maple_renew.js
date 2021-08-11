@@ -25,7 +25,7 @@ module.exports = {
             return message.channel.send(`[${mapleUserInfo.Name}]\n이미 최신 상태입니다.\n\n${decodeURI(mapleUserInfo.GGURL)}`);
         }
     },
-    interaction: {
+    commandData: {
         name: '갱신',
         description: '캐릭터의 메이플 gg 정보를 갱신합니다.',
         options: [

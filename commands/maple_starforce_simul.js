@@ -22,7 +22,7 @@ module.exports = {
         const result = new NormalItem();
         return message.channel.send(result.doingStarforce(args.map((v) => +v)));
     },
-    interaction: {
+    commandData: {
         name: '스타포스시뮬',
         description: '일반 장비템의 스타포스 시뮬레이션을 수행합니다.',
         options: [

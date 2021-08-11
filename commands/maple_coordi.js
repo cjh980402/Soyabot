@@ -42,7 +42,7 @@ module.exports = {
             return message.channel.send({ embeds: [coordiEmbed] });
         }
     },
-    interaction: {
+    commandData: {
         name: '코디',
         description: '해당 캐릭터가 착용한 코디템과 헤어, 성형을 출력합니다.',
         options: [

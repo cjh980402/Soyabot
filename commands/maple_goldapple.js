@@ -173,7 +173,7 @@ module.exports = {
         }
         return message.channel.sendSplitCode(rslt, { split: { char: '\n' } });
     },
-    interaction: {
+    commandData: {
         name: '골드애플',
         description: `1 ~ 20000 범위의 횟수를 입력하면 그만큼의 골드애플 시뮬을 수행합니다.(참고. ${client.prefix}골드애플 확률)`,
         options: [

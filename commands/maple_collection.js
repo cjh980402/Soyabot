@@ -30,7 +30,7 @@ module.exports = {
             return message.channel.send({ content: `${mapleUserInfo.Name}님의 코디 컬렉션`, files: ['./pictures/collection.png'] });
         }
     },
-    interaction: {
+    commandData: {
         name: '컬렉션',
         description: '캐릭터의 메이플 gg 코디 컬렉션을 출력합니다.',
         options: [

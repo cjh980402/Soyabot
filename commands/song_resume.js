@@ -26,7 +26,7 @@ module.exports = {
 
         return message.reply('대기열이 일시정지 상태가 아닙니다.');
     },
-    interaction: {
+    commandData: {
         name: 'resume',
         description: '가장 최근 노래를 다시 재생합니다.'
     },

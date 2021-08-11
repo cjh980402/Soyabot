@@ -104,7 +104,7 @@ module.exports = {
 
         return message.channel.send({ files: [await getMessageStatGraph(targetGuild, args[0])] });
     },
-    interaction: {
+    commandData: {
         name: '채팅지수그래프',
         description: '상위 180명의 채팅지수 통계를 그래프로 보여줍니다.(채팅지수 = (공백 문자 제외 글자 개수) / 채팅량)',
         options: [

@@ -123,7 +123,7 @@ module.exports = {
 
         return message.channel.send({ embeds: [await getMesoEmbed(args[0])] });
     },
-    interaction: {
+    commandData: {
         name: '메소',
         description: '해당 서버의 메소 시세를 알려줍니다.',
         options: [

@@ -45,7 +45,7 @@ module.exports = {
 
         return message.channel.send(`❌ ${message.author}가 대기열에서 **${removed.map((song, i) => `${songRemove[i]}. ${song.title}`)}**을 삭제했습니다.`);
     },
-    interaction: {
+    commandData: {
         name: 'remove',
         description: '대기열에서 지정한 노래를 삭제합니다. (,로 구분하여 여러 노래 삭제 가능)',
         options: [

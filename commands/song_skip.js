@@ -22,7 +22,7 @@ module.exports = {
         queue.playing = true;
         queue.subscription.player.stop();
     },
-    interaction: {
+    commandData: {
         name: 'skip',
         description: '지금 재생 중인 노래 건너뜁니다.'
     },

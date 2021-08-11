@@ -33,7 +33,7 @@ module.exports = {
             return message.channel.send(rslt);
         }
     },
-    interaction: {
+    commandData: {
         name: '히스토리',
         description: '캐릭터의 레벨업 내역을 보여줍니다.',
         options: [

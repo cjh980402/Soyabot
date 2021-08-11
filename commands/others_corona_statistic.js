@@ -1,6 +1,6 @@
+const { MessageActionRow, MessageButton, MessageEmbed } = require('../util/discord.js-extend');
 const renderChart = require('../util/chartjs_rendering');
 const { CORONA_API_KEY } = require('../soyabot_config.json');
-const { MessageEmbed } = require('../util/discord.js-extend');
 const { writeFile } = require('fs').promises;
 const fetch = require('node-fetch');
 
@@ -111,45 +111,38 @@ module.exports = {
         if (countData.resultCode === '0' && countryData.resultCode === '0') {
             let currentPage = 0;
             const embeds = await getCoronaEmbed(countData, countryData);
-            const coronaEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+            const row = new MessageActionRow().addComponents(
+                new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
+                new MessageButton().setCustomId('stop').setEmoji('⏹').setStyle('SECONDARY'),
+                new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
+            );
+            const coronaEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
 
-            try {
-                await coronaEmbed.react('⬅️');
-                await coronaEmbed.react('⏹');
-                await coronaEmbed.react('➡️');
-            } catch {
-                return message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
-            }
-            const filter = (_, user) => message.author.id === user.id;
-            const collector = coronaEmbed.createReactionCollector({ filter, time: 60000 });
+            const filter = (itr) => message.author.id === itr.user.id;
+            const collector = coronaEmbed.createMessageComponentCollector({ filter, time: 60000 });
 
-            collector.on('collect', async (reaction, user) => {
+            collector.on('collect', async (itr) => {
                 try {
-                    if (message.guildId) {
-                        await reaction.users.remove(user);
-                    }
-                    switch (reaction.emoji.name) {
-                        case '➡️':
+                    switch (itr.customId) {
+                        case 'next':
                             currentPage = (currentPage + 1) % embeds.length;
                             coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                             break;
-                        case '⬅️':
+                        case 'prev':
                             currentPage = (currentPage - 1 + embeds.length) % embeds.length;
                             coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                             break;
-                        case '⏹':
+                        case 'stop':
                             collector.stop();
                             break;
                     }
-                } catch {
-                    message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
-                }
+                } catch {}
             });
         } else {
             return message.channel.send('코로나 현황을 조회할 수 없습니다.');
         }
     },
-    interaction: {
+    commandData: {
         name: '코로나',
         description: '최신 기준 코로나 국내 현황 통계를 알려줍니다.'
     },
@@ -160,39 +153,32 @@ module.exports = {
         if (countData.resultCode === '0' && countryData.resultCode === '0') {
             let currentPage = 0;
             const embeds = await getCoronaEmbed(countData, countryData);
-            const coronaEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+            const row = new MessageActionRow().addComponents(
+                new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
+                new MessageButton().setCustomId('stop').setEmoji('⏹').setStyle('SECONDARY'),
+                new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
+            );
+            const coronaEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
 
-            try {
-                await coronaEmbed.react('⬅️');
-                await coronaEmbed.react('⏹');
-                await coronaEmbed.react('➡️');
-            } catch {
-                return interaction.followUp('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
-            }
-            const filter = (_, user) => interaction.user.id === user.id;
-            const collector = coronaEmbed.createReactionCollector({ filter, time: 60000 });
+            const filter = (itr) => interaction.user.id === itr.user.id;
+            const collector = coronaEmbed.createMessageComponentCollector({ filter, time: 60000 });
 
-            collector.on('collect', async (reaction, user) => {
+            collector.on('collect', async (itr) => {
                 try {
-                    if (interaction.guildId) {
-                        await reaction.users.remove(user);
-                    }
-                    switch (reaction.emoji.name) {
-                        case '➡️':
+                    switch (itr.customId) {
+                        case 'next':
                             currentPage = (currentPage + 1) % embeds.length;
                             coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                             break;
-                        case '⬅️':
+                        case 'prev':
                             currentPage = (currentPage - 1 + embeds.length) % embeds.length;
                             coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                             break;
-                        case '⏹':
+                        case 'stop':
                             collector.stop();
                             break;
                     }
-                } catch {
-                    interaction.followUp('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
-                }
+                } catch {}
             });
         } else {
             return interaction.followUp('코로나 현황을 조회할 수 없습니다.');

@@ -216,7 +216,7 @@ module.exports = {
             return message.channel.send({ embeds: [await getStockEmbed(search, searchRslt, type)] });
         }
     },
-    interaction: {
+    commandData: {
         name: '주식정보',
         description: '검색 내용에 해당하는 주식의 정보를 보여줍니다.',
         options: [

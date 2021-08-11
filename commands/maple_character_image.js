@@ -23,7 +23,7 @@ module.exports = {
 
         return message.channel.send({ content: `${mapleUserInfo.Name}님의 캐릭터 이미지`, files: [mapleUserInfo.userImg()] });
     },
-    interaction: {
+    commandData: {
         name: '이미지',
         description: '해당 캐릭터의 배경 없는 이미지를 출력합니다.',
         options: [

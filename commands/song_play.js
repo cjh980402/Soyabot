@@ -63,7 +63,7 @@ module.exports = {
             return message.channel.send(`채널에 참가할 수 없습니다: ${e.message ?? e}`);
         }
     },
-    interaction: {
+    commandData: {
         name: 'play',
         description: 'YouTube나 Soundcloud를 통해 노래를 재생합니다.',
         options: [
@@ -102,7 +102,7 @@ module.exports = {
         // 재생목록 주소가 주어진 경우는 playlist 기능을 실행
         if (!isValidVideo(url) && isValidPlaylist(url)) {
             interaction.options._hoistedOptions[0].name = '재생목록_주소_제목';
-            return client.commands.find((cmd) => cmd.interaction?.name === 'playlist').commandExecute(interaction);
+            return client.commands.find((cmd) => cmd.commandData?.name === 'playlist').commandExecute(interaction);
         }
 
         let song = null;

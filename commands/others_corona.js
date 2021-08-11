@@ -46,7 +46,7 @@ module.exports = {
             return message.channel.send('코로나 현황을 조회할 수 없습니다.');
         }
     },
-    interaction: {
+    commandData: {
         name: '코로나2',
         description: '최신 기준 코로나 국내 현황을 알려줍니다.'
     },

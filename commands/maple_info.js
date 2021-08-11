@@ -54,7 +54,7 @@ module.exports = {
 
         return message.channel.send({ embeds: [await getInfoEmbed(mapleUserInfo, level)] });
     },
-    interaction: {
+    commandData: {
         name: '정보',
         description: '해당 캐릭터의 전체적인 정보를 출력합니다.',
         options: [

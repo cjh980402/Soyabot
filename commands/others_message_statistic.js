@@ -30,7 +30,7 @@ module.exports = {
             return message.channel.send(`[${targetInfo.nickname ?? targetInfo.user.username}]\n채팅 건수: 0\n문자 개수: 0\n채팅 지수: 0.00`);
         }
     },
-    interaction: {
+    commandData: {
         name: '채팅량',
         description: '첫번째 멘션에 해당하는 유저의 채팅 통계를 보여줍니다. 멘션을 생략 시에는 본인의 채팅 통계를 보여줍니다.',
         options: [

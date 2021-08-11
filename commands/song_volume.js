@@ -34,7 +34,7 @@ module.exports = {
         queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
         return message.channel.send(`변경된 음량: **${queue.volume}%**`);
     },
-    interaction: {
+    commandData: {
         name: 'volume',
         description: '지금 재생 중인 노래의 음량(0 ~ 100 범위)을 변경합니다. 음량을 생략 시 현재 음량을 알려줍니다.',
         options: [

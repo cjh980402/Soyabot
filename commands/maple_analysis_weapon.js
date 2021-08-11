@@ -40,7 +40,7 @@ module.exports = {
 
         return message.channel.send(`${args[2]}제 ${args[3]}성 강화\n작으로 상승한 공: ${args[0] - args[1]}`);
     },
-    interaction: {
+    commandData: {
         name: '작분석',
         description: '무기의 작으로 상승한 공격력을 계산합니다.',
         options: [

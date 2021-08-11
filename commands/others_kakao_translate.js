@@ -75,7 +75,7 @@ module.exports = {
             return message.channel.send(await tran(langCode[0], langCode[1], text));
         }
     },
-    interaction: {
+    commandData: {
         name: '번역',
         description: '카카오 i를 이용한 언어 번역을 수행합니다.',
         options: [

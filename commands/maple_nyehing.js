@@ -19,7 +19,7 @@ module.exports = {
         }
         return message.reply(`${count}글자 닉네임 추천: ${rslt}`);
     },
-    interaction: {
+    commandData: {
         name: '녜힁',
         description: '메이플스토리 닉네임을 추천합니다. (2 ~ 6글자)',
         options: [

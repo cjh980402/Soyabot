@@ -32,7 +32,7 @@ module.exports = {
             return message.channel.send(rslt);
         }
     },
-    interaction: {
+    commandData: {
         name: '경험치히스토리',
         description: '캐릭터의 경험치 내역을 보여줍니다.',
         options: [

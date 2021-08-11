@@ -112,7 +112,7 @@ module.exports = {
             }
         }
     },
-    interaction: {
+    commandData: {
         name: '러시안룰렛',
         description: '러시안룰렛 게임을 수행합니다. 탄환 수가 2 ~ 20 범위가 아니거나 생략된 경우 자동으로 6발이 됩니다.',
         options: [

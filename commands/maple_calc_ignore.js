@@ -26,7 +26,7 @@ module.exports = {
         const boss_damage = Math.max(100 - monster * sum, 0);
         return message.channel.send(`총 합 방무: ${((1 - sum) * 100).toFixed(2)}%\n방어율 ${monster}%인 대상에게 딜량: ${boss_damage.toFixed(2)}%`);
     },
-    interaction: {
+    commandData: {
         name: '방무',
         description: '실방무와 딜량을 계산합니다. 추가 방무가 음수면 해당 수치를 원래 방무에서 제거합니다.',
         options: [

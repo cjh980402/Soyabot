@@ -21,7 +21,7 @@ module.exports = {
         queue.loop = !queue.loop; // 반복 재생 상태 전환
         return message.channel.send(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
     },
-    interaction: {
+    commandData: {
         name: 'loop',
         description: '반복 재생 상태를 전환합니다.'
     },

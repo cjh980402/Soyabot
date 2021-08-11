@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('../util/discord.js-extend');
+const { MessageActionRow, MessageButton, MessageEmbed } = require('../util/discord.js-extend');
 
 function getHelpEmbed(help) {
     const embeds = [];
@@ -31,45 +31,41 @@ module.exports = {
             .filter((cmd) => cmd.description && (cmd.type.includes(args[0]) || !args[0]))
             .map((cmd) => `**${cmd.usage}**\n- 대체 명령어: ${cmd.command.join(', ')}\n${cmd.description}`);
 
-        let currentPage = 0;
         const embeds = getHelpEmbed(description);
-        const helpEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
         if (embeds.length > 1) {
-            try {
-                await helpEmbed.react('⬅️');
-                await helpEmbed.react('⏹');
-                await helpEmbed.react('➡️');
-            } catch {
-                return message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
-            }
-            const filter = (_, user) => message.author.id === user.id;
-            const collector = helpEmbed.createReactionCollector({ filter, time: 120000 });
+            let currentPage = 0;
+            const row = new MessageActionRow().addComponents(
+                new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
+                new MessageButton().setCustomId('stop').setEmoji('⏹').setStyle('SECONDARY'),
+                new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
+            );
+            const helpEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
 
-            collector.on('collect', async (reaction, user) => {
+            const filter = (itr) => message.author.id === itr.user.id;
+            const collector = helpEmbed.createMessageComponentCollector({ filter, time: 120000 });
+
+            collector.on('collect', async (itr) => {
                 try {
-                    if (message.guildId) {
-                        await reaction.users.remove(user);
-                    }
-                    switch (reaction.emoji.name) {
-                        case '➡️':
+                    switch (itr.customId) {
+                        case 'next':
                             currentPage = (currentPage + 1) % embeds.length;
                             helpEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                             break;
-                        case '⬅️':
+                        case 'prev':
                             currentPage = (currentPage - 1 + embeds.length) % embeds.length;
                             helpEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                             break;
-                        case '⏹':
+                        case 'stop':
                             collector.stop();
                             break;
                     }
-                } catch {
-                    message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
-                }
+                } catch {}
             });
+        } else {
+            await message.channel.send({ embeds: [embeds[0]] });
         }
     },
-    interaction: {
+    commandData: {
         name: 'help',
         description: '카테고리나 명령어 이름을 입력하면 해당하는 명령어의 도움말을, 생략 시 모든 명령어의 도움말을 출력합니다.',
         options: [
@@ -96,42 +92,38 @@ module.exports = {
             .filter((cmd) => cmd.description && (cmd.type.includes(detail) || !detail))
             .map((cmd) => `**${cmd.usage}**\n- 대체 명령어: ${cmd.command.join(', ')}\n${cmd.description}`);
 
-        let currentPage = 0;
         const embeds = getHelpEmbed(description);
-        const helpEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
         if (embeds.length > 1) {
-            try {
-                await helpEmbed.react('⬅️');
-                await helpEmbed.react('⏹');
-                await helpEmbed.react('➡️');
-            } catch {
-                return interaction.followUp('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
-            }
-            const filter = (_, user) => interaction.user.id === user.id;
-            const collector = helpEmbed.createReactionCollector({ filter, time: 120000 });
+            let currentPage = 0;
+            const row = new MessageActionRow().addComponents(
+                new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
+                new MessageButton().setCustomId('stop').setEmoji('⏹').setStyle('SECONDARY'),
+                new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
+            );
+            const helpEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
 
-            collector.on('collect', async (reaction, user) => {
+            const filter = (itr) => interaction.user.id === itr.user.id;
+            const collector = helpEmbed.createMessageComponentCollector({ filter, time: 120000 });
+
+            collector.on('collect', async (itr) => {
                 try {
-                    if (interaction.guildId) {
-                        await reaction.users.remove(user);
-                    }
-                    switch (reaction.emoji.name) {
-                        case '➡️':
+                    switch (itr.customId) {
+                        case 'next':
                             currentPage = (currentPage + 1) % embeds.length;
                             helpEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                             break;
-                        case '⬅️':
+                        case 'prev':
                             currentPage = (currentPage - 1 + embeds.length) % embeds.length;
                             helpEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                             break;
-                        case '⏹':
+                        case 'stop':
                             collector.stop();
                             break;
                     }
-                } catch {
-                    interaction.followUp('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
-                }
+                } catch {}
             });
+        } else {
+            await interaction.editReply({ embeds: [embeds[0]] });
         }
     }
 };

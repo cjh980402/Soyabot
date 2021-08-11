@@ -73,7 +73,7 @@ module.exports = {
         }
         return message.channel.send(rslt);
     },
-    interaction: {
+    commandData: {
         name: '로얄',
         description: `1 ~ 20000 범위의 횟수를 입력하면 그만큼의 로얄스타일 시뮬을 수행합니다.(참고. ${client.prefix}로얄 확률)`,
         options: [

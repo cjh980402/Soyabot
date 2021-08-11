@@ -52,7 +52,7 @@ module.exports = {
             return message.channel.send('올바르지 않은 수식입니다.');
         }
     },
-    interaction: {
+    commandData: {
         name: 'ev',
         description: '계산식에 해당하는 결과값을 보여줍니다.',
         options: [

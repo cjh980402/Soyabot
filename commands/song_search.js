@@ -61,7 +61,7 @@ module.exports = {
             } catch {}
         }
     },
-    interaction: {
+    commandData: {
         name: 'search',
         description: '재생할 노래를 검색하고 선택합니다. (,로 구분하여 여러 노래 선택 가능)',
         options: [
@@ -107,7 +107,7 @@ module.exports = {
                 errors: ['time']
             });
 
-            const playCommand = client.commands.find((cmd) => cmd.interaction?.name === 'play');
+            const playCommand = client.commands.find((cmd) => cmd.commandData?.name === 'play');
             for (const song of songChoice) {
                 interaction.options._hoistedOptions[1] = { name: '영상_주소_제목', type: 'STRING', value: resultsEmbed.fields[song - 1].value };
                 await playCommand.commandExecute(interaction);

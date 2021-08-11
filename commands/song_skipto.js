@@ -40,7 +40,7 @@ module.exports = {
         }
         queue.subscription.player.stop();
     },
-    interaction: {
+    commandData: {
         name: 'skipto',
         description: '번호로 선택한 대기열의 노래로 건너뜁니다.',
         options: [

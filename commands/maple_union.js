@@ -18,7 +18,7 @@ module.exports = {
             return message.channel.send(`[${mapleUserInfo.Name}]\n직업: ${union[3]}\n유니온 레벨: ${union[0].toLocaleString()}\n전투력: ${union[1].toLocaleString()}\n일일 코인 수급량: ${union[2]}`);
         }
     },
-    interaction: {
+    commandData: {
         name: '유니온',
         description: '캐릭터의 유니온 정보와 일일 코인 수급량을 출력합니다.',
         options: [

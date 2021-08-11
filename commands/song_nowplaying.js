@@ -37,7 +37,7 @@ module.exports = {
 
         return message.channel.send({ embeds: [nowPlaying] });
     },
-    interaction: {
+    commandData: {
         name: 'nowplaying',
         description: '지금 재생 중인 노래를 보여줍니다.'
     },

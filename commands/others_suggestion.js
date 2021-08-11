@@ -13,7 +13,7 @@ module.exports = {
         const rslt = replyAdmin(`${message.channelId} ${message.id}\n작성자: ${message.author.username}\n건의 내용: ${args.join(' ')}`);
         return message.reply(rslt ? '건의사항이 전송되었습니다.' : '건의사항 전송을 실패했습니다.');
     },
-    interaction: {
+    commandData: {
         name: '건의',
         description: '개발자에게 건의 사항을 전송합니다.',
         options: [

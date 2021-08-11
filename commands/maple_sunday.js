@@ -26,7 +26,7 @@ module.exports = {
 
         return message.channel.send({ content: sundayTitle, files: [imgLink] });
     },
-    interaction: {
+    commandData: {
         name: '썬데이',
         description: '현재 진행 (예정) 중인 썬데이 메이플을 공지합니다.'
     },

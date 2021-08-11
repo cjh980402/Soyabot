@@ -82,7 +82,7 @@ module.exports = {
 
         return message.channel.send({ embeds: [getScouterEmbed(mapleUserInfo, union)] });
     },
-    interaction: {
+    commandData: {
         name: '스카우터',
         description: '정해진 조건으로 해당 캐릭터의 점수를 평가합니다. 닉네임을 생략시에는 기준 점수표를 보여줍니다.',
         options: [

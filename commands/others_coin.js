@@ -92,7 +92,7 @@ module.exports = {
             return message.channel.send({ embeds: [await getCoinEmbed(searchRslt, type)] });
         }
     },
-    interaction: {
+    commandData: {
         name: '코인정보',
         description: '검색 내용에 해당하는 코인의 정보를 보여줍니다.',
         options: [

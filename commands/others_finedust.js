@@ -12,7 +12,7 @@ module.exports = {
 
         return message.channel.send({ content: `현재 ${dustType} 지도`, files: [$('div.play_video > img').attr('data-original-src')] });
     },
-    interaction: {
+    commandData: {
         name: '미세먼지',
         description: '현재 한국의 미세먼지 현황을 보여줍니다.'
     },

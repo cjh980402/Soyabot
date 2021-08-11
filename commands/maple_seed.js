@@ -28,7 +28,7 @@ module.exports = {
             return message.channel.send(`[${mapleUserInfo.Name}]\n${seed[0]}\n기록: ${seed[1]}\n시간: ${seed[2]}\n날짜: ${seed[3]}`);
         }
     },
-    interaction: {
+    commandData: {
         name: '시드',
         description: '캐릭터의 직업, 시드 최고기록, 시간을 출력합니다.',
         options: [

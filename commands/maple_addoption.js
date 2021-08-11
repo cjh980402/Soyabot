@@ -31,7 +31,7 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
     },
-    interaction: {
+    commandData: {
         name: '추옵',
         description: '해당하는 무기의 추옵표를 출력합니다.',
         options: [

@@ -35,7 +35,7 @@ module.exports = {
 
         return message.channel.send(`작동 시간: ${timeKoreanUnit(Math.floor(client.uptime / 1000))}\n메모리 사용량: ${memory}%`);
     },
-    interaction: {
+    commandData: {
         name: '상태',
         description: `${client.user.username}의 작동 상태를 알려줍니다.`
     },

@@ -69,7 +69,7 @@ module.exports = {
             return message.channel.send(await tran(args[0], args[1], text));
         }
     },
-    interaction: {
+    commandData: {
         name: '파파고',
         description: '파파고를 이용한 언어 번역을 수행합니다.',
         options: [

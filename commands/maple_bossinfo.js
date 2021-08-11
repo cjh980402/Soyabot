@@ -23,7 +23,7 @@ module.exports = {
 
         return message.channel.send({ embeds: [bossEmbed] });
     },
-    interaction: {
+    commandData: {
         name: '보스',
         description: '해당하는 보스의 보상과 체력, 방어율을 알려줍니다.',
         options: [

@@ -35,7 +35,7 @@ module.exports = {
             );
         }
     },
-    interaction: {
+    commandData: {
         name: '입대',
         description: 'YYMMDD 형식으로 입력한 입대일을 기준으로 전역일을 계산해줍니다. (육군 기준)',
         options: [

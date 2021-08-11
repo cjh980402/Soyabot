@@ -24,7 +24,7 @@ module.exports = {
             );
         }
     },
-    interaction: {
+    commandData: {
         name: '한강',
         description: '현재 한강의 수온을 알려줍니다.'
     },

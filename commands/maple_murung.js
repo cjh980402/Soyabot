@@ -28,7 +28,7 @@ module.exports = {
             return message.channel.send(`[${mapleUserInfo.Name}]\n${murung[0]}\n기록: ${murung[1]}\n시간: ${murung[2]}\n날짜: ${murung[3]}`);
         }
     },
-    interaction: {
+    commandData: {
         name: '무릉',
         description: '캐릭터의 직업, 무릉 최고기록, 시간을 출력합니다.',
         options: [

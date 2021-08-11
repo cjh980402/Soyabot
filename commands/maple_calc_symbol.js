@@ -41,7 +41,7 @@ module.exports = {
             )} → Lv.${Math.min(11, endlev)}\n요구량: ${total_req2}\n어센틱 심볼: ${total_meso3.toLocaleString()}메소`
         );
     },
-    interaction: {
+    commandData: {
         name: '심볼',
         description: '시작 레벨부터 목표 레벨까지의 심볼 요구갯수, 강화비용을 계산합니다.',
         options: [

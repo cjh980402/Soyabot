@@ -76,7 +76,7 @@ module.exports = {
             return message.channel.send(`채널에 참가할 수 없습니다: ${e.message ?? e}`);
         }
     },
-    interaction: {
+    commandData: {
         name: 'playlist',
         description: 'YouTube나 Soundcloud의 재생목록을 재생합니다.',
         options: [
@@ -115,7 +115,7 @@ module.exports = {
         // 영상 주소가 주어진 경우는 play 기능을 실행
         if (isValidVideo(url) && !isValidPlaylist(url)) {
             interaction.options._hoistedOptions[0].name = '영상_주소_제목';
-            return client.commands.find((cmd) => cmd.interaction?.name === 'play').commandExecute(interaction);
+            return client.commands.find((cmd) => cmd.commandData?.name === 'play').commandExecute(interaction);
         }
 
         let videos = null;

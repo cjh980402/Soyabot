@@ -36,7 +36,7 @@ module.exports = {
         const rslt = `로얄 성형 (목표: ${faceList[gender][goalface]}) 결과\n\n수행 횟수: ${list.length}회\n\n진행 과정\n${list.map((v, i) => `${i + 1}번째: ${faceList[gender][v]}`).join('\n')}`;
         return message.channel.send(rslt);
     },
-    interaction: {
+    commandData: {
         name: '성형',
         description: `해당 성별의 목표 성형을 얻을 때까지 로얄 성형 시뮬을 수행합니다.(참고. ${client.prefix}성형 확률)`,
         options: [

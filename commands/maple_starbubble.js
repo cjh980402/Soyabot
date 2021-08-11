@@ -6,7 +6,7 @@ module.exports = {
     async messageExecute(message) {
         return client.commands.find((cmd) => cmd.command.includes('play')).messageExecute(message, ['https://youtu.be/ixww1OHztbs']);
     },
-    interaction: {
+    commandData: {
         name: '스타버블',
         description: `엔젤릭버스터의 2번째 노래`
     },

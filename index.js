@@ -29,17 +29,17 @@ const promiseTimeout = (promise, ms) => Promise.race([promise, setTimeout(ms)]);
         /**
          * 모든 명령 import
          */
-        const interactions = [];
+        const datas = [];
         readdirSync('./commands').forEach((file) => {
             if (file.endsWith('.js')) {
                 const cmd = require(`./commands/${file}`);
                 client.commands.push(cmd); // 걸러낸 js파일의 명령 객체를 배열에 push
-                if (cmd.interaction) {
-                    interactions.push(cmd.interaction);
+                if (cmd.commandData) {
+                    datas.push(cmd.commandData);
                 }
             }
         });
-        // await client.application.commands.set(interactions); // 인터랙션 데이터 변경 시에만 활성화하기
+        // await client.application.commands.set(datas); // 인터랙션 데이터 변경 시에만 활성화하기
     } catch (e) {
         console.error(`로그인 에러 발생\n에러 내용: ${e}\n${e.stack ?? e._p}`);
         await cmd('npm stop');
@@ -142,7 +142,7 @@ client.on('interactionCreate', async (interaction) => {
                 return; // 기본 권한이 없는 채널이므로 바로 종료
             }
 
-            const botModule = client.commands.find((cmd) => cmd.interaction?.name === commandName); // 해당하는 명령어 찾기
+            const botModule = client.commands.find((cmd) => cmd.commandData?.name === commandName); // 해당하는 명령어 찾기
 
             if (!botModule?.commandExecute) {
                 return; // 해당하는 명령어 없으면 종료

@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('../util/discord.js-extend');
+const { MessageActionRow, MessageButton, MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
 const { load } = require('cheerio');
 
@@ -84,43 +84,36 @@ module.exports = {
         }
 
         let currentPage = 0;
-        const embeds = await getWeatherEmbed(targetLocal);
-        const weatherEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+        const embeds = await getCoronaEmbed(countData, countryData);
+        const row = new MessageActionRow().addComponents(
+            new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
+            new MessageButton().setCustomId('stop').setEmoji('⏹').setStyle('SECONDARY'),
+            new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
+        );
+        const weatherEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
 
-        try {
-            await weatherEmbed.react('⬅️');
-            await weatherEmbed.react('⏹');
-            await weatherEmbed.react('➡️');
-        } catch {
-            return message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
-        }
-        const filter = (_, user) => message.author.id === user.id;
-        const collector = weatherEmbed.createReactionCollector({ filter, time: 60000 });
+        const filter = (itr) => message.author.id === itr.user.id;
+        const collector = weatherEmbed.createMessageComponentCollector({ filter, time: 60000 });
 
-        collector.on('collect', async (reaction, user) => {
+        collector.on('collect', async (itr) => {
             try {
-                if (message.guildId) {
-                    await reaction.users.remove(user);
-                }
-                switch (reaction.emoji.name) {
-                    case '➡️':
+                switch (itr.customId) {
+                    case 'next':
                         currentPage = (currentPage + 1) % embeds.length;
                         weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                         break;
-                    case '⬅️':
+                    case 'prev':
                         currentPage = (currentPage - 1 + embeds.length) % embeds.length;
                         weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                         break;
-                    case '⏹':
+                    case 'stop':
                         collector.stop();
                         break;
                 }
-            } catch {
-                message.channel.send('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
-            }
+            } catch {}
         });
     },
-    interaction: {
+    commandData: {
         name: '날씨',
         description: '입력한 지역의 날씨를 알려줍니다.',
         options: [
@@ -157,40 +150,33 @@ module.exports = {
         }
 
         let currentPage = 0;
-        const embeds = await getWeatherEmbed(targetLocal);
-        const weatherEmbed = await interaction.followUp({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+        const embeds = await getCoronaEmbed(countData, countryData);
+        const row = new MessageActionRow().addComponents(
+            new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
+            new MessageButton().setCustomId('stop').setEmoji('⏹').setStyle('SECONDARY'),
+            new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
+        );
+        const weatherEmbed = await interaction.followUp({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
 
-        try {
-            await weatherEmbed.react('⬅️');
-            await weatherEmbed.react('⏹');
-            await weatherEmbed.react('➡️');
-        } catch {
-            return interaction.followUp('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
-        }
-        const filter = (_, user) => interaction.user.id === user.id;
-        const collector = weatherEmbed.createReactionCollector({ filter, time: 60000 });
+        const filter = (itr) => interaction.user.id === itr.user.id;
+        const collector = weatherEmbed.createMessageComponentCollector({ filter, time: 60000 });
 
-        collector.on('collect', async (reaction, user) => {
+        collector.on('collect', async (itr) => {
             try {
-                if (interaction.guildId) {
-                    await reaction.users.remove(user);
-                }
-                switch (reaction.emoji.name) {
-                    case '➡️':
+                switch (itr.customId) {
+                    case 'next':
                         currentPage = (currentPage + 1) % embeds.length;
-                        weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                         break;
-                    case '⬅️':
+                    case 'prev':
                         currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                         break;
-                    case '⏹':
+                    case 'stop':
                         collector.stop();
                         break;
                 }
-            } catch {
-                interaction.followUp('**권한이 없습니다 - [ADD_REACTIONS, MANAGE_MESSAGES]**');
-            }
+            } catch {}
         });
     }
 };
