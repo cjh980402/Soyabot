@@ -70,16 +70,16 @@ module.exports.QueueElement = class {
                 .setDescription(`**${this.songs[0].title}**\n${this.songs[0].url}`)
                 .setTimestamp();
             const row1 = new MessageActionRow().addComponents(
+                new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('play_pause').setEmoji('⏯️').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('skip').setEmoji('⏭️').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('mute').setEmoji('🔇').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('volume_up').setEmoji('🔊').setStyle('SECONDARY')
+                new MessageButton().setCustomId('loop').setEmoji('🔁').setStyle('SECONDARY')
             );
             const row2 = new MessageActionRow().addComponents(
-                new MessageButton().setCustomId('loop').setEmoji('🔁').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('shuffle').setEmoji('🔀').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('volume_down').setEmoji('🔉').setStyle('SECONDARY')
+                new MessageButton().setCustomId('mute').setEmoji('🔇').setStyle('SECONDARY'),
+                new MessageButton().setCustomId('volume_down').setEmoji('🔉').setStyle('SECONDARY'),
+                new MessageButton().setCustomId('volume_up').setEmoji('🔊').setStyle('SECONDARY'),
+                new MessageButton().setCustomId('shuffle').setEmoji('🔀').setStyle('SECONDARY')
             );
 
             this.playingMessage = await this.sendMessage({ embeds: [embed], components: [row1, row2] });
@@ -132,6 +132,10 @@ module.exports.musicButtonControl = async function (interaction) {
         }
 
         switch (interaction.customId) {
+            case 'stop':
+                queue.sendMessage(`${interaction.user} ⏹️ 노래를 정지했습니다.`);
+                queue.clearStop();
+                break;
             case 'play_pause':
                 queue.playing = !queue.playing;
                 if (queue.playing) {
@@ -147,32 +151,28 @@ module.exports.musicButtonControl = async function (interaction) {
                 queue.playing = true;
                 queue.subscription.player.stop();
                 break;
+            case 'loop':
+                queue.loop = !queue.loop;
+                queue.sendMessage(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
+                break;
             case 'mute':
                 queue.volume = queue.volume <= 0 ? DEFAULT_VOLUME : 0;
                 queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
                 queue.sendMessage(queue.volume ? `${interaction.user} 🔊 음소거를 해제했습니다.` : `${interaction.user} 🔇 노래를 음소거 했습니다.`);
+                break;
+            case 'volume_down':
+                queue.volume = Math.max(queue.volume - 10, 0);
+                queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
+                queue.sendMessage(`${interaction.user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
                 break;
             case 'volume_up':
                 queue.volume = Math.min(queue.volume + 10, 100);
                 queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
                 queue.sendMessage(`${interaction.user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
                 break;
-            case 'loop':
-                queue.loop = !queue.loop;
-                queue.sendMessage(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
-                break;
             case 'shuffle':
                 queue.songs.shuffle(1); // 첫번째 노래를 제외하고 섞기
                 queue.sendMessage(`${interaction.user} 🔀 대기열을 섞었습니다.`);
-                break;
-            case 'stop':
-                queue.sendMessage(`${interaction.user} ⏹️ 노래를 정지했습니다.`);
-                queue.clearStop();
-                break;
-            case 'volume_down':
-                queue.volume = Math.max(queue.volume - 10, 0);
-                queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
-                queue.sendMessage(`${interaction.user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
                 break;
         }
     } catch {}
