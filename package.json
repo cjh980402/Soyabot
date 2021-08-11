@@ -1,6 +1,6 @@
 {
   "name": "soyabot",
-  "version": "6.3.3",
+  "version": "6.4.0",
   "description": "MapleStory, Music Discord Bot",
   "main": "index.js",
   "author": "9804cjh@naver.com",
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@discordjs/opus": "^0.5.3",
-    "@discordjs/voice": "^0.5.6",
+    "@discordjs/voice": "^0.6.0",
     "bufferutil": "^4.0.3",
     "chartjs-node-canvas": "^3.2.0",
     "chartjs-plugin-datalabels": "^1.0.0",
