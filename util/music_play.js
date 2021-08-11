@@ -59,7 +59,7 @@ module.exports.QueueElement = class {
         if (this.songs.length === 0) {
             this.clearStop();
             this.subscription.connection.destroy();
-            return this.sendMessage('❌ 음악 대기열이 끝났습니다.');
+            return this.sendMessage('🛑 음악 대기열이 끝났습니다.');
         }
 
         try {
@@ -70,15 +70,15 @@ module.exports.QueueElement = class {
                 .setDescription(`**${this.songs[0].title}**\n${this.songs[0].url}`)
                 .setTimestamp();
             const row1 = new MessageActionRow().addComponents(
-                new MessageButton().setCustomId('play_pause').setEmoji('⏯').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('skip').setEmoji('⏭').setStyle('SECONDARY'),
+                new MessageButton().setCustomId('play_pause').setEmoji('⏯️').setStyle('SECONDARY'),
+                new MessageButton().setCustomId('skip').setEmoji('⏭️').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('mute').setEmoji('🔇').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('volume_down').setEmoji('🔉').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('volume_up').setEmoji('🔊').setStyle('SECONDARY')
             );
             const row2 = new MessageActionRow().addComponents(
                 new MessageButton().setCustomId('loop').setEmoji('🔁').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('stop').setEmoji('⏹').setStyle('SECONDARY')
+                new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY')
             );
 
             this.playingMessage = await this.sendMessage({ embeds: [embed], components: [row1, row2] });
@@ -142,7 +142,7 @@ module.exports.musicButtonControl = async function (interaction) {
                 }
                 break;
             case 'skip':
-                queue.sendMessage(`${interaction.user} ⏭ 노래를 건너뛰었습니다.`);
+                queue.sendMessage(`${interaction.user} ⏭️ 노래를 건너뛰었습니다.`);
                 queue.playing = true;
                 queue.subscription.player.stop();
                 break;
@@ -166,7 +166,7 @@ module.exports.musicButtonControl = async function (interaction) {
                 queue.sendMessage(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
                 break;
             case 'stop':
-                queue.sendMessage(`${interaction.user} ⏹ 노래를 정지했습니다.`);
+                queue.sendMessage(`${interaction.user} ⏹️ 노래를 정지했습니다.`);
                 queue.clearStop();
                 break;
         }

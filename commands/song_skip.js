@@ -18,7 +18,7 @@ module.exports = {
             return message.reply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
 
-        message.channel.send(`${message.author} ⏭ 노래를 건너뛰었습니다.`);
+        message.channel.send(`${message.author} ⏭️ 노래를 건너뛰었습니다.`);
         queue.playing = true;
         queue.subscription.player.stop();
     },
@@ -39,7 +39,7 @@ module.exports = {
             return interaction.followUp(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
 
-        interaction.followUp(`${interaction.user} ⏭ 노래를 건너뛰었습니다.`);
+        interaction.followUp(`${interaction.user} ⏭️ 노래를 건너뛰었습니다.`);
         queue.playing = true;
         queue.subscription.player.stop();
     }

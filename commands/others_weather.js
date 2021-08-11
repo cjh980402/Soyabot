@@ -87,7 +87,7 @@ module.exports = {
         const embeds = await getCoronaEmbed(countData, countryData);
         const row = new MessageActionRow().addComponents(
             new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
-            new MessageButton().setCustomId('stop').setEmoji('⏹').setStyle('SECONDARY'),
+            new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
             new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
         );
         const weatherEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
@@ -153,7 +153,7 @@ module.exports = {
         const embeds = await getCoronaEmbed(countData, countryData);
         const row = new MessageActionRow().addComponents(
             new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
-            new MessageButton().setCustomId('stop').setEmoji('⏹').setStyle('SECONDARY'),
+            new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
             new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
         );
         const weatherEmbed = await interaction.followUp({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });

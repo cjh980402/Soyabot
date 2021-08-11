@@ -38,7 +38,7 @@ module.exports = {
             let currentPage = 0;
             const row = new MessageActionRow().addComponents(
                 new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('stop').setEmoji('⏹').setStyle('SECONDARY'),
+                new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
             );
             const queueEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
@@ -86,7 +86,7 @@ module.exports = {
             let currentPage = 0;
             const row = new MessageActionRow().addComponents(
                 new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('stop').setEmoji('⏹').setStyle('SECONDARY'),
+                new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
             );
             const queueEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
