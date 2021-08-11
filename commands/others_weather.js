@@ -84,7 +84,7 @@ module.exports = {
         }
 
         let currentPage = 0;
-        const embeds = await getCoronaEmbed(countData, countryData);
+        const embeds = await getWeatherEmbed(targetLocal);
         const row = new MessageActionRow().addComponents(
             new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
             new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
@@ -150,7 +150,7 @@ module.exports = {
         }
 
         let currentPage = 0;
-        const embeds = await getCoronaEmbed(countData, countryData);
+        const embeds = await getWeatherEmbed(targetLocal);
         const row = new MessageActionRow().addComponents(
             new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
             new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
