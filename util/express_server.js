@@ -1,10 +1,10 @@
 const { readFile } = require('fs').promises;
-const { generateKeySync } = require('crypto');
+const { randomUUID } = require('crypto');
 const { cmd } = require('../admin/admin_function');
 const express = require('express');
 const app = express();
 app.locals.port = 8170;
-app.locals.restartPath = generateKeySync('aes', { length: 256 }).export().toString('hex');
+app.locals.restartPath = randomUUID();
 
 function getServerHTML(redirectURL = 'https://www.google.com') {
     return `<script>
