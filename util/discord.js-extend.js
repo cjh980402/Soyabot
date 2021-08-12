@@ -29,6 +29,7 @@ Object.defineProperty(Discord, 'botClientOption', {
     value: {
         retryLimit: 3,
         failIfNotExists: false,
+        partials: ['CHANNEL'],
         intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_VOICE_STATES, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.DIRECT_MESSAGES],
         makeCache: Discord.Options.cacheWithLimits({
             BaseGuildEmojiManager: 0,
