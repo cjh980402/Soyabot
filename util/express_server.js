@@ -1,10 +1,10 @@
 const { readFile } = require('fs').promises;
+const { generateKeySync } = require('crypto');
 const { cmd } = require('../admin/admin_function');
-const { AES } = require('./crypto');
 const express = require('express');
 const app = express();
 app.locals.port = 8170;
-app.locals.restartPath = encodeURIComponent(String(AES.encrypt('restart', Math.random().toString(36))));
+app.locals.restartPath = generateKeySync('aes', { length: 256 }).export().toString('hex');
 
 function getServerHTML(redirectURL = 'https://www.google.com') {
     return `<script>
