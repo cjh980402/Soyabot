@@ -32,9 +32,7 @@ module.exports = {
         message.channel.send(`${message.author} ⏭️ ${skipto - 1}개의 노래를 건너뛰었습니다.`);
         queue.playing = true;
         if (queue.loop) {
-            for (let i = 0; i < skipto - 2; i++) {
-                queue.songs.push(queue.songs.shift());
-            }
+            queue.songs.push(...queue.songs.splice(0, skipto - 2));
         } else {
             queue.songs = queue.songs.slice(skipto - 2);
         }
@@ -76,9 +74,7 @@ module.exports = {
         interaction.followUp(`${interaction.user} ⏭️ ${skipto - 1}개의 노래를 건너뛰었습니다.`);
         queue.playing = true;
         if (queue.loop) {
-            for (let i = 0; i < skipto - 2; i++) {
-                queue.songs.push(queue.songs.shift());
-            }
+            queue.songs.push(...queue.songs.splice(0, skipto - 2));
         } else {
             queue.songs = queue.songs.slice(skipto - 2);
         }
