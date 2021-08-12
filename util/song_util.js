@@ -152,21 +152,20 @@ module.exports.songDownload = async function (url) {
         throw new Error('출력 스트림이 존재하지 않습니다.');
     }
 
-    stream.on('error', () => {
+    const onError = () => {
         if (!ytdlProcess.killed) {
             ytdlProcess.kill();
         }
         stream.resume();
-    });
+    };
+    ytdlProcess.on('error', onError);
+    stream.on('error', onError);
 
     try {
         const probe = await demuxProbe(stream);
         return createAudioResource(probe.stream, { inputType: probe.type, inlineVolume: true });
     } catch (e) {
-        if (!ytdlProcess.killed) {
-            ytdlProcess.kill();
-        }
-        stream.resume();
+        onError();
         throw e;
     }
 };

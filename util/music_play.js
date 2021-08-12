@@ -56,7 +56,7 @@ module.exports.QueueElement = class {
     }
 
     async playSong() {
-        if (!this.songs[0]) {
+        if (this.songs.length === 0) {
             this.clearStop();
             this.subscription.connection.destroy();
             return this.sendMessage('🛑 음악 대기열이 끝났습니다.');
