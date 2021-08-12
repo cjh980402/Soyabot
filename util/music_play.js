@@ -56,7 +56,7 @@ module.exports.QueueElement = class {
     }
 
     async playSong() {
-        if (this.songs.length === 0) {
+        if (!this.songs[0]) {
             this.clearStop();
             this.subscription.connection.destroy();
             return this.sendMessage('🛑 음악 대기열이 끝났습니다.');
@@ -143,7 +143,7 @@ module.exports.musicButtonControl = async function (interaction) {
                     queue.sendMessage(`${interaction.user} ▶️ 노래를 다시 틀었습니다.`);
                 } else {
                     queue.subscription.player.pause();
-                    queue.sendMessage(`${interaction.user} ⏸ 노래를 일시정지 했습니다.`);
+                    queue.sendMessage(`${interaction.user} ⏸️ 노래를 일시정지 했습니다.`);
                 }
                 break;
             case 'skip':
