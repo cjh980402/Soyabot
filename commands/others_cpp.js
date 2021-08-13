@@ -1,8 +1,8 @@
 const { ADMIN_ID } = require('../soyabot_config.json');
 const { writeFile } = require('fs').promises;
 const { cmd } = require('../admin/admin_function');
-const { spawn } = require('child_process');
-let proc = null;
+const { spawn } = require('child_cppProcessess');
+let cppProcess = null;
 
 module.exports = {
     usage: `${client.prefix}cpp (소스코드)`,
@@ -10,8 +10,8 @@ module.exports = {
     type: ['기타'],
     async messageExecute(message, args) {
         if (message.author.id === ADMIN_ID && args.length > 0) {
-            if (proc) {
-                proc.stdin.write(`${args.join(' ')}\n`);
+            if (cppProcess) {
+                cppProcess.stdin.write(`${args.join(' ')}\n`);
             } else {
                 const sourceCode = message.content.replace(/\s*.+?\s*.+?\s+/, '').trim();
                 await writeFile(`./other_source/cpp_source.cpp`, sourceCode);
@@ -19,16 +19,20 @@ module.exports = {
                 if (compile) {
                     return message.channel.send(compile); // 컴파일 에러 출력
                 }
-                proc = spawn('./other_source/cpp_result.out');
-                proc.stderr.on('data', (data) => {
+                cppProcess = spawn('./other_source/cpp_result.out');
+                cppProcess.stderr.on('data', (data) => {
                     message.channel.sendSplitCode(String(data), { split: { char: '' } });
                 });
-                proc.stdout.on('data', (data) => {
+                cppProcess.stdout.on('data', (data) => {
                     message.channel.sendSplitCode(String(data), { split: { char: '' } });
                 });
-                proc.on('close', (code) => {
+                cppProcess.on('exit', (code) => {
                     message.channel.send(`Process exited with code ${code}`);
-                    proc = null;
+                    cppProcess = null;
+                });
+                cppProcess.on('error', (code) => {
+                    message.channel.send(`Process throws an error with code ${code}`);
+                    cppProcess = null;
                 });
             }
         }
