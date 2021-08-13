@@ -10,7 +10,7 @@ module.exports.botNotice = async function (data, type = null) {
     } else {
         // 일반 공지는 전체 전송
         const noticeRegex = new RegExp(`${client.user.username}.*(공지|알림)`, 'i');
-        client.guilds.cach.forEach(async (v) => {
+        client.guilds.cache.forEach(async (v) => {
             try {
                 const guildText = v.channels.cache.filter((v) => v.type === 'GUILD_TEXT');
                 const target = guildText.find((v) => noticeRegex.test(v.name)) ?? guildText.first();
