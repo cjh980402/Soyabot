@@ -26,12 +26,12 @@ module.exports = {
                 cppProcess.stdout.on('data', (data) => {
                     message.channel.sendSplitCode(String(data), { split: { char: '' } });
                 });
-                cppProcess.on('exit', (code) => {
-                    message.channel.send(`Process exited with code ${code}`);
+                cppProcess.on('error', (e) => {
+                    message.channel.send(`Process throws an error (${e})`);
                     cppProcess = null;
                 });
-                cppProcess.on('error', (code) => {
-                    message.channel.send(`Process throws an error with code ${code}`);
+                cppProcess.on('exit', (code) => {
+                    message.channel.send(`Process exited with code ${code}`);
                     cppProcess = null;
                 });
             }

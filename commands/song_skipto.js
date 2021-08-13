@@ -34,7 +34,7 @@ module.exports = {
         if (queue.loop) {
             queue.songs.push(...queue.songs.splice(0, skipto - 2));
         } else {
-            queue.songs = queue.songs.slice(skipto - 2);
+            queue.songs.splice(0, skipto - 2);
         }
         queue.subscription.player.stop();
     },
@@ -76,7 +76,7 @@ module.exports = {
         if (queue.loop) {
             queue.songs.push(...queue.songs.splice(0, skipto - 2));
         } else {
-            queue.songs = queue.songs.slice(skipto - 2);
+            queue.songs.splice(0, skipto - 2);
         }
         queue.subscription.player.stop();
     }
