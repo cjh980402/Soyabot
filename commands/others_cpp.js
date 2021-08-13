@@ -1,7 +1,7 @@
 const { ADMIN_ID } = require('../soyabot_config.json');
 const { writeFile } = require('fs').promises;
 const { cmd } = require('../admin/admin_function');
-const { spawn } = require('child_cppProcessess');
+const { spawn } = require('child_process');
 let cppProcess = null;
 
 module.exports = {
