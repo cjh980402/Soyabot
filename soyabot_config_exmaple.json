@@ -2,6 +2,7 @@
     "PREFIX": "/",
     "TOKEN": "",
     "ADMIN_ID": "",
+    "NOTICE_CHANNEL_ID": "",
     "MAX_PLAYLIST_SIZE": 20,
     "DEFAULT_VOLUME": 50,
     "NAVER_CLIENT_ID": "",

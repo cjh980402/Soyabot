@@ -1,22 +1,26 @@
 const { MessageEmbed, Permissions } = require('../util/discord.js-extend');
-const { ADMIN_ID } = require('../soyabot_config.json');
+const { ADMIN_ID, NOTICE_CHANNEL_ID } = require('../soyabot_config.json');
 
 module.exports.botNotice = async function (data, type = null) {
-    const skiplist = type ? (await db.all(`SELECT channelid FROM ${type}skip`)).map((v) => v.channelid) : [];
-    const noticeRegex = new RegExp(`${client.user.username}.*(공지|알림)`, 'i');
-    // type이 null(전체 알림)인 경우는 예외리스트는 없음
-    client.guilds.cache
-        .filter((v) => !skiplist.includes(v.id))
-        .forEach(async (v) => {
+    if (type) {
+        // 메이플 공지는 공지용 채널에만 전송 (트래픽 감소 목적)
+        try {
+            await client.channels.cache.get(NOTICE_CHANNEL_ID).send(data instanceof MessageEmbed ? { embeds: [data] } : String(data));
+        } catch {}
+    } else {
+        // 일반 공지는 전체 전송
+        const noticeRegex = new RegExp(`${client.user.username}.*(공지|알림)`, 'i');
+        client.guilds.cach.forEach(async (v) => {
             try {
                 const guildText = v.channels.cache.filter((v) => v.type === 'GUILD_TEXT');
                 const target = guildText.find((v) => noticeRegex.test(v.name)) ?? guildText.first();
                 const permissions = target?.permissionsFor(v.me);
                 if (permissions?.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES])) {
-                    await target.send(data instanceof MessageEmbed ? { embeds: [data] } : String(data)); // 디스코드 봇은 딜레이 없이 공지 보내기 가능
+                    await target.send(data instanceof MessageEmbed ? { embeds: [data] } : String(data));
                 }
             } catch {}
         });
+    }
 };
 
 module.exports.replyRoomID = async function (roomID, str) {
