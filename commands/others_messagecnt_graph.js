@@ -4,9 +4,7 @@ const { ADMIN_ID } = require('../soyabot_config.json');
 
 async function getMessageCountGraph(targetGuild, option) {
     const roommessage = (
-        await (
-            await db.all('SELECT * FROM messagedb WHERE channelsenderid LIKE ?', [`${targetGuild.id}%`])
-        ).asyncFilter(async (v) => {
+        await db.all('SELECT * FROM messagedb WHERE channelsenderid LIKE ?', [`${targetGuild.id}%`]).asyncFilter(async (v) => {
             try {
                 const senderid = v.channelsenderid.split(' ')[1];
                 v.member = await targetGuild.members.fetch({ user: senderid, cache: false });

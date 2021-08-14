@@ -123,7 +123,7 @@ client.on('messageCreate', async (message) => {
             }
         } catch {}
     } finally {
-        await cachingMessage(message); // 들어오는 채팅 항상 캐싱
+        cachingMessage(message); // 들어오는 채팅 항상 캐싱
     }
 });
 
@@ -171,7 +171,7 @@ client.on('interactionCreate', async (interaction) => {
                 }
             } catch {}
         } finally {
-            await cachingMessage(interaction); // 들어오는 슬래시 커맨드 항상 캐싱
+            cachingMessage(interaction); // 들어오는 슬래시 커맨드 항상 캐싱
         }
     }
 });

@@ -19,7 +19,7 @@ module.exports = {
             targetInfo = message.member;
         }
 
-        const messagestat = await db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [`${message.guildId} ${targetInfo.user.id}`]);
+        const messagestat = db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [`${message.guildId} ${targetInfo.user.id}`]);
         if (messagestat) {
             return message.channel.send(`${targetInfo.nickname ?? targetInfo.user.username}의 최근 채팅\n채팅 내용: ${messagestat.lastmessage}\n${new Date(messagestat.lasttime).toLocaleString()}`);
         } else {

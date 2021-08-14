@@ -21,6 +21,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.5.3",
     "@discordjs/voice": "^0.6.0",
+    "better-sqlite3": "^7.4.3",
     "bufferutil": "^4.0.3",
     "chartjs-node-canvas": "^3.2.0",
     "chartjs-plugin-datalabels": "^1.0.0",
@@ -39,7 +40,6 @@
     "node-fetch": "^2.6.1",
     "simple-youtube-api": "^5.2.1",
     "soundcloud-scraper": "^5.0.1",
-    "sqlite3": "^5.0.2",
     "string-progressbar": "^1.0.4",
     "utf-8-validate": "^5.0.5",
     "youtube-dl-exec": "^1.2.4",

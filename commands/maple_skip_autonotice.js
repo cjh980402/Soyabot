@@ -19,7 +19,7 @@ module.exports = {
         if (!noticematch[args[0]]) {
             const notice = [];
             for (const key in noticematch) {
-                if (await db.get(`SELECT * FROM ${noticematch[key]}skip WHERE channelid = ?`, [message.guildId])) {
+                if (db.get(`SELECT * FROM ${noticematch[key]}skip WHERE channelid = ?`, [message.guildId])) {
                     // 현재 꺼짐
                     notice.push(`${key} 자동알림: OFF`);
                 } else {
@@ -28,14 +28,14 @@ module.exports = {
             }
             return message.channel.send(notice.join('\n'));
         }
-        const find = await db.get(`SELECT * FROM ${noticematch[args[0]]}skip WHERE channelid = ?`, [message.guildId]);
+        const find = db.get(`SELECT * FROM ${noticematch[args[0]]}skip WHERE channelid = ?`, [message.guildId]);
         if (find) {
             // 기존상태: OFF
-            await db.run(`DELETE FROM ${noticematch[args[0]]}skip WHERE channelid = ?`, [message.guildId]);
+            db.run(`DELETE FROM ${noticematch[args[0]]}skip WHERE channelid = ?`, [message.guildId]);
             return message.channel.send(`${args[0]} 자동알림: **OFF → ON**`);
         } else {
             // 기존상태: ON
-            await db.insert(`${noticematch[args[0]]}skip`, { channelid: message.guildId, name: message.guild.name });
+            db.insert(`${noticematch[args[0]]}skip`, { channelid: message.guildId, name: message.guild.name });
             return message.channel.send(`${args[0]} 자동알림: **ON → OFF**`);
         }
     },
@@ -60,7 +60,7 @@ module.exports = {
         if (!noticematch[category]) {
             const notice = [];
             for (const key in noticematch) {
-                if (await db.get(`SELECT * FROM ${noticematch[key]}skip WHERE channelid = ?`, [interaction.guildId])) {
+                if (db.get(`SELECT * FROM ${noticematch[key]}skip WHERE channelid = ?`, [interaction.guildId])) {
                     // 현재 꺼짐
                     notice.push(`${key} 자동알림: OFF`);
                 } else {
@@ -69,14 +69,14 @@ module.exports = {
             }
             return interaction.followUp(notice.join('\n'));
         }
-        const find = await db.get(`SELECT * FROM ${noticematch[category]}skip WHERE channelid = ?`, [interaction.guildId]);
+        const find = db.get(`SELECT * FROM ${noticematch[category]}skip WHERE channelid = ?`, [interaction.guildId]);
         if (find) {
             // 기존상태: OFF
-            await db.run(`DELETE FROM ${noticematch[category]}skip WHERE channelid = ?`, [interaction.guildId]);
+            db.run(`DELETE FROM ${noticematch[category]}skip WHERE channelid = ?`, [interaction.guildId]);
             return interaction.followUp(`${category} 자동알림: **OFF → ON**`);
         } else {
             // 기존상태: ON
-            await db.insert(`${noticematch[category]}skip`, { channelid: interaction.guildId, name: interaction.guild.name });
+            db.insert(`${noticematch[category]}skip`, { channelid: interaction.guildId, name: interaction.guild.name });
             return interaction.followUp(`${category} 자동알림: **ON → OFF**`);
         }
     }

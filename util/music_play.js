@@ -108,7 +108,7 @@ module.exports.QueueElement = class {
     }
 
     async deleteMessage() {
-        const find = await db.get('SELECT * FROM pruningskip WHERE channelid = ?', [this.playingMessage?.guildId]);
+        const find = db.get('SELECT * FROM pruningskip WHERE channelid = ?', [this.playingMessage?.guildId]);
         if (!find) {
             try {
                 await this.playingMessage?.delete();

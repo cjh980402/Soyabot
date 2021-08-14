@@ -16,11 +16,11 @@ module.exports.startNotice = function () {
 
                 const notice = [];
                 for (let i = 0; i < data.length; i++) {
-                    const rslt = await db.get('SELECT * FROM maplenotice WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
+                    const rslt = db.get('SELECT * FROM maplenotice WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                     if (!rslt || +/\d+/.exec(rslt.url) < +/\d+/.exec(url)) {
                         // 제목이 다르거나, 같은 경우는 최신 공지인 경우
-                        await db.replace('maplenotice', { title: data.eq(i).text().trim(), url: url }); // 제목이 겹치는 경우 때문에 replace를 이용
+                        db.replace('maplenotice', { title: data.eq(i).text().trim(), url: url }); // 제목이 겹치는 경우 때문에 replace를 이용
                         // 중복방지 위해 db에 삽입
                         notice.push(`${data.eq(i).find('img').attr('alt')} [${data.eq(i).text().trim()}](${url})`);
                     }
@@ -53,11 +53,11 @@ module.exports.startUpdate = function () {
 
                 const update = [];
                 for (let i = 0; i < data.length; i++) {
-                    const rslt = await db.get('SELECT * FROM mapleupdate WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
+                    const rslt = db.get('SELECT * FROM mapleupdate WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                     if (!rslt || +/\d+/.exec(rslt.url) < +/\d+/.exec(url)) {
                         // 제목이 다르거나, 같은 경우는 최신 공지인 경우
-                        await db.replace('mapleupdate', { title: data.eq(i).text().trim(), url: url });
+                        db.replace('mapleupdate', { title: data.eq(i).text().trim(), url: url });
                         // 중복방지 위해 db에 삽입
                         update.push(`[패치] [${data.eq(i).text().trim()}](${url})`);
                     }
@@ -90,11 +90,11 @@ module.exports.startTest = function () {
 
                 const test = [];
                 for (let i = 0; i < data.length; i++) {
-                    const rslt = await db.get('SELECT * FROM mapletest WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
+                    const rslt = db.get('SELECT * FROM mapletest WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                     if (!rslt || +/\d+/.exec(rslt.url) < +/\d+/.exec(url)) {
                         // 제목이 다르거나, 같은 경우는 최신 공지인 경우
-                        await db.replace('mapletest', { title: data.eq(i).text().trim(), url: url });
+                        db.replace('mapletest', { title: data.eq(i).text().trim(), url: url });
                         // 중복방지 위해 db에 삽입
                         const picurl = data.eq(i).find('img').attr('src');
                         const type = picurl.endsWith('1.png') ? '[공지]' : picurl.endsWith('2.png') ? '[GM]' : picurl.endsWith('3.png') ? '[점검]' : '[패치]';
@@ -125,14 +125,14 @@ module.exports.startTestPatch = function () {
     if (!testPatchTimer) {
         testPatchTimer = setInterval(async () => {
             try {
-                const lastPatch = await db.get('SELECT * FROM testpatch ORDER BY version DESC LIMIT 1');
+                const lastPatch = db.get('SELECT * FROM testpatch ORDER BY version DESC LIMIT 1');
                 const patchVersion = lastPatch.version + 1; // 새로 가져올 패치의 버전
                 const patchURL = `http://maplestory.dn.nexoncdn.co.kr/PatchT/01${patchVersion}/01${patchVersion - 1}to01${patchVersion}.patch`;
                 const patchHeader = (await fetch(patchURL)).headers;
                 if (patchHeader.get('content-type') === 'application/octet-stream') {
                     // 파일이 감지된 경우
                     const fileSize = +patchHeader.get('content-length') / 1024 / 1024;
-                    await db.insert('testpatch', { version: patchVersion, url: patchURL });
+                    db.insert('testpatch', { version: patchVersion, url: patchURL });
                     botNotice(`[Tver 1.2.${patchVersion}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기: ${fileSize.toFixed(2)}MB\n패치파일 주소: ${patchURL}`, 'testpatch');
                 }
             } catch (e) {
