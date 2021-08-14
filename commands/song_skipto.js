@@ -36,7 +36,7 @@ module.exports = {
         } else {
             queue.songs.splice(0, skipto - 2);
         }
-        queue.subscription.player.stop();
+        queue.subscription.player.stop(true);
     },
     commandData: {
         name: 'skipto',
@@ -78,6 +78,6 @@ module.exports = {
         } else {
             queue.songs.splice(0, skipto - 2);
         }
-        queue.subscription.player.stop();
+        queue.subscription.player.stop(true);
     }
 };

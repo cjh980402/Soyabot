@@ -149,7 +149,7 @@ module.exports.musicButtonControl = async function (interaction) {
             case 'skip':
                 queue.sendMessage(`${interaction.user} ⏭️ 노래를 건너뛰었습니다.`);
                 queue.playing = true;
-                queue.subscription.player.stop();
+                queue.subscription.player.stop(true);
                 break;
             case 'loop':
                 queue.loop = !queue.loop;
