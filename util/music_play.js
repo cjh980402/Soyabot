@@ -12,7 +12,6 @@ module.exports.QueueElement = class {
     songs;
     volume = DEFAULT_VOLUME;
     loop = false;
-    playing = true;
     playingMessage = null;
 
     constructor(textChannel, voiceChannel, connection, songs) {
@@ -46,6 +45,10 @@ module.exports.QueueElement = class {
                 this.sendMessage('노래 재생을 실패했습니다.');
                 replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
             });
+    }
+
+    get playing() {
+        return this.subscription.player.state.status === AudioPlayerStatus.Buffering || this.subscription.player.state.status === AudioPlayerStatus.Playing;
     }
 
     clearStop() {
@@ -137,18 +140,16 @@ module.exports.musicButtonControl = async function (interaction) {
                 queue.clearStop();
                 break;
             case 'play_pause':
-                queue.playing = !queue.playing;
                 if (queue.playing) {
-                    queue.subscription.player.unpause();
-                    queue.sendMessage(`${interaction.user} ▶️ 노래를 다시 틀었습니다.`);
-                } else {
                     queue.subscription.player.pause();
                     queue.sendMessage(`${interaction.user} ⏸️ 노래를 일시정지 했습니다.`);
+                } else {
+                    queue.subscription.player.unpause();
+                    queue.sendMessage(`${interaction.user} ▶️ 노래를 다시 틀었습니다.`);
                 }
                 break;
             case 'skip':
                 queue.sendMessage(`${interaction.user} ⏭️ 노래를 건너뛰었습니다.`);
-                queue.playing = true;
                 queue.subscription.player.stop(true);
                 break;
             case 'loop':
@@ -194,7 +195,6 @@ module.exports.musicActiveControl = function (oldState, newState) {
                     newVoice.members.size === 2 &&
                     newVoice.members.has(client.user.id)
                 ) {
-                    newQueue.playing = true;
                     newQueue.subscription.player.unpause();
                     newQueue.sendMessage('대기열을 다시 재생합니다.');
                 }
@@ -205,7 +205,6 @@ module.exports.musicActiveControl = function (oldState, newState) {
                 if (oldQueue?.subscription.player.state.resource && oldVoice.id === oldQueue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.has(client.user.id)) {
                     // 봇만 음성 채널에 있는 경우
                     if (oldQueue.playing) {
-                        oldQueue.playing = false;
                         oldQueue.subscription.player.pause();
                         oldQueue.sendMessage('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
                     }

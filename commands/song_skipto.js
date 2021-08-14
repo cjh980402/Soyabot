@@ -30,7 +30,6 @@ module.exports = {
         }
 
         message.channel.send(`${message.author} ⏭️ ${skipto - 1}개의 노래를 건너뛰었습니다.`);
-        queue.playing = true;
         if (queue.loop) {
             queue.songs.push(...queue.songs.splice(0, skipto - 2));
         } else {
@@ -72,7 +71,6 @@ module.exports = {
         }
 
         interaction.followUp(`${interaction.user} ⏭️ ${skipto - 1}개의 노래를 건너뛰었습니다.`);
-        queue.playing = true;
         if (queue.loop) {
             queue.songs.push(...queue.songs.splice(0, skipto - 2));
         } else {

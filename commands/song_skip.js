@@ -19,7 +19,6 @@ module.exports = {
         }
 
         message.channel.send(`${message.author} ⏭️ 노래를 건너뛰었습니다.`);
-        queue.playing = true;
         queue.subscription.player.stop(true);
     },
     commandData: {
@@ -40,7 +39,6 @@ module.exports = {
         }
 
         interaction.followUp(`${interaction.user} ⏭️ 노래를 건너뛰었습니다.`);
-        queue.playing = true;
         queue.subscription.player.stop(true);
     }
 };

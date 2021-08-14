@@ -19,7 +19,6 @@ module.exports = {
         }
 
         if (!queue.playing) {
-            queue.playing = true;
             queue.subscription.player.unpause();
             return message.channel.send(`${message.author} ▶ 노래를 다시 틀었습니다.`);
         }
@@ -44,7 +43,6 @@ module.exports = {
         }
 
         if (!queue.playing) {
-            queue.playing = true;
             queue.subscription.player.unpause();
             return interaction.followUp(`${interaction.user} ▶ 노래를 다시 틀었습니다.`);
         }
