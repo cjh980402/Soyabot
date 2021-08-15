@@ -84,7 +84,7 @@ async function getMessageCountGraph(targetGuild, option) {
         }
     };
 
-    return new MessageAttachment(await renderChart(config, 2000, height), 'chart.png');
+    return { files: [new MessageAttachment(await renderChart(config, 2000, height), 'chart.png')] };
 }
 
 module.exports = {
@@ -99,7 +99,7 @@ module.exports = {
             return message.reply('사용이 불가능한 채널입니다.');
         }
 
-        return message.channel.send({ files: [await getMessageCountGraph(targetGuild, args[0])] });
+        return message.channel.send(await getMessageCountGraph(targetGuild, args[0]));
     },
     commandData: {
         name: '채팅량그래프',
@@ -119,6 +119,6 @@ module.exports = {
             return interaction.followUp('사용이 불가능한 채널입니다.');
         }
 
-        return interaction.followUp({ files: [await getMessageCountGraph(targetGuild, option)] });
+        return interaction.followUp(await getMessageCountGraph(targetGuild, option));
     }
 };
