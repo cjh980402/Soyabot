@@ -19,7 +19,7 @@ module.exports = function (messageOrInteraction) {
         }
         const senderKey = `${messageOrInteraction.guildId} ${messageOrInteraction.user.id}`;
         const messagestat = db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [senderKey]);
-        const content = `/${messageOrInteraction.commandName}${messageOrInteraction.options.data.map((v) => ` ${v.value}`).join('')}`;
+        const content = `/${messageOrInteraction.commandName}${messageOrInteraction.options._hoistedOptions.map((v) => ` ${v.value}`).join('')}`;
         db.replace('messagedb', {
             channelsenderid: senderKey,
             messagecnt: (messagestat?.messagecnt ?? 0) + 1,

@@ -54,8 +54,6 @@ class SuperialItem {
 
         this.#starcat = +(data[2] === 1); // 스타캐치 여부
 
-        console.log(`<슈페리얼> 레벨 제한: ${this.#lev}, 시작: ${this.#initial}성, 목표: ${this.#goal}성\n스타캐치: ${this.#starcat}`);
-
         this.#star = this.#initial;
         while (this.#star < this.#goal) {
             this.#starforce();

@@ -92,8 +92,6 @@ class NormalItem {
         this.#event = data[4] ?? 0; // 이벤트 종류: 30퍼 할인 = 1, 100퍼 이벤 = 2, 10성 이하 1+1 = 3, 미적용 = 그 외
         this.#nodest = data[5] ?? 0; // 파방 종류: 12~17 파방 = 1, 15~17 파방 = 2, 미적용 = 그 외
 
-        console.log(`<일반> 레벨 제한: ${this.#lev}, 시작: ${this.#initial}성, 목표: ${this.#goal}성\n스타캐치: ${this.#starcat}, 이벤트: ${this.#event}, 파방: ${this.#nodest}`);
-
         this.#star = this.#initial;
         while (this.#star < this.#goal) {
             this.#starforce();

@@ -69,7 +69,11 @@ client.on('messageCreate', async (message) => {
     // 각 메시지에 반응, 디스코드는 봇의 메시지도 이 이벤트에 들어옴
     let commandName;
     try {
-        console.log(`(${new Date().toLocaleString()}) ${message.channelId} ${message.channel.name} ${message.author.id} ${message.author.username}: ${message.content}\n`);
+        console.log(
+            `(${new Date().toLocaleString()}) ${message.channelId} ${message.channel.name} ${message.author.id} ${message.author.username}: ${
+                message.content || message.embeds[0]?.description || ''
+            }\n`
+        );
         if (message.author.bot) {
             // 봇 여부 체크
             return;
@@ -135,7 +139,11 @@ client.on('interactionCreate', async (interaction) => {
         let { commandName } = interaction;
         try {
             await interaction.deferReply(); // deferReply를 하지 않으면 3초 내로 슬래시 커맨드 응답을 해야함
-            console.log(`(${new Date().toLocaleString()}) ${interaction.channelId} ${interaction.channel.name} ${interaction.user.id} ${interaction.user.username}: ${interaction.options._i()}\n`);
+            console.log(
+                `(${new Date().toLocaleString()}) ${interaction.channelId} ${interaction.channel.name} ${interaction.user.id} ${interaction.user.username}: /${
+                    interaction.commandName
+                }\n${interaction.options._i()}\n`
+            );
 
             const permissions = interaction.channel.permissionsFor?.(interaction.guild.me);
             if (permissions && !permissions.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.READ_MESSAGE_HISTORY])) {
@@ -167,7 +175,11 @@ client.on('interactionCreate', async (interaction) => {
                     await interaction.editReply(e.message);
                 } else {
                     await interaction.editReply('에러로그가 전송되었습니다.');
-                    replyAdmin(`작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction.options._i()}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+                    replyAdmin(
+                        `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: /${interaction.commandName}\n${interaction.options._i()}\n에러 내용: ${e}\n${
+                            e.stack ?? e._p
+                        }`
+                    );
                 }
             } catch {}
         } finally {
