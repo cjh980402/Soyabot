@@ -10,7 +10,6 @@ const { replyAdmin } = require('./admin/bot_control');
 const { musicActiveControl, musicButtonControl } = require('./util/music_play');
 const cachingMessage = require('./util/message_caching');
 const botChatting = require('./util/bot_chatting');
-const app = require('./util/express_server');
 const sqlite = require('./util/sqlite-handler');
 globalThis.db = new sqlite('./db/soyabot_data.db'); // db와 client는 여러 기능들에 의해 필수로 최상위 전역
 globalThis.client = new Client(botClientOption);
@@ -23,7 +22,6 @@ const promiseTimeout = (promise, ms) => Promise.race([promise, setTimeout(ms)]);
 
 (async () => {
     try {
-        client.botDomain = `${await cmd('curl ifconfig.me', true)}:${app.locals.port}`;
         await client.login(TOKEN);
         await initClient(); // 클라이언트 초기 세팅 함수
         /**
@@ -52,9 +50,7 @@ client.on('warn', console.log);
 
 client.on('ready', async () => {
     client.user.setActivity(`${client.prefix}help and ${client.prefix}play`, { type: 'LISTENING' });
-    replyAdmin(`${client.user.tag}이 작동 중입니다.
-${app.locals.port}번 포트에서 http 서버가 작동 중입니다.
-재가동 경로: <http://${client.botDomain}/restart/${app.locals.restartPath}>`);
+    replyAdmin(`${client.user.tag}이 작동 중입니다.`);
 });
 
 client.on('error', async (e) => {

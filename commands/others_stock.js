@@ -1,5 +1,5 @@
+const { MessageAttachment, MessageEmbed } = require('../util/discord.js-extend');
 const { cmd } = require('../admin/admin_function');
-const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
 const chartType = {
     '일봉': 'candle/day',
@@ -192,7 +192,10 @@ async function getStockEmbed(search, searchRslt, type) {
         }
     }
 
-    return stockEmbed.setImage(`http://${client.botDomain}/image/stock/${encodeURIComponent(code)}.png?time=${Date.now()}`);
+    const image = new MessageAttachment(`./pictures/stock/${encodeURIComponent(code)}.png`);
+    stockEmbed.setImage(`attachment://${encodeURIComponent(code)}.png`);
+
+    return { embeds: [stockEmbed], files: [image] };
 }
 
 module.exports = {
@@ -213,7 +216,7 @@ module.exports = {
         if (!searchRslt?.length) {
             return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
         } else {
-            return message.channel.send({ embeds: [await getStockEmbed(search, searchRslt, type)] });
+            return message.channel.send(await getStockEmbed(search, searchRslt, type));
         }
     },
     commandData: {
@@ -242,7 +245,7 @@ module.exports = {
         if (!searchRslt?.length) {
             return interaction.followUp('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
         } else {
-            return interaction.followUp({ embeds: [await getStockEmbed(search, searchRslt, type)] });
+            return interaction.followUp(await getStockEmbed(search, searchRslt, type));
         }
     }
 };

@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require('../util/discord.js-extend');
+const { MessageActionRow, MessageButton, MessageEmbed, Util } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
 const { load } = require('cheerio');
 
@@ -42,11 +42,11 @@ async function getWeatherEmbed(targetLocal) {
 
     const embeds = [];
     for (const desc of weatherDesc) {
-        const embed = new MessageEmbed().setTitle(`**${targetLocal[0][0]}**`).setColor('#FF9999').setDescription(desc).setTimestamp();
-
-        if (embed.description.length > 2000) {
-            embed.description = `${embed.description.substr(0, 1997)}...`;
-        }
+        const embed = new MessageEmbed()
+            .setTitle(`**${targetLocal[0][0]}**`)
+            .setColor('#FF9999')
+            .setDescription(Util.splitMessage(desc, { char: '\n' })[0])
+            .setTimestamp();
         embeds.push(embed);
     }
     return embeds;

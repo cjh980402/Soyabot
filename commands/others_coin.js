@@ -1,5 +1,5 @@
+const { MessageAttachment, MessageEmbed } = require('../util/discord.js-extend');
 const { cmd } = require('../admin/admin_function');
-const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
 const chartType = {
     '1일': 'd',
@@ -46,11 +46,12 @@ async function getCoinEmbed(searchRslt, type) {
     await cmd(`python3 ./util/make_coin_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice} ${changeType} '${changeString}' ${minPrice} ${maxPrice}`);
     // 파이썬 스크립트 실행
 
+    const image = new MessageAttachment(`./pictures/coin/${code}.png`);
     const coinEmbed = new MessageEmbed()
         .setTitle(`**${name} (${code}) ${type}**`)
         .setColor('#FF9999')
         .setURL(`https://upbit.com/exchange?code=CRIX.UPBIT.KRW-${code}&tab=chart`)
-        .setImage(`http://${client.botDomain}/image/coin/${code}.png?time=${Date.now()}`)
+        .setImage(`attachment://${code}.png`)
         .addField('**거래대금**', `${amount}원`, true);
 
     const binancePrice = await getCoinBinancePrice(code);
@@ -63,7 +64,7 @@ async function getCoinEmbed(searchRslt, type) {
             .addField('**김프**', ` ${kimPre.toLocaleString()}원 (${kimPrePercent.toFixed(2)}%)`, true);
     }
 
-    return coinEmbed;
+    return { embeds: [coinEmbed], files: [image] };
 }
 
 module.exports = {
@@ -89,7 +90,7 @@ module.exports = {
         if (!searchRslt) {
             return message.channel.send('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
         } else {
-            return message.channel.send({ embeds: [await getCoinEmbed(searchRslt, type)] });
+            return message.channel.send(await getCoinEmbed(searchRslt, type));
         }
     },
     commandData: {
@@ -123,7 +124,7 @@ module.exports = {
         if (!searchRslt) {
             return interaction.followUp('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
         } else {
-            return interaction.followUp({ embeds: [await getCoinEmbed(searchRslt, type)] });
+            return interaction.followUp(await getCoinEmbed(searchRslt, type));
         }
     }
 };

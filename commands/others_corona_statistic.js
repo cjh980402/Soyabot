@@ -1,82 +1,24 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require('../util/discord.js-extend');
-const renderChart = require('../util/chartjs_rendering');
+const { MessageAttachment, MessageActionRow, MessageButton, MessageEmbed } = require('../util/discord.js-extend');
 const { CORONA_API_KEY } = require('../soyabot_config.json');
-const { writeFile } = require('fs').promises;
 const fetch = require('node-fetch');
 
 function calcIncrease(data) {
     return `${data >= 0 ? `⬆️ ${data.toLocaleString()}` : `⬇️ ${(-data).toLocaleString()}`}`;
 }
 
-function colorData(cityList) {
-    const colorList = ['rgb(216, 75, 75)', 'rgb(232, 115, 115)', 'rgb(238, 145, 145)', 'rgb(244, 200, 200)', 'rgb(227, 227, 227)'];
-    return cityList.map((v) => (v === '기타' ? 'rgb(227, 227, 227)' : colorList.shift()));
-}
-
 async function getCoronaEmbed(countData, countryData) {
-    const rateData = [
-        [countData.city1n, countData.city2n, countData.city3n, countData.city4n, countData.city5n],
-        [countData.city1p, countData.city2p, countData.city3p, countData.city4p, countData.city5p]
-    ];
     const updateDate = /\((.+)\)/.exec(countData.updateTime)[1];
-
-    const config = {
-        type: 'doughnut', // 도넛 모양 차트
-        data: {
-            labels: rateData[0],
-            datasets: [
-                {
-                    label: '지역별 비율',
-                    data: rateData[1],
-                    backgroundColor: colorData(rateData[0])
-                }
-            ]
-        },
-        options: {
-            plugins: {
-                datalabels: {
-                    // 데이터 값 표시
-                    formatter: (value, context) => `${context.chart.data.labels[context.dataIndex]}\n${value}%`,
-                    color: 'black',
-                    textAlign: 'center',
-                    display: true,
-                    font: { size: 22 }
-                },
-                doughnutlabel: {
-                    labels: [
-                        {
-                            text: '확진 환자 지역별 비율',
-                            font: {
-                                size: 25,
-                                weight: 'bold'
-                            }
-                        },
-                        {
-                            text: `(${updateDate})`,
-                            font: {
-                                size: 25,
-                                weight: 'bold'
-                            }
-                        }
-                    ]
-                }
-            },
-            legend: { display: false }
-        }
-    };
-
     const todayRecover = +countData.TodayRecovered;
     const todayCase = +countData.TotalCaseBefore;
     const todayDeath = +countData.TodayDeath;
     const todaySum = todayRecover + todayCase + todayDeath;
-    await writeFile('./pictures/chart/corona.png', await renderChart(config, 600, 600));
 
+    const thumbnail = new MessageAttachment('./pictures/hosting/mohw.png');
     const corona1 = new MessageEmbed()
         .setTitle(`**${updateDate}**`)
-        .setThumbnail(`http://${client.botDomain}/image/hosting/mohw.png`)
+        .setThumbnail('attachment://mohw.png')
         .setColor('#FF9999')
         .setURL('http://ncov.mohw.go.kr')
-        .setImage(`http://${client.botDomain}/image/chart/corona.png?time=${Date.now()}`)
         .addField('**확진 환자**', `${countData.TotalCase} (${calcIncrease(todaySum)})`)
         .addField('**격리 해제**', `${countData.TotalRecovered} (${calcIncrease(todayRecover)})`)
         .addField('**격리 중**', `${countData.NowCase} (${calcIncrease(todayCase)})`)
@@ -90,13 +32,13 @@ async function getCoronaEmbed(countData, countryData) {
         .map((v) => `${v.countryName}: ${v.totalCase} (국내: ⬆️ ${v.newCcase}, 해외: ⬆️ ${v.newFcase})`);
     const corona2 = new MessageEmbed()
         .setTitle('**지역별 확진 환자 현황**')
-        .setThumbnail(`http://${client.botDomain}/image/hosting/mohw.png`)
+        .setThumbnail('attachment://mohw.png')
         .setColor('#FF9999')
         .setURL('http://ncov.mohw.go.kr')
         .setDescription(`${rslt.shift()}\n\n${rslt.join('\n')}`)
         .setTimestamp();
 
-    return [corona1, corona2];
+    return { embeds: [corona1, corona2], files: [thumbnail] };
 }
 
 module.exports = {
@@ -110,13 +52,18 @@ module.exports = {
 
         if (countData.resultCode === '0' && countryData.resultCode === '0') {
             let currentPage = 0;
-            const embeds = await getCoronaEmbed(countData, countryData);
+            const { embeds, files } = await getCoronaEmbed(countData, countryData);
             const row = new MessageActionRow().addComponents(
                 new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
             );
-            const coronaEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
+            const coronaEmbed = await message.channel.send({
+                content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                embeds: [embeds[currentPage]],
+                files,
+                components: [row]
+            });
 
             const filter = (itr) => message.author.id === itr.user.id;
             const collector = coronaEmbed.createMessageComponentCollector({ filter, time: 60000 });
@@ -152,13 +99,18 @@ module.exports = {
 
         if (countData.resultCode === '0' && countryData.resultCode === '0') {
             let currentPage = 0;
-            const embeds = await getCoronaEmbed(countData, countryData);
+            const { embeds, files } = await getCoronaEmbed(countData, countryData);
             const row = new MessageActionRow().addComponents(
                 new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
             );
-            const coronaEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
+            const coronaEmbed = await interaction.editReply({
+                content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                embeds: [embeds[currentPage]],
+                files,
+                components: [row]
+            });
 
             const filter = (itr) => interaction.user.id === itr.user.id;
             const collector = coronaEmbed.createMessageComponentCollector({ filter, time: 60000 });

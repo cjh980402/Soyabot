@@ -1,9 +1,9 @@
-const { MessageEmbed } = require('../util/discord.js-extend');
+const { MessageEmbed, Util } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
 const { load } = require('cheerio');
 
 async function getLyricsEmbed(search) {
-    const lyricsEmbed = new MessageEmbed().setColor('#FF9999').setTimestamp();
+    const lyricsEmbed = new MessageEmbed().setColor('#FF9999');
     const songData = load(await (await fetch(`https://www.melon.com/search/song/index.htm?q=${encodeURIComponent(search)}`)).text())('input[name="input_check"]'); // length가 검색 결과 수
     const lyricData = load(await (await fetch(`https://www.melon.com/search/lyric/index.htm?q=${encodeURIComponent(search)}`)).text())('.list_lyric .cntt_lyric .btn.btn_icon_detail'); // length가 검색 결과 수
     const songId = songData.eq(0).attr('value') ?? lyricData.eq(0).attr('data-song-no');
@@ -20,13 +20,9 @@ async function getLyricsEmbed(search) {
             .map((v) => (v.type === 'text' ? v.data : '\n'))
             .join('')
             .trim(); // 멜론 사이트 소스 오타 대응
-        lyricsEmbed.setTitle(`**"${title} - ${artist}"의 가사**`).setDescription(lyrics || `${is19 ? '연령 제한이 있는' : '등록된 가사가 없는'} 콘텐츠입니다.`);
+        lyricsEmbed.setTitle(`**"${title} - ${artist}"의 가사**`).setDescription(Util.splitMessage(lyrics || `${is19 ? '연령 제한이 있는' : '등록된 가사가 없는'} 콘텐츠입니다.`, { char: '\n' })[0]);
     } else {
         lyricsEmbed.setTitle(`**"${search}"의 가사**`).setDescription('검색된 노래가 없습니다.');
-    }
-
-    if (lyricsEmbed.description.length > 2000) {
-        lyricsEmbed.description = `${lyricsEmbed.description.substr(0, 1997)}...`;
     }
 
     return lyricsEmbed;

@@ -1,5 +1,5 @@
+const { MessageAttachment, MessageEmbed } = require('../util/discord.js-extend');
 const { OPEN_API_KEY } = require('../soyabot_config.json');
-const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
 const { load } = require('cheerio');
 
@@ -30,9 +30,10 @@ module.exports = {
         const $ = load(await (await fetch(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?${params}`)).text(), { xmlMode: true });
 
         if ($('resultCode').text() === '00') {
+            const thumbnail = new MessageAttachment('./pictures/hosting/mohw.png');
             const coronaEmbed = new MessageEmbed()
                 .setTitle(`**${new Date($('createDt').eq(0).text()).toLocaleDateString()} 00시 기준**`)
-                .setThumbnail(`http://${client.botDomain}/image/hosting/mohw.png`)
+                .setThumbnail('attachment://mohw.png')
                 .setColor('#FF9999')
                 .setURL('http://ncov.mohw.go.kr')
                 .addField('**확진 환자**', calcIncrease($, 'decideCnt'))
@@ -41,7 +42,7 @@ module.exports = {
                 .addField('**사망자**', calcIncrease($, 'deathCnt'))
                 .addField('**검사 중**', calcIncrease($, 'examCnt'));
 
-            return message.channel.send({ embeds: [coronaEmbed] });
+            return message.channel.send({ embeds: [coronaEmbed], files: [thumbnail] });
         } else {
             return message.channel.send('코로나 현황을 조회할 수 없습니다.');
         }
@@ -62,9 +63,10 @@ module.exports = {
         const $ = load(await (await fetch(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?${params}`)).text(), { xmlMode: true });
 
         if ($('resultCode').text() === '00') {
+            const thumbnail = new MessageAttachment('./pictures/hosting/mohw.png');
             const coronaEmbed = new MessageEmbed()
                 .setTitle(`**${new Date($('createDt').eq(0).text()).toLocaleDateString()} 00시 기준**`)
-                .setThumbnail(`http://${client.botDomain}/image/hosting/mohw.png`)
+                .setThumbnail('attachment://mohw.png')
                 .setColor('#FF9999')
                 .setURL('http://ncov.mohw.go.kr')
                 .addField('**확진 환자**', calcIncrease($, 'decideCnt'))
@@ -73,7 +75,7 @@ module.exports = {
                 .addField('**사망자**', calcIncrease($, 'deathCnt'))
                 .addField('**검사 중**', calcIncrease($, 'examCnt'));
 
-            return interaction.followUp({ embeds: [coronaEmbed] });
+            return interaction.followUp({ embeds: [coronaEmbed], files: [thumbnail] });
         } else {
             return interaction.followUp('코로나 현황을 조회할 수 없습니다.');
         }

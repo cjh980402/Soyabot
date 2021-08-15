@@ -1,4 +1,4 @@
-const { MessageEmbed, Permissions } = require('../util/discord.js-extend');
+const { MessageEmbed, Permissions, Util } = require('../util/discord.js-extend');
 const { QueueElement } = require('../util/music_play');
 const { isValidPlaylist, isValidVideo, getPlaylistInfo } = require('../util/song_util');
 const { replyAdmin } = require('../admin/bot_control');
@@ -49,14 +49,10 @@ module.exports = {
 
         const playlistEmbed = new MessageEmbed()
             .setTitle(`**${videos.title.decodeHTML()}**`)
-            .setDescription(videos.map((song, index) => `${index + 1}. ${song.title}`).join('\n'))
+            .setDescription(Util.splitMessage(videos.map((song, index) => `${index + 1}. ${song.title}`).join('\n'), { char: '\n' })[0])
             .setURL(videos.url)
             .setColor('#FF9999')
             .setTimestamp();
-
-        if (playlistEmbed.description.length > 2000) {
-            playlistEmbed.description = `${playlistEmbed.description.substr(0, 1997)}...`;
-        }
 
         if (serverQueue) {
             serverQueue.textChannel = message.channel;
@@ -127,14 +123,10 @@ module.exports = {
 
         const playlistEmbed = new MessageEmbed()
             .setTitle(`**${videos.title.decodeHTML()}**`)
-            .setDescription(videos.map((song, index) => `${index + 1}. ${song.title}`).join('\n'))
+            .setDescription(Util.splitMessage(videos.map((song, index) => `${index + 1}. ${song.title}`).join('\n'), { char: '\n' })[0])
             .setURL(videos.url)
             .setColor('#FF9999')
             .setTimestamp();
-
-        if (playlistEmbed.description.length > 2000) {
-            playlistEmbed.description = `${playlistEmbed.description.substr(0, 1997)}...`;
-        }
 
         if (serverQueue) {
             serverQueue.textChannel = interaction.channel;

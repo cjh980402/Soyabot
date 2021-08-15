@@ -1,5 +1,5 @@
+const { MessageAttachment, MessageEmbed } = require('../util/discord.js-extend');
 const renderChart = require('../util/chartjs_rendering');
-const { MessageEmbed } = require('../util/discord.js-extend');
 const fetch = require('node-fetch');
 const { writeFile } = require('fs').promises;
 const serverList = {
@@ -102,13 +102,16 @@ async function getMesoEmbed(server) {
 
     await writeFile(`./pictures/chart/meso_${serverList[server]}.png`, await renderChart(config, 1200, 975));
 
-    return new MessageEmbed()
+    const image = new MessageAttachment(`./pictures/chart/meso_${serverList[server]}.png`);
+    const mesoEmbed = new MessageEmbed()
         .setTitle(`**${server} 서버 메소 시세**`)
         .setURL('https://talk.gamemarket.kr/maple/graph')
         .setColor('#FF9999')
-        .setImage(`http://${client.botDomain}/image/chart/meso_${serverList[server]}.png?time=${Date.now()}`)
+        .setImage(`attachment://meso_${serverList[server]}.png`)
         .addField('**메소마켓**', `${market[market.length - 1][serverList[server]]}메포`)
         .addField('**무통거래**', `${direct[direct.length - 1][serverList[server]]}원`);
+
+    return { embeds: [mesoEmbed], files: [image] };
 }
 
 module.exports = {
@@ -121,7 +124,7 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        return message.channel.send({ embeds: [await getMesoEmbed(args[0])] });
+        return message.channel.send(await getMesoEmbed(args[0]));
     },
     commandData: {
         name: '메소',
@@ -137,6 +140,6 @@ module.exports = {
         ]
     },
     async commandExecute(interaction) {
-        return interaction.followUp({ embeds: [await getMesoEmbed(interaction.options.getString('서버'))] });
+        return interaction.followUp(await getMesoEmbed(interaction.options.getString('서버')));
     }
 };
