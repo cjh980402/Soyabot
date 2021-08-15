@@ -1,5 +1,5 @@
 const { MessageActionRow, MessageButton, MessageEmbed } = require('./discord.js-extend');
-const { AudioPlayerStatus, createAudioPlayer } = require('@discordjs/voice');
+const { AudioPlayerStatus, createAudioPlayer, VoiceConnectionStatus } = require('@discordjs/voice');
 const { songDownload } = require('./song_util');
 const { replyAdmin } = require('../admin/bot_control');
 const { DEFAULT_VOLUME } = require('../soyabot_config.json');
@@ -20,14 +20,14 @@ module.exports.QueueElement = class {
         this.subscription = connection.subscribe(createAudioPlayer());
         this.songs = songs;
 
+        this.subscription.connection.removeAllListeners(VoiceConnectionStatus.Destroyed);
+        this.subscription.connection.removeAllListeners(VoiceConnectionStatus.Disconnected);
         this.subscription.connection.removeAllListeners('error');
-        this.subscription.connection.removeAllListeners('destroyed');
-        this.subscription.connection.removeAllListeners('disconnected');
 
         this.subscription.connection
-            .once('error', () => this.clearStop())
-            .once('destroyed', () => this.clearStop())
-            .once('disconnected', () => this.clearStop());
+            .once(VoiceConnectionStatus.Destroyed, () => this.clearStop())
+            .once(VoiceConnectionStatus.Disconnected, () => this.clearStop())
+            .once('error', () => this.clearStop());
 
         this.subscription.player
             .on(AudioPlayerStatus.Idle, async () => {
