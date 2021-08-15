@@ -192,8 +192,8 @@ async function getStockEmbed(search, searchRslt, type) {
         }
     }
 
-    const image = new MessageAttachment(`./pictures/stock/${encodeURIComponent(code)}.png`);
-    stockEmbed.setImage(`attachment://${encodeURIComponent(code)}.png`);
+    const image = new MessageAttachment(`./pictures/stock/${code}.png`);
+    stockEmbed.setImage(`attachment://${code.replace(/ /g, '_')}.png`);
 
     return { embeds: [stockEmbed], files: [image] };
 }
