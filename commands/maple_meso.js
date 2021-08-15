@@ -1,7 +1,6 @@
 const { MessageAttachment, MessageEmbed } = require('../util/discord.js-extend');
 const renderChart = require('../util/chartjs_rendering');
 const fetch = require('node-fetch');
-const { writeFile } = require('fs').promises;
 const serverList = {
     스카니아: 'server1',
     베라: 'server2',
