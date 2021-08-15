@@ -34,7 +34,7 @@ def stock_info(img: Image):
         drawer.text((20, 80), msg, (120, 120, 120), font)
     elif changeAmount < 0:  # 하락
         drawer.text((638 - w, 60), msg, (100, 100, 255), font)
-        msg = f'▼{changeAmount:,}{sys.argv[4]}│{sys.argv[7]}%'
+        msg = f'▼{-changeAmount:,}{sys.argv[4]}│{sys.argv[7]}%'
         font = ImageFont.truetype('./fonts/CookieRun Regular.ttf', 30)
         drawer.text((20, 80), msg, (100, 100, 255), font)
 
