@@ -43,10 +43,10 @@ async function getCoinEmbed(searchRslt, type) {
     const maxPrice = todayData.high_price.toLocaleString();
     const amount = todayData.acc_trade_price_24h.toLocaleUnitString('ko-KR', 2);
 
-    await cmd(`python3 ./util/make_coin_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice} ${changeType} '${changeString}' ${minPrice} ${maxPrice}`);
+    const { stdout: coinPic } = await cmd(`python3 ./util/make_coin_info.py ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice} ${changeType} '${changeString}' ${minPrice} ${maxPrice}`);
     // 파이썬 스크립트 실행
 
-    const image = new MessageAttachment(`./pictures/coin/${code}.png`);
+    const image = new MessageAttachment(Buffer.from(coinPic, 'base64'), `${code}.png`);
     const coinEmbed = new MessageEmbed()
         .setTitle(`**${name} (${code}) ${type}**`)
         .setColor('#FF9999')

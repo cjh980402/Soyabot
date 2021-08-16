@@ -1,3 +1,4 @@
+const { MessageAttachment } = require('../util/discord.js-extend');
 const { ADMIN_ID } = require('../soyabot_config.json');
 const { getMessageImage } = require('../util/soyabot_util');
 const { cmd } = require('../admin/admin_function');
@@ -12,8 +13,9 @@ module.exports = {
         if (!imageURL) {
             return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
         } else if (message.author.id === ADMIN_ID) {
-            await cmd(`python3 ./util/gl2face_portrait.py ${imageURL}`); // 파이썬 스크립트 실행
-            return message.channel.send({ files: ['./pictures/portrait.png'] });
+            const { stdout: portraitPic } = await cmd(`python3 ./util/gl2face_portrait.py ${imageURL}`); // 파이썬 스크립트 실행
+            const image = new MessageAttachment(Buffer.from(portraitPic, 'base64'), 'portrait.png');
+            return message.channel.send({ files: [image] });
         }
     }
 };

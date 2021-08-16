@@ -37,6 +37,7 @@ async function getStockEmbed(search, searchRslt, type) {
     const name = stockfind[1][0];
     const link = getRedirectURL(stockfind[3][0]); // 리다이렉트 로직 반영
     const identifer = stockfind[4][0];
+    let imageBuffer = null;
 
     const stockEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9999').setURL(`https://m.stock.naver.com${link}`);
     if (stockfind[2][0] === '국내지수') {
@@ -58,10 +59,11 @@ async function getStockEmbed(search, searchRslt, type) {
         const min_52weeks = data.totalInfos['52주 최저'];
         const max_52weeks = data.totalInfos['52주 최고'];
 
-        await cmd(
-            `python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
+        const { stdout: stockPic } = await cmd(
+            `python3 ./util/make_stock_info.py ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
         );
         // 파이썬 스크립트 실행
+        imageBuffer = Buffer.from(stockPic, 'base64');
 
         stockEmbed
             .addField('**거래량**', data.totalInfos['거래량'], true)
@@ -92,10 +94,11 @@ async function getStockEmbed(search, searchRslt, type) {
         const min_52weeks = data.stockItemTotalInfos['52주 최저'];
         const max_52weeks = data.stockItemTotalInfos['52주 최고'];
 
-        await cmd(
-            `python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
+        const { stdout: stockPic } = await cmd(
+            `python3 ./util/make_stock_info.py ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
         );
         // 파이썬 스크립트 실행
+        imageBuffer = Buffer.from(stockPic, 'base64');
     } else if (stockfind[3][0].startsWith('/item/main')) {
         // 국내 주식
         const data = await (await fetch(`https://m.stock.naver.com/api/stock/${identifer}/integration`)).json();
@@ -116,10 +119,11 @@ async function getStockEmbed(search, searchRslt, type) {
         const min_52weeks = data.totalInfos['52주 최저'];
         const max_52weeks = data.totalInfos['52주 최고'];
 
-        await cmd(
-            `python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
+        const { stdout: stockPic } = await cmd(
+            `python3 ./util/make_stock_info.py ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
         );
         // 파이썬 스크립트 실행
+        imageBuffer = Buffer.from(stockPic, 'base64');
 
         stockEmbed.addField('**거래량**', data.totalInfos['거래량'], true).addField('**거래대금**', `${data.totalInfos['대금']}원`, true);
         if (data.stockEndType === 'etf') {
@@ -159,12 +163,13 @@ async function getStockEmbed(search, searchRslt, type) {
         const min_52weeks = data.stockItemTotalInfos['52주 최저'];
         const max_52weeks = data.stockItemTotalInfos['52주 최고'];
 
-        await cmd(
-            `python3 ./util/make_stock_info.py '${code}' ${chartURL} '${name} (${code}) ${type}' ${
+        const { stdout: stockPic } = await cmd(
+            `python3 ./util/make_stock_info.py ${chartURL} '${name} (${code}) ${type}' ${
                 data.currencyType.name
             } ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`
         );
         // 파이썬 스크립트 실행
+        imageBuffer = Buffer.from(stockPic, 'base64');
 
         stockEmbed
             .addField('**거래량**', data.stockItemTotalInfos['거래량'], true)
@@ -192,7 +197,7 @@ async function getStockEmbed(search, searchRslt, type) {
         }
     }
 
-    const image = new MessageAttachment(`./pictures/stock/${code}.png`);
+    const image = new MessageAttachment(imageBuffer, `${code}.png`);
     stockEmbed.setImage(`attachment://${code.replace(/ /g, '_')}.png`);
 
     return { embeds: [stockEmbed], files: [image] };

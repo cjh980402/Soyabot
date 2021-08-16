@@ -4,14 +4,8 @@ db/
 log/
 node_modules/
 other_source/
-stock/
-coin/
-chart/
 
 # file
 *.log
 *.tflite
 soyabot_config.json
-pictures/dice_result.png
-pictures/collection.png
-pictures/profile.png

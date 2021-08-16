@@ -1,7 +1,7 @@
 const { createAudioResource, demuxProbe } = require('@discordjs/voice');
 const { Client, Util } = require('soundcloud-scraper');
 const scdl = new Client();
-const ytdl = require('youtube-dl-exec');
+const { raw: ytdl } = require('youtube-dl-exec');
 const { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } = require('../soyabot_config.json');
 const YouTubeAPI = require('simple-youtube-api');
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
@@ -136,7 +136,7 @@ module.exports.getPlaylistInfo = async function (url, search) {
 };
 
 module.exports.songDownload = async function (url) {
-    const ytdlProcess = ytdl.raw(
+    const ytdlProcess = ytdl(
         url,
         {
             o: '-',

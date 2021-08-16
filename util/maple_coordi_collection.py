@@ -1,4 +1,6 @@
 from PIL import Image, ImageFont, ImageDraw
+from io import BytesIO
+import base64
 import requests
 import math
 import sys
@@ -26,4 +28,6 @@ for i in range(count):  # 2+argv[1] ~ 1+2*argv[1]: 날짜
     drawer.text((180 * (i % 2) + 90 - w // 2, 160 + 180 *
                 (i // 2)), msg, (150, 150, 150), font)
 
-image.save('./pictures/collection.png')
+buffered = BytesIO()
+image.save(buffered, format='PNG')
+print(base64.b64encode(buffered.getvalue()).decode())

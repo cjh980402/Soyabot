@@ -30,7 +30,7 @@ module.exports = {
         const $ = load(await (await fetch(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?${params}`)).text(), { xmlMode: true });
 
         if ($('resultCode').text() === '00') {
-            const thumbnail = new MessageAttachment('./pictures/hosting/mohw.png');
+            const thumbnail = new MessageAttachment('./pictures/mohw.png');
             const coronaEmbed = new MessageEmbed()
                 .setTitle(`**${new Date($('createDt').eq(0).text()).toLocaleDateString()} 00시 기준**`)
                 .setThumbnail('attachment://mohw.png')
@@ -63,7 +63,7 @@ module.exports = {
         const $ = load(await (await fetch(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?${params}`)).text(), { xmlMode: true });
 
         if ($('resultCode').text() === '00') {
-            const thumbnail = new MessageAttachment('./pictures/hosting/mohw.png');
+            const thumbnail = new MessageAttachment('./pictures/mohw.png');
             const coronaEmbed = new MessageEmbed()
                 .setTitle(`**${new Date($('createDt').eq(0).text()).toLocaleDateString()} 00시 기준**`)
                 .setThumbnail('attachment://mohw.png')

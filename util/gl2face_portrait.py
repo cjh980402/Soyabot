@@ -1,4 +1,6 @@
 from PIL import Image
+from io import BytesIO
+import base64
 import requests
 import sys
 import numpy as np
@@ -40,9 +42,11 @@ output_data = interpreter.get_tensor(output_details[0]['index'])
 # print(np.min(output_data), np.max(output_data))
 
 out = 255 - np.squeeze(output_data) * 255
+buffered = BytesIO()
 if w >= h:  # 그레이 스케일로 변환 후 원래 비율로 크롭
     Image.fromarray(out).convert('L').crop(
-        (0, 256 * (w - h) // w, 512, 256 * (w + h) // w)).save('./pictures/portrait.png')
+        (0, 256 * (w - h) // w, 512, 256 * (w + h) // w)).save(buffered, format='PNG')
 else:
     Image.fromarray(out).convert('L').crop(
-        (256 * (h - w) // h, 0, 256 * (w + h) // h, 512)).save('./pictures/portrait.png')
+        (256 * (h - w) // h, 0, 256 * (w + h) // h, 512)).save(buffered, format='PNG')
+print(base64.b64encode(buffered.getvalue()).decode())

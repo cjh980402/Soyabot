@@ -1,5 +1,7 @@
 from PIL import Image, ImageFont, ImageDraw
 from random import randrange
+from io import BytesIO
+import base64
 import sys
 
 
@@ -21,5 +23,7 @@ def draw_stats(img: Image, name: str):
     return img
 
 
+buffered = BytesIO()
 draw_stats(Image.open('./pictures/character_dice.png'),
-           sys.argv[1]).save('./pictures/dice_result.png')
+           sys.argv[1]).save(buffered, format='PNG')
+print(base64.b64encode(buffered.getvalue()).decode())

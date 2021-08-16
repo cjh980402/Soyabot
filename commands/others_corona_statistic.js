@@ -13,7 +13,7 @@ async function getCoronaEmbed(countData, countryData) {
     const todayDeath = +countData.TodayDeath;
     const todaySum = todayRecover + todayCase + todayDeath;
 
-    const thumbnail = new MessageAttachment('./pictures/hosting/mohw.png');
+    const thumbnail = new MessageAttachment('./pictures/mohw.png');
     const corona1 = new MessageEmbed()
         .setTitle(`**${updateDate}**`)
         .setThumbnail('attachment://mohw.png')

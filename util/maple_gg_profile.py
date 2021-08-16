@@ -1,4 +1,6 @@
 from PIL import Image, ImageFont, ImageDraw
+from io import BytesIO
+import base64
 import requests
 import sys
 
@@ -116,4 +118,6 @@ font = ImageFont.truetype('./fonts/CookieRun Regular.ttf', 35)
 w, h = drawer.textsize(msg, font)
 drawer.text((820 - w // 2, 1358 - h // 2), msg, (201, 170, 127), font)
 
-image.save('./pictures/profile.png')
+buffered = BytesIO()
+image.save(buffered, format='PNG')
+print(base64.b64encode(buffered.getvalue()).decode())
