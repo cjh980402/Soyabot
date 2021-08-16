@@ -1,6 +1,5 @@
 from PIL import Image, ImageFont, ImageDraw
 from io import BytesIO
-import base64
 import requests
 import sys
 
@@ -42,5 +41,5 @@ def coin_info(img: Image):
 buffered = BytesIO()
 coin_info(Image.open(requests.get(sys.argv[1], stream=True).raw)).save(
     buffered, format='PNG')
-print(base64.b64encode(buffered.getvalue()).decode())
-# argv[1]은 차트 이미지 주소, 병합한 이미지 base64로 출력하기
+sys.stdout.buffer.write(buffered.getvalue())
+# argv[1]은 차트 이미지 주소, 병합한 이미지 버퍼로 출력하기

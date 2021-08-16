@@ -15,7 +15,7 @@ module.exports = {
             } else {
                 const sourceCode = message.content.replace(/\s*.+?\s*.+?\s+/, '').trim();
                 await writeFile(`./other_source/cpp_source.cpp`, sourceCode);
-                const compile = await cmd('g++ -o ./other_source/cpp_result.out ./other_source/cpp_source.cpp', true);
+                const compile = (await cmd('g++ -o ./other_source/cpp_result.out ./other_source/cpp_source.cpp', { eraseColor: true })).stdout;
                 if (compile) {
                     return message.channel.send(compile); // 컴파일 에러 출력
                 }

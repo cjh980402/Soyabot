@@ -27,7 +27,7 @@ module.exports = {
     async messageExecute(message) {
         let memory;
         if (process.platform === 'linux') {
-            const memorycmd = (await cmd('free', true)).split(/\s+/);
+            const memorycmd = (await cmd('free', { eraseColor: true })).stdout.split(/\s+/);
             memory = 100 - Math.round((memorycmd[13] / memorycmd[8]) * 100);
         } else {
             memory = 100 - Math.round((OS.freemem() / OS.totalmem()) * 100);
@@ -42,7 +42,7 @@ module.exports = {
     async commandExecute(interaction) {
         let memory;
         if (process.platform === 'linux') {
-            const memorycmd = (await cmd('free', true)).split(/\s+/);
+            const memorycmd = (await cmd('free', { eraseColor: true })).stdout.split(/\s+/);
             memory = 100 - Math.round((memorycmd[13] / memorycmd[8]) * 100);
         } else {
             memory = 100 - Math.round((OS.freemem() / OS.totalmem()) * 100);

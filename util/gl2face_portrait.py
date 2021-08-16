@@ -1,6 +1,5 @@
 from PIL import Image
 from io import BytesIO
-import base64
 import requests
 import sys
 import numpy as np
@@ -49,4 +48,4 @@ if w >= h:  # 그레이 스케일로 변환 후 원래 비율로 크롭
 else:
     Image.fromarray(out).convert('L').crop(
         (256 * (h - w) // h, 0, 256 * (w + h) // h, 512)).save(buffered, format='PNG')
-print(base64.b64encode(buffered.getvalue()).decode())
+sys.stdout.buffer.write(buffered.getvalue())

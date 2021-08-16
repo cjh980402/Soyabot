@@ -1,7 +1,7 @@
 const Discord = require('../util/discord.js-extend'); // 디버깅용
-const util = require('util');
-const cp = require('child_process');
-const exec = util.promisify(cp.exec);
+const { promisify } = require('util');
+const { exec: _exec } = require('child_process');
+const exec = promisify(_exec);
 const { ADMIN_ID } = require('../soyabot_config.json');
 const { botNotice, replyRoomID } = require('./bot_control.js');
 const { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, startTestPatch, stopTestPatch, startUrus, stopUrus } = require('./maple_auto_notice');
@@ -18,7 +18,7 @@ module.exports.adminChat = async function (message) {
         // eval의 내부가 async 함수의 리턴값이므로 await까지 해준다. js의 코드 스타일을 적용해서 출력한다.
     } else if (fullContent.startsWith(')')) {
         // 콘솔 명령 실행 후 출력
-        message.channel.sendSplitCode(await module.exports.cmd(fullContent.substr(1).trim(), true), { code: 'shell', split: { char: '' } });
+        message.channel.sendSplitCode((await module.exports.cmd(fullContent.substr(1).trim(), { eraseColor: true })).stdout, { code: 'shell', split: { char: '' } });
     } else if (room) {
         // 원하는 방에 봇으로 채팅 전송 (텍스트 채널 ID 이용)
         const rslt = await replyRoomID(room, fullContent.substr(room.length + 3));
@@ -36,15 +36,19 @@ module.exports.adminChat = async function (message) {
     }
 };
 
-module.exports.cmd = async function (command, returnRslt = false) {
-    if (returnRslt) {
+module.exports.cmd = async function (command, { eraseColor = false, ...options } = {}) {
+    const promiseResult = exec(command, options);
+    if (eraseColor) {
         try {
-            return (await exec(command)).stdout.replace(/\u001b\[.*?[@-~]|\n$/g, ''); // 제어 문자와 맨 끝 개행 제거
+            const result = await promiseResult;
+            result.stdout = result.stdout.replace(/\u001b\[.*?[@-~]|\n$/g, ''); // 제어 문자와 맨 끝 개행 제거
+            result.stderr = result.stderr.replace(/\u001b\[.*?[@-~]|\n$/g, '');
+            return result;
         } catch (e) {
-            return String(e).replace(/\n$/, '');
+            return { stdout: String(e).replace(/\n$/, ''), stderr: '' };
         }
     } else {
-        return exec(command);
+        return promiseResult;
     }
 };
 

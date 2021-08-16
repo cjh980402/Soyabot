@@ -1,6 +1,5 @@
 from PIL import Image, ImageFont, ImageDraw
 from io import BytesIO
-import base64
 import requests
 import math
 import sys
@@ -30,4 +29,4 @@ for i in range(count):  # 2+argv[1] ~ 1+2*argv[1]: 날짜
 
 buffered = BytesIO()
 image.save(buffered, format='PNG')
-print(base64.b64encode(buffered.getvalue()).decode())
+sys.stdout.buffer.write(buffered.getvalue())
