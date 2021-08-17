@@ -84,7 +84,7 @@ async function getMessageStatGraph(targetGuild, option) {
         }
     };
 
-    return { files: [new MessageAttachment(await renderChart(config, 2000, height), 'chart.png')] };
+    return new MessageAttachment(await renderChart(config, 2000, height), 'chart.png');
 }
 
 module.exports = {
@@ -100,7 +100,7 @@ module.exports = {
             return message.reply('사용이 불가능한 채널입니다.');
         }
 
-        return message.channel.send(await getMessageStatGraph(targetGuild, args[0]));
+        return message.channel.send({ files: [await getMessageStatGraph(targetGuild, args[0])] });
     },
     commandData: {
         name: '채팅지수그래프',
@@ -120,6 +120,6 @@ module.exports = {
             return interaction.followUp('사용이 불가능한 채널입니다.');
         }
 
-        return interaction.followUp(await getMessageStatGraph(targetGuild, option));
+        return interaction.followUp({ files: [await getMessageStatGraph(targetGuild, option)] });
     }
 };

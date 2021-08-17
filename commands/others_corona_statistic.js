@@ -13,7 +13,6 @@ async function getCoronaEmbed(countData, countryData) {
     const todayDeath = +countData.TodayDeath;
     const todaySum = todayRecover + todayCase + todayDeath;
 
-    const thumbnail = new MessageAttachment('./pictures/mohw.png');
     const corona1 = new MessageEmbed()
         .setTitle(`**${updateDate}**`)
         .setThumbnail('attachment://mohw.png')
@@ -38,7 +37,7 @@ async function getCoronaEmbed(countData, countryData) {
         .setDescription(`${rslt.shift()}\n\n${rslt.join('\n')}`)
         .setTimestamp();
 
-    return { embeds: [corona1, corona2], files: [thumbnail] };
+    return [corona1, corona2];
 }
 
 module.exports = {
@@ -52,7 +51,8 @@ module.exports = {
 
         if (countData.resultCode === '0' && countryData.resultCode === '0') {
             let currentPage = 0;
-            const { embeds, files } = await getCoronaEmbed(countData, countryData);
+            const thumbnail = new MessageAttachment('./pictures/mohw.png');
+            const embeds = await getCoronaEmbed(countData, countryData);
             const row = new MessageActionRow().addComponents(
                 new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
@@ -61,7 +61,7 @@ module.exports = {
             const coronaEmbed = await message.channel.send({
                 content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
                 embeds: [embeds[currentPage]],
-                files,
+                files: [thumbnail],
                 components: [row]
             });
 
@@ -99,7 +99,8 @@ module.exports = {
 
         if (countData.resultCode === '0' && countryData.resultCode === '0') {
             let currentPage = 0;
-            const { embeds, files } = await getCoronaEmbed(countData, countryData);
+            const thumbnail = new MessageAttachment('./pictures/mohw.png');
+            const embeds = await getCoronaEmbed(countData, countryData);
             const row = new MessageActionRow().addComponents(
                 new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
@@ -108,7 +109,7 @@ module.exports = {
             const coronaEmbed = await interaction.editReply({
                 content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
                 embeds: [embeds[currentPage]],
-                files,
+                files: [thumbnail],
                 components: [row]
             });
 
