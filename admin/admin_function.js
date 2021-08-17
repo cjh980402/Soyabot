@@ -18,7 +18,7 @@ module.exports.adminChat = async function (message) {
         // eval의 내부가 async 함수의 리턴값이므로 await까지 해준다. js의 코드 스타일을 적용해서 출력한다.
     } else if (fullContent.startsWith(')')) {
         // 콘솔 명령 실행 후 출력
-        message.channel.sendSplitCode((await module.exports.cmd(fullContent.substr(1).trim(), { eraseColor: true })).stdout, { code: 'shell', split: { char: '' } });
+        message.channel.sendSplitCode((await module.exports.cmd(fullContent.substr(1).trim(), { removeEscape: true })).stdout, { code: 'shell', split: { char: '' } });
     } else if (room) {
         // 원하는 방에 봇으로 채팅 전송 (텍스트 채널 ID 이용)
         const rslt = await replyRoomID(room, fullContent.substr(room.length + 3));
@@ -36,12 +36,13 @@ module.exports.adminChat = async function (message) {
     }
 };
 
-module.exports.cmd = async function (command, { eraseColor = false, ...options } = {}) {
+module.exports.cmd = async function (command, { removeEscape = false, ...options } = {}) {
     const promiseResult = exec(command, options);
-    if (eraseColor) {
+    if (removeEscape) {
+        // 제어 문자와 맨 끝 개행 제거
         try {
             const result = await promiseResult;
-            result.stdout = result.stdout.replace(/\u001b\[.*?[@-~]|\n$/g, ''); // 제어 문자와 맨 끝 개행 제거
+            result.stdout = result.stdout.replace(/\u001b\[.*?[@-~]|\n$/g, '');
             result.stderr = result.stderr.replace(/\u001b\[.*?[@-~]|\n$/g, '');
             return result;
         } catch (e) {
