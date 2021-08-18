@@ -1,5 +1,42 @@
-const { bossData } = require('../util/soyabot_const.json');
 const { MessageEmbed } = require('../util/discord.js-extend');
+const { bossData } = require('../util/soyabot_const.json');
+const fetch = require('node-fetch');
+const bossNameList = {
+    세렌: '선택받은 세렌',
+    검은마법사: '검은 마법사',
+    가디언엔젤슬라임: '가디언 엔젤 슬라임',
+    블러디퀸: '블러디 퀸'
+};
+const difficultyList = {
+    하드: 'hard',
+    카오스: 'chaos',
+    노말: 'normal',
+    이지: 'easy'
+};
+
+async function getBossEmbed(bossName, bossGrade) {
+    const targetBoss = bossData[bossName][bossGrade];
+
+    try {
+        const params = new URLSearchParams();
+        params.append('boss', bossNameList[bossName] ?? bossName);
+        params.append('difficulty', difficultyList[bossGrade]);
+        const data = await (
+            await fetch('http://wachan.me/boss_api.php', {
+                method: 'POST',
+                body: params
+            })
+        ).json();
+        targetBoss[0][0] = `결정석 메소: ${data.result.meso.replace(/%20/g, ' ').replace(/%2B/g, '+')}`;
+    } catch {
+        targetBoss[0][0] += ' (패치 전)';
+    }
+
+    return new MessageEmbed()
+        .setTitle(`**${bossName}(${bossGrade})의 보상 / 정보**`)
+        .setColor('#FF9999')
+        .setDescription(`**보상**\n${targetBoss[0].join('\n\n')}\n\n**정보**\n${targetBoss[1].join('\n\n')}`);
+}
 
 module.exports = {
     usage: `${client.prefix}보스 (보스 이름) (보스 난이도)`,
@@ -16,12 +53,7 @@ module.exports = {
         }
         const bossGrade = !bossData[bossName][args[1]] ? Object.keys(bossData[bossName])[0] : args[1];
 
-        const bossEmbed = new MessageEmbed()
-            .setTitle(`**${bossName}(${bossGrade})의 보상 / 정보**`)
-            .setColor('#FF9999')
-            .setDescription(`**보상**\n${bossData[bossName][bossGrade][0].join('\n\n')}\n\n**정보**\n${bossData[bossName][bossGrade][1].join('\n\n')}`);
-
-        return message.channel.send({ embeds: [bossEmbed] });
+        return message.channel.send({ embeds: [await getBossEmbed(bossName, bossGrade)] });
     },
     commandData: {
         name: '보스',
@@ -50,11 +82,6 @@ module.exports = {
         }
         const bossGrade = !bossData[bossName][args[1]] ? Object.keys(bossData[bossName])[0] : args[1];
 
-        const bossEmbed = new MessageEmbed()
-            .setTitle(`**${bossName}(${bossGrade})의 보상 / 정보**`)
-            .setColor('#FF9999')
-            .setDescription(`**보상**\n${bossData[bossName][bossGrade][0].join('\n\n')}\n\n**정보**\n${bossData[bossName][bossGrade][1].join('\n\n')}`);
-
-        return interaction.followUp({ embeds: [bossEmbed] });
+        return interaction.followUp({ embeds: [await getBossEmbed(bossName, bossGrade)] });
     }
 };
