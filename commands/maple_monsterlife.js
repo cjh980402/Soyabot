@@ -241,15 +241,15 @@ module.exports = {
         ]
     },
     async commandExecute(interaction) {
-        const subcommnd = interaction.options.getSubcommand();
+        const subcommand = interaction.options.getSubcommand();
 
-        if (subcommnd === '목록') {
+        if (subcommand === '목록') {
             return interaction.sendSplitCode(await farm_read(interaction.options.getString('몬스터_이름')), { split: { char: '\n' } });
-        } else if (subcommnd === '조합식') {
+        } else if (subcommand === '조합식') {
             return interaction.followUp(await farm_sex(interaction.options.getString('몬스터_이름')));
-        } else if (subcommnd === '정보') {
+        } else if (subcommand === '정보') {
             return interaction.sendSplitCode(await farm_info(interaction.options.getString('농장_이름')), { split: { char: '\n' } });
-        } else if (subcommnd === '추가') {
+        } else if (subcommand === '추가') {
             return interaction.followUp(await farm_add(interaction.options.getString('끝나는_날짜'), interaction.options.getString('농장_이름'), interaction.options.getString('몬스터_이름')));
         }
     }

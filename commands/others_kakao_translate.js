@@ -106,15 +106,15 @@ module.exports = {
         ]
     },
     async commandExecute(interaction) {
-        const subcommnd = interaction.options.getSubcommand();
+        const subcommand = interaction.options.getSubcommand();
 
-        if (subcommnd === '언어목록') {
+        if (subcommand === '언어목록') {
             return interaction.followUp(
                 `<지원하는 언어 종류>\n${Object.values(langList)
                     .map((v) => v[0])
                     .join(', ')}`
             );
-        } else if (subcommnd === '언어번역') {
+        } else if (subcommand === '언어번역') {
             const translang = interaction.options.getString('대상언어_결과언어');
             const langCode = findLangCode(translang[0], translang[1]);
             if (!langCode) {
