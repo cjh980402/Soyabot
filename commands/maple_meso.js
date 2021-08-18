@@ -17,21 +17,21 @@ const serverList = {
 };
 
 async function getMesoEmbed(server) {
-    const response = await fetch('https://commapi.gamemarket.kr/comm/graph', {
-        method: 'POST',
-        headers: {
-            'Host': 'commapi.gamemarket.kr',
-            'Connection': 'keep-alive',
-            'Content-Length': 0,
-            'Accept': 'application/json',
-            'Origin': 'https://talk.gamemarket.kr',
-            'Referer': 'https://talk.gamemarket.kr/',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Accept-Language': 'ko,en;q=0.9,en-US;q=0.8'
-        }
-    });
-
-    const data = await response.json();
+    const data = await (
+        await fetch('https://commapi.gamemarket.kr/comm/graph', {
+            method: 'POST',
+            headers: {
+                'Host': 'commapi.gamemarket.kr',
+                'Connection': 'keep-alive',
+                'Content-Length': 0,
+                'Accept': 'application/json',
+                'Origin': 'https://talk.gamemarket.kr',
+                'Referer': 'https://talk.gamemarket.kr/',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept-Language': 'ko,en;q=0.9,en-US;q=0.8'
+            }
+        })
+    ).json();
     const market = data.dbo;
     const direct = data.dbo2;
     // 각각 배열, 길이는 15, 앞에서부터 과거 날짜

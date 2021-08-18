@@ -12,24 +12,19 @@ async function getBossMesoEmbed(type) {
     const params = new URLSearchParams();
     params.append('date', 10);
     params.append('type', typeList[type]);
-    const response = await fetch('http://wachan.me/boss_api2.php', {
-        method: 'POST',
-        body: params
-    });
-    const data = await response.json();
-    const parsedData = [];
-    for (let i = 0; i < data[0].length; i++) {
-        parsedData.push([]);
-        for (let j = 0; j < data.length; j++) {
-            parsedData[i].push(data[j][i]);
-        }
-    }
+    const data = await (
+        await fetch('http://wachan.me/boss_api2.php', {
+            method: 'POST',
+            body: params
+        })
+    ).json();
+    const parsedData = data[0].map((_, i) => data.map((_, j) => data[j][i]));
 
     const config = {
         type: 'line',
         data: {
-            labels: parsedData[0].slice(1),
-            datasets: parsedData.slice(1).map((v) => {
+            labels: parsedData.shift().slice(1),
+            datasets: parsedData.map((v) => {
                 const color = v[0].hashCode() & 0xffffff;
                 let r = (color >> 16) & 0xff;
                 let g = (color >> 8) & 0xff;

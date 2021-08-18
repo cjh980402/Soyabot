@@ -27,14 +27,15 @@ async function tran(source, target, text) {
     params.append('src_lang', source);
     params.append('target_lang', target);
     params.append('query', text);
-    const response = await fetch('https://dapi.kakao.com/v2/translation/translate', {
-        method: 'POST',
-        headers: {
-            Authorization: `KakaoAK ${KAKAO_API_KEY}`
-        },
-        body: params
-    });
-    const data = await response.json(); // 번역 성공 시 translated_text에 문단(문장의 배열)의 배열이 들어옴
+    const data = await (
+        await fetch('https://dapi.kakao.com/v2/translation/translate', {
+            method: 'POST',
+            headers: {
+                Authorization: `KakaoAK ${KAKAO_API_KEY}`
+            },
+            body: params
+        })
+    ).json(); // 번역 성공 시 translated_text에 문단(문장의 배열)의 배열이 들어옴
     return data.translated_text?.map((v) => v.join(' ')).join('\n') || '번역에 실패하였습니다.'; // 빈 문자열 대응
 }
 

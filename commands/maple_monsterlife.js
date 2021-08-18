@@ -4,11 +4,12 @@ async function farm_monster(monster) {
     // 몬스터 이름
     const params = new URLSearchParams();
     params.append('monster', monster);
-    const response = await fetch('http://wachan.me/farm_monster.php', {
-        method: 'POST',
-        body: params
-    });
-    return response.text(); // 결과값이 "false"면 DB에 없는 몬스터
+    return (
+        await fetch('http://wachan.me/farm_monster.php', {
+            method: 'POST',
+            body: params
+        })
+    ).text(); // 결과값이 "false"면 DB에 없는 몬스터
 }
 
 async function farm_sex(monster) {
@@ -19,11 +20,12 @@ async function farm_sex(monster) {
     }
     const params = new URLSearchParams();
     params.append('monster', monster);
-    const response = await fetch('http://wachan.me/farm_sex.php', {
-        method: 'POST',
-        body: params
-    });
-    const data = await response.json();
+    const data = await (
+        await fetch('http://wachan.me/farm_sex.php', {
+            method: 'POST',
+            body: params
+        })
+    ).json();
     if (data.error) {
         // 오류 발생
         return data.error;
@@ -74,11 +76,12 @@ async function farm_add(end_date, user, monster) {
     params.append('monster', monster);
     params.append('user', user);
     params.append('end_date', end_date);
-    const response = await fetch('http://wachan.me/farm_info_adding.php', {
-        method: 'POST',
-        body: params
-    });
-    const data = await response.json();
+    const data = await (
+        await fetch('http://wachan.me/farm_info_adding.php', {
+            method: 'POST',
+            body: params
+        })
+    ).json();
     if (data.error !== false) {
         // 오류 발생
         return data.error;
@@ -95,11 +98,12 @@ async function farm_read(monster) {
     }
     const params = new URLSearchParams();
     params.append('monster', monster);
-    const response = await fetch('http://wachan.me/farm_read2.php', {
-        method: 'POST',
-        body: params
-    });
-    const data = await response.json();
+    const data = await (
+        await fetch('http://wachan.me/farm_read2.php', {
+            method: 'POST',
+            body: params
+        })
+    ).json();
     if (data.error !== false) {
         // 오류 발생
         return data.error;
@@ -121,11 +125,12 @@ async function farm_info(user) {
     }
     const params = new URLSearchParams();
     params.append('farm', user);
-    const response = await fetch('http://wachan.me/farm_read_from_name.php', {
-        method: 'POST',
-        body: params
-    });
-    const data = await response.json();
+    const data = await (
+        await fetch('http://wachan.me/farm_read_from_name.php', {
+            method: 'POST',
+            body: params
+        })
+    ).json();
     if (data.error !== false) {
         // 오류 발생
         return data.error;

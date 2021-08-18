@@ -4,15 +4,16 @@ const fetch = require('node-fetch');
 async function shortURL(url) {
     const params = new URLSearchParams();
     params.append('url', url);
-    const response = await fetch('https://openapi.naver.com/v1/util/shorturl', {
-        method: 'POST',
-        headers: {
-            'X-Naver-Client-Id': NAVER_CLIENT_ID,
-            'X-Naver-Client-Secret': NAVER_CLIENT_SECRET
-        },
-        body: params
-    });
-    const data = await response.json();
+    const data = await (
+        await fetch('https://openapi.naver.com/v1/util/shorturl', {
+            method: 'POST',
+            headers: {
+                'X-Naver-Client-Id': NAVER_CLIENT_ID,
+                'X-Naver-Client-Secret': NAVER_CLIENT_SECRET
+            },
+            body: params
+        })
+    ).json();
     if (data.message === 'ok') {
         return data.result.url;
     } else {

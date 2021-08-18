@@ -6,15 +6,16 @@ async function tran(source, target, text) {
     params.append('source', source);
     params.append('target', target);
     params.append('text', text);
-    const response = await fetch('https://openapi.naver.com/v1/papago/n2mt', {
-        method: 'POST',
-        headers: {
-            'X-Naver-Client-Id': NAVER_CLIENT_ID,
-            'X-Naver-Client-Secret': NAVER_CLIENT_SECRET
-        },
-        body: params
-    });
-    const data = await response.json();
+    const data = await (
+        await fetch('https://openapi.naver.com/v1/papago/n2mt', {
+            method: 'POST',
+            headers: {
+                'X-Naver-Client-Id': NAVER_CLIENT_ID,
+                'X-Naver-Client-Secret': NAVER_CLIENT_SECRET
+            },
+            body: params
+        })
+    ).json();
     return data.message?.result.translatedText ?? '번역에 실패하였습니다.';
 }
 

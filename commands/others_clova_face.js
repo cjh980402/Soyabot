@@ -7,15 +7,16 @@ async function requestCFR(url) {
     const form = new FormData();
     const buffer = await (await fetch(url)).buffer();
     form.append('image', buffer);
-    const response = await fetch('https://openapi.naver.com/v1/vision/face', {
-        method: 'POST',
-        headers: {
-            'X-Naver-Client-Id': NAVER_CLIENT_ID,
-            'X-Naver-Client-Secret': NAVER_CLIENT_SECRET
-        },
-        body: form
-    });
-    return response.json();
+    return (
+        await fetch('https://openapi.naver.com/v1/vision/face', {
+            method: 'POST',
+            headers: {
+                'X-Naver-Client-Id': NAVER_CLIENT_ID,
+                'X-Naver-Client-Secret': NAVER_CLIENT_SECRET
+            },
+            body: form
+        })
+    ).json();
 }
 
 async function clova_face(url) {
