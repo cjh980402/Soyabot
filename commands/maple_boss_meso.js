@@ -41,8 +41,8 @@ async function getBossMesoEmbed(type) {
                     b %= 0xc8;
                 }
                 return {
-                    label: v[0],
-                    data: v.slice(1),
+                    label: v.shift(),
+                    data: v,
                     lineTension: 0.4,
                     fill: false,
                     borderColor: `rgb(${r}, ${g}, ${b})`,
@@ -54,10 +54,7 @@ async function getBossMesoEmbed(type) {
         },
         options: {
             plugins: {
-                datalabels: {
-                    // 데이터 값 표시하지 않음
-                    display: false
-                }
+                datalabels: { display: false } // 데이터 값 표시하지 않음
             },
             scales: {
                 xAxes: [
@@ -90,7 +87,7 @@ async function getBossMesoEmbed(type) {
 module.exports = {
     usage: `${client.prefix}보스결정석 (보스 종류)`,
     command: ['보스결정석', 'ㅂㅅㄱㅈㅅ', 'ㅄㄱㅈㅅ'],
-    description: '- 보스 종류에 해당하는 보스들의 결정석 시세 변화를 보여줍니다.',
+    description: `- 보스 종류에 해당하는 보스들의 결정석 시세 변화를 보여줍니다.\n- (보스 종류): ${Object.keys(typeList).join(', ')} 입력가능`,
     type: ['메이플'],
     async messageExecute(message, args) {
         if (args.length !== 1 || !typeList[args[0]]) {
