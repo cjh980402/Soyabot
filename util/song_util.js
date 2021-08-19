@@ -164,9 +164,9 @@ module.exports.songDownload = async function (url) {
     try {
         const probe = await demuxProbe(stream);
         return createAudioResource(probe.stream, { inputType: probe.type, inlineVolume: true });
-    } catch (e) {
+    } catch (err) {
         onError();
-        throw e;
+        throw err;
     }
 };
 

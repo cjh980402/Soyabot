@@ -41,9 +41,9 @@ module.exports.QueueElement = class {
                 }
                 this.playSong();
             })
-            .on('error', (e) => {
+            .on('error', (err) => {
                 this.sendMessage('노래 재생을 실패했습니다.');
-                replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+                replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${err}\n${err.stack ?? err._p}`);
             });
     }
 
@@ -88,9 +88,9 @@ module.exports.QueueElement = class {
             this.playingMessage = await this.sendMessage({ embeds: [embed], components: [row1, row2] });
             this.subscription.player.play(await songDownload(this.songs[0].url));
             this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
-        } catch (e) {
+        } catch (err) {
             this.sendMessage('노래 재생에 실패했습니다.');
-            replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+            replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${err}\n${err.stack ?? err._p}`);
             this.songs.shift();
             return this.playSong();
         }
@@ -219,7 +219,7 @@ module.exports.musicActiveControl = function (oldState, newState) {
                 }
             }
         }
-    } catch (e) {
-        replyAdmin(`[oldState]\n${oldState._p}\n[newState]\n${newState._p}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
+    } catch (err) {
+        replyAdmin(`[oldState]\n${oldState._p}\n[newState]\n${newState._p}\n에러 내용: ${err}\n${err.stack ?? err._p}`);
     }
 };

@@ -16,11 +16,11 @@ module.exports = {
             try {
                 const resp = await deepai.callStandardApi('toonify', { image: imageURL });
                 message.channel.send({ files: [resp.output_url] });
-            } catch (e) {
-                if (e.response?.status === 400) {
+            } catch (err) {
+                if (err.response?.status === 400) {
                     message.channel.send('사진에서 적절한 대상 인물을 찾지 못했습니다.');
                 } else {
-                    throw e;
+                    throw err;
                 }
             }
         }

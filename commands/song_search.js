@@ -51,9 +51,9 @@ module.exports = {
             try {
                 await rslt.first().delete();
             } catch {}
-        } catch (e) {
-            if (!(e instanceof Collection)) {
-                throw e; // 시간초과 에러(Collection<Snowflake, Message>)가 아닌 경우 에러를 다시 throw
+        } catch (err) {
+            if (!(err instanceof Collection)) {
+                throw err; // 시간초과 에러(Collection<Snowflake, Message>)가 아닌 경우 에러를 다시 throw
             }
         } finally {
             try {
@@ -116,9 +116,9 @@ module.exports = {
             try {
                 await rslt.first().delete();
             } catch {}
-        } catch (e) {
-            if (!(e instanceof Collection)) {
-                throw e; // 시간초과 에러(Collection<Snowflake, Message>)가 아닌 경우 에러를 다시 throw
+        } catch (err) {
+            if (!(err instanceof Collection)) {
+                throw err; // 시간초과 에러(Collection<Snowflake, Message>)가 아닌 경우 에러를 다시 throw
             }
         } finally {
             try {

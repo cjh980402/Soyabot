@@ -26,8 +26,8 @@ module.exports = {
                 cppProcess.stdout.on('data', (data) => {
                     message.channel.sendSplitCode(String(data), { split: { char: '' } });
                 });
-                cppProcess.on('error', (e) => {
-                    message.channel.send(`Process throws an error (${e})`);
+                cppProcess.on('error', (err) => {
+                    message.channel.send(`Process throws an error (${err})`);
                     cppProcess = null;
                 });
                 cppProcess.on('exit', (code) => {

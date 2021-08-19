@@ -43,8 +43,8 @@ module.exports = {
         let videos = null;
         try {
             videos = await getPlaylistInfo(url, search);
-        } catch (e) {
-            return message.reply(e.message);
+        } catch (err) {
+            return message.reply(err.message);
         }
 
         const playlistEmbed = new MessageEmbed()
@@ -66,10 +66,10 @@ module.exports = {
             const newQueue = new QueueElement(message.channel, channel, await channel.join(), [...videos]);
             client.queues.set(message.guildId, newQueue);
             newQueue.playSong();
-        } catch (e) {
+        } catch (err) {
             client.queues.delete(message.guildId);
-            replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${message.content}\n에러 내용: ${e}\n${e.stack ?? e._p}`);
-            return message.channel.send(`채널에 참가할 수 없습니다: ${e.message ?? e}`);
+            replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${message.content}\n에러 내용: ${err}\n${err.stack ?? err._p}`);
+            return message.channel.send(`채널에 참가할 수 없습니다: ${err.message ?? err}`);
         }
     },
     commandData: {
@@ -117,8 +117,8 @@ module.exports = {
         let videos = null;
         try {
             videos = await getPlaylistInfo(url, search);
-        } catch (e) {
-            return interaction.followUp(e.message);
+        } catch (err) {
+            return interaction.followUp(err.message);
         }
 
         const playlistEmbed = new MessageEmbed()
@@ -140,12 +140,12 @@ module.exports = {
             const newQueue = new QueueElement(interaction.channel, channel, await channel.join(), [...videos]);
             client.queues.set(interaction.guildId, newQueue);
             newQueue.playSong();
-        } catch (e) {
+        } catch (err) {
             client.queues.delete(interaction.guildId);
             replyAdmin(
-                `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: /${interaction.commandName}\n${interaction.options._i()}\n에러 내용: ${e}\n${e.stack ?? e._p}`
+                `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: /${interaction.commandName}\n${interaction.options._i()}\n에러 내용: ${err}\n${err.stack ?? err._p}`
             );
-            return interaction.followUp(`채널에 참가할 수 없습니다: ${e.message ?? e}`);
+            return interaction.followUp(`채널에 참가할 수 없습니다: ${err.message ?? err}`);
         }
     }
 };

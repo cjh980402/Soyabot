@@ -45,8 +45,8 @@ module.exports.cmd = async function (command, { removeEscape = false, ...options
             result.stdout = result.stdout.replace(/\u001b\[.*?[@-~]|\n$/g, '');
             result.stderr = result.stderr.replace(/\u001b\[.*?[@-~]|\n$/g, '');
             return result;
-        } catch (e) {
-            return { stdout: String(e).replace(/\n$/, ''), stderr: '' };
+        } catch (err) {
+            return { stdout: String(err).replace(/\n$/, ''), stderr: '' };
         }
     } else {
         return promiseResult;
