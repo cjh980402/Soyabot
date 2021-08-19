@@ -94,16 +94,15 @@ module.exports = {
             {
                 name: '횟수',
                 type: 'STRING',
-                description: '루나크리스탈 시뮬레이션 횟수',
-                required: true
+                description: '루나크리스탈 시뮬레이션 횟수'
             }
         ]
     },
     async commandExecute(interaction) {
-        const args = interaction.options.data.map((v) => v.value);
+        const category = interaction.options.getString('카테고리');
+        const countString = interaction.options.getString('횟수');
 
-        const category = args[0];
-        if (args[1] === '확률' || args[1] === 'ㅎㄹ') {
+        if (countString === '확률' || countString === 'ㅎㄹ') {
             let rslt = `<루나크리스탈 ${category} 확률>`;
             for (const key in probTable[category]) {
                 rslt += `\n${key}: ${probTable[category][key] / 100}%`;
@@ -111,7 +110,7 @@ module.exports = {
             return interaction.followUp(rslt);
         }
 
-        const count = Math.trunc(args[1] ?? 1);
+        const count = Math.trunc(countString ?? 1);
         if (isNaN(count) || count < 1 || count > 20000) {
             return interaction.followUp('1 ~ 20000 범위의 숫자만 입력가능합니다.');
         }

@@ -51,11 +51,11 @@ module.exports = {
                         switch (itr.customId) {
                             case 'next':
                                 currentPage = (currentPage + 1) % embeds.length;
-                                eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                                await eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                                 break;
                             case 'prev':
                                 currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                                eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                                await eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                                 break;
                             case 'stop':
                                 collector.stop();
@@ -100,11 +100,11 @@ module.exports = {
                         switch (itr.customId) {
                             case 'next':
                                 currentPage = (currentPage + 1) % embeds.length;
-                                eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                                await eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                                 break;
                             case 'prev':
                                 currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                                eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                                await eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                                 break;
                             case 'stop':
                                 collector.stop();

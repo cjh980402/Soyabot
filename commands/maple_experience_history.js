@@ -51,9 +51,9 @@ module.exports = {
             return interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
         }
         if (!(await mapleUserInfo.isLatest())) {
-            interaction.editReply('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
+            await interaction.editReply('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
             if (!(await mapleUserInfo.updateGG())) {
-                interaction.editReply('제한시간 내에 갱신 작업을 실패하였습니다.');
+                await interaction.editReply('제한시간 내에 갱신 작업을 실패하였습니다.');
             }
         }
 

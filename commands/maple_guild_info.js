@@ -57,16 +57,17 @@ module.exports = {
         ]
     },
     async commandExecute(interaction) {
-        const args = interaction.options.data.map((v) => v.value);
+        const serverName = interaction.options.getString('서버_이름');
+        const guildName = interaction.options.getString('길드_이름');
 
-        const mapleGuildInfo = new MapleGuild(serverEngName[args[0]], args[1]);
+        const mapleGuildInfo = new MapleGuild(serverEngName[serverName], guildName);
         const isLatest = await mapleGuildInfo.isLatest();
         if (mapleGuildInfo.MemberCount === 0) {
             return interaction.followUp('존재하지 않는 길드입니다.');
         }
 
-        interaction.editReply('정보 가져오는 중...');
-        const rslt = `${args[0]} ${args[1]} 길드 (${mapleGuildInfo.MemberCount}명)\n길드원 목록 갱신 ${isLatest ? '성공' : '실패'}\n\n${(await mapleGuildInfo.memberDataList()).join('\n\n')}`;
+        await interaction.editReply('정보 가져오는 중...');
+        const rslt = `${serverName} ${guildName} 길드 (${mapleGuildInfo.MemberCount}명)\n길드원 목록 갱신 ${isLatest ? '성공' : '실패'}\n\n${(await mapleGuildInfo.memberDataList()).join('\n\n')}`;
 
         return interaction.sendSplitCode(rslt, { split: { char: '\n' } });
     }

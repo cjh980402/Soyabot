@@ -134,7 +134,7 @@ module.exports = {
             return interaction.followUp({ content: `✅ ${interaction.user}가 재생목록을 추가하였습니다.`, embeds: [playlistEmbed] });
         }
 
-        interaction.editReply({ content: `✅ ${interaction.user}가 재생목록을 시작했습니다.`, embeds: [playlistEmbed] });
+        await interaction.editReply({ content: `✅ ${interaction.user}가 재생목록을 시작했습니다.`, embeds: [playlistEmbed] });
 
         try {
             const newQueue = new QueueElement(interaction.channel, channel, await channel.join(), [...videos]);

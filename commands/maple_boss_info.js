@@ -69,19 +69,17 @@ module.exports = {
                 name: '보스_난이도',
                 type: 'STRING',
                 description: '보스 정보를 검색할 보스의 난이도',
-                choices: ['하드', '카오스', '노말', '이지'].map((v) => ({ name: v, value: v }))
+                choices: Object.keys(difficultyList).map((v) => ({ name: v, value: v }))
             }
         ]
     },
     async commandExecute(interaction) {
-        const args = interaction.options.data.map((v) => v.value);
-
-        const bossName = args[0];
+        const bossName = interaction.options.getString('보스_이름');
         if (!bossData[bossName]) {
             return interaction.followUp('데이터가 없는 보스입니다.');
         }
-        const bossGrade = !bossData[bossName][args[1]] ? Object.keys(bossData[bossName])[0] : args[1];
+        const bossGrade = interaction.options.getString('보스_난이도');
 
-        return interaction.followUp({ embeds: [await getBossEmbed(bossName, bossGrade)] });
+        return interaction.followUp({ embeds: [await getBossEmbed(bossName, bossData[bossName][bossGrade] ? bossGrade : Object.keys(bossData[bossName])[0])] });
     }
 };

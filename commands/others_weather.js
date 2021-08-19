@@ -100,11 +100,11 @@ module.exports = {
                 switch (itr.customId) {
                     case 'next':
                         currentPage = (currentPage + 1) % embeds.length;
-                        weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        await weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                         break;
                     case 'prev':
                         currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        await weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                         break;
                     case 'stop':
                         collector.stop();
@@ -138,7 +138,7 @@ module.exports = {
                 .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`).join('\n'))
                 .setColor('#FF9999')
                 .setTimestamp();
-            interaction.editReply({ embeds: [localListEmbed] });
+            await interaction.editReply({ embeds: [localListEmbed] });
 
             const rslt = await interaction.channel.awaitMessages({
                 filter: (msg) => msg.author.id === interaction.user.id && !isNaN(msg.content) && 1 <= +msg.content && +msg.content <= searchRslt.length,
@@ -166,11 +166,11 @@ module.exports = {
                 switch (itr.customId) {
                     case 'next':
                         currentPage = (currentPage + 1) % embeds.length;
-                        weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        await weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                         break;
                     case 'prev':
                         currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        await weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
                         break;
                     case 'stop':
                         collector.stop();

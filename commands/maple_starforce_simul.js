@@ -77,9 +77,16 @@ module.exports = {
         ]
     },
     async commandExecute(interaction) {
-        const args = interaction.options.data.map((v) => v.value);
-
         const result = new NormalItem();
-        return interaction.followUp(result.doingStarforce(args));
+        return interaction.followUp(
+            result.doingStarforce([
+                interaction.options.getInteger('아이템_레벨_제한'),
+                interaction.options.getInteger('시작_스타포스_개수'),
+                interaction.options.getInteger('목표_스타포스_개수'),
+                interaction.options.getInteger('스타캐치') ?? 1,
+                interaction.options.getInteger('할인_이벤트') ?? 0,
+                interaction.options.getInteger('파괴_방지') ?? 0
+            ])
+        );
     }
 };

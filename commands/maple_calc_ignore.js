@@ -55,8 +55,8 @@ module.exports = {
         ]
     },
     async commandExecute(interaction) {
-        const igList = interaction.options.data.map((v) => v.value);
-        const monster = igList.shift();
+        const monster = interaction.options.getNumber('몬스터의_방어율');
+        const igList = [interaction.options.getNumber('현재_방무'), interaction.options.getNumber('추가_방무1') ?? 0, interaction.options.getNumber('추가_방무2') ?? 0];
         if (monster < 0) {
             return interaction.followUp('입력한 값이 잘못되었습니다.');
         }

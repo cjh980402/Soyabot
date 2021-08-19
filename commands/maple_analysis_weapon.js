@@ -77,7 +77,11 @@ module.exports = {
         ]
     },
     async commandExecute(interaction) {
-        const args = interaction.options.data.map((v) => v.value);
+        let sum = interaction.options.getInteger('총_공격력');
+        const base = interaction.options.getInteger('기본공');
+        const level = interaction.options.getInteger('레벨_제한');
+        const star = interaction.options.getInteger('강화_단계');
+        const addoption = interaction.options.getInteger('추가_옵션') ?? 0;
 
         const starforce = {
             130: [6, 7, 7, 8, 9],
@@ -86,22 +90,20 @@ module.exports = {
             160: [9, 9, 10, 11, 12, 13, 14, 32, 33, 34],
             200: [13, 13, 14, 14, 15, 16, 17, 34, 35, 36]
         };
-        if (args[4]) {
-            args[0] -= args[4]; // 추옵 수치를 빼준다.
-        }
-        if (!starforce[args[2]]) {
+        sum -= addoption; // 추옵 수치를 빼준다.
+        if (!starforce[level]) {
             return interaction.followUp('130제, 140제, 150제, 160제, 200제 아이템만 가능합니다.');
         }
-        if (args[2] === 130 && args[3] > 20) {
+        if (level === 130 && star > 20) {
             return interaction.followUp('130제는 20성까지만 가능합니다.');
         }
-        if (args[3] < 0 || args[3] > 25) {
+        if (star < 0 || star > 25) {
             return interaction.followUp('강화 단계가 올바르지 않습니다.');
         }
-        for (let i = args[3]; i >= 1; i--) {
-            args[0] -= i >= 16 ? starforce[args[2]][i - 16] : Math.floor((args[0] + 50) / 51); // 스타포스 상승 수치를 없애는 과정
+        for (let i = star; i >= 1; i--) {
+            sum -= i >= 16 ? starforce[level][i - 16] : Math.floor((sum + 50) / 51); // 스타포스 상승 수치를 없애는 과정
         }
 
-        return interaction.followUp(`${args[2]}제 ${args[3]}성 강화\n작으로 상승한 공: ${args[0] - args[1]}`);
+        return interaction.followUp(`${level}제 ${star}성 강화\n작으로 상승한 공: ${sum - base}`);
     }
 };

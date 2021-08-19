@@ -141,10 +141,11 @@ module.exports = {
         ]
     },
     async commandExecute(interaction) {
-        const args = interaction.options.data.map((v) => v.value);
+        const startString = interaction.options.getString('시작_레벨');
+        const endString = interaction.options.getString('목표_레벨');
 
-        if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
-            const startlev = args[1];
+        if (startString === '확률' || startString === 'ㅎㄹ') {
+            const startlev = endString;
             let rslt = `<${startlev}레벨 기준 확률>`;
             if (startlev < 141 || startlev > 199) {
                 return interaction.followUp('141 ~ 199 범위의 기준 레벨을 입력해주세요.');
@@ -155,9 +156,9 @@ module.exports = {
             return interaction.followUp(rslt);
         }
 
-        const startlev = Math.trunc(args[0]);
+        const startlev = Math.trunc(startString);
         if (args.length === 2) {
-            const endlev = args[1];
+            const endlev = endString;
             if (isNaN(startlev) || startlev < 141 || startlev > 199) {
                 return interaction.followUp('141 ~ 199 범위의 시작 레벨을 입력해주세요.');
             }
