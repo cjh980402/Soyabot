@@ -43,7 +43,7 @@ module.exports.QueueElement = class {
             })
             .on('error', (err) => {
                 this.sendMessage('노래 재생을 실패했습니다.');
-                replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${err}\n${err.stack ?? err._p}`);
+                replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${err.stack ?? err._p}`);
             });
     }
 
@@ -90,7 +90,7 @@ module.exports.QueueElement = class {
             this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
         } catch (err) {
             this.sendMessage('노래 재생에 실패했습니다.');
-            replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${err}\n${err.stack ?? err._p}`);
+            replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${err.stack ?? err._p}`);
             this.songs.shift();
             return this.playSong();
         }
@@ -220,6 +220,6 @@ module.exports.musicActiveControl = function (oldState, newState) {
             }
         }
     } catch (err) {
-        replyAdmin(`[oldState]\n${oldState._p}\n[newState]\n${newState._p}\n에러 내용: ${err}\n${err.stack ?? err._p}`);
+        replyAdmin(`[oldState]\n${oldState._p}\n[newState]\n${newState._p}\n에러 내용: ${err.stack ?? err._p}`);
     }
 };

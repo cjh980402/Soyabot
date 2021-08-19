@@ -22,7 +22,7 @@ const promiseTimeout = (promise, ms) => Promise.race([promise, setTimeout(ms)]);
 
 process.on('unhandledRejection', (err) => {
     // node.js v15부터 Unhandled promise rejection이 발생하면 프로세스를 비정상 종료시키므로 처리를 해야함
-    console.error('Unhandled promise rejection:', err);
+    console.error('<Unhandled promise rejection>\n', err);
 });
 
 (async () => {
@@ -44,7 +44,7 @@ process.on('unhandledRejection', (err) => {
         });
         // await client.application.commands.set(datas); // 인터랙션 데이터 변경 시에만 활성화하기
     } catch (err) {
-        console.error(`로그인 에러 발생\n에러 내용: ${err}\n${err.stack ?? err._p}`);
+        console.error('<로그인 에러 발생>\n', err);
         await cmd('npm stop');
     }
 })();
@@ -59,7 +59,7 @@ client.on('ready', async () => {
 });
 
 client.on('error', async (err) => {
-    console.error(`클라이언트 에러 발생\n에러 내용: ${err}\n${err.stack ?? err._p}`);
+    console.error('<클라이언트 에러 발생>\n', err);
     await setTimeout(30000); // 30초 대기
     await cmd('npm restart'); // 재시작
 });
@@ -124,7 +124,7 @@ client.on('messageCreate', async (message) => {
                 await message.reply(err.message);
             } else {
                 await message.reply('에러로그가 전송되었습니다.');
-                replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${message.content}\n에러 내용: ${err}\n${err.stack ?? err._p}`);
+                replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${message.content}\n에러 내용: ${err.stack ?? err._p}`);
             }
         } catch {}
     } finally {
@@ -177,9 +177,7 @@ client.on('interactionCreate', async (interaction) => {
                 } else {
                     await interaction.editReply('에러로그가 전송되었습니다.');
                     replyAdmin(
-                        `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: /${interaction.commandName}\n${interaction.options._i()}\n에러 내용: ${err}\n${
-                            err.stack ?? err._p
-                        }`
+                        `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: /${interaction.commandName}\n${interaction.options._i()}\n에러 내용: ${err.stack ?? err._p}`
                     );
                 }
             } catch {}

@@ -32,7 +32,7 @@ module.exports.startNotice = function () {
                     botNotice(noticeEmbed, 'notice');
                 }
             } catch (err) {
-                replyAdmin(`자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${err}\n${err.stack ?? err._p}`);
+                replyAdmin(`자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${err.stack ?? err._p}`);
             }
         }, 120000);
     }
@@ -69,7 +69,7 @@ module.exports.startUpdate = function () {
                     botNotice(noticeEmbed, 'update');
                 }
             } catch (err) {
-                replyAdmin(`자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${err}\n${err.stack ?? err._p}`);
+                replyAdmin(`자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${err.stack ?? err._p}`);
             }
         }, 120000);
     }
@@ -108,7 +108,7 @@ module.exports.startTest = function () {
                     botNotice(noticeEmbed, 'test');
                 }
             } catch (err) {
-                replyAdmin(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${err}\n${err.stack ?? err._p}`);
+                replyAdmin(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${err.stack ?? err._p}`);
             }
         }, 120000);
     }
@@ -136,7 +136,7 @@ module.exports.startTestPatch = function () {
                     botNotice(`[Tver 1.2.${patchVersion}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기: ${fileSize.toFixed(2)}MB\n패치파일 주소: ${patchURL}`, 'testpatch');
                 }
             } catch (err) {
-                replyAdmin(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${err}\n${err.stack ?? err._p}`);
+                replyAdmin(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${err.stack ?? err._p}`);
             }
         }, 120000);
     }
