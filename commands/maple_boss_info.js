@@ -28,9 +28,7 @@ async function getBossEmbed(bossName, bossGrade) {
             })
         ).json();
         targetBoss[0][0] = `결정석 메소: ${data.result.meso.replace(/%20/g, ' ').replace(/%2B/g, '+')}`;
-    } catch {
-        targetBoss[0][0] += ' (패치 전)';
-    }
+    } catch {}
 
     return new MessageEmbed()
         .setTitle(`**${bossName}(${bossGrade})의 보상 / 정보**`)
