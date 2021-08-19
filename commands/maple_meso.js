@@ -17,6 +17,8 @@ const serverList = {
 };
 
 async function getMesoEmbed(server) {
+    const params = new URLSearchParams();
+    params.append('term', '15d');
     const data = await (
         await fetch('https://commapi.gamemarket.kr/comm/graph', {
             method: 'POST',
@@ -29,7 +31,8 @@ async function getMesoEmbed(server) {
                 'Referer': 'https://talk.gamemarket.kr/',
                 'Accept-Encoding': 'gzip, deflate, br',
                 'Accept-Language': 'ko,en;q=0.9,en-US;q=0.8'
-            }
+            },
+            body: params
         })
     ).json();
     const market = data.dbo;
