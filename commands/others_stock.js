@@ -45,12 +45,12 @@ async function getStockEmbed(search, searchRslt, type) {
         const data = await (await fetch(`https://m.stock.naver.com/api/index/${identifer}/integration`)).json();
         const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_INDEX%3A${identifer}`)).json();
         if (nowData.result.areas[0].datas.length === 0) {
-            return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
+            return '검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.';
         }
 
         const chartURL = getChartImage(identifer, type);
         const nowPrice = nowData.result.areas[0].datas[0].nv / 100;
-        const changeAmount = nowData.result.areas[0].datas[0].cv / 100; // 숫자값
+        const changeAmount = nowData.result.areas[0].datas[0].cv / 100;
         const changeRate = nowData.result.areas[0].datas[0].cr;
 
         data.totalInfos = getTotalInfoObj(data.totalInfos);
@@ -81,13 +81,13 @@ async function getStockEmbed(search, searchRslt, type) {
         // 해외 지수
         const data = await (await fetch(`https://api.stock.naver.com/index/${identifer}/basic`)).json();
         if (data[0] === '잘못된 지수입니다.') {
-            return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
+            return '검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.';
         }
 
         const chartURL = getChartImage(identifer, type, true);
         const nowPrice = data.closePrice;
         const changeAmount = data.compareToPreviousClosePrice.replace(/,/g, '');
-        const changeRate = data.fluctuationsRatio;
+        const changeRate = data.fluctuationsRatio.replace(/,/g, '');
 
         data.stockItemTotalInfos = getTotalInfoObj(data.stockItemTotalInfos);
         const minPrice = data.stockItemTotalInfos['저가'];
@@ -106,14 +106,13 @@ async function getStockEmbed(search, searchRslt, type) {
         const data = await (await fetch(`https://m.stock.naver.com/api/stock/${identifer}/integration`)).json();
         const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_ITEM%3A${identifer}`)).json();
         if (nowData.result.areas[0].datas.length === 0) {
-            return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
+            return '검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.';
         }
 
         const chartURL = getChartImage(identifer, type);
-        const beforePrice = nowData.result.areas[0].datas[0].sv;
         const nowPrice = nowData.result.areas[0].datas[0].nv;
-        const changeAmount = nowPrice - beforePrice; // 숫자값
-        const changeRate = (100 * (changeAmount / beforePrice)).toFixed(2);
+        const changeAmount = (nowData.result.areas[0].datas[0].rf !== '5' ? 1 : -1) * nowData.result.areas[0].datas[0].cv;
+        const changeRate = (nowData.result.areas[0].datas[0].rf !== '5' ? 1 : -1) * nowData.result.areas[0].datas[0].cr;
 
         data.totalInfos = getTotalInfoObj(data.totalInfos);
         const minPrice = data.totalInfos['저가'];
@@ -152,13 +151,13 @@ async function getStockEmbed(search, searchRslt, type) {
         // 해외 주식
         const data = await (await fetch(`https://api.stock.naver.com/stock/${identifer}/basic`)).json();
         if (data.code === 'StockConflict') {
-            return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
+            return '검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.';
         }
 
         const chartURL = getChartImage(identifer, type, true, true);
         const nowPrice = data.closePrice;
-        const changeAmount = data.compareToPreviousClosePrice.replace(/,/g, ''); // 숫자값
-        const changeRate = data.fluctuationsRatio;
+        const changeAmount = data.compareToPreviousClosePrice.replace(/,/g, '');
+        const changeRate = data.fluctuationsRatio.replace(/,/g, '');
 
         data.stockItemTotalInfos = getTotalInfoObj(data.stockItemTotalInfos);
         const minPrice = data.stockItemTotalInfos['저가'];
