@@ -85,7 +85,7 @@ module.exports = {
         description: `카테고리(스윗, 드림)와 1 ~ 20000 범위의 횟수를 입력하면 그만큼의 루나크리스탈 시뮬을 수행합니다.(참고. ${client.prefix}루나크리스탈 (카테고리) 확률)`,
         options: [
             {
-                name: '카레고리',
+                name: '카테고리',
                 type: 'STRING',
                 description: '시뮬레이션을 수행할 루나크리스탈 카테고리',
                 required: true,

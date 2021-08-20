@@ -57,7 +57,7 @@ module.exports = {
         }
 
         const category = interaction.options.getString('카테고리');
-        if (!noticematch[category]) {
+        if (!category) {
             const notice = [];
             for (const key in noticematch) {
                 if (db.get(`SELECT * FROM ${noticematch[key]}skip WHERE channelid = ?`, [interaction.guildId])) {

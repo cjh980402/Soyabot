@@ -43,7 +43,7 @@ module.exports = {
             return message.reply(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래를 삭제할 수 있습니다.`);
         }
 
-        return message.channel.send(`❌ ${message.author}가 대기열에서 **${removed.map((song, i) => `${songRemove[i]}. ${song.title}`)}**을 삭제했습니다.`);
+        return message.channel.send(`❌ ${message.author}가 대기열에서 **${removed.map((song, i) => `${songRemove[i]}. ${song.title}`).join(', ')}**을 삭제했습니다.`);
     },
     commandData: {
         name: 'remove',
@@ -92,6 +92,6 @@ module.exports = {
             return interaction.followUp(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래를 삭제할 수 있습니다.`);
         }
 
-        return interaction.followUp(`❌ ${interaction.user}가 대기열에서 **${removed.map((song, i) => `${songRemove[i]}. ${song.title}`)}**을 삭제했습니다.`);
+        return interaction.followUp(`❌ ${interaction.user}가 대기열에서 **${removed.map((song, i) => `${songRemove[i]}. ${song.title}`).join(', ')}**을 삭제했습니다.`);
     }
 };
