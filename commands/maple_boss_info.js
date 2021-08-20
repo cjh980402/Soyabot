@@ -21,13 +21,14 @@ async function getBossEmbed(bossName, bossGrade) {
         const params = new URLSearchParams();
         params.append('boss', bossNameList[bossName] ?? bossName);
         params.append('difficulty', difficultyList[bossGrade]);
+        params.append('option', 1);
         const data = await (
             await fetch('http://wachan.me/boss_api.php', {
                 method: 'POST',
                 body: params
             })
         ).json();
-        targetBoss[0][0] = `결정석 메소: ${data.result.meso.replace(/%20/g, ' ').replace(/%2B/g, '+')}`;
+        targetBoss[0][0] = `결정석 메소: ${data.result.meso}`;
     } catch {}
 
     return new MessageEmbed()
