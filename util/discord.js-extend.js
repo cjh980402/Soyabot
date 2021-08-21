@@ -126,6 +126,9 @@ Object.defineProperty(Discord.BaseGuildVoiceChannel.prototype, 'join', {
 
         try {
             await entersState(connection, VoiceConnectionStatus.Ready, 30000); // 연결될 때까지 최대 30초 대기
+            if (this.type === 'GUILD_STAGE_VOICE' && this.permissionsFor(this.guild.me).has(Discord.Permissions.STAGE_MODERATOR)) {
+                await this.guild.me.voice.setSuppressed(false); // 스테이지 채널이면서 관리 권한이 있으면 봇을 speaker로 설정
+            }
             return connection;
         } catch (err) {
             connection.destroy(); // 에러 발생 시 연결 취소
