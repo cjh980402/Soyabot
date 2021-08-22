@@ -5,6 +5,7 @@
     "NOTICE_CHANNEL_ID": "",
     "MAX_PLAYLIST_SIZE": 20,
     "DEFAULT_VOLUME": 50,
+    "BOT_SERVER_DOMAIN": "",
     "NAVER_CLIENT_ID": "",
     "NAVER_CLIENT_SECRET": "",
     "GOOGLE_API_KEY": "",

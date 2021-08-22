@@ -1,4 +1,6 @@
-const { MapleGuild } = require('../util/maple_parsing');
+// const { MapleGuild } = require('../util/maple_parsing');
+const { BOT_SERVER_DOMAIN } = require('../soyabot_config.json');
+const fetch = require('node-fetch');
 const serverEngName = {
     스카니아: 'scania',
     베라: 'bera',
@@ -26,7 +28,7 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        const mapleGuildInfo = new MapleGuild(serverEngName[args[0]], args[1]);
+        /*const mapleGuildInfo = new MapleGuild(serverEngName[args[0]], args[1]);
         const isLatest = await mapleGuildInfo.isLatest();
         if (mapleGuildInfo.MemberCount === 0) {
             return message.channel.send('존재하지 않는 길드입니다.');
@@ -35,7 +37,9 @@ module.exports = {
         message.channel.send('정보 가져오는 중...');
         const rslt = `${args[0]} ${args[1]} 길드 (${mapleGuildInfo.MemberCount}명)\n길드원 목록 갱신 ${isLatest ? '성공' : '실패'}\n\n${(await mapleGuildInfo.memberDataList()).join('\n\n')}`;
 
-        return message.channel.sendSplitCode(rslt, { split: { char: '\n' } });
+        return message.channel.sendSplitCode(rslt, { split: { char: '\n' } });*/
+
+        return message.channel.sendSplitCode(await (await fetch(`http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(args[0])}/${encodeURIComponent(args[1])}`)).text(), { split: { char: '\n' } });
     },
     commandData: {
         name: '길드',
@@ -60,7 +64,7 @@ module.exports = {
         const serverName = interaction.options.getString('서버_이름');
         const guildName = interaction.options.getString('길드_이름');
 
-        const mapleGuildInfo = new MapleGuild(serverEngName[serverName], guildName);
+        /*const mapleGuildInfo = new MapleGuild(serverEngName[serverName], guildName);
         const isLatest = await mapleGuildInfo.isLatest();
         if (mapleGuildInfo.MemberCount === 0) {
             return interaction.followUp('존재하지 않는 길드입니다.');
@@ -69,6 +73,8 @@ module.exports = {
         await interaction.editReply('정보 가져오는 중...');
         const rslt = `${serverName} ${guildName} 길드 (${mapleGuildInfo.MemberCount}명)\n길드원 목록 갱신 ${isLatest ? '성공' : '실패'}\n\n${(await mapleGuildInfo.memberDataList()).join('\n\n')}`;
 
-        return interaction.sendSplitCode(rslt, { split: { char: '\n' } });
+        return interaction.sendSplitCode(rslt, { split: { char: '\n' } });*/
+
+        return interaction.sendSplitCode(await (await fetch(`http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(serverName)}/${encodeURIComponent(guildName)}`)).text(), { split: { char: '\n' } });
     }
 };
