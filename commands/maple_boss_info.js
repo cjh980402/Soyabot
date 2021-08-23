@@ -46,11 +46,18 @@ module.exports = {
         if (args.length < 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
-        const bossName = args[0];
+        let bossName = args.join(''),
+            bossGrade = Object.keys(bossData[bossName] ?? {})[0];
         if (!bossData[bossName]) {
-            return message.channel.send('데이터가 없는 보스입니다.');
+            bossGrade = args.pop();
+            bossName = args.join('');
+            if (!bossData[bossName]) {
+                return message.channel.send('데이터가 없는 보스입니다.');
+            }
+            if (!bossData[bossName][bossGrade]) {
+                bossGrade = Object.keys(bossData[bossName])[0];
+            }
         }
-        const bossGrade = args.length > 1 && bossData[bossName][args[args.length - 1]] ? args.pop() : Object.keys(bossData[bossName])[0];
 
         return message.channel.send({ embeds: [await getBossEmbed(bossName, bossGrade)] });
     },
