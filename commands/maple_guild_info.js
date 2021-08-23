@@ -39,7 +39,12 @@ module.exports = {
 
         return message.channel.sendSplitCode(rslt, { split: { char: '\n' } });*/
 
-        return message.channel.sendSplitCode(await (await fetch(`http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(args[0])}/${encodeURIComponent(args[1])}`)).text(), { split: { char: '\n' } });
+        const response = await fetch(`http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(args[0])}/${encodeURIComponent(args[1])}`);
+        if (response.status === 200) {
+            return message.channel.sendSplitCode(await response.text(), { split: { char: '\n' } });
+        } else {
+            return message.channel.send('길드 정보 작업을 실패하였습니다.');
+        }
     },
     commandData: {
         name: '길드',
@@ -75,6 +80,11 @@ module.exports = {
 
         return interaction.sendSplitCode(rslt, { split: { char: '\n' } });*/
 
-        return interaction.sendSplitCode(await (await fetch(`http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(serverName)}/${encodeURIComponent(guildName)}`)).text(), { split: { char: '\n' } });
+        const response = await fetch(`http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(serverName)}/${encodeURIComponent(guildName)}`);
+        if (response.status === 200) {
+            return interaction.sendSplitCode(await response.text(), { split: { char: '\n' } });
+        } else {
+            return interaction.followUp('길드 정보 작업을 실패하였습니다.');
+        }
     }
 };
