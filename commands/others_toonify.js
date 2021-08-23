@@ -15,10 +15,10 @@ module.exports = {
         } else {
             try {
                 const resp = await deepai.callStandardApi('toonify', { image: imageURL });
-                message.channel.send({ files: [resp.output_url] });
+                return message.channel.send({ files: [resp.output_url] });
             } catch (err) {
                 if (err.response?.status === 400) {
-                    message.channel.send('사진에서 적절한 대상 인물을 찾지 못했습니다.');
+                    return message.channel.send('사진에서 적절한 대상 인물을 찾지 못했습니다.');
                 } else {
                     throw err;
                 }
