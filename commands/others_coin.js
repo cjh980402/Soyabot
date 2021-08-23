@@ -115,8 +115,9 @@ module.exports = {
     },
     async commandExecute(interaction) {
         const type = interaction.options.getString('차트_종류') ?? '1일'; // 차트 종류
-        const krSearch = interaction.options.getString('검색_내용');
-        const enSearch = krSearch.toUpperCase();
+        const search = interaction.options.getString('검색_내용');
+        const krSearch = search.replace(/\s+/g, '');
+        const enSearch = search.toUpperCase();
         const searchList = await (await fetch('https://api.upbit.com/v1/market/all')).json();
         const searchRslt = searchList.find((v) => {
             const [currency, code] = v.market.split('-');

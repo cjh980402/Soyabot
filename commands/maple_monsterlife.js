@@ -249,13 +249,19 @@ module.exports = {
         const subcommand = interaction.options.getSubcommand();
 
         if (subcommand === '목록') {
-            return interaction.sendSplitCode(await farm_read(interaction.options.getString('몬스터_이름')), { split: { char: '\n' } });
+            return interaction.sendSplitCode(await farm_read(interaction.options.getString('몬스터_이름').replace(/\s+/g, '')), { split: { char: '\n' } });
         } else if (subcommand === '조합식') {
-            return interaction.followUp(await farm_sex(interaction.options.getString('몬스터_이름')));
+            return interaction.followUp(await farm_sex(interaction.options.getString('몬스터_이름').replace(/\s+/g, '')));
         } else if (subcommand === '정보') {
-            return interaction.sendSplitCode(await farm_info(interaction.options.getString('농장_이름')), { split: { char: '\n' } });
+            return interaction.sendSplitCode(await farm_info(interaction.options.getString('농장_이름').replace(/\s+/g, '')), { split: { char: '\n' } });
         } else if (subcommand === '추가') {
-            return interaction.followUp(await farm_add(interaction.options.getString('끝나는_날짜'), interaction.options.getString('농장_이름'), interaction.options.getString('몬스터_이름')));
+            return interaction.followUp(
+                await farm_add(
+                    interaction.options.getString('끝나는_날짜'),
+                    interaction.options.getString('농장_이름').replace(/\s+/g, ''),
+                    interaction.options.getString('몬스터_이름').replace(/\s+/g, '')
+                )
+            );
         }
     }
 };

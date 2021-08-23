@@ -43,14 +43,14 @@ module.exports = {
     description: '- 해당하는 보스의 보상과 체력, 방어율을 알려줍니다.\n- 난이도를 생략하면 상위 등급의 정보를 보여줍니다.',
     type: ['메이플'],
     async messageExecute(message, args) {
-        if (!args[0]) {
+        if (args.length < 1) {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
         const bossName = args[0];
         if (!bossData[bossName]) {
             return message.channel.send('데이터가 없는 보스입니다.');
         }
-        const bossGrade = !bossData[bossName][args[1]] ? Object.keys(bossData[bossName])[0] : args[1];
+        const bossGrade = args.length > 1 && bossData[bossName][args[args.length - 1]] ? args.pop() : Object.keys(bossData[bossName])[0];
 
         return message.channel.send({ embeds: [await getBossEmbed(bossName, bossGrade)] });
     },
@@ -73,7 +73,7 @@ module.exports = {
         ]
     },
     async commandExecute(interaction) {
-        const bossName = interaction.options.getString('보스_이름');
+        const bossName = interaction.options.getString('보스_이름').replace(/\s+/g, '');
         if (!bossData[bossName]) {
             return interaction.followUp('데이터가 없는 보스입니다.');
         }
