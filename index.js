@@ -17,7 +17,6 @@ client.commands = []; // 명령어 객체 저장할 배열
 client.queues = new Map(); // 음악기능 정보 저장용
 client.prefix = PREFIX; // PREFIX는 1글자여야함
 const cooldowns = new Set(); // 중복 명령 방지할 set
-const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // 정규식 내부에서 일부 특수 문자를 그대로 취급하기 위해 사용자 입력을 이스케이프로 치환하는 함수
 const promiseTimeout = (promise, ms) => Promise.race([promise, setTimeout(ms)]);
 
 process.on('unhandledRejection', (err) => {
@@ -88,7 +87,7 @@ client.on('messageCreate', async (message) => {
             await adminChat(message);
         }
 
-        const prefixRegex = new RegExp(`^\\s*${escapeRegex(client.prefix)}\\s*`); // 문자열로 정규식 생성하기 위해 생성자 이용
+        const prefixRegex = new RegExp(`^\\s*${client.prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*`); // client.prefix에 이스케이핑 적용 후 정규식 생성
 
         const matchedPrefix = prefixRegex.exec(message.content)?.[0]; // 정규식에 대응되는 명령어 접두어 부분을 탐색
         if (!matchedPrefix) {

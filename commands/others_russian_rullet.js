@@ -1,9 +1,8 @@
-const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const gameRegExp = [
-    new RegExp(`^${escapeRegex(client.prefix)}\\s*(참가|ㅊㄱ)$`),
-    new RegExp(`^${escapeRegex(client.prefix)}\\s*(시작|ㅅㅈ)$`),
-    new RegExp(`^${escapeRegex(client.prefix)}\\s*(종료|ㅈㄹ)$`),
-    new RegExp(`^${escapeRegex(client.prefix)}\\s*(빵|ㅃ)$`)
+    new RegExp(`^${client.prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*(참가|ㅊㄱ)$`),
+    new RegExp(`^${client.prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*(시작|ㅅㅈ)$`),
+    new RegExp(`^${client.prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*(종료|ㅈㄹ)$`),
+    new RegExp(`^${client.prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*(빵|ㅃ)$`)
 ];
 
 module.exports = {
