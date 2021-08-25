@@ -2,10 +2,11 @@ const { MessageEmbed, Permissions } = require('../util/discord.js-extend');
 const { ADMIN_ID, NOTICE_CHANNEL_ID } = require('../soyabot_config.json');
 
 module.exports.botNotice = async function (data, type = null) {
+    data = data instanceof MessageEmbed ? { embeds: [data] } : String(data);
     if (type) {
         // 메이플 공지는 공지용 채널에만 전송 (트래픽 감소 목적)
         try {
-            await client.channels.cache.get(NOTICE_CHANNEL_ID).send(data instanceof MessageEmbed ? { embeds: [data] } : String(data));
+            await client.channels.cache.get(NOTICE_CHANNEL_ID).send(data);
         } catch {}
     } else {
         // 일반 공지는 전체 전송
@@ -15,7 +16,7 @@ module.exports.botNotice = async function (data, type = null) {
                 const guildText = v.channels.cache.filter((v) => v.type === 'GUILD_TEXT');
                 const target = guildText.find((v) => noticeRegex.test(v.name)) ?? guildText.first();
                 if (target?.permissionsFor(v.me).has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES])) {
-                    await target.send(data instanceof MessageEmbed ? { embeds: [data] } : String(data));
+                    await target.send(data);
                 }
             } catch {}
         });
