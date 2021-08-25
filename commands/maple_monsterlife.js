@@ -160,19 +160,23 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
-            return message.channel.sendSplitCode(await farm_read(args.slice(1).join('')), { split: { char: '\n' } });
-        } else if (args[0] === '조합식' || args[0] === 'ㅈㅎㅅ') {
-            return message.channel.send(await farm_sex(args.slice(1).join('')));
-        } else if (args[0] === '정보' || args[0] === 'ㅈㅂ') {
-            return message.channel.sendSplitCode(await farm_info(args.slice(1).join('')), { split: { char: '\n' } });
-        } else if (args[0] === '추가' || args[0] === 'ㅊㄱ') {
-            if (args.length < 4) {
+        try {
+            if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
+                return message.channel.sendSplitCode(await farm_read(args.slice(1).join('')), { split: { char: '\n' } });
+            } else if (args[0] === '조합식' || args[0] === 'ㅈㅎㅅ') {
+                return message.channel.send(await farm_sex(args.slice(1).join('')));
+            } else if (args[0] === '정보' || args[0] === 'ㅈㅂ') {
+                return message.channel.sendSplitCode(await farm_info(args.slice(1).join('')), { split: { char: '\n' } });
+            } else if (args[0] === '추가' || args[0] === 'ㅊㄱ') {
+                if (args.length < 4) {
+                    return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+                }
+                return message.channel.send(await farm_add(args[1], args[2], args.slice(3).join('')));
+            } else {
                 return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
             }
-            return message.channel.send(await farm_add(args[1], args[2], args.slice(3).join('')));
-        } else {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        } catch {
+            return message.channel.send('농장 API 서버가 점검 중입니다.');
         }
     },
     commandData: {
@@ -248,20 +252,24 @@ module.exports = {
     async commandExecute(interaction) {
         const subcommand = interaction.options.getSubcommand();
 
-        if (subcommand === '목록') {
-            return interaction.sendSplitCode(await farm_read(interaction.options.getString('몬스터_이름').replace(/\s+/g, '')), { split: { char: '\n' } });
-        } else if (subcommand === '조합식') {
-            return interaction.followUp(await farm_sex(interaction.options.getString('몬스터_이름').replace(/\s+/g, '')));
-        } else if (subcommand === '정보') {
-            return interaction.sendSplitCode(await farm_info(interaction.options.getString('농장_이름').replace(/\s+/g, '')), { split: { char: '\n' } });
-        } else if (subcommand === '추가') {
-            return interaction.followUp(
-                await farm_add(
-                    interaction.options.getString('끝나는_날짜'),
-                    interaction.options.getString('농장_이름').replace(/\s+/g, ''),
-                    interaction.options.getString('몬스터_이름').replace(/\s+/g, '')
-                )
-            );
+        try {
+            if (subcommand === '목록') {
+                return interaction.sendSplitCode(await farm_read(interaction.options.getString('몬스터_이름').replace(/\s+/g, '')), { split: { char: '\n' } });
+            } else if (subcommand === '조합식') {
+                return interaction.followUp(await farm_sex(interaction.options.getString('몬스터_이름').replace(/\s+/g, '')));
+            } else if (subcommand === '정보') {
+                return interaction.sendSplitCode(await farm_info(interaction.options.getString('농장_이름').replace(/\s+/g, '')), { split: { char: '\n' } });
+            } else if (subcommand === '추가') {
+                return interaction.followUp(
+                    await farm_add(
+                        interaction.options.getString('끝나는_날짜'),
+                        interaction.options.getString('농장_이름').replace(/\s+/g, ''),
+                        interaction.options.getString('몬스터_이름').replace(/\s+/g, '')
+                    )
+                );
+            }
+        } catch {
+            return interaction.followUp('농장 API 서버가 점검 중입니다.');
         }
     }
 };

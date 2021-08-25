@@ -89,7 +89,11 @@ module.exports = {
             return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
 
-        return message.channel.send({ files: [await getBossMesoEmbed(args[0])] });
+        try {
+            return message.channel.send({ files: [await getBossMesoEmbed(args[0])] });
+        } catch {
+            return message.channel.send('보스결정석 API 서버가 점검 중입니다.');
+        }
     },
     commandData: {
         name: '보스결정석',
@@ -105,6 +109,10 @@ module.exports = {
         ]
     },
     async commandExecute(interaction) {
-        return interaction.followUp({ files: [await getBossMesoEmbed(interaction.options.getString('보스_종류'))] });
+        try {
+            return interaction.followUp({ files: [await getBossMesoEmbed(interaction.options.getString('보스_종류'))] });
+        } catch {
+            return interaction.followUp('보스결정석 API 서버가 점검 중입니다.');
+        }
     }
 };
