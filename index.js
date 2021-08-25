@@ -91,27 +91,27 @@ client.on('messageCreate', async (message) => {
 
         const matchedPrefix = prefixRegex.exec(message.content)?.[0]; // 정규식에 대응되는 명령어 접두어 부분을 탐색
         if (!matchedPrefix) {
-            // 멘션이나 client.prefix로 시작하지 않는 경우
+            // client.prefix로 시작하지 않는 경우
             return await botChatting(message); // 잡담 로직
         }
 
         const args = message.content.substr(matchedPrefix.length).trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
         commandName = args.shift().toLowerCase(); // commandName은 args의 첫번째 원소(명령어 부분), shift로 인해 args에는 뒷부분만 남음
 
-        const botModule = client.commands.find((cmd) => cmd.command.includes(commandName)); // 해당하는 명령어 찾기
+        const nowCommand = client.commands.find((cmd) => cmd.command.includes(commandName)); // 해당하는 명령어 찾기
 
-        if (!botModule?.messageExecute) {
+        if (!nowCommand?.messageExecute) {
             return; // 해당하는 명령어 없으면 종료
         }
 
-        commandName = botModule.channelCool ? `${botModule.command[0]}_${message.channelId}` : botModule.command[0];
+        commandName = nowCommand.channelCool ? `${nowCommand.command[0]}_${message.channelId}` : nowCommand.command[0];
 
         if (cooldowns.has(commandName)) {
             // 명령이 수행 중인 경우
-            return message.channel.send(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
+            return message.channel.send(`"${nowCommand.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
-        await (botModule.channelCool ? botModule.messageExecute(message, args) : promiseTimeout(botModule.messageExecute(message, args), 300000)); // 명령어 수행 부분
+        await (nowCommand.channelCool ? nowCommand.messageExecute(message, args) : promiseTimeout(nowCommand.messageExecute(message, args), 300000)); // 명령어 수행 부분
         cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
     } catch (err) {
         cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
@@ -122,8 +122,8 @@ client.on('messageCreate', async (message) => {
             } else if (err.message?.startsWith('메이플')) {
                 await message.reply(err.message);
             } else {
-                await message.reply('에러로그가 전송되었습니다.');
                 replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${message.content}\n에러 내용: ${err.stack ?? err._p}`);
+                await message.reply('에러로그가 전송되었습니다.');
             }
         } catch {}
     } finally {
@@ -150,20 +150,20 @@ client.on('interactionCreate', async (interaction) => {
                 return; // 기본 권한이 없는 채널이므로 바로 종료
             }
 
-            const botModule = client.commands.find((cmd) => cmd.commandData?.name === commandName); // 해당하는 명령어 찾기
+            const nowCommand = client.commands.find((cmd) => cmd.commandData?.name === commandName); // 해당하는 명령어 찾기
 
-            if (!botModule?.commandExecute) {
+            if (!nowCommand?.commandExecute) {
                 return; // 해당하는 명령어 없으면 종료
             }
 
-            commandName = botModule.channelCool ? `${commandName}_${interaction.channelId}` : commandName;
+            commandName = nowCommand.channelCool ? `${commandName}_${interaction.channelId}` : commandName;
 
             if (cooldowns.has(commandName)) {
                 // 명령이 수행 중인 경우
-                return interaction.followUp(`"${botModule.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
+                return interaction.followUp(`"${nowCommand.commandData.name}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
             }
             cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
-            await (botModule.channelCool ? botModule.commandExecute(interaction) : promiseTimeout(botModule.commandExecute(interaction), 300000)); // 명령어 수행 부분
+            await (nowCommand.channelCool ? nowCommand.commandExecute(interaction) : promiseTimeout(nowCommand.commandExecute(interaction), 300000)); // 명령어 수행 부분
             cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
         } catch (err) {
             cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
@@ -174,10 +174,10 @@ client.on('interactionCreate', async (interaction) => {
                 } else if (err.message?.startsWith('메이플')) {
                     await interaction.editReply(err.message);
                 } else {
-                    await interaction.editReply('에러로그가 전송되었습니다.');
                     replyAdmin(
                         `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: /${interaction.commandName}\n${interaction.options._i()}\n에러 내용: ${err.stack ?? err._p}`
                     );
+                    await interaction.editReply('에러로그가 전송되었습니다.');
                 }
             } catch {}
         } finally {
