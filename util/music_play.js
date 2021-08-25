@@ -20,12 +20,12 @@ module.exports.QueueElement = class {
         this.subscription = connection.subscribe(createAudioPlayer());
         this.songs = songs;
 
-        this.subscription.connection.removeAllListeners(VoiceConnectionStatus.Destroyed);
+        this.subscription.connection.removeAllListeners(VoiceConnectionStatus.Connecting);
         this.subscription.connection.removeAllListeners(VoiceConnectionStatus.Disconnected);
         this.subscription.connection.removeAllListeners('error');
 
         this.subscription.connection
-            .once(VoiceConnectionStatus.Destroyed, () => this.clearStop())
+            .once(VoiceConnectionStatus.Connecting, () => this.clearStop())
             .once(VoiceConnectionStatus.Disconnected, () => this.clearStop())
             .once('error', () => this.clearStop());
 
@@ -52,16 +52,17 @@ module.exports.QueueElement = class {
     }
 
     clearStop() {
-        client.queues.delete(this.voiceChannel.guild.id);
-        this.subscription.unsubscribe();
-        this.songs = [];
-        this.subscription.player.stop(true);
+        if (client.queues.delete(this.voiceChannel.guild.id)) {
+            this.songs = [];
+            this.subscription.unsubscribe();
+            this.subscription.player.stop(true);
+            this.subscription.connection.destroy();
+        }
     }
 
     async playSong() {
         if (this.songs.length === 0) {
             this.clearStop();
-            this.subscription.connection.destroy();
             return this.sendMessage('🛑 음악 대기열이 끝났습니다.');
         }
 
@@ -89,7 +90,7 @@ module.exports.QueueElement = class {
             this.subscription.player.play(await songDownload(this.songs[0].url));
             this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
         } catch (err) {
-            this.sendMessage('노래 재생에 실패했습니다.');
+            this.sendMessage('노래 재생을 실패했습니다.');
             replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${err.stack ?? err._p}`);
             this.songs.shift();
             return this.playSong();
