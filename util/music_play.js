@@ -92,9 +92,8 @@ module.exports.QueueElement = class {
             if (this.subscription.connection.state.status !== VoiceConnectionStatus.Ready) {
                 this.subscription.player.stop(true); // 노래 재생 후 VoiceConnection이 끊어진 경우 재생 종료
             }
-        } catch (err) {
+        } catch {
             this.sendMessage('노래 재생을 실패했습니다.');
-            replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${err.stack ?? err._p}`);
             this.songs.shift();
             return this.playSong();
         }
