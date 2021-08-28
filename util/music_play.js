@@ -30,6 +30,7 @@ module.exports.QueueElement = class {
             .once('error', () => this.clearStop());
 
         this.subscription.player
+            .on(AudioPlayerStatus.AutoPaused, () => this.subscription.player.stop(true)) // 연결된 음성 채널이 없으면 재생 종료
             .on(AudioPlayerStatus.Idle, async () => {
                 await this.deleteMessage();
                 if (this.songs.length > 0) {
@@ -89,9 +90,6 @@ module.exports.QueueElement = class {
             this.playingMessage = await this.sendMessage({ embeds: [embed], components: [row1, row2] });
             this.subscription.player.play(await songDownload(this.songs[0].url));
             this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
-            if (this.subscription.connection.state.status !== VoiceConnectionStatus.Ready) {
-                this.subscription.player.stop(true); // 노래 재생 후 VoiceConnection이 끊어진 경우 재생 종료
-            }
         } catch {
             this.sendMessage('노래 재생을 실패했습니다.');
             this.songs.shift();
