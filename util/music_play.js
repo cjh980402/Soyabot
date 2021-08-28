@@ -1,5 +1,5 @@
 const { MessageActionRow, MessageButton, MessageEmbed } = require('./discord.js-extend');
-const { AudioPlayerStatus, createAudioPlayer, VoiceConnectionStatus } = require('@discordjs/voice');
+const { AudioPlayerStatus, createAudioPlayer, NoSubscriberBehavior, VoiceConnectionStatus } = require('@discordjs/voice');
 const { songDownload } = require('./song_util');
 const { replyAdmin } = require('../admin/bot_control');
 const { DEFAULT_VOLUME } = require('../soyabot_config.json');
@@ -17,7 +17,11 @@ module.exports.QueueElement = class {
     constructor(textChannel, voiceChannel, connection, songs) {
         this.textChannel = textChannel;
         this.voiceChannel = voiceChannel;
-        this.subscription = connection.subscribe(createAudioPlayer());
+        this.subscription = connection.subscribe(
+            createAudioPlayer({
+                behaviors: { noSubscriber: NoSubscriberBehavior.Stop } // 연결된 음성 채널이 없으면 재생 종료하는 옵션 추가
+            })
+        );
         this.songs = songs;
 
         this.subscription.connection.removeAllListeners(VoiceConnectionStatus.Connecting);
@@ -30,7 +34,6 @@ module.exports.QueueElement = class {
             .once('error', () => this.clearStop());
 
         this.subscription.player
-            .on(AudioPlayerStatus.AutoPaused, () => this.subscription.player.stop(true)) // 연결된 음성 채널이 없으면 재생 종료
             .on(AudioPlayerStatus.Idle, async () => {
                 await this.deleteMessage();
                 if (this.songs.length > 0) {
