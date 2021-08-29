@@ -60,7 +60,7 @@ module.exports = {
         }
 
         if (!checkLan(args[0], args[1]) && !checkLan(args[1], args[0])) {
-            return message.channel.send(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 "${this.usage}"입니다.\n언어의 형식은 ${client.prefix}파파고 목록을 확인해주세요.`);
+            return message.channel.send(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 '${this.usage}'입니다.\n언어의 형식은 ${client.prefix}파파고 목록을 확인해주세요.`);
         }
 
         const text = message.content.replace(/\s*.+?\s*.+?\s+.+?\s+.+?\s+/, '').trim();

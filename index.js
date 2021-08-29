@@ -108,7 +108,7 @@ client.on('messageCreate', async (message) => {
 
         if (cooldowns.has(commandName)) {
             // 명령이 수행 중인 경우
-            return message.channel.send(`"${nowCommand.command[0]}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
+            return message.channel.send(`'${nowCommand.command[0]}' 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
         await (nowCommand.channelCool ? nowCommand.messageExecute(message, args) : promiseTimeout(nowCommand.messageExecute(message, args), 300000)); // 명령어 수행 부분
@@ -118,7 +118,7 @@ client.on('messageCreate', async (message) => {
         try {
             if (err instanceof Collection) {
                 // awaitMessages에서 시간초과한 경우
-                await message.channel.send(`"${commandName.split('_')[0]}"의 입력 대기 시간이 초과되었습니다.`);
+                await message.channel.send(`'${commandName.split('_')[0]}'의 입력 대기 시간이 초과되었습니다.`);
             } else if (err.message?.startsWith('메이플')) {
                 await message.reply(err.message);
             } else {
@@ -160,7 +160,7 @@ client.on('interactionCreate', async (interaction) => {
 
             if (cooldowns.has(commandName)) {
                 // 명령이 수행 중인 경우
-                return interaction.followUp(`"${nowCommand.commandData.name}" 명령을 사용하기 위해 잠시 기다려야합니다.`);
+                return interaction.followUp(`'${nowCommand.commandData.name}' 명령을 사용하기 위해 잠시 기다려야합니다.`);
             }
             cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
             await (nowCommand.channelCool ? nowCommand.commandExecute(interaction) : promiseTimeout(nowCommand.commandExecute(interaction), 300000)); // 명령어 수행 부분
@@ -170,7 +170,7 @@ client.on('interactionCreate', async (interaction) => {
             try {
                 if (err instanceof Collection) {
                     // awaitMessages에서 시간초과한 경우
-                    await interaction.followUp(`"${commandName.split('_')[0]}"의 입력 대기 시간이 초과되었습니다.`);
+                    await interaction.followUp(`'${commandName.split('_')[0]}'의 입력 대기 시간이 초과되었습니다.`);
                 } else if (err.message?.startsWith('메이플')) {
                     await interaction.editReply(err.message);
                 } else {

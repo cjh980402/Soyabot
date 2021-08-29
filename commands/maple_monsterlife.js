@@ -9,7 +9,7 @@ async function farm_monster(monster) {
             method: 'POST',
             body: params
         })
-    ).text(); // 결과값이 "false"면 DB에 없는 몬스터
+    ).text(); // 결과값이 'false'면 DB에 없는 몬스터
 }
 
 async function farm_sex(monster) {
@@ -153,7 +153,7 @@ module.exports = {
 - ${client.prefix}농장 조합식 (몬스터 이름)
 - ${client.prefix}농장 정보 (농장 이름)
 - ${client.prefix}농장 추가 (끝나는 날짜) (농장 이름) (몬스터 이름)
-- 참고. 끝나는 날짜의 형식은 YYMMDD 형식입니다. (무한유지를 하는 몬스터는 "무한유지")`,
+- 참고. 끝나는 날짜의 형식은 YYMMDD 형식입니다. (무한유지를 하는 몬스터는 '무한유지')`,
     type: ['메이플'],
     async messageExecute(message, args) {
         if (args.length < 2) {
@@ -230,7 +230,7 @@ module.exports = {
                     {
                         name: '끝나는_날짜',
                         type: 'STRING',
-                        description: '몬스터의 기한이 끝나는 날짜(YYMMDD 형식, 무한유지를 하는 몬스터는 "무한유지")',
+                        description: "몬스터의 기한이 끝나는 날짜(YYMMDD 형식, 무한유지를 하는 몬스터는 '무한유지')",
                         required: true
                     },
                     {

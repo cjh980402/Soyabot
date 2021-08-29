@@ -66,7 +66,7 @@ module.exports = {
         }
         const langCode = findLangCode(args[0][0], args[0][1]);
         if (!langCode) {
-            return message.channel.send(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 "${this.usage}"입니다.\n언어의 목록은 ${client.prefix}번역 목록을 확인해주세요.`);
+            return message.channel.send(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 '${this.usage}'입니다.\n언어의 목록은 ${client.prefix}번역 목록을 확인해주세요.`);
         }
 
         const text = message.content.replace(/\s*.+?\s*.+?\s+.+?\s+/, '').trim();

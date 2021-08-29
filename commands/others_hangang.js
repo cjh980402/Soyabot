@@ -16,7 +16,7 @@ module.exports = {
 
         const temper = $('tr.site_S01004 > td').eq(0).text().trim();
         if (isNaN(temper)) {
-            return message.channel.send(`측정소가 "${temper}" 상태입니다.`);
+            return message.channel.send(`측정소가 '${temper}' 상태입니다.`);
         } else {
             const search_time = $('span.data > script').html().trim().split('\n')[0].replace(/\D+/g, '');
             return message.channel.send(
@@ -37,7 +37,7 @@ module.exports = {
 
         const temper = $('tr.site_S01004 > td').eq(0).text().trim();
         if (isNaN(temper)) {
-            return interaction.followUp(`측정소가 "${temper}" 상태입니다.`);
+            return interaction.followUp(`측정소가 '${temper}' 상태입니다.`);
         } else {
             const search_time = $('span.data > script').html().trim().split('\n')[0].replace(/\D+/g, '');
             return interaction.followUp(
