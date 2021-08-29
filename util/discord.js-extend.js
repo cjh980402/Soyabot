@@ -9,7 +9,7 @@ const { inspect } = require('util');
 const { _patch } = Discord.Message.prototype;
 
 function contentSplitCode(content, options) {
-    content = content || '\u200b';
+    content ||= '\u200b';
     if (options.code) {
         content = `\`\`\`${options.code}\n${Discord.Util.cleanCodeBlockContent(content)}\n\`\`\``;
         if (options.split) {
