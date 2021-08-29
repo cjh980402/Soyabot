@@ -8,8 +8,7 @@ module.exports = {
             return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
-        const find = db.get('SELECT * FROM pruningskip WHERE channelid = ?', [message.guildId]);
-        if (find) {
+        if (db.get('SELECT * FROM pruningskip WHERE channelid = ?', [message.guildId])) {
             // 기존상태: OFF
             db.run('DELETE FROM pruningskip WHERE channelid = ?', [message.guildId]);
             return message.channel.send('현재 메시지 자동정리: **OFF → ON**');
@@ -28,8 +27,7 @@ module.exports = {
             return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
         }
 
-        const find = db.get('SELECT * FROM pruningskip WHERE channelid = ?', [interaction.guildId]);
-        if (find) {
+        if (db.get('SELECT * FROM pruningskip WHERE channelid = ?', [interaction.guildId])) {
             // 기존상태: OFF
             db.run('DELETE FROM pruningskip WHERE channelid = ?', [interaction.guildId]);
             return interaction.followUp('현재 메시지 자동정리: **OFF → ON**');

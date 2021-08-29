@@ -106,7 +106,7 @@ module.exports.QueueElement = class {
         } catch {
             try {
                 const channels = this.textChannel.guild.channels.cache;
-                if (!channels.get(this.textChannel.id)) {
+                if (!channels.has(this.textChannel.id)) {
                     this.textChannel = channels.find((v) => v.type === 'GUILD_TEXT') ?? this.textChannel;
                 }
                 return await this.textChannel.send(content);
@@ -115,8 +115,7 @@ module.exports.QueueElement = class {
     }
 
     async deleteMessage() {
-        const find = db.get('SELECT * FROM pruningskip WHERE channelid = ?', [this.playingMessage?.guildId]);
-        if (!find) {
+        if (!db.get('SELECT * FROM pruningskip WHERE channelid = ?', [this.playingMessage?.guildId])) {
             try {
                 await this.playingMessage?.delete();
             } catch {}

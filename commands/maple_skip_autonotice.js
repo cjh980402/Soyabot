@@ -28,8 +28,7 @@ module.exports = {
             }
             return message.channel.send(notice.join('\n'));
         }
-        const find = db.get(`SELECT * FROM ${noticematch[args[0]]}skip WHERE channelid = ?`, [message.guildId]);
-        if (find) {
+        if (db.get(`SELECT * FROM ${noticematch[args[0]]}skip WHERE channelid = ?`, [message.guildId])) {
             // 기존상태: OFF
             db.run(`DELETE FROM ${noticematch[args[0]]}skip WHERE channelid = ?`, [message.guildId]);
             return message.channel.send(`${args[0]} 자동알림: **OFF → ON**`);
@@ -69,8 +68,7 @@ module.exports = {
             }
             return interaction.followUp(notice.join('\n'));
         }
-        const find = db.get(`SELECT * FROM ${noticematch[category]}skip WHERE channelid = ?`, [interaction.guildId]);
-        if (find) {
+        if (db.get(`SELECT * FROM ${noticematch[category]}skip WHERE channelid = ?`, [interaction.guildId])) {
             // 기존상태: OFF
             db.run(`DELETE FROM ${noticematch[category]}skip WHERE channelid = ?`, [interaction.guildId]);
             return interaction.followUp(`${category} 자동알림: **OFF → ON**`);
