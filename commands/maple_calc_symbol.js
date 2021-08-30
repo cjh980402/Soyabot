@@ -51,13 +51,15 @@ module.exports = {
                 name: '시작_레벨',
                 type: 'INTEGER',
                 description: '심볼 강화 정보를 계산할 시작 레벨',
-                required: true
+                required: true,
+                choices: [...Array(20)].map((_, i) => ({ name: i + 1, value: i + 1 }))
             },
             {
                 name: '목표_레벨',
                 type: 'INTEGER',
                 description: '심볼 강화 정보를 계산할 목표 레벨',
-                required: true
+                required: true,
+                choices: [...Array(20)].map((_, i) => ({ name: i + 1, value: i + 1 }))
             }
         ]
     },

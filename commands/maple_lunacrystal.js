@@ -89,7 +89,7 @@ module.exports = {
                 type: 'STRING',
                 description: '시뮬레이션을 수행할 루나크리스탈 카테고리',
                 required: true,
-                choices: ['스윗', '드림'].map((v) => ({ name: v, value: v }))
+                choices: Object.keys(probTable).map((v) => ({ name: v, value: v }))
             },
             {
                 name: '횟수',
