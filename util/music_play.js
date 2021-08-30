@@ -47,7 +47,7 @@ module.exports.QueueElement = class {
             })
             .on('error', (err) => {
                 this.sendMessage('노래 재생을 실패했습니다.');
-                replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]._p}\n에러 내용: ${err.stack ?? err._p}`);
+                replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]?._p}\n에러 내용: ${err.stack ?? err._p}`);
             });
     }
 
@@ -93,8 +93,9 @@ module.exports.QueueElement = class {
             this.playingMessage = await this.sendMessage({ embeds: [embed], components: [row1, row2] });
             this.subscription.player.play(await songDownload(this.songs[0].url));
             this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
-        } catch {
+        } catch (err) {
             this.sendMessage('노래 재생을 실패했습니다.');
+            replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]?._p}\n에러 내용: ${err.stack ?? err._p}`);
             await this.deleteMessage();
             this.songs.shift();
             return this.playSong();
