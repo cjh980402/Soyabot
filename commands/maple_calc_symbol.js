@@ -66,8 +66,8 @@ module.exports = {
     async commandExecute(interaction) {
         const startlev = interaction.options.getInteger('시작_레벨');
         const endlev = interaction.options.getInteger('목표_레벨');
-        if (endlev < startlev || endlev > 20) {
-            return interaction.followUp('시작 레벨 ~ 20 범위의 목표 레벨을 입력해주세요.');
+        if (endlev < startlev) {
+            return interaction.followUp('시작 레벨 이상의 목표 레벨을 입력해주세요.');
         }
 
         let total_req1 = 0,
