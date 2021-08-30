@@ -23,14 +23,16 @@ module.exports = {
             total_req2 = 0,
             total_meso1 = 0,
             total_meso2 = 0,
-            total_meso3 = 0;
+            total_meso3 = 0,
+            total_meso4 = 0;
         for (let i = startlev; i < endlev; i++) {
             total_req1 += i * i + 11; // 요구량 = i^2 + 11
             total_meso1 += 2370000 + 7130000 * i; // 여로 심볼
             total_meso2 += 12440000 + 6600000 * i; // 여로 제외 아케인
             if (i < 11) {
                 total_req2 += 9 * i * i + 20 * i; // 요구량 = 9i^2 + 20i
-                total_meso3 += 96900000 + 88500000 * i; // 어센틱 심볼
+                total_meso3 += 96900000 + 88500000 * i; // 세르니움 심볼
+                total_meso4 += 106600000 + 97300000 * i; // 세르니움 제외 어센틱 심볼
             }
         }
 
@@ -38,7 +40,7 @@ module.exports = {
             `아케인 심볼 Lv.${startlev} → Lv.${endlev}\n요구량: ${total_req1}\n여로: ${total_meso1.toLocaleString()}메소\n여로 제외: ${total_meso2.toLocaleString()}메소\n\n어센틱 심볼 Lv.${Math.min(
                 11,
                 startlev
-            )} → Lv.${Math.min(11, endlev)}\n요구량: ${total_req2}\n어센틱 심볼: ${total_meso3.toLocaleString()}메소`
+            )} → Lv.${Math.min(11, endlev)}\n요구량: ${total_req2}\n세르니움: ${total_meso3.toLocaleString()}메소\n세르니움 제외: ${total_meso4.toLocaleString()}메소`
         );
     },
     commandData: {
@@ -73,14 +75,16 @@ module.exports = {
             total_req2 = 0,
             total_meso1 = 0,
             total_meso2 = 0,
-            total_meso3 = 0;
+            total_meso3 = 0,
+            total_meso4 = 0;
         for (let i = startlev; i < endlev; i++) {
             total_req1 += i * i + 11; // 요구량 = i^2 + 11
             total_meso1 += 2370000 + 7130000 * i; // 여로 심볼
             total_meso2 += 12440000 + 6600000 * i; // 여로 제외 아케인
             if (i < 11) {
                 total_req2 += 9 * i * i + 20 * i; // 요구량 = 9i^2 + 20i
-                total_meso3 += 96900000 + 88500000 * i; // 어센틱 심볼
+                total_meso3 += 96900000 + 88500000 * i; // 세르니움 심볼
+                total_meso4 += 106600000 + 97300000 * i; // 세르니움 제외 어센틱 심볼
             }
         }
 
@@ -88,7 +92,7 @@ module.exports = {
             `아케인 심볼 Lv.${startlev} → Lv.${endlev}\n요구량: ${total_req1}\n여로: ${total_meso1.toLocaleString()}메소\n여로 제외: ${total_meso2.toLocaleString()}메소\n\n어센틱 심볼 Lv.${Math.min(
                 11,
                 startlev
-            )} → Lv.${Math.min(11, endlev)}\n요구량: ${total_req2}\n어센틱 심볼: ${total_meso3.toLocaleString()}메소`
+            )} → Lv.${Math.min(11, endlev)}\n요구량: ${total_req2}\n세르니움: ${total_meso3.toLocaleString()}메소\n세르니움 제외: ${total_meso4.toLocaleString()}메소`
         );
     }
 };
