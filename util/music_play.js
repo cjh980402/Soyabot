@@ -95,6 +95,7 @@ module.exports.QueueElement = class {
             this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
         } catch {
             this.sendMessage('노래 재생을 실패했습니다.');
+            await this.deleteMessage();
             this.songs.shift();
             return this.playSong();
         }
