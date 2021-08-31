@@ -1,11 +1,10 @@
-const { createAudioResource, demuxProbe } = require('@discordjs/voice');
+const { createAudioResource, StreamType } = require('@discordjs/voice');
 const { Client, Util } = require('soundcloud-scraper');
 const scdl = new Client();
-const { raw: ytdl } = require('youtube-dl-exec');
+const { stream: ytdl, search: ytsr } = require('play-dl');
 const { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } = require('../soyabot_config.json');
 const YouTubeAPI = require('simple-youtube-api');
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
-const ytsr = require('ytsr');
 const idRegex = /^[\w-]{11}$/;
 const listRegex = /^[\w-]+$/;
 const validPathDomains = /^https?:\/\/(youtu\.be\/|(www\.)?youtube\.com\/(embed|v|shorts)\/)/;
@@ -66,14 +65,10 @@ module.exports.getSongInfo = async function (url, search) {
                 thumbnail: songInfo.thumbnail
             };
         } else {
-            let videoID = module.exports.getYoutubeVideoID(url);
+            const videoID = module.exports.getYoutubeVideoID(url) ?? (await ytsr(search, { type: 'video', limit: 1 }))[0]?.id;
+            // (await youtube.searchVideos(search, 1, { part: 'snippet' }))[0]?.id;
             if (!videoID) {
-                const filter = (await ytsr.getFilters(search)).get('Type').get('Video').url;
-                videoID = filter && (await ytsr(filter, { limit: 1 })).items[0]?.id;
-                // videoID = (await youtube.searchVideos(search, 1, { part: 'snippet' }))[0]?.id;
-                if (!videoID) {
-                    throw new Error('검색 내용에 해당하는 영상을 찾지 못했습니다.');
-                }
+                throw new Error('검색 내용에 해당하는 영상을 찾지 못했습니다.');
             }
             songInfo = await youtube.getVideoByID(videoID);
             song = {
@@ -105,14 +100,10 @@ module.exports.getPlaylistInfo = async function (url, search) {
                     thumbnail: track.thumbnail
                 }));
         } else {
-            let playlistID = module.exports.getYoutubeListID(url);
+            const playlistID = module.exports.getYoutubeListID(url) ?? (await ytsr(search, { type: 'playlist', limit: 1 }))[0]?.id;
+            // (await youtube.searchPlaylists(search, 1, { part: 'snippet' }))[0]?.id;
             if (!playlistID) {
-                const filter = (await ytsr.getFilters(search)).get('Type').get('Playlist').url;
-                playlistID = filter && (await ytsr(filter, { limit: 1 })).items[0]?.playlistID;
-                // playlistID = (await youtube.searchPlaylists(search, 1, { part: 'snippet' }))[0]?.id;
-                if (!playlistID) {
-                    throw new Error('검색 내용에 해당하는 재생목록을 찾지 못했습니다.');
-                }
+                throw new Error('검색 내용에 해당하는 재생목록을 찾지 못했습니다.');
             }
             playlist = await youtube.getPlaylistByID(playlistID, { part: 'snippet' });
             videos = (await playlist.getVideos(200, { part: 'snippet' }))
@@ -136,43 +127,24 @@ module.exports.getPlaylistInfo = async function (url, search) {
 };
 
 module.exports.songDownload = async function (url) {
-    const ytdlProcess = ytdl(
-        url,
-        {
-            o: '-',
-            q: '',
-            f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
-            r: '100K'
-        },
-        { stdio: ['ignore', 'pipe', 'ignore'] }
-    );
-
-    const stream = ytdlProcess.stdout;
-    if (!stream) {
-        throw new Error('출력 스트림이 존재하지 않습니다.');
-    }
-
-    const onError = () => {
-        if (!ytdlProcess.killed) {
-            ytdlProcess.kill();
-        }
-        stream.resume();
-    };
-    ytdlProcess.on('error', onError);
-    stream.on('error', onError);
-
-    try {
-        const probe = await demuxProbe(stream);
-        return createAudioResource(probe.stream, { inputType: probe.type, inlineVolume: true });
-    } catch (err) {
-        onError();
-        throw err;
+    if (url.includes('youtube.com')) {
+        const { stream, type } = await ytdl(url);
+        return createAudioResource(stream, {
+            inputType: type,
+            inlineVolume: true
+        });
+    } else if (url.includes('soundcloud.com')) {
+        return createAudioResource(await (await scdl.getSongInfo(url)).downloadProgressive(), {
+            inputType: StreamType.Arbitrary,
+            inlineVolume: true
+        });
+    } else {
+        throw new Error('지원하지 않는 영상 주소입니다.');
     }
 };
 
 module.exports.youtubeSearch = async function (search) {
-    const filter = (await ytsr.getFilters(search)).get('Type').get('Video').url;
-    const results = filter && (await ytsr(filter, { limit: 10 })).items.filter((v) => v.type === 'video'); // 영상만 가져오기
+    const results = await ytsr(search, { type: 'video', limit: 10 });
     // const results = await youtube.searchVideos(search, 10);
     if (!results?.length) {
         return null;
