@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 const bossNameList = {
     세렌: '선택받은 세렌',
     검은마법사: '검은 마법사',
+    진힐라: '진 힐라',
     가디언엔젤슬라임: '가디언 엔젤 슬라임',
     블러디퀸: '블러디 퀸'
 };
