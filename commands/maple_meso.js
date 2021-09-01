@@ -22,16 +22,6 @@ async function getMesoEmbed(server) {
     const data = await (
         await fetch('https://commapi.gamemarket.kr/comm/graph', {
             method: 'POST',
-            headers: {
-                'Host': 'commapi.gamemarket.kr',
-                'Connection': 'keep-alive',
-                'Content-Length': 0,
-                'Accept': 'application/json',
-                'Origin': 'https://talk.gamemarket.kr',
-                'Referer': 'https://talk.gamemarket.kr/',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Accept-Language': 'ko,en;q=0.9,en-US;q=0.8'
-            },
             body: params
         })
     ).json();
