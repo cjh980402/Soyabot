@@ -39,7 +39,7 @@ function meso(star, lev) {
     return Math.round((1000 + Math.pow(lev, 3) * coefficient) / 100) * 100; // 십의자리에서 반올림
 }
 
-class NormalItem {
+export default class NormalItem {
     #goal = 0;
     #star = 0;
     #sum = 0;
@@ -167,5 +167,3 @@ class NormalItem {
         }
     }
 }
-
-module.exports = NormalItem;

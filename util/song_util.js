@@ -1,32 +1,32 @@
-const { createAudioResource, StreamType } = require('@discordjs/voice');
-const { Client, Util } = require('soundcloud-scraper');
-const scdl = new Client();
-const { stream: ytdl, search: ytsr } = require('play-dl');
-const { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } = require('../soyabot_config.json');
-const YouTubeAPI = require('simple-youtube-api');
+import { createAudioResource, StreamType } from '@discordjs/voice';
+import Soundcloud from 'soundcloud-scraper';
+const scdl = new Soundcloud.Client();
+import { stream as ytdl, search as ytsr } from 'play-dl';
+import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } from '../soyabot_config.js';
+import YouTubeAPI from 'simple-youtube-api';
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 const idRegex = /^[\w-]{11}$/;
 const listRegex = /^[\w-]+$/;
 const validPathDomains = /^https?:\/\/(youtu\.be\/|(www\.)?youtube\.com\/(embed|v|shorts)\/)/;
 const validQueryDomains = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com', 'gaming.youtube.com'];
 
-module.exports.isValidVideo = function (url) {
-    if (Util.validateURL(url, 'track') || module.exports.getYoutubeVideoID(url)) {
+export function isValidVideo(url) {
+    if (Soundcloud.Util.validateURL(url, 'track') || getYoutubeVideoID(url)) {
         return true;
     } else {
         return false;
     }
-};
+}
 
-module.exports.isValidPlaylist = function (url) {
-    if (Util.validateURL(url, 'playlist') || module.exports.getYoutubeListID(url)) {
+export function isValidPlaylist(url) {
+    if (Soundcloud.Util.validateURL(url, 'playlist') || getYoutubeListID(url)) {
         return true;
     } else {
         return false;
     }
-};
+}
 
-module.exports.getYoutubeVideoID = function (url) {
+export function getYoutubeVideoID(url) {
     try {
         const parsed = new URL(url);
         let id = parsed.searchParams.get('v');
@@ -40,9 +40,9 @@ module.exports.getYoutubeVideoID = function (url) {
     } catch {
         return null;
     }
-};
+}
 
-module.exports.getYoutubeListID = function (url) {
+export function getYoutubeListID(url) {
     try {
         const parsed = new URL(url);
         const id = parsed.searchParams.get('list');
@@ -50,13 +50,13 @@ module.exports.getYoutubeListID = function (url) {
     } catch {
         return null;
     }
-};
+}
 
-module.exports.getSongInfo = async function (url, search) {
+export async function getSongInfo(url, search) {
     try {
         let songInfo = null,
             song = null;
-        if (Util.validateURL(url, 'track')) {
+        if (Soundcloud.Util.validateURL(url, 'track')) {
             songInfo = await scdl.getSongInfo(url);
             song = {
                 title: songInfo.title,
@@ -65,7 +65,7 @@ module.exports.getSongInfo = async function (url, search) {
                 thumbnail: songInfo.thumbnail
             };
         } else {
-            const videoID = module.exports.getYoutubeVideoID(url) ?? (await ytsr(search, { type: 'video', limit: 1 }))[0]?.id;
+            const videoID = getYoutubeVideoID(url) ?? (await ytsr(search, { type: 'video', limit: 1 }))[0]?.id;
             // (await youtube.searchVideos(search, 1, { part: 'snippet' }))[0]?.id;
             if (!videoID) {
                 throw new Error('검색 내용에 해당하는 영상을 찾지 못했습니다.');
@@ -82,13 +82,13 @@ module.exports.getSongInfo = async function (url, search) {
     } catch {
         throw new Error('재생할 수 없는 영상입니다.');
     }
-};
+}
 
-module.exports.getPlaylistInfo = async function (url, search) {
+export async function getPlaylistInfo(url, search) {
     try {
         let playlist = null,
             videos = null;
-        if (Util.validateURL(url, 'playlist')) {
+        if (Soundcloud.Util.validateURL(url, 'playlist')) {
             playlist = await scdl.getPlaylist(url);
             videos = playlist.tracks
                 .shuffle()
@@ -100,7 +100,7 @@ module.exports.getPlaylistInfo = async function (url, search) {
                     thumbnail: track.thumbnail
                 }));
         } else {
-            const playlistID = module.exports.getYoutubeListID(url) ?? (await ytsr(search, { type: 'playlist', limit: 1 }))[0]?.id;
+            const playlistID = getYoutubeListID(url) ?? (await ytsr(search, { type: 'playlist', limit: 1 }))[0]?.id;
             // (await youtube.searchPlaylists(search, 1, { part: 'snippet' }))[0]?.id;
             if (!playlistID) {
                 throw new Error('검색 내용에 해당하는 재생목록을 찾지 못했습니다.');
@@ -124,9 +124,9 @@ module.exports.getPlaylistInfo = async function (url, search) {
     } catch {
         throw new Error('재생할 수 없는 재생목록입니다.');
     }
-};
+}
 
-module.exports.songDownload = async function (url) {
+export async function songDownload(url) {
     if (url.includes('youtube.com')) {
         const { stream, type } = await ytdl(url);
         return createAudioResource(stream, {
@@ -141,9 +141,9 @@ module.exports.songDownload = async function (url) {
     } else {
         throw new Error('지원하지 않는 영상 주소입니다.');
     }
-};
+}
 
-module.exports.youtubeSearch = async function (search) {
+export async function youtubeSearch(search) {
     const results = await ytsr(search, { type: 'video', limit: 10 });
     // const results = await youtube.searchVideos(search, 10);
     if (!results?.length) {
@@ -151,4 +151,4 @@ module.exports.youtubeSearch = async function (search) {
     } else {
         return results;
     }
-};
+}

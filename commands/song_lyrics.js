@@ -1,6 +1,6 @@
-const { MessageEmbed, Util } = require('../util/discord.js-extend');
-const fetch = require('node-fetch');
-const { load } = require('cheerio');
+import { MessageEmbed, Util } from '../util/discord.js-extend.js';
+import fetch from 'node-fetch';
+import { load } from 'cheerio';
 
 async function getLyricsEmbed(search) {
     const lyricsEmbed = new MessageEmbed().setColor('#FF9999');
@@ -28,38 +28,36 @@ async function getLyricsEmbed(search) {
     return lyricsEmbed;
 }
 
-module.exports = {
-    usage: `${client.prefix}lyrics (노래 제목)`,
-    command: ['lyrics', 'ly', '가사'],
-    description: '- 입력한 노래의 가사를 출력합니다. 노래 제목을 생략 시에는 현재 재생 중인 노래의 가사를 출력합니다.',
-    type: ['음악'],
-    async messageExecute(message, args) {
-        const queue = client.queues.get(message.guild?.id);
-        const search = args.join(' ') || queue?.songs[0].title;
-        if (!search) {
-            return message.channel.send('검색할 노래가 없습니다.');
-        }
-
-        return message.channel.send({ embeds: [await getLyricsEmbed(search)] });
-    },
-    commandData: {
-        name: 'lyrics',
-        description: '입력한 노래의 가사를 출력합니다. 노래 제목을 생략 시에는 현재 재생 중인 노래의 가사를 출력합니다.',
-        options: [
-            {
-                name: '노래_제목',
-                type: 'STRING',
-                description: '가사를 검색할 노래 제목'
-            }
-        ]
-    },
-    async commandExecute(interaction) {
-        const queue = client.queues.get(interaction.guildId);
-        const search = interaction.options.getString('노래_제목') ?? queue?.songs[0].title;
-        if (!search) {
-            return interaction.followUp('검색할 노래가 없습니다.');
-        }
-
-        return interaction.followUp({ embeds: [await getLyricsEmbed(search)] });
+export const usage = `${client.prefix}lyrics (노래 제목)`;
+export const command = ['lyrics', 'ly', '가사'];
+export const description = '- 입력한 노래의 가사를 출력합니다. 노래 제목을 생략 시에는 현재 재생 중인 노래의 가사를 출력합니다.';
+export const type = ['음악'];
+export async function messageExecute(message, args) {
+    const queue = client.queues.get(message.guild?.id);
+    const search = args.join(' ') || queue?.songs[0].title;
+    if (!search) {
+        return message.channel.send('검색할 노래가 없습니다.');
     }
+
+    return message.channel.send({ embeds: [await getLyricsEmbed(search)] });
+}
+export const commandData = {
+    name: 'lyrics',
+    description: '입력한 노래의 가사를 출력합니다. 노래 제목을 생략 시에는 현재 재생 중인 노래의 가사를 출력합니다.',
+    options: [
+        {
+            name: '노래_제목',
+            type: 'STRING',
+            description: '가사를 검색할 노래 제목'
+        }
+    ]
 };
+export async function commandExecute(interaction) {
+    const queue = client.queues.get(interaction.guildId);
+    const search = interaction.options.getString('노래_제목') ?? queue?.songs[0].title;
+    if (!search) {
+        return interaction.followUp('검색할 노래가 없습니다.');
+    }
+
+    return interaction.followUp({ embeds: [await getLyricsEmbed(search)] });
+}

@@ -1,0 +1,14 @@
+export const PREFIX = '/';
+export const TOKEN = '';
+export const ADMIN_ID = '';
+export const NOTICE_CHANNEL_ID = '';
+export const MAX_PLAYLIST_SIZE = 20;
+export const DEFAULT_VOLUME = 50;
+export const BOT_SERVER_DOMAIN = '';
+export const NAVER_CLIENT_ID = '';
+export const NAVER_CLIENT_SECRET = '';
+export const GOOGLE_API_KEY = '';
+export const DEEP_API_KEY = '';
+export const KAKAO_API_KEY = '';
+export const OPEN_API_KEY = '';
+export const CORONA_API_KEY = '';

@@ -1,5 +1,5 @@
-const { KAKAO_API_KEY } = require('../soyabot_config.json');
-const fetch = require('node-fetch');
+import { KAKAO_API_KEY } from '../soyabot_config.js';
+import fetch from 'node-fetch';
 const langList = {
     한: ['한국어', 'kr'],
     영: ['영어', 'en'],
@@ -47,87 +47,85 @@ function findLangCode(src, tar) {
     }
 }
 
-module.exports = {
-    usage: `${client.prefix}번역 (대상 언어 첫글자 + 결과 언어 첫글자) (내용)`,
-    command: ['번역', 'ㅂㅇ'],
-    description: `- 카카오 i를 이용한 언어 번역을 수행합니다. 한국어 → 영어의 경우 두번째 매개변수는 한영으로 입력하면 됩니다.
-- 참고. ${client.prefix}번역 목록`,
-    type: ['기타'],
-    async messageExecute(message, args) {
-        if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
-            return message.channel.send(
-                `<지원하는 언어 종류>\n${Object.values(langList)
-                    .map((v) => v[0])
-                    .join(', ')}`
-            );
+export const usage = `${client.prefix}번역 (대상 언어 첫글자 + 결과 언어 첫글자) (내용)`;
+export const command = ['번역', 'ㅂㅇ'];
+export const description = `- 카카오 i를 이용한 언어 번역을 수행합니다. 한국어 → 영어의 경우 두번째 매개변수는 한영으로 입력하면 됩니다.
+- 참고. ${client.prefix}번역 목록`;
+export const type = ['기타'];
+export async function messageExecute(message, args) {
+    if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
+        return message.channel.send(
+            `<지원하는 언어 종류>\n${Object.values(langList)
+                .map((v) => v[0])
+                .join(', ')}`
+        );
+    }
+    if (args.length < 2) {
+        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+    }
+    const langCode = findLangCode(args[0][0], args[0][1]);
+    if (!langCode) {
+        return message.channel.send(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 '${this.usage}'입니다.\n언어의 목록은 ${client.prefix}번역 목록을 확인해주세요.`);
+    }
+
+    const text = message.content.replace(/\s*.+?\s*.+?\s+.+?\s+/, '').trim();
+    if (text.length > 5000) {
+        return message.channel.send('5000자를 초과하는 내용은 번역하지 않습니다.');
+    } else {
+        return message.channel.send(await tran(langCode[0], langCode[1], text));
+    }
+}
+export const commandData = {
+    name: '번역',
+    description: '카카오 i를 이용한 언어 번역을 수행합니다.',
+    options: [
+        {
+            name: '언어목록',
+            type: 'SUB_COMMAND',
+            description: '번역 가능한 언어 목록을 보여줍니다.'
+        },
+        {
+            name: '언어번역',
+            type: 'SUB_COMMAND',
+            description: '언어 번역을 수행합니다.',
+            options: [
+                {
+                    name: '대상언어_결과언어',
+                    type: 'STRING',
+                    description: '대상 언어 첫글자 + 결과 언어 첫글자 입력',
+                    required: true
+                },
+                {
+                    name: '내용',
+                    type: 'STRING',
+                    description: '번역할 문장',
+                    required: true
+                }
+            ]
         }
-        if (args.length < 2) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
-        }
-        const langCode = findLangCode(args[0][0], args[0][1]);
+    ]
+};
+export async function commandExecute(interaction) {
+    const subcommand = interaction.options.getSubcommand();
+
+    if (subcommand === '언어목록') {
+        return interaction.followUp(
+            `<지원하는 언어 종류>\n${Object.values(langList)
+                .map((v) => v[0])
+                .join(', ')}`
+        );
+    } else if (subcommand === '언어번역') {
+        const translang = interaction.options.getString('대상언어_결과언어');
+        const langCode = findLangCode(translang[0], translang[1]);
         if (!langCode) {
-            return message.channel.send(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 '${this.usage}'입니다.\n언어의 목록은 ${client.prefix}번역 목록을 확인해주세요.`);
+            return interaction.followUp('지원하지 않는 번역입니다.');
         }
 
-        const text = message.content.replace(/\s*.+?\s*.+?\s+.+?\s+/, '').trim();
+        const text = interaction.options.getString('내용');
         if (text.length > 5000) {
-            return message.channel.send('5000자를 초과하는 내용은 번역하지 않습니다.');
+            return interaction.followUp('5000자를 초과하는 내용은 번역하지 않습니다.');
         } else {
-            return message.channel.send(await tran(langCode[0], langCode[1], text));
-        }
-    },
-    commandData: {
-        name: '번역',
-        description: '카카오 i를 이용한 언어 번역을 수행합니다.',
-        options: [
-            {
-                name: '언어목록',
-                type: 'SUB_COMMAND',
-                description: '번역 가능한 언어 목록을 보여줍니다.'
-            },
-            {
-                name: '언어번역',
-                type: 'SUB_COMMAND',
-                description: '언어 번역을 수행합니다.',
-                options: [
-                    {
-                        name: '대상언어_결과언어',
-                        type: 'STRING',
-                        description: '대상 언어 첫글자 + 결과 언어 첫글자 입력',
-                        required: true
-                    },
-                    {
-                        name: '내용',
-                        type: 'STRING',
-                        description: '번역할 문장',
-                        required: true
-                    }
-                ]
-            }
-        ]
-    },
-    async commandExecute(interaction) {
-        const subcommand = interaction.options.getSubcommand();
-
-        if (subcommand === '언어목록') {
-            return interaction.followUp(
-                `<지원하는 언어 종류>\n${Object.values(langList)
-                    .map((v) => v[0])
-                    .join(', ')}`
-            );
-        } else if (subcommand === '언어번역') {
-            const translang = interaction.options.getString('대상언어_결과언어');
-            const langCode = findLangCode(translang[0], translang[1]);
-            if (!langCode) {
-                return interaction.followUp('지원하지 않는 번역입니다.');
-            }
-
-            const text = interaction.options.getString('내용');
-            if (text.length > 5000) {
-                return interaction.followUp('5000자를 초과하는 내용은 번역하지 않습니다.');
-            } else {
-                return interaction.followUp(await tran(langCode[0], langCode[1], text));
-            }
+            return interaction.followUp(await tran(langCode[0], langCode[1], text));
         }
     }
-};
+}

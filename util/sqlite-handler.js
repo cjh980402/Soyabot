@@ -1,6 +1,6 @@
-const Database = require('better-sqlite3');
+import Database from 'better-sqlite3';
 
-class SQLiteHandler {
+export default class SQLiteHandler {
     #db;
 
     constructor(db) {
@@ -41,5 +41,3 @@ class SQLiteHandler {
         return this.#db.prepare(sql).all(...params);
     }
 }
-
-module.exports = SQLiteHandler;

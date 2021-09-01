@@ -1,5 +1,5 @@
-const { MessageEmbed } = require('../util/discord.js-extend');
-const { MapleUser } = require('../util/maple_parsing');
+import { MessageEmbed } from '../util/discord.js-extend.js';
+import { MapleUser } from '../util/maple_parsing.js';
 const scoreGrade = [
     [0, '메린이'],
     [300, '무자본 평균'],
@@ -52,71 +52,69 @@ function getScouterEmbed(mapleUserInfo, union) {
         .addField('**측정 결과**', `${grade}! (${score}점)`);
 }
 
-module.exports = {
-    usage: `${client.prefix}스카우터 (닉네임)`,
-    command: ['스카우터', 'ㅅㅋㅇㅌ'],
-    description: '- 정해진 조건으로 해당 캐릭터의 점수를 평가합니다. 닉네임을 생략시에는 기준 점수표를 보여줍니다.',
-    type: ['메이플'],
-    async messageExecute(message, args) {
-        if (args.length !== 1) {
-            let rslt = '스카우터 기준 점수표';
-            for (let i = 0; i < scoreGrade.length - 2; i++) {
-                rslt += `\n${scoreGrade[i][0]} ~ ${scoreGrade[i + 1][0] - 1}점: ${scoreGrade[i][1]}`;
-            }
-            rslt += `\n${scoreGrade[scoreGrade.length - 2][0]}점 이상: ${scoreGrade[scoreGrade.length - 2][1]}`;
-            return message.channel.send(rslt);
+export const usage = `${client.prefix}스카우터 (닉네임)`;
+export const command = ['스카우터', 'ㅅㅋㅇㅌ'];
+export const description = '- 정해진 조건으로 해당 캐릭터의 점수를 평가합니다. 닉네임을 생략시에는 기준 점수표를 보여줍니다.';
+export const type = ['메이플'];
+export async function messageExecute(message, args) {
+    if (args.length !== 1) {
+        let rslt = '스카우터 기준 점수표';
+        for (let i = 0; i < scoreGrade.length - 2; i++) {
+            rslt += `\n${scoreGrade[i][0]} ~ ${scoreGrade[i + 1][0] - 1}점: ${scoreGrade[i][1]}`;
         }
-
-        const mapleUserInfo = new MapleUser(args[0]);
-        const union = (await mapleUserInfo.homeUnion())?.[0];
-        if (!union) {
-            return message.channel.send(`[${mapleUserInfo.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
-        }
-
-        if (!(await mapleUserInfo.isLatest())) {
-            message.channel.send('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
-            if (!(await mapleUserInfo.updateGG())) {
-                message.channel.send('제한시간 내에 갱신 작업을 실패하였습니다.');
-            }
-        }
-
-        return message.channel.send({ embeds: [getScouterEmbed(mapleUserInfo, union)] });
-    },
-    commandData: {
-        name: '스카우터',
-        description: '정해진 조건으로 해당 캐릭터의 점수를 평가합니다. 닉네임을 생략시에는 기준 점수표를 보여줍니다.',
-        options: [
-            {
-                name: '닉네임',
-                type: 'STRING',
-                description: '점수를 평가할 캐릭터의 닉네임'
-            }
-        ]
-    },
-    async commandExecute(interaction) {
-        const nickname = interaction.options.getString('닉네임');
-        if (!nickname) {
-            let rslt = '스카우터 기준 점수표';
-            for (let i = 0; i < scoreGrade.length - 2; i++) {
-                rslt += `\n${scoreGrade[i][0]} ~ ${scoreGrade[i + 1][0] - 1}점: ${scoreGrade[i][1]}`;
-            }
-            rslt += `\n${scoreGrade[scoreGrade.length - 2][0]}점 이상: ${scoreGrade[scoreGrade.length - 2][1]}`;
-            return interaction.followUp(rslt);
-        }
-
-        const mapleUserInfo = new MapleUser(nickname);
-        const union = (await mapleUserInfo.homeUnion())?.[0];
-        if (!union) {
-            return interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
-        }
-
-        if (!(await mapleUserInfo.isLatest())) {
-            await interaction.editReply('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
-            if (!(await mapleUserInfo.updateGG())) {
-                await interaction.editReply('제한시간 내에 갱신 작업을 실패하였습니다.');
-            }
-        }
-
-        return interaction.followUp({ embeds: [getScouterEmbed(mapleUserInfo, union)] });
+        rslt += `\n${scoreGrade[scoreGrade.length - 2][0]}점 이상: ${scoreGrade[scoreGrade.length - 2][1]}`;
+        return message.channel.send(rslt);
     }
+
+    const mapleUserInfo = new MapleUser(args[0]);
+    const union = (await mapleUserInfo.homeUnion())?.[0];
+    if (!union) {
+        return message.channel.send(`[${mapleUserInfo.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
+    }
+
+    if (!(await mapleUserInfo.isLatest())) {
+        message.channel.send('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
+        if (!(await mapleUserInfo.updateGG())) {
+            message.channel.send('제한시간 내에 갱신 작업을 실패하였습니다.');
+        }
+    }
+
+    return message.channel.send({ embeds: [getScouterEmbed(mapleUserInfo, union)] });
+}
+export const commandData = {
+    name: '스카우터',
+    description: '정해진 조건으로 해당 캐릭터의 점수를 평가합니다. 닉네임을 생략시에는 기준 점수표를 보여줍니다.',
+    options: [
+        {
+            name: '닉네임',
+            type: 'STRING',
+            description: '점수를 평가할 캐릭터의 닉네임'
+        }
+    ]
 };
+export async function commandExecute(interaction) {
+    const nickname = interaction.options.getString('닉네임');
+    if (!nickname) {
+        let rslt = '스카우터 기준 점수표';
+        for (let i = 0; i < scoreGrade.length - 2; i++) {
+            rslt += `\n${scoreGrade[i][0]} ~ ${scoreGrade[i + 1][0] - 1}점: ${scoreGrade[i][1]}`;
+        }
+        rslt += `\n${scoreGrade[scoreGrade.length - 2][0]}점 이상: ${scoreGrade[scoreGrade.length - 2][1]}`;
+        return interaction.followUp(rslt);
+    }
+
+    const mapleUserInfo = new MapleUser(nickname);
+    const union = (await mapleUserInfo.homeUnion())?.[0];
+    if (!union) {
+        return interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
+    }
+
+    if (!(await mapleUserInfo.isLatest())) {
+        await interaction.editReply('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
+        if (!(await mapleUserInfo.updateGG())) {
+            await interaction.editReply('제한시간 내에 갱신 작업을 실패하였습니다.');
+        }
+    }
+
+    return interaction.followUp({ embeds: [getScouterEmbed(mapleUserInfo, union)] });
+}

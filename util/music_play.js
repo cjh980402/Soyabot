@@ -1,11 +1,11 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require('./discord.js-extend');
-const { AudioPlayerStatus, createAudioPlayer, NoSubscriberBehavior, VoiceConnectionStatus } = require('@discordjs/voice');
-const { songDownload } = require('./song_util');
-const { replyAdmin } = require('../admin/bot_control');
-const { DEFAULT_VOLUME } = require('../soyabot_config.json');
-const { canModifyQueue } = require('./soyabot_util');
+import { MessageActionRow, MessageButton, MessageEmbed } from './discord.js-extend.js';
+import { AudioPlayerStatus, createAudioPlayer, NoSubscriberBehavior, VoiceConnectionStatus } from '@discordjs/voice';
+import { songDownload } from './song_util.js';
+import { replyAdmin } from '../admin/bot_control.js';
+import { DEFAULT_VOLUME } from '../soyabot_config.js';
+import { canModifyQueue } from './soyabot_util.js';
 
-module.exports.QueueElement = class {
+export class QueueElement {
     textChannel;
     voiceChannel;
     subscription;
@@ -124,9 +124,9 @@ module.exports.QueueElement = class {
         }
         this.playingMessage = null;
     }
-};
+}
 
-module.exports.musicButtonControl = async function (interaction) {
+export async function musicButtonControl (interaction) {
     const { guild } = interaction;
     const queue = client.queues.get(guild?.id);
     try {
@@ -182,9 +182,9 @@ module.exports.musicButtonControl = async function (interaction) {
                 break;
         }
     } catch {}
-};
+}
 
-module.exports.musicActiveControl = function (oldState, newState) {
+export function musicActiveControl (oldState, newState) {
     try {
         const oldVoice = oldState.channel;
         const newVoice = newState.channel;
@@ -227,4 +227,4 @@ module.exports.musicActiveControl = function (oldState, newState) {
     } catch (err) {
         replyAdmin(`[oldState]\n${oldState._p}\n[newState]\n${newState._p}\n에러 내용: ${err.stack ?? err._p}`);
     }
-};
+}

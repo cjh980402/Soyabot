@@ -1,6 +1,6 @@
-const { MessageAttachment, MessageActionRow, MessageButton, MessageEmbed } = require('../util/discord.js-extend');
-const { CORONA_API_KEY } = require('../soyabot_config.json');
-const fetch = require('node-fetch');
+import { MessageAttachment, MessageActionRow, MessageButton, MessageEmbed } from '../util/discord.js-extend.js';
+import { CORONA_API_KEY } from '../soyabot_config.js';
+import fetch from 'node-fetch';
 
 function calcIncrease(data) {
     return `${data >= 0 ? `⬆️ ${data.toLocaleString()}` : `⬇️ ${(-data).toLocaleString()}`}`;
@@ -40,101 +40,99 @@ async function getCoronaEmbed(countData, countryData) {
     return [corona1, corona2];
 }
 
-module.exports = {
-    usage: `${client.prefix}코로나`,
-    command: ['코로나', 'ㅋㄹㄴ'],
-    description: '- 최신 기준 코로나 국내 현황 통계를 알려줍니다.',
-    type: ['기타'],
-    async messageExecute(message) {
-        const countData = await (await fetch(`https://api.corona-19.kr/korea/?serviceKey=${CORONA_API_KEY}`)).json();
-        const countryData = await (await fetch(`https://api.corona-19.kr/korea/country/new/?serviceKey=${CORONA_API_KEY}`)).json();
+export const usage = `${client.prefix}코로나`;
+export const command = ['코로나', 'ㅋㄹㄴ'];
+export const description = '- 최신 기준 코로나 국내 현황 통계를 알려줍니다.';
+export const type = ['기타'];
+export async function messageExecute(message) {
+    const countData = await (await fetch(`https://api.corona-19.kr/korea/?serviceKey=${CORONA_API_KEY}`)).json();
+    const countryData = await (await fetch(`https://api.corona-19.kr/korea/country/new/?serviceKey=${CORONA_API_KEY}`)).json();
 
-        if (countData.resultCode === '0' && countryData.resultCode === '0') {
-            let currentPage = 0;
-            const thumbnail = new MessageAttachment('./pictures/mohw.png');
-            const embeds = await getCoronaEmbed(countData, countryData);
-            const row = new MessageActionRow().addComponents(
-                new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
-            );
-            const coronaEmbed = await message.channel.send({
-                content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                embeds: [embeds[currentPage]],
-                files: [thumbnail],
-                components: [row]
-            });
+    if (countData.resultCode === '0' && countryData.resultCode === '0') {
+        let currentPage = 0;
+        const thumbnail = new MessageAttachment('./pictures/mohw.png');
+        const embeds = await getCoronaEmbed(countData, countryData);
+        const row = new MessageActionRow().addComponents(
+            new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
+            new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
+            new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
+        );
+        const coronaEmbed = await message.channel.send({
+            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+            embeds: [embeds[currentPage]],
+            files: [thumbnail],
+            components: [row]
+        });
 
-            const filter = (itr) => message.author.id === itr.user.id;
-            const collector = coronaEmbed.createMessageComponentCollector({ filter, time: 60000 });
+        const filter = (itr) => message.author.id === itr.user.id;
+        const collector = coronaEmbed.createMessageComponentCollector({ filter, time: 60000 });
 
-            collector.on('collect', async (itr) => {
-                try {
-                    switch (itr.customId) {
-                        case 'next':
-                            currentPage = (currentPage + 1) % embeds.length;
-                            await coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
-                            break;
-                        case 'prev':
-                            currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                            await coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
-                            break;
-                        case 'stop':
-                            collector.stop();
-                            break;
-                    }
-                } catch {}
-            });
-        } else {
-            return message.channel.send('코로나 현황을 조회할 수 없습니다.');
-        }
-    },
-    commandData: {
-        name: '코로나',
-        description: '최신 기준 코로나 국내 현황 통계를 알려줍니다.'
-    },
-    async commandExecute(interaction) {
-        const countData = await (await fetch(`https://api.corona-19.kr/korea/?serviceKey=${CORONA_API_KEY}`)).json();
-        const countryData = await (await fetch(`https://api.corona-19.kr/korea/country/new/?serviceKey=${CORONA_API_KEY}`)).json();
-
-        if (countData.resultCode === '0' && countryData.resultCode === '0') {
-            let currentPage = 0;
-            const thumbnail = new MessageAttachment('./pictures/mohw.png');
-            const embeds = await getCoronaEmbed(countData, countryData);
-            const row = new MessageActionRow().addComponents(
-                new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
-            );
-            const coronaEmbed = await interaction.editReply({
-                content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                embeds: [embeds[currentPage]],
-                files: [thumbnail],
-                components: [row]
-            });
-
-            const filter = (itr) => interaction.user.id === itr.user.id;
-            const collector = coronaEmbed.createMessageComponentCollector({ filter, time: 60000 });
-
-            collector.on('collect', async (itr) => {
-                try {
-                    switch (itr.customId) {
-                        case 'next':
-                            currentPage = (currentPage + 1) % embeds.length;
-                            await coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
-                            break;
-                        case 'prev':
-                            currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                            await coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
-                            break;
-                        case 'stop':
-                            collector.stop();
-                            break;
-                    }
-                } catch {}
-            });
-        } else {
-            return interaction.followUp('코로나 현황을 조회할 수 없습니다.');
-        }
+        collector.on('collect', async (itr) => {
+            try {
+                switch (itr.customId) {
+                    case 'next':
+                        currentPage = (currentPage + 1) % embeds.length;
+                        await coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        break;
+                    case 'prev':
+                        currentPage = (currentPage - 1 + embeds.length) % embeds.length;
+                        await coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        break;
+                    case 'stop':
+                        collector.stop();
+                        break;
+                }
+            } catch { }
+        });
+    } else {
+        return message.channel.send('코로나 현황을 조회할 수 없습니다.');
     }
+}
+export const commandData = {
+    name: '코로나',
+    description: '최신 기준 코로나 국내 현황 통계를 알려줍니다.'
 };
+export async function commandExecute(interaction) {
+    const countData = await (await fetch(`https://api.corona-19.kr/korea/?serviceKey=${CORONA_API_KEY}`)).json();
+    const countryData = await (await fetch(`https://api.corona-19.kr/korea/country/new/?serviceKey=${CORONA_API_KEY}`)).json();
+
+    if (countData.resultCode === '0' && countryData.resultCode === '0') {
+        let currentPage = 0;
+        const thumbnail = new MessageAttachment('./pictures/mohw.png');
+        const embeds = await getCoronaEmbed(countData, countryData);
+        const row = new MessageActionRow().addComponents(
+            new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
+            new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
+            new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
+        );
+        const coronaEmbed = await interaction.editReply({
+            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+            embeds: [embeds[currentPage]],
+            files: [thumbnail],
+            components: [row]
+        });
+
+        const filter = (itr) => interaction.user.id === itr.user.id;
+        const collector = coronaEmbed.createMessageComponentCollector({ filter, time: 60000 });
+
+        collector.on('collect', async (itr) => {
+            try {
+                switch (itr.customId) {
+                    case 'next':
+                        currentPage = (currentPage + 1) % embeds.length;
+                        await coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        break;
+                    case 'prev':
+                        currentPage = (currentPage - 1 + embeds.length) % embeds.length;
+                        await coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        break;
+                    case 'stop':
+                        collector.stop();
+                        break;
+                }
+            } catch { }
+        });
+    } else {
+        return interaction.followUp('코로나 현황을 조회할 수 없습니다.');
+    }
+}

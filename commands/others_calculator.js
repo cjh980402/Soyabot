@@ -1,4 +1,4 @@
-const { create, all } = require('mathjs');
+import { create, all } from 'mathjs';
 const math = create(all);
 const originEvaluate = math.evaluate; // 오버라이드 전에 원래 evaluate 함수를 가져옴
 
@@ -36,39 +36,37 @@ function inputExpression(str) {
         .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (all) => `^(${[...all].map((v) => '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(v)).join('')})`);
 }
 
-module.exports = {
-    usage: `${client.prefix}ev (계산식)`,
-    command: ['ev', '계산기', 'ㄱㅅㄱ', 'ㄳㄱ'],
-    description: '- 계산식에 해당하는 결과값을 보여줍니다.',
-    type: ['기타'],
-    async messageExecute(message, args) {
-        if (args.length < 1) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
-        }
-
-        try {
-            return message.channel.sendSplitCode(String(originEvaluate(inputExpression(args.join(' ')))), { code: 'js' });
-        } catch {
-            return message.channel.send('올바르지 않은 수식입니다.');
-        }
-    },
-    commandData: {
-        name: 'ev',
-        description: '계산식에 해당하는 결과값을 보여줍니다.',
-        options: [
-            {
-                name: '계산식',
-                type: 'STRING',
-                description: '결과값을 계산할 계산식',
-                required: true
-            }
-        ]
-    },
-    async commandExecute(interaction) {
-        try {
-            return interaction.sendSplitCode(String(originEvaluate(inputExpression(interaction.options.getString('계산식')))), { code: 'js' });
-        } catch {
-            return interaction.followUp('올바르지 않은 수식입니다.');
-        }
+export const usage = `${client.prefix}ev (계산식)`;
+export const command = ['ev', '계산기', 'ㄱㅅㄱ', 'ㄳㄱ'];
+export const description = '- 계산식에 해당하는 결과값을 보여줍니다.';
+export const type = ['기타'];
+export async function messageExecute(message, args) {
+    if (args.length < 1) {
+        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
     }
+
+    try {
+        return message.channel.sendSplitCode(String(originEvaluate(inputExpression(args.join(' ')))), { code: 'js' });
+    } catch {
+        return message.channel.send('올바르지 않은 수식입니다.');
+    }
+}
+export const commandData = {
+    name: 'ev',
+    description: '계산식에 해당하는 결과값을 보여줍니다.',
+    options: [
+        {
+            name: '계산식',
+            type: 'STRING',
+            description: '결과값을 계산할 계산식',
+            required: true
+        }
+    ]
 };
+export async function commandExecute(interaction) {
+    try {
+        return interaction.sendSplitCode(String(originEvaluate(inputExpression(interaction.options.getString('계산식')))), { code: 'js' });
+    } catch {
+        return interaction.followUp('올바르지 않은 수식입니다.');
+    }
+}

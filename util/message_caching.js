@@ -1,6 +1,6 @@
-const { CommandInteraction, Message } = require('./discord.js-extend');
+import { CommandInteraction, Message } from './discord.js-extend.js';
 
-module.exports = function (messageOrInteraction) {
+export default function (messageOrInteraction) {
     if (messageOrInteraction instanceof Message) {
         if (!messageOrInteraction.guildId) {
             return;

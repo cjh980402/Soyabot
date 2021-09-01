@@ -1,6 +1,6 @@
-const { MessageAttachment, MessageEmbed } = require('../util/discord.js-extend');
-const renderChart = require('../util/chartjs_rendering');
-const fetch = require('node-fetch');
+import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
+import renderChart from '../util/chartjs_rendering.js';
+import fetch from 'node-fetch';
 const serverList = {
     스카니아: 'server1',
     베라: 'server2',
@@ -104,32 +104,30 @@ async function getMesoEmbed(server) {
     return { embeds: [mesoEmbed], files: [image] };
 }
 
-module.exports = {
-    usage: `${client.prefix}메소 (서버)`,
-    command: ['메소', 'ㅁㅅ'],
-    description: '- 해당 서버의 메소 시세를 알려줍니다. 서버 이름은 정확히 입력해야 합니다.',
-    type: ['메이플'],
-    async messageExecute(message, args) {
-        if (args.length !== 1 || !serverList[args[0]]) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
-        }
-
-        return message.channel.send(await getMesoEmbed(args[0]));
-    },
-    commandData: {
-        name: '메소',
-        description: '해당 서버의 메소 시세를 알려줍니다.',
-        options: [
-            {
-                name: '서버',
-                type: 'STRING',
-                description: '메소 시세를 검색할 서버',
-                required: true,
-                choices: Object.keys(serverList).map((v) => ({ name: v, value: v }))
-            }
-        ]
-    },
-    async commandExecute(interaction) {
-        return interaction.followUp(await getMesoEmbed(interaction.options.getString('서버')));
+export const usage = `${client.prefix}메소 (서버)`;
+export const command = ['메소', 'ㅁㅅ'];
+export const description = '- 해당 서버의 메소 시세를 알려줍니다. 서버 이름은 정확히 입력해야 합니다.';
+export const type = ['메이플'];
+export async function messageExecute(message, args) {
+    if (args.length !== 1 || !serverList[args[0]]) {
+        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
     }
+
+    return message.channel.send(await getMesoEmbed(args[0]));
+}
+export const commandData = {
+    name: '메소',
+    description: '해당 서버의 메소 시세를 알려줍니다.',
+    options: [
+        {
+            name: '서버',
+            type: 'STRING',
+            description: '메소 시세를 검색할 서버',
+            required: true,
+            choices: Object.keys(serverList).map((v) => ({ name: v, value: v }))
+        }
+    ]
 };
+export async function commandExecute(interaction) {
+    return interaction.followUp(await getMesoEmbed(interaction.options.getString('서버')));
+}

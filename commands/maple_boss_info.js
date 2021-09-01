@@ -1,6 +1,6 @@
-const { MessageEmbed } = require('../util/discord.js-extend');
-const { bossData } = require('../util/soyabot_const.json');
-const fetch = require('node-fetch');
+import { MessageEmbed } from '../util/discord.js-extend.js';
+import { bossData } from '../util/soyabot_const.js';
+import fetch from 'node-fetch';
 const bossNameList = {
     세렌: '선택받은 세렌',
     검은마법사: '검은 마법사',
@@ -38,55 +38,52 @@ async function getBossEmbed(bossName, bossGrade) {
         .setDescription(`**보상**\n${targetBoss[0].join('\n\n')}\n\n**정보**\n${targetBoss[1].join('\n\n')}`);
 }
 
-module.exports = {
-    usage: `${client.prefix}보스 (보스 이름) (보스 난이도)`,
-    command: ['보스', 'ㅂㅅ', 'ㅄ'],
-    description: '- 해당하는 보스의 보상과 체력, 방어율을 알려줍니다.\n- 난이도를 생략하면 상위 등급의 정보를 보여줍니다.',
-    type: ['메이플'],
-    async messageExecute(message, args) {
-        if (args.length < 1) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
-        }
-        let bossName = args.join(''),
-            bossGrade = Object.keys(bossData[bossName] ?? {})[0];
-        if (!bossData[bossName]) {
-            bossGrade = args.pop();
-            bossName = args.join('');
-            if (!bossData[bossName]) {
-                return message.channel.send('데이터가 없는 보스입니다.');
-            }
-            if (!bossData[bossName][bossGrade]) {
-                bossGrade = Object.keys(bossData[bossName])[0];
-            }
-        }
-
-        return message.channel.send({ embeds: [await getBossEmbed(bossName, bossGrade)] });
-    },
-    commandData: {
-        name: '보스',
-        description: '해당하는 보스의 보상과 체력, 방어율을 알려줍니다.',
-        options: [
-            {
-                name: '보스_이름',
-                type: 'STRING',
-                description: '보스 정보를 검색할 보스의 이름',
-                required: true
-            },
-            {
-                name: '보스_난이도',
-                type: 'STRING',
-                description: '보스 정보를 검색할 보스의 난이도',
-                choices: Object.keys(difficultyList).map((v) => ({ name: v, value: v }))
-            }
-        ]
-    },
-    async commandExecute(interaction) {
-        const bossName = interaction.options.getString('보스_이름').replace(/\s+/g, '');
-        if (!bossData[bossName]) {
-            return interaction.followUp('데이터가 없는 보스입니다.');
-        }
-        const bossGrade = interaction.options.getString('보스_난이도');
-
-        return interaction.followUp({ embeds: [await getBossEmbed(bossName, bossData[bossName][bossGrade] ? bossGrade : Object.keys(bossData[bossName])[0])] });
+export const usage = `${client.prefix}보스 (보스 이름) (보스 난이도)`;
+export const command = ['보스', 'ㅂㅅ', 'ㅄ'];
+export const description = '- 해당하는 보스의 보상과 체력, 방어율을 알려줍니다.\n- 난이도를 생략하면 상위 등급의 정보를 보여줍니다.';
+export const type = ['메이플'];
+export async function messageExecute(message, args) {
+    if (args.length < 1) {
+        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
     }
+    let bossName = args.join(''), bossGrade = Object.keys(bossData[bossName] ?? {})[0];
+    if (!bossData[bossName]) {
+        bossGrade = args.pop();
+        bossName = args.join('');
+        if (!bossData[bossName]) {
+            return message.channel.send('데이터가 없는 보스입니다.');
+        }
+        if (!bossData[bossName][bossGrade]) {
+            bossGrade = Object.keys(bossData[bossName])[0];
+        }
+    }
+
+    return message.channel.send({ embeds: [await getBossEmbed(bossName, bossGrade)] });
+}
+export const commandData = {
+    name: '보스',
+    description: '해당하는 보스의 보상과 체력, 방어율을 알려줍니다.',
+    options: [
+        {
+            name: '보스_이름',
+            type: 'STRING',
+            description: '보스 정보를 검색할 보스의 이름',
+            required: true
+        },
+        {
+            name: '보스_난이도',
+            type: 'STRING',
+            description: '보스 정보를 검색할 보스의 난이도',
+            choices: Object.keys(difficultyList).map((v) => ({ name: v, value: v }))
+        }
+    ]
 };
+export async function commandExecute(interaction) {
+    const bossName = interaction.options.getString('보스_이름').replace(/\s+/g, '');
+    if (!bossData[bossName]) {
+        return interaction.followUp('데이터가 없는 보스입니다.');
+    }
+    const bossGrade = interaction.options.getString('보스_난이도');
+
+    return interaction.followUp({ embeds: [await getBossEmbed(bossName, bossData[bossName][bossGrade] ? bossGrade : Object.keys(bossData[bossName])[0])] });
+}

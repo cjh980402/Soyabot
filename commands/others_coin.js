@@ -1,6 +1,6 @@
-const { MessageAttachment, MessageEmbed } = require('../util/discord.js-extend');
-const { cmd } = require('../admin/admin_function');
-const fetch = require('node-fetch');
+import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
+import { cmd } from '../admin/admin_function.js';
+import fetch from 'node-fetch';
 const chartType = {
     '1일': 'd',
     '1주': 'w',
@@ -69,65 +69,63 @@ async function getCoinEmbed(searchRslt, type) {
     return { embeds: [coinEmbed], files: [image] };
 }
 
-module.exports = {
-    usage: `${client.prefix}코인정보 (검색 내용) (차트 종류)`,
-    command: ['코인정보', 'ㅋㅇㅈㅂ'],
-    description: `- 검색 내용에 해당하는 코인의 정보를 보여줍니다.
-- (차트 종류): ${Object.keys(chartType).join(', ')} 입력가능 (생략 시 1일로 적용)`,
-    type: ['기타'],
-    async messageExecute(message, args) {
-        if (args.length < 1) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
-        }
-
-        const type = args.length > 1 && chartType[args[args.length - 1]] ? args.pop() : '1일'; // 차트 종류
-        const krSearch = args.join('');
-        const enSearch = args.join(' ').toUpperCase();
-        const searchList = await (await fetch('https://api.upbit.com/v1/market/all')).json();
-        const searchRslt = searchList.find((v) => {
-            const [currency, code] = v.market.split('-');
-            return currency === 'KRW' && (code.includes(enSearch) || v.korean_name.includes(krSearch) || v.english_name.toUpperCase().includes(enSearch));
-        });
-
-        if (!searchRslt) {
-            return message.channel.send('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
-        } else {
-            return message.channel.send(await getCoinEmbed(searchRslt, type));
-        }
-    },
-    commandData: {
-        name: '코인정보',
-        description: '검색 내용에 해당하는 코인의 정보를 보여줍니다.',
-        options: [
-            {
-                name: '검색_내용',
-                type: 'STRING',
-                description: '코인정보를 검색할 내용',
-                required: true
-            },
-            {
-                name: '차트_종류',
-                type: 'STRING',
-                description: '출력할 차트의 종류 (생략 시 1일로 적용)',
-                choices: Object.keys(chartType).map((v) => ({ name: v, value: v }))
-            }
-        ]
-    },
-    async commandExecute(interaction) {
-        const type = interaction.options.getString('차트_종류') ?? '1일'; // 차트 종류
-        const search = interaction.options.getString('검색_내용');
-        const krSearch = search.replace(/\s+/g, '');
-        const enSearch = search.toUpperCase();
-        const searchList = await (await fetch('https://api.upbit.com/v1/market/all')).json();
-        const searchRslt = searchList.find((v) => {
-            const [currency, code] = v.market.split('-');
-            return currency === 'KRW' && (code.includes(enSearch) || v.korean_name.includes(krSearch) || v.english_name.toUpperCase().includes(enSearch));
-        });
-
-        if (!searchRslt) {
-            return interaction.followUp('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
-        } else {
-            return interaction.followUp(await getCoinEmbed(searchRslt, type));
-        }
+export const usage = `${client.prefix}코인정보 (검색 내용) (차트 종류)`;
+export const command = ['코인정보', 'ㅋㅇㅈㅂ'];
+export const description = `- 검색 내용에 해당하는 코인의 정보를 보여줍니다.
+- (차트 종류): ${Object.keys(chartType).join(', ')} 입력가능 (생략 시 1일로 적용)`;
+export const type = ['기타'];
+export async function messageExecute(message, args) {
+    if (args.length < 1) {
+        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
     }
+
+    const type = args.length > 1 && chartType[args[args.length - 1]] ? args.pop() : '1일'; // 차트 종류
+    const krSearch = args.join('');
+    const enSearch = args.join(' ').toUpperCase();
+    const searchList = await (await fetch('https://api.upbit.com/v1/market/all')).json();
+    const searchRslt = searchList.find((v) => {
+        const [currency, code] = v.market.split('-');
+        return currency === 'KRW' && (code.includes(enSearch) || v.korean_name.includes(krSearch) || v.english_name.toUpperCase().includes(enSearch));
+    });
+
+    if (!searchRslt) {
+        return message.channel.send('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
+    } else {
+        return message.channel.send(await getCoinEmbed(searchRslt, type));
+    }
+}
+export const commandData = {
+    name: '코인정보',
+    description: '검색 내용에 해당하는 코인의 정보를 보여줍니다.',
+    options: [
+        {
+            name: '검색_내용',
+            type: 'STRING',
+            description: '코인정보를 검색할 내용',
+            required: true
+        },
+        {
+            name: '차트_종류',
+            type: 'STRING',
+            description: '출력할 차트의 종류 (생략 시 1일로 적용)',
+            choices: Object.keys(chartType).map((v) => ({ name: v, value: v }))
+        }
+    ]
 };
+export async function commandExecute(interaction) {
+    const type = interaction.options.getString('차트_종류') ?? '1일'; // 차트 종류
+    const search = interaction.options.getString('검색_내용');
+    const krSearch = search.replace(/\s+/g, '');
+    const enSearch = search.toUpperCase();
+    const searchList = await (await fetch('https://api.upbit.com/v1/market/all')).json();
+    const searchRslt = searchList.find((v) => {
+        const [currency, code] = v.market.split('-');
+        return currency === 'KRW' && (code.includes(enSearch) || v.korean_name.includes(krSearch) || v.english_name.toUpperCase().includes(enSearch));
+    });
+
+    if (!searchRslt) {
+        return interaction.followUp('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
+    } else {
+        return interaction.followUp(await getCoinEmbed(searchRslt, type));
+    }
+}

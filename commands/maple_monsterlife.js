@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 async function farm_monster(monster) {
     // 몬스터 이름
@@ -145,131 +145,129 @@ async function farm_info(user) {
     }
 }
 
-module.exports = {
-    usage: `${client.prefix}농장 ...`,
-    command: ['농장', 'ㄴㅈ', 'ㄵ'],
-    description: `- 몬스터라이프 관련 기능을 수행합니다.
+export const usage = `${client.prefix}농장 ...`;
+export const command = ['농장', 'ㄴㅈ', 'ㄵ'];
+export const description = `- 몬스터라이프 관련 기능을 수행합니다.
 - ${client.prefix}농장 목록 (몬스터 이름)
 - ${client.prefix}농장 조합식 (몬스터 이름)
 - ${client.prefix}농장 정보 (농장 이름)
 - ${client.prefix}농장 추가 (끝나는 날짜) (농장 이름) (몬스터 이름)
-- 참고. 끝나는 날짜의 형식은 YYMMDD 형식입니다. (무한유지를 하는 몬스터는 '무한유지')`,
-    type: ['메이플'],
-    async messageExecute(message, args) {
-        if (args.length < 2) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
-        }
+- 참고. 끝나는 날짜의 형식은 YYMMDD 형식입니다. (무한유지를 하는 몬스터는 '무한유지')`;
+export const type = ['메이플'];
+export async function messageExecute(message, args) {
+    if (args.length < 2) {
+        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+    }
 
-        try {
-            if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
-                return message.channel.sendSplitCode(await farm_read(args.slice(1).join('')), { split: { char: '\n' } });
-            } else if (args[0] === '조합식' || args[0] === 'ㅈㅎㅅ') {
-                return message.channel.send(await farm_sex(args.slice(1).join('')));
-            } else if (args[0] === '정보' || args[0] === 'ㅈㅂ') {
-                return message.channel.sendSplitCode(await farm_info(args.slice(1).join('')), { split: { char: '\n' } });
-            } else if (args[0] === '추가' || args[0] === 'ㅊㄱ') {
-                if (args.length < 4) {
-                    return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
-                }
-                return message.channel.send(await farm_add(args[1], args[2], args.slice(3).join('')));
-            } else {
+    try {
+        if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
+            return message.channel.sendSplitCode(await farm_read(args.slice(1).join('')), { split: { char: '\n' } });
+        } else if (args[0] === '조합식' || args[0] === 'ㅈㅎㅅ') {
+            return message.channel.send(await farm_sex(args.slice(1).join('')));
+        } else if (args[0] === '정보' || args[0] === 'ㅈㅂ') {
+            return message.channel.sendSplitCode(await farm_info(args.slice(1).join('')), { split: { char: '\n' } });
+        } else if (args[0] === '추가' || args[0] === 'ㅊㄱ') {
+            if (args.length < 4) {
                 return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
             }
-        } catch {
-            return message.channel.send('농장 API 서버가 점검 중입니다.');
+            return message.channel.send(await farm_add(args[1], args[2], args.slice(3).join('')));
+        } else {
+            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
         }
-    },
-    commandData: {
-        name: '농장',
-        description: '몬스터라이프 관련 기능을 수행합니다.',
-        options: [
-            {
-                name: '목록',
-                type: 'SUB_COMMAND',
-                description: '입력한 몬스터의 농장 목록을 보여줍니다.',
-                options: [
-                    {
-                        name: '몬스터_이름',
-                        type: 'STRING',
-                        description: '농장 목록을 검색할 몬스터의 이름',
-                        required: true
-                    }
-                ]
-            },
-            {
-                name: '조합식',
-                type: 'SUB_COMMAND',
-                description: '입력한 몬스터가 포함되는 조합식을 보여줍니다.',
-                options: [
-                    {
-                        name: '몬스터_이름',
-                        type: 'STRING',
-                        description: '조합식을 검색할 몬스터의 이름',
-                        required: true
-                    }
-                ]
-            },
-            {
-                name: '정보',
-                type: 'SUB_COMMAND',
-                description: '입력한 농장의 몬스터 목록을 보여줍니다.',
-                options: [
-                    {
-                        name: '농장_이름',
-                        type: 'STRING',
-                        description: '몬스터 목록을 검색할 농장의 이름',
-                        required: true
-                    }
-                ]
-            },
-            {
-                name: '추가',
-                type: 'SUB_COMMAND',
-                description: '농장 데이터에 몬스터를 추가합니다.',
-                options: [
-                    {
-                        name: '끝나는_날짜',
-                        type: 'STRING',
-                        description: "몬스터의 기한이 끝나는 날짜(YYMMDD 형식, 무한유지를 하는 몬스터는 '무한유지')",
-                        required: true
-                    },
-                    {
-                        name: '농장_이름',
-                        type: 'STRING',
-                        description: '몬스터가 있는 농장의 이름',
-                        required: true
-                    },
-                    {
-                        name: '몬스터_이름',
-                        type: 'STRING',
-                        description: '추가할 몬스터의 이름',
-                        required: true
-                    }
-                ]
-            }
-        ]
-    },
-    async commandExecute(interaction) {
-        const subcommand = interaction.options.getSubcommand();
-
-        try {
-            if (subcommand === '목록') {
-                return interaction.sendSplitCode(await farm_read(interaction.options.getString('몬스터_이름').replace(/\s+/g, '')), { split: { char: '\n' } });
-            } else if (subcommand === '조합식') {
-                return interaction.followUp(await farm_sex(interaction.options.getString('몬스터_이름').replace(/\s+/g, '')));
-            } else if (subcommand === '정보') {
-                return interaction.sendSplitCode(await farm_info(interaction.options.getString('농장_이름').replace(/\s+/g, '')), { split: { char: '\n' } });
-            } else if (subcommand === '추가') {
-                return interaction.followUp(
-                    await farm_add(
-                        interaction.options.getString('끝나는_날짜'),
-                        interaction.options.getString('농장_이름').replace(/\s+/g, ''),
-                        interaction.options.getString('몬스터_이름').replace(/\s+/g, '')
-                    )
-                );
-            }
-        } catch {
-            return interaction.followUp('농장 API 서버가 점검 중입니다.');
-        }
+    } catch {
+        return message.channel.send('농장 API 서버가 점검 중입니다.');
     }
+}
+export const commandData = {
+    name: '농장',
+    description: '몬스터라이프 관련 기능을 수행합니다.',
+    options: [
+        {
+            name: '목록',
+            type: 'SUB_COMMAND',
+            description: '입력한 몬스터의 농장 목록을 보여줍니다.',
+            options: [
+                {
+                    name: '몬스터_이름',
+                    type: 'STRING',
+                    description: '농장 목록을 검색할 몬스터의 이름',
+                    required: true
+                }
+            ]
+        },
+        {
+            name: '조합식',
+            type: 'SUB_COMMAND',
+            description: '입력한 몬스터가 포함되는 조합식을 보여줍니다.',
+            options: [
+                {
+                    name: '몬스터_이름',
+                    type: 'STRING',
+                    description: '조합식을 검색할 몬스터의 이름',
+                    required: true
+                }
+            ]
+        },
+        {
+            name: '정보',
+            type: 'SUB_COMMAND',
+            description: '입력한 농장의 몬스터 목록을 보여줍니다.',
+            options: [
+                {
+                    name: '농장_이름',
+                    type: 'STRING',
+                    description: '몬스터 목록을 검색할 농장의 이름',
+                    required: true
+                }
+            ]
+        },
+        {
+            name: '추가',
+            type: 'SUB_COMMAND',
+            description: '농장 데이터에 몬스터를 추가합니다.',
+            options: [
+                {
+                    name: '끝나는_날짜',
+                    type: 'STRING',
+                    description: "몬스터의 기한이 끝나는 날짜(YYMMDD 형식, 무한유지를 하는 몬스터는 '무한유지')",
+                    required: true
+                },
+                {
+                    name: '농장_이름',
+                    type: 'STRING',
+                    description: '몬스터가 있는 농장의 이름',
+                    required: true
+                },
+                {
+                    name: '몬스터_이름',
+                    type: 'STRING',
+                    description: '추가할 몬스터의 이름',
+                    required: true
+                }
+            ]
+        }
+    ]
 };
+export async function commandExecute(interaction) {
+    const subcommand = interaction.options.getSubcommand();
+
+    try {
+        if (subcommand === '목록') {
+            return interaction.sendSplitCode(await farm_read(interaction.options.getString('몬스터_이름').replace(/\s+/g, '')), { split: { char: '\n' } });
+        } else if (subcommand === '조합식') {
+            return interaction.followUp(await farm_sex(interaction.options.getString('몬스터_이름').replace(/\s+/g, '')));
+        } else if (subcommand === '정보') {
+            return interaction.sendSplitCode(await farm_info(interaction.options.getString('농장_이름').replace(/\s+/g, '')), { split: { char: '\n' } });
+        } else if (subcommand === '추가') {
+            return interaction.followUp(
+                await farm_add(
+                    interaction.options.getString('끝나는_날짜'),
+                    interaction.options.getString('농장_이름').replace(/\s+/g, ''),
+                    interaction.options.getString('몬스터_이름').replace(/\s+/g, '')
+                )
+            );
+        }
+    } catch {
+        return interaction.followUp('농장 API 서버가 점검 중입니다.');
+    }
+}

@@ -1,14 +1,14 @@
-const { MessageEmbed } = require('../util/discord.js-extend');
-const { botNotice, replyAdmin } = require('./bot_control.js');
-const fetch = require('node-fetch');
-const { load } = require('cheerio');
+import { MessageEmbed } from '../util/discord.js-extend.js';
+import { botNotice, replyAdmin } from './bot_control.js';
+import fetch from 'node-fetch';
+import { load } from 'cheerio';
 let noticeTimer = null;
 let updateTimer = null;
 let testTimer = null;
 let testPatchTimer = null;
 let urusTimer = null;
 
-module.exports.startNotice = function () {
+export function startNotice () {
     if (!noticeTimer) {
         noticeTimer = setInterval(async () => {
             try {
@@ -36,16 +36,16 @@ module.exports.startNotice = function () {
             }
         }, 120000);
     }
-};
+}
 
-module.exports.stopNotice = function () {
+export function stopNotice () {
     if (noticeTimer) {
         clearInterval(noticeTimer);
         noticeTimer = null;
     }
-};
+}
 
-module.exports.startUpdate = function () {
+export function startUpdate () {
     if (!updateTimer) {
         updateTimer = setInterval(async () => {
             try {
@@ -73,16 +73,16 @@ module.exports.startUpdate = function () {
             }
         }, 120000);
     }
-};
+}
 
-module.exports.stopUpdate = function () {
+export function stopUpdate () {
     if (updateTimer) {
         clearInterval(updateTimer);
         updateTimer = null;
     }
-};
+}
 
-module.exports.startTest = function () {
+export function startTest () {
     if (!testTimer) {
         testTimer = setInterval(async () => {
             try {
@@ -112,16 +112,16 @@ module.exports.startTest = function () {
             }
         }, 120000);
     }
-};
+}
 
-module.exports.stopTest = function () {
+export function stopTest () {
     if (testTimer) {
         clearInterval(testTimer);
         testTimer = null;
     }
-};
+}
 
-module.exports.startTestPatch = function () {
+export function startTestPatch () {
     if (!testPatchTimer) {
         testPatchTimer = setInterval(async () => {
             try {
@@ -140,16 +140,16 @@ module.exports.startTestPatch = function () {
             }
         }, 120000);
     }
-};
+}
 
-module.exports.stopTestPatch = function () {
+export function stopTestPatch () {
     if (testPatchTimer) {
         clearInterval(testPatchTimer);
         testPatchTimer = null;
     }
-};
+}
 
-module.exports.startUrus = function () {
+export function startUrus () {
     if (!urusTimer) {
         const now = new Date();
         const urusDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 22, 30); // 우르스 알림 시간 객체 저장
@@ -162,11 +162,11 @@ module.exports.startUrus = function () {
             urusTimer = setInterval(botNotice, 86400000, '우르스 메소 2배 종료까지 30분 남았습니다!', 'urus'); // 24시간 주기
         }, urusDate - now);
     }
-};
+}
 
-module.exports.stopUrus = function () {
+export function stopUrus () {
     if (urusTimer) {
         clearInterval(urusTimer); // clearInterval과 clearTimeout은 동일한 동작 수행
         urusTimer = null;
     }
-};
+}

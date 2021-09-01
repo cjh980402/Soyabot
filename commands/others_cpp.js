@@ -1,40 +1,38 @@
-const { ADMIN_ID } = require('../soyabot_config.json');
-const { writeFile } = require('fs/promises');
-const { cmd } = require('../admin/admin_function');
-const { spawn } = require('child_process');
+import { ADMIN_ID } from '../soyabot_config.js';
+import { writeFile } from 'fs/promises';
+import { cmd } from '../admin/admin_function.js';
+import { spawn } from 'child_process';
 let cppProcess = null;
 
-module.exports = {
-    usage: `${client.prefix}cpp (소스코드)`,
-    command: ['cpp'],
-    type: ['기타'],
-    async messageExecute(message, args) {
-        if (message.author.id === ADMIN_ID && args.length > 0) {
-            if (cppProcess) {
-                cppProcess.stdin.write(`${args.join(' ')}\n`);
-            } else {
-                const sourceCode = message.content.replace(/\s*.+?\s*.+?\s+/, '').trim();
-                await writeFile(`./other_source/cpp_source.cpp`, sourceCode);
-                const compile = (await cmd('g++ -o ./other_source/cpp_result.out ./other_source/cpp_source.cpp', { removeEscape: true })).stdout;
-                if (compile) {
-                    return message.channel.send(compile); // 컴파일 에러 출력
-                }
-                cppProcess = spawn('./other_source/cpp_result.out');
-                cppProcess.stderr.on('data', (data) => {
-                    message.channel.sendSplitCode(String(data), { split: { char: '' } });
-                });
-                cppProcess.stdout.on('data', (data) => {
-                    message.channel.sendSplitCode(String(data), { split: { char: '' } });
-                });
-                cppProcess.on('error', (err) => {
-                    message.channel.send(`Process throws an error (${err})`);
-                    cppProcess = null;
-                });
-                cppProcess.on('exit', (code) => {
-                    message.channel.send(`Process exited with code ${code}`);
-                    cppProcess = null;
-                });
+export const usage = `${client.prefix}cpp (소스코드)`;
+export const command = ['cpp'];
+export const type = ['기타'];
+export async function messageExecute(message, args) {
+    if (message.author.id === ADMIN_ID && args.length > 0) {
+        if (cppProcess) {
+            cppProcess.stdin.write(`${args.join(' ')}\n`);
+        } else {
+            const sourceCode = message.content.replace(/\s*.+?\s*.+?\s+/, '').trim();
+            await writeFile(`./other_source/cpp_source.cpp`, sourceCode);
+            const compile = (await cmd('g++ -o ./other_source/cpp_result.out ./other_source/cpp_source.cpp', { removeEscape: true })).stdout;
+            if (compile) {
+                return message.channel.send(compile); // 컴파일 에러 출력
             }
+            cppProcess = spawn('./other_source/cpp_result.out');
+            cppProcess.stderr.on('data', (data) => {
+                message.channel.sendSplitCode(String(data), { split: { char: '' } });
+            });
+            cppProcess.stdout.on('data', (data) => {
+                message.channel.sendSplitCode(String(data), { split: { char: '' } });
+            });
+            cppProcess.on('error', (err) => {
+                message.channel.send(`Process throws an error (${err})`);
+                cppProcess = null;
+            });
+            cppProcess.on('exit', (code) => {
+                message.channel.send(`Process exited with code ${code}`);
+                cppProcess = null;
+            });
         }
     }
-};
+}

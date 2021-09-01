@@ -1,6 +1,6 @@
-const { setTimeout } = require('timers/promises');
-const fetch = require('node-fetch');
-const { load } = require('cheerio');
+import { setTimeout } from 'timers/promises';
+import fetch from 'node-fetch';
+import { load } from 'cheerio';
 
 async function linkParse(link) {
     return load(await (await fetch(link)).text());
@@ -10,7 +10,7 @@ async function linkJSON(link) {
     return (await fetch(link)).json();
 }
 
-module.exports.MapleUser = class {
+export class MapleUser {
     // private property
     #name;
     #ggURL;
@@ -330,9 +330,9 @@ module.exports.MapleUser = class {
                 .replace(/(\d+)\s+/, '$1') || '마지막 활동일: 알 수 없음'
         );
     }
-};
+}
 
-module.exports.MapleGuild = class {
+export class MapleGuild {
     // private property
     #server;
     #name;
@@ -373,7 +373,7 @@ module.exports.MapleGuild = class {
 
     async memberDataList() {
         const rslt = [];
-        const memberList = this.#memberData.map((_, v) => new module.exports.MapleUser(this.#ggData(v).find('.mb-2 a').eq(1).text()));
+        const memberList = this.#memberData.map((_, v) => new MapleUser(this.#ggData(v).find('.mb-2 a').eq(1).text()));
         const updateRslt = await Promise.all(memberList.map(async (_, v) => (await v.isLatest()) || (await v.updateGG())));
         for (let i = 0; i < this.MemberCount; i++) {
             rslt.push(
@@ -405,4 +405,4 @@ module.exports.MapleGuild = class {
             await setTimeout(500);
         }
     }
-};
+}

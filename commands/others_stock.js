@@ -1,6 +1,6 @@
-const { MessageAttachment, MessageEmbed } = require('../util/discord.js-extend');
-const { cmd } = require('../admin/admin_function');
-const fetch = require('node-fetch');
+import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
+import { cmd } from '../admin/admin_function.js';
+import fetch from 'node-fetch';
 const chartType = {
     '일봉': 'candle/day',
     '주봉': 'candle/week',
@@ -205,54 +205,52 @@ async function getStockEmbed(search, searchRslt, type) {
     return { embeds: [stockEmbed], files: [image] };
 }
 
-module.exports = {
-    usage: `${client.prefix}주식정보 (검색 내용) (차트 종류)`,
-    command: ['주식정보', 'ㅈㅅㅈㅂ'],
-    description: `- 검색 내용에 해당하는 주식의 정보를 보여줍니다.
-- (차트 종류): ${Object.keys(chartType).join(', ')} 입력가능 (생략 시 일봉으로 적용)`,
-    type: ['기타'],
-    async messageExecute(message, args) {
-        if (args.length < 1) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
-        }
-
-        const type = args.length > 1 && chartType[args[args.length - 1]] ? args.pop() : '일봉'; // 차트 종류
-        const search = args.join(' ').toLowerCase();
-        const searchRslt = (await (await fetch(`https://ac.finance.naver.com/ac?q=${encodeURIComponent(search)}&t_koreng=1&st=111&r_lt=111`)).json()).items[0];
-
-        if (!searchRslt?.length) {
-            return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
-        } else {
-            return message.channel.send(await getStockEmbed(search, searchRslt, type));
-        }
-    },
-    commandData: {
-        name: '주식정보',
-        description: '검색 내용에 해당하는 주식의 정보를 보여줍니다.',
-        options: [
-            {
-                name: '검색_내용',
-                type: 'STRING',
-                description: '주식정보를 검색할 내용',
-                required: true
-            },
-            {
-                name: '차트_종류',
-                type: 'STRING',
-                description: '출력할 차트의 종류 (생략 시 일봉으로 적용)',
-                choices: Object.keys(chartType).map((v) => ({ name: v, value: v }))
-            }
-        ]
-    },
-    async commandExecute(interaction) {
-        const type = interaction.options.getString('차트_종류') ?? '일봉'; // 차트 종류
-        const search = interaction.options.getString('검색_내용');
-        const searchRslt = (await (await fetch(`https://ac.finance.naver.com/ac?q=${encodeURIComponent(search)}&t_koreng=1&st=111&r_lt=111`)).json()).items[0];
-
-        if (!searchRslt?.length) {
-            return interaction.followUp('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
-        } else {
-            return interaction.followUp(await getStockEmbed(search, searchRslt, type));
-        }
+export const usage = `${client.prefix}주식정보 (검색 내용) (차트 종류)`;
+export const command = ['주식정보', 'ㅈㅅㅈㅂ'];
+export const description = `- 검색 내용에 해당하는 주식의 정보를 보여줍니다.
+- (차트 종류): ${Object.keys(chartType).join(', ')} 입력가능 (생략 시 일봉으로 적용)`;
+export const type = ['기타'];
+export async function messageExecute(message, args) {
+    if (args.length < 1) {
+        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
     }
+
+    const type = args.length > 1 && chartType[args[args.length - 1]] ? args.pop() : '일봉'; // 차트 종류
+    const search = args.join(' ').toLowerCase();
+    const searchRslt = (await (await fetch(`https://ac.finance.naver.com/ac?q=${encodeURIComponent(search)}&t_koreng=1&st=111&r_lt=111`)).json()).items[0];
+
+    if (!searchRslt?.length) {
+        return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
+    } else {
+        return message.channel.send(await getStockEmbed(search, searchRslt, type));
+    }
+}
+export const commandData = {
+    name: '주식정보',
+    description: '검색 내용에 해당하는 주식의 정보를 보여줍니다.',
+    options: [
+        {
+            name: '검색_내용',
+            type: 'STRING',
+            description: '주식정보를 검색할 내용',
+            required: true
+        },
+        {
+            name: '차트_종류',
+            type: 'STRING',
+            description: '출력할 차트의 종류 (생략 시 일봉으로 적용)',
+            choices: Object.keys(chartType).map((v) => ({ name: v, value: v }))
+        }
+    ]
 };
+export async function commandExecute(interaction) {
+    const type = interaction.options.getString('차트_종류') ?? '일봉'; // 차트 종류
+    const search = interaction.options.getString('검색_내용');
+    const searchRslt = (await (await fetch(`https://ac.finance.naver.com/ac?q=${encodeURIComponent(search)}&t_koreng=1&st=111&r_lt=111`)).json()).items[0];
+
+    if (!searchRslt?.length) {
+        return interaction.followUp('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
+    } else {
+        return interaction.followUp(await getStockEmbed(search, searchRslt, type));
+    }
+}

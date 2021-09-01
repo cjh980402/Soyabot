@@ -136,7 +136,7 @@ function choiceVS(str) {
     return splitVS[Math.floor(Math.random() * splitVS.length)];
 }
 
-module.exports = function (message) {
+export default function (message) {
     if (message.content === '주사위') {
         return message.channel.send(`주사위 결과: ${Math.floor(Math.random() * 100 + 1)}`);
     } else if (/vs/i.test(message.content) && !/vsc/i.test(message.content)) {

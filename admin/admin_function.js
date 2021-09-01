@@ -1,12 +1,12 @@
-const Discord = require('../util/discord.js-extend'); // 디버깅용
-const { promisify } = require('util');
-const { exec: _exec } = require('child_process');
+import { Message } from '../util/discord.js-extend.js';
+import { promisify } from 'util';
+import { exec as _exec } from 'child_process';
 const exec = promisify(_exec);
-const { ADMIN_ID } = require('../soyabot_config.json');
-const { botNotice, replyRoomID } = require('./bot_control.js');
-const { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, startTestPatch, stopTestPatch, startUrus, stopUrus } = require('./maple_auto_notice');
+import { ADMIN_ID } from '../soyabot_config.js';
+import { botNotice, replyRoomID } from './bot_control.js';
+import { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, startTestPatch, stopTestPatch, startUrus, stopUrus } from './maple_auto_notice.js';
 
-module.exports.adminChat = async function (message) {
+export async function adminChat (message) {
     debugFunc(message);
     const fullContent = await message.fullContent;
     const room = /^\*(.+)\*\s/.exec(fullContent)?.[1];
@@ -18,7 +18,7 @@ module.exports.adminChat = async function (message) {
         // eval의 내부가 async 함수의 리턴값이므로 await까지 해준다. js의 코드 스타일을 적용해서 출력한다.
     } else if (fullContent.startsWith(')')) {
         // 콘솔 명령 실행 후 출력
-        message.channel.sendSplitCode((await module.exports.cmd(fullContent.substr(1).trim(), { removeEscape: true })).stdout, { code: 'shell', split: { char: '' } });
+        message.channel.sendSplitCode((await cmd(fullContent.substr(1).trim(), { removeEscape: true })).stdout, { code: 'shell', split: { char: '' } });
     } else if (room) {
         // 원하는 방에 봇으로 채팅 전송 (텍스트 채널 ID 이용)
         const rslt = await replyRoomID(room, fullContent.substr(room.length + 3));
@@ -28,15 +28,15 @@ module.exports.adminChat = async function (message) {
         try {
             const suggestRefer = await message.fetchReference();
             const [channelId, messageId] = suggestRefer.content.split(/\s/);
-            await new Discord.Message(client, { id: messageId, channel_id: channelId }).reply(`[건의 답변]\n${fullContent}`);
+            await new Message(client, { id: messageId, channel_id: channelId }).reply(`[건의 답변]\n${fullContent}`);
             message.channel.send('건의 답변을 보냈습니다.');
         } catch {
             message.channel.send('해당하는 건의의 정보가 존재하지 않습니다.');
         }
     }
-};
+}
 
-module.exports.cmd = async function (command, { removeEscape = false, ...options } = {}) {
+export async function cmd (command, { removeEscape = false, ...options } = {}) {
     const promiseResult = exec(command, options);
     if (removeEscape) {
         // 제어 문자와 맨 끝 개행 제거
@@ -51,9 +51,9 @@ module.exports.cmd = async function (command, { removeEscape = false, ...options
     } else {
         return promiseResult;
     }
-};
+}
 
-module.exports.initClient = async function () {
+export async function initClient () {
     db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
     db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
     db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');
@@ -75,7 +75,7 @@ module.exports.initClient = async function () {
     startTest(); // 테섭 자동 알림 기능
     startTestPatch(); // 테섭 패치 감지 기능
     startUrus(); // 우르스 2배 종료 30분 전 알림
-};
+}
 
 function debugFunc(message) {
     // 특정 기능 디버깅할 때 내용을 바꿔서 테스트 해주면 됨

@@ -1,6 +1,6 @@
-const { MessageAttachment } = require('../util/discord.js-extend');
-const renderChart = require('../util/chartjs_rendering');
-const fetch = require('node-fetch');
+import { MessageAttachment } from '../util/discord.js-extend.js';
+import renderChart from '../util/chartjs_rendering.js';
+import fetch from 'node-fetch';
 const typeList = {
     월간보스: 'month',
     주간보스1: 'week1',
@@ -79,40 +79,38 @@ async function getBossMesoEmbed(type) {
     return new MessageAttachment(await renderChart(config, 1500, 1000), 'boss_meso.png');
 }
 
-module.exports = {
-    usage: `${client.prefix}보스결정석 (보스 종류)`,
-    command: ['보스결정석', 'ㅂㅅㄱㅈㅅ', 'ㅄㄱㅈㅅ'],
-    description: `- 보스 종류에 해당하는 보스들의 결정석 시세 변화를 보여줍니다.\n- (보스 종류): ${Object.keys(typeList).join(', ')} 입력가능`,
-    type: ['메이플'],
-    async messageExecute(message, args) {
-        if (args.length !== 1 || !typeList[args[0]]) {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
-        }
-
-        try {
-            return message.channel.send({ files: [await getBossMesoEmbed(args[0])] });
-        } catch {
-            return message.channel.send('보스결정석 API 서버가 점검 중입니다.');
-        }
-    },
-    commandData: {
-        name: '보스결정석',
-        description: '보스 종류에 해당하는 보스들의 결정석 시세 변화를 보여줍니다.',
-        options: [
-            {
-                name: '보스_종류',
-                type: 'STRING',
-                description: '결정석 시세 변화를 검색할 서버',
-                required: true,
-                choices: Object.keys(typeList).map((v) => ({ name: v, value: v }))
-            }
-        ]
-    },
-    async commandExecute(interaction) {
-        try {
-            return interaction.followUp({ files: [await getBossMesoEmbed(interaction.options.getString('보스_종류'))] });
-        } catch {
-            return interaction.followUp('보스결정석 API 서버가 점검 중입니다.');
-        }
+export const usage = `${client.prefix}보스결정석 (보스 종류)`;
+export const command = ['보스결정석', 'ㅂㅅㄱㅈㅅ', 'ㅄㄱㅈㅅ'];
+export const description = `- 보스 종류에 해당하는 보스들의 결정석 시세 변화를 보여줍니다.\n- (보스 종류): ${Object.keys(typeList).join(', ')} 입력가능`;
+export const type = ['메이플'];
+export async function messageExecute(message, args) {
+    if (args.length !== 1 || !typeList[args[0]]) {
+        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
     }
+
+    try {
+        return message.channel.send({ files: [await getBossMesoEmbed(args[0])] });
+    } catch {
+        return message.channel.send('보스결정석 API 서버가 점검 중입니다.');
+    }
+}
+export const commandData = {
+    name: '보스결정석',
+    description: '보스 종류에 해당하는 보스들의 결정석 시세 변화를 보여줍니다.',
+    options: [
+        {
+            name: '보스_종류',
+            type: 'STRING',
+            description: '결정석 시세 변화를 검색할 서버',
+            required: true,
+            choices: Object.keys(typeList).map((v) => ({ name: v, value: v }))
+        }
+    ]
 };
+export async function commandExecute(interaction) {
+    try {
+        return interaction.followUp({ files: [await getBossMesoEmbed(interaction.options.getString('보스_종류'))] });
+    } catch {
+        return interaction.followUp('보스결정석 API 서버가 점검 중입니다.');
+    }
+}

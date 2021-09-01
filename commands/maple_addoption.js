@@ -19,33 +19,31 @@ const picmatch = {
     기타: 'others'
 };
 
-module.exports = {
-    usage: `${client.prefix}추옵 (무기)`,
-    command: ['추옵', 'ㅊㅇ'],
-    description: `- 해당하는 무기의 추옵표를 출력합니다.\n- (무기): ${Object.keys(picmatch).join(', ')} 입력가능`,
-    type: ['메이플'],
-    async messageExecute(message, args) {
-        if (picmatch[args[0]]) {
-            return message.channel.send({ content: `${args[0]} 무기의 추옵표`, files: [`./pictures/add_option/${picmatch[args[0]]}.png`] });
-        } else {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
-        }
-    },
-    commandData: {
-        name: '추옵',
-        description: '해당하는 무기의 추옵표를 출력합니다.',
-        options: [
-            {
-                name: '무기종류',
-                type: 'STRING',
-                description: '추옵 정보를 검색할 무기의 종류',
-                required: true,
-                choices: Object.keys(picmatch).map((v) => ({ name: v, value: v }))
-            }
-        ]
-    },
-    async commandExecute(interaction) {
-        const weapon = interaction.options.getString('무기종류');
-        return interaction.followUp({ content: `${weapon} 무기의 추옵표`, files: [`./pictures/add_option/${picmatch[weapon]}.png`] });
+export const usage = `${client.prefix}추옵 (무기)`;
+export const command = ['추옵', 'ㅊㅇ'];
+export const description = `- 해당하는 무기의 추옵표를 출력합니다.\n- (무기): ${Object.keys(picmatch).join(', ')} 입력가능`;
+export const type = ['메이플'];
+export async function messageExecute(message, args) {
+    if (picmatch[args[0]]) {
+        return message.channel.send({ content: `${args[0]} 무기의 추옵표`, files: [`./pictures/add_option/${picmatch[args[0]]}.png`] });
+    } else {
+        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
     }
+}
+export const commandData = {
+    name: '추옵',
+    description: '해당하는 무기의 추옵표를 출력합니다.',
+    options: [
+        {
+            name: '무기종류',
+            type: 'STRING',
+            description: '추옵 정보를 검색할 무기의 종류',
+            required: true,
+            choices: Object.keys(picmatch).map((v) => ({ name: v, value: v }))
+        }
+    ]
 };
+export async function commandExecute(interaction) {
+    const weapon = interaction.options.getString('무기종류');
+    return interaction.followUp({ content: `${weapon} 무기의 추옵표`, files: [`./pictures/add_option/${picmatch[weapon]}.png`] });
+}

@@ -8,4 +8,4 @@ other_source/
 # file
 *.log
 *.tflite
-soyabot_config.json
+soyabot_config.js

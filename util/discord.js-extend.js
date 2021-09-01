@@ -1,73 +1,73 @@
-const Discord = require('discord.js');
-const { entersState, joinVoiceChannel, VoiceConnectionStatus } = require('@discordjs/voice');
-const fetch = require('node-fetch');
-const YouTubeAPI = require('simple-youtube-api');
-const Constants = require('simple-youtube-api/src/util/Constants');
-const Video = require('simple-youtube-api/src/structures/Video');
-const { decodeHTML } = require('entities');
-const { inspect } = require('util');
-const { _patch } = Discord.Message.prototype;
+import { Message, Util, Intents, Options, VoiceState, Channel, CommandInteraction, BaseGuildVoiceChannel, Permissions } from 'discord.js';
+import { entersState, joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
+import fetch from 'node-fetch';
+import YouTubeAPI from 'simple-youtube-api';
+import { PARTS, ENDPOINTS } from 'simple-youtube-api/src/util/Constants.js';
+import Video from 'simple-youtube-api/src/structures/Video.js';
+import { decodeHTML } from 'entities';
+import { inspect } from 'util';
+const { _patch } = Message.prototype;
+
+export * from 'discord.js';
+
+export const botClientOption = {
+    retryLimit: 3,
+    failIfNotExists: false,
+    partials: ['CHANNEL'],
+    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
+    makeCache: Options.cacheWithLimits({
+        BaseGuildEmojiManager: 0,
+        ChannelManager: {
+            maxSize: Infinity,
+            sweepFilter: () => (v) => !v.isText() && !v.isVoice(),
+            sweepInterval: 3600
+        },
+        GuildBanManager: 0,
+        GuildChannelManager: {
+            maxSize: Infinity,
+            sweepFilter: () => (v) => !v.isText() && !v.isVoice(),
+            sweepInterval: 3600
+        },
+        GuildEmojiManager: 0,
+        GuildInviteManager: 0,
+        GuildMemberManager: {
+            maxSize: 1,
+            keepOverLimit: (v) => v.id === client.user.id
+        },
+        GuildStickerManager: 0,
+        MessageManager: 0,
+        PresenceManager: 0,
+        RoleManager: {
+            maxSize: 1,
+            keepOverLimit: (v) => v.id === v.guild.id || v.guild.me?._roles.includes(v.id)
+        },
+        UserManager: 0,
+        VoiceStateManager: {
+            maxSize: Infinity,
+            sweepFilter: () => (v) => v.id !== client.user.id && !v.channelId,
+            sweepInterval: 3600
+        }
+    })
+};
 
 function contentSplitCode(content, options) {
     content ||= '\u200b';
     if (options.code) {
-        content = `\`\`\`${options.code}\n${Discord.Util.cleanCodeBlockContent(content)}\n\`\`\``;
+        content = `\`\`\`${options.code}\n${Util.cleanCodeBlockContent(content)}\n\`\`\``;
         if (options.split) {
             options.split.prepend = `${options.split.prepend ?? ''}\`\`\`${options.code}\n`;
             options.split.append = `\n\`\`\`${options.split.append ?? ''}`;
         }
     }
     if (options.split) {
-        content = Discord.Util.splitMessage(content, options.split);
+        content = Util.splitMessage(content, options.split);
     } else {
         content = [content];
     }
     return content;
 }
 
-Object.defineProperty(Discord, 'botClientOption', {
-    value: {
-        retryLimit: 3,
-        failIfNotExists: false,
-        partials: ['CHANNEL'],
-        intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_VOICE_STATES, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.DIRECT_MESSAGES],
-        makeCache: Discord.Options.cacheWithLimits({
-            BaseGuildEmojiManager: 0,
-            ChannelManager: {
-                maxSize: Infinity,
-                sweepFilter: () => (v) => !v.isText() && !v.isVoice(),
-                sweepInterval: 3600
-            },
-            GuildBanManager: 0,
-            GuildChannelManager: {
-                maxSize: Infinity,
-                sweepFilter: () => (v) => !v.isText() && !v.isVoice(),
-                sweepInterval: 3600
-            },
-            GuildEmojiManager: 0,
-            GuildInviteManager: 0,
-            GuildMemberManager: {
-                maxSize: 1,
-                keepOverLimit: (v) => v.id === client.user.id
-            },
-            GuildStickerManager: 0,
-            MessageManager: 0,
-            PresenceManager: 0,
-            RoleManager: {
-                maxSize: 1,
-                keepOverLimit: (v) => v.id === v.guild.id || v.guild.me?._roles.includes(v.id)
-            },
-            UserManager: 0,
-            VoiceStateManager: {
-                maxSize: Infinity,
-                sweepFilter: () => (v) => v.id !== client.user.id && !v.channelId,
-                sweepInterval: 3600
-            }
-        })
-    }
-});
-
-Object.defineProperty(Discord.Message.prototype, '_patch', {
+Object.defineProperty(Message.prototype, '_patch', {
     value: function (data, partial = false) {
         _patch.call(this, data, partial);
         if (data.member && this.guild && this.author) {
@@ -76,19 +76,19 @@ Object.defineProperty(Discord.Message.prototype, '_patch', {
     }
 });
 
-Object.defineProperty(Discord.Message.prototype, 'member', {
+Object.defineProperty(Message.prototype, 'member', {
     get: function () {
         return this.guild?.members.resolve(this.author) ?? this._member ?? null; // 할당된 임시 멤버 객체 반환
     }
 });
 
-Object.defineProperty(Discord.VoiceState.prototype, 'member', {
+Object.defineProperty(VoiceState.prototype, 'member', {
     get: function () {
         return this.guild.members.resolve(this.id) ?? this.guild.members._add({ user: { id: this.id } }, false); // 임시 멤버 객체 생성 후 반환
     }
 });
 
-Object.defineProperty(Discord.Message.prototype, 'fullContent', {
+Object.defineProperty(Message.prototype, 'fullContent', {
     get: async function () {
         if (this.type === 'DEFAULT' && this.attachments.first()?.name === 'message.txt') {
             return (await fetch(this.attachments.first().url)).text();
@@ -98,7 +98,7 @@ Object.defineProperty(Discord.Message.prototype, 'fullContent', {
     }
 });
 
-Object.defineProperty(Discord.Channel.prototype, 'sendSplitCode', {
+Object.defineProperty(Channel.prototype, 'sendSplitCode', {
     value: async function (content, options = {}) {
         if (this.isText()) {
             for (const c of contentSplitCode(content, options)) {
@@ -108,7 +108,7 @@ Object.defineProperty(Discord.Channel.prototype, 'sendSplitCode', {
     }
 });
 
-Object.defineProperty(Discord.CommandInteraction.prototype, 'sendSplitCode', {
+Object.defineProperty(CommandInteraction.prototype, 'sendSplitCode', {
     value: async function (content, options = {}) {
         for (const c of contentSplitCode(content, options)) {
             await this.followUp(c);
@@ -116,7 +116,7 @@ Object.defineProperty(Discord.CommandInteraction.prototype, 'sendSplitCode', {
     }
 });
 
-Object.defineProperty(Discord.BaseGuildVoiceChannel.prototype, 'join', {
+Object.defineProperty(BaseGuildVoiceChannel.prototype, 'join', {
     value: async function () {
         const connection = joinVoiceChannel({
             channelId: this.id,
@@ -126,7 +126,7 @@ Object.defineProperty(Discord.BaseGuildVoiceChannel.prototype, 'join', {
 
         try {
             await entersState(connection, VoiceConnectionStatus.Ready, 30000); // 연결될 때까지 최대 30초 대기
-            if (this.type === 'GUILD_STAGE_VOICE' && this.permissionsFor(this.guild.me).has(Discord.Permissions.STAGE_MODERATOR)) {
+            if (this.type === 'GUILD_STAGE_VOICE' && this.permissionsFor(this.guild.me).has(Permissions.STAGE_MODERATOR)) {
                 await this.guild.me.voice.setSuppressed(false); // 스테이지 채널이면서 관리 권한이 있으면 봇을 speaker로 설정
             }
             return connection;
@@ -139,8 +139,8 @@ Object.defineProperty(Discord.BaseGuildVoiceChannel.prototype, 'join', {
 
 Object.defineProperty(YouTubeAPI.prototype, 'getVideosByIDs', {
     value: async function (ids, options = {}) {
-        Object.assign(options, { part: Constants.PARTS.Videos, id: ids.join(',') });
-        const result = await this.request.make(Constants.ENDPOINTS.Videos, options);
+        Object.assign(options, { part: PARTS.Videos, id: ids.join(',') });
+        const result = await this.request.make(ENDPOINTS.Videos, options);
         if (result.items.length > 0) {
             return result.items.map((v) => (v ? new Video(this, v) : null));
         } else {
@@ -261,5 +261,3 @@ Object.defineProperty(Object.prototype, '__k', {
         return Object.getPrototypeOf(this)._k;
     }
 });
-
-module.exports = Discord;

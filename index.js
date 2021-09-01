@@ -1,16 +1,16 @@
 /**
  * 모듈 import
  */
-const { Client, Collection, Permissions, botClientOption } = require('./util/discord.js-extend'); // 제일 처음에 import 해야하는 모듈
-const { setTimeout } = require('timers/promises');
-const { readdirSync } = require('fs');
-const { TOKEN, PREFIX, ADMIN_ID } = require('./soyabot_config.json');
-const { adminChat, initClient, cmd } = require('./admin/admin_function');
-const { replyAdmin } = require('./admin/bot_control');
-const { musicActiveControl, musicButtonControl } = require('./util/music_play');
-const cachingMessage = require('./util/message_caching');
-const botChatting = require('./util/bot_chatting');
-const sqlite = require('./util/sqlite-handler');
+import { Client, Collection, Permissions, botClientOption } from './util/discord.js-extend.js'; // 제일 처음에 import 해야하는 모듈
+import { setTimeout } from 'timers/promises';
+import { readdirSync } from 'fs';
+import { TOKEN, PREFIX, ADMIN_ID } from './soyabot_config.js';
+import { adminChat, initClient, cmd } from './admin/admin_function.js';
+import { replyAdmin } from './admin/bot_control.js';
+import { musicActiveControl, musicButtonControl } from './util/music_play.js';
+import cachingMessage from './util/message_caching.js';
+import botChatting from './util/bot_chatting.js';
+import sqlite from './util/sqlite-handler.js';
 globalThis.db = new sqlite('./db/soyabot_data.db'); // db와 client는 여러 기능들에 의해 필수로 최상위 전역
 globalThis.client = new Client(botClientOption);
 client.commands = []; // 명령어 객체 저장할 배열
@@ -24,38 +24,33 @@ process.on('unhandledRejection', (err) => {
     console.error('Unhandled promise rejection:', err);
 });
 
-(async () => {
-    try {
-        await client.login(TOKEN);
-        await initClient(); // 클라이언트 초기 세팅 함수
-        /**
-         * 모든 명령 import
-         */
-        const datas = [];
-        readdirSync('./commands').forEach((file) => {
-            if (file.endsWith('.js')) {
-                const cmd = require(`./commands/${file}`);
-                client.commands.push(cmd); // 걸러낸 js파일의 명령 객체를 배열에 push
-                if (cmd.commandData) {
-                    datas.push(cmd.commandData);
-                }
+try {
+    await client.login(TOKEN);
+    await initClient(); // 클라이언트 초기 세팅 함수
+    /**
+     * 모든 명령 import
+     */
+    const datas = [];
+    for (const file of readdirSync('./commands')) {
+        if (file.endsWith('.js')) {
+            const cmd = await import(`./commands/${file}`);
+            client.commands.push(cmd); // 걸러낸 js파일의 명령 객체를 배열에 push
+            if (cmd.commandData) {
+                datas.push(cmd.commandData);
             }
-        });
-        // await client.application.commands.set(datas); // 인터랙션 데이터 변경 시에만 활성화하기
-    } catch (err) {
-        console.error('로그인 에러 발생:', err);
-        await cmd('npm stop');
+        }
     }
-})();
+    // await client.application.commands.set(datas); // 인터랙션 데이터 변경 시에만 활성화하기
+    client.user.setActivity(`${client.prefix}help and ${client.prefix}play`, { type: 'LISTENING' });
+    replyAdmin(`${client.user.tag}이 작동 중입니다.`);
+} catch (err) {
+    console.error('로그인 에러 발생:', err);
+    await cmd('npm stop');
+}
 /**
  * 클라이언트 이벤트
  */
 client.on('warn', console.log);
-
-client.on('ready', async () => {
-    client.user.setActivity(`${client.prefix}help and ${client.prefix}play`, { type: 'LISTENING' });
-    replyAdmin(`${client.user.tag}이 작동 중입니다.`);
-});
 
 client.on('error', async (err) => {
     console.error('클라이언트 에러 발생:', err);

@@ -1,7 +1,7 @@
-const { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } = require('../soyabot_config.json');
-const { getMessageImage } = require('../util/soyabot_util');
-const fetch = require('node-fetch');
-const FormData = require('form-data');
+import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '../soyabot_config.js';
+import { getMessageImage } from '../util/soyabot_util.js';
+import fetch from 'node-fetch';
+import FormData from 'form-data';
 
 async function requestCFR(url) {
     const form = new FormData();
@@ -32,17 +32,15 @@ async function clova_celebrity(url) {
     return rslt;
 }
 
-module.exports = {
-    usage: `${client.prefix}닮은꼴`,
-    command: ['닮은꼴', 'ㄷㅇㄲ'],
-    description: '- 원하는 사진과 함께 명령어를 사용하면 얼굴을 분석한 후 닮은 유명인을 알려줍니다.',
-    type: ['기타'],
-    async messageExecute(message) {
-        const imageURL = await getMessageImage(message);
-        if (!imageURL) {
-            return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
-        } else {
-            return message.channel.send(await clova_celebrity(imageURL));
-        }
+export const usage = `${client.prefix}닮은꼴`;
+export const command = ['닮은꼴', 'ㄷㅇㄲ'];
+export const description = '- 원하는 사진과 함께 명령어를 사용하면 얼굴을 분석한 후 닮은 유명인을 알려줍니다.';
+export const type = ['기타'];
+export async function messageExecute(message) {
+    const imageURL = await getMessageImage(message);
+    if (!imageURL) {
+        return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
+    } else {
+        return message.channel.send(await clova_celebrity(imageURL));
     }
-};
+}
