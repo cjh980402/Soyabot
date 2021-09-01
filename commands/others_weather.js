@@ -109,7 +109,7 @@ export async function messageExecute(message, args) {
                     collector.stop();
                     break;
             }
-        } catch { }
+        } catch {}
     });
 }
 export const commandData = {
@@ -175,6 +175,6 @@ export async function commandExecute(interaction) {
                     collector.stop();
                     break;
             }
-        } catch { }
+        } catch {}
     });
 }

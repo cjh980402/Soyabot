@@ -30,7 +30,8 @@ export async function messageExecute(message, args) {
     try {
         let songChoice;
         const rslt = await message.channel.awaitMessages({
-            filter: (msg) => msg.author.id === message.author.id &&
+            filter: (msg) =>
+                msg.author.id === message.author.id &&
                 (songChoice = msg.content
                     .split(',')
                     .map((str) => Math.trunc(str))
@@ -47,7 +48,7 @@ export async function messageExecute(message, args) {
 
         try {
             await rslt.first().delete();
-        } catch { }
+        } catch {}
     } catch (err) {
         if (!(err instanceof Collection)) {
             throw err; // 시간초과 에러(Collection<Snowflake, Message>)가 아닌 경우 에러를 다시 throw
@@ -55,7 +56,7 @@ export async function messageExecute(message, args) {
     } finally {
         try {
             await resultsMessage.delete();
-        } catch { }
+        } catch {}
     }
 }
 export const commandData = {
@@ -92,7 +93,8 @@ export async function commandExecute(interaction) {
     try {
         let songChoice;
         const rslt = await interaction.channel.awaitMessages({
-            filter: (msg) => msg.author.id === interaction.user.id &&
+            filter: (msg) =>
+                msg.author.id === interaction.user.id &&
                 (songChoice = msg.content
                     .split(',')
                     .map((str) => Math.trunc(str))
@@ -110,7 +112,7 @@ export async function commandExecute(interaction) {
 
         try {
             await rslt.first().delete();
-        } catch { }
+        } catch {}
     } catch (err) {
         if (!(err instanceof Collection)) {
             throw err; // 시간초과 에러(Collection<Snowflake, Message>)가 아닌 경우 에러를 다시 throw
@@ -118,6 +120,6 @@ export async function commandExecute(interaction) {
     } finally {
         try {
             await resultsMessage.delete();
-        } catch { }
+        } catch {}
     }
 }

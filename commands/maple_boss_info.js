@@ -46,7 +46,8 @@ export async function messageExecute(message, args) {
     if (args.length < 1) {
         return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
     }
-    let bossName = args.join(''), bossGrade = Object.keys(bossData[bossName] ?? {})[0];
+    let bossName = args.join(''),
+        bossGrade = Object.keys(bossData[bossName] ?? {})[0];
     if (!bossData[bossName]) {
         bossGrade = args.pop();
         bossName = args.join('');

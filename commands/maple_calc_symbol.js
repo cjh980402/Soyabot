@@ -9,7 +9,8 @@ export async function messageExecute(message, args) {
         return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
     }
 
-    const startlev = Math.trunc(args[0]), endlev = Math.trunc(args[1]);
+    const startlev = Math.trunc(args[0]),
+        endlev = Math.trunc(args[1]);
     if (isNaN(startlev) || startlev < 1 || startlev > 20) {
         return message.channel.send('1 ~ 20 범위의 시작 레벨을 입력해주세요.');
     }
@@ -17,7 +18,12 @@ export async function messageExecute(message, args) {
         return message.channel.send('시작 레벨 ~ 20 범위의 목표 레벨을 입력해주세요.');
     }
 
-    let total_req1 = 0, total_req2 = 0, total_meso1 = 0, total_meso2 = 0, total_meso3 = 0, total_meso4 = 0;
+    let total_req1 = 0,
+        total_req2 = 0,
+        total_meso1 = 0,
+        total_meso2 = 0,
+        total_meso3 = 0,
+        total_meso4 = 0;
     for (let i = startlev; i < endlev; i++) {
         total_req1 += i * i + 11; // 요구량 = i^2 + 11
         total_meso1 += 2370000 + 7130000 * i; // 여로 심볼
@@ -63,7 +69,12 @@ export async function commandExecute(interaction) {
         return interaction.followUp('시작 레벨 이상의 목표 레벨을 입력해주세요.');
     }
 
-    let total_req1 = 0, total_req2 = 0, total_meso1 = 0, total_meso2 = 0, total_meso3 = 0, total_meso4 = 0;
+    let total_req1 = 0,
+        total_req2 = 0,
+        total_meso1 = 0,
+        total_meso2 = 0,
+        total_meso3 = 0,
+        total_meso4 = 0;
     for (let i = startlev; i < endlev; i++) {
         total_req1 += i * i + 11; // 요구량 = i^2 + 11
         total_meso1 += 2370000 + 7130000 * i; // 여로 심볼

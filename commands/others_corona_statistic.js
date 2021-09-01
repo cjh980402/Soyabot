@@ -82,7 +82,7 @@ export async function messageExecute(message) {
                         collector.stop();
                         break;
                 }
-            } catch { }
+            } catch {}
         });
     } else {
         return message.channel.send('코로나 현황을 조회할 수 없습니다.');
@@ -130,7 +130,7 @@ export async function commandExecute(interaction) {
                         collector.stop();
                         break;
                 }
-            } catch { }
+            } catch {}
         });
     } else {
         return interaction.followUp('코로나 현황을 조회할 수 없습니다.');

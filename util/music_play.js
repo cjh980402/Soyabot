@@ -126,7 +126,7 @@ export class QueueElement {
     }
 }
 
-export async function musicButtonControl (interaction) {
+export async function musicButtonControl(interaction) {
     const { guild } = interaction;
     const queue = client.queues.get(guild?.id);
     try {
@@ -184,7 +184,7 @@ export async function musicButtonControl (interaction) {
     } catch {}
 }
 
-export function musicActiveControl (oldState, newState) {
+export function musicActiveControl(oldState, newState) {
     try {
         const oldVoice = oldState.channel;
         const newVoice = newState.channel;

@@ -8,7 +8,7 @@ let testTimer = null;
 let testPatchTimer = null;
 let urusTimer = null;
 
-export function startNotice () {
+export function startNotice() {
     if (!noticeTimer) {
         noticeTimer = setInterval(async () => {
             try {
@@ -38,14 +38,14 @@ export function startNotice () {
     }
 }
 
-export function stopNotice () {
+export function stopNotice() {
     if (noticeTimer) {
         clearInterval(noticeTimer);
         noticeTimer = null;
     }
 }
 
-export function startUpdate () {
+export function startUpdate() {
     if (!updateTimer) {
         updateTimer = setInterval(async () => {
             try {
@@ -75,14 +75,14 @@ export function startUpdate () {
     }
 }
 
-export function stopUpdate () {
+export function stopUpdate() {
     if (updateTimer) {
         clearInterval(updateTimer);
         updateTimer = null;
     }
 }
 
-export function startTest () {
+export function startTest() {
     if (!testTimer) {
         testTimer = setInterval(async () => {
             try {
@@ -114,14 +114,14 @@ export function startTest () {
     }
 }
 
-export function stopTest () {
+export function stopTest() {
     if (testTimer) {
         clearInterval(testTimer);
         testTimer = null;
     }
 }
 
-export function startTestPatch () {
+export function startTestPatch() {
     if (!testPatchTimer) {
         testPatchTimer = setInterval(async () => {
             try {
@@ -142,14 +142,14 @@ export function startTestPatch () {
     }
 }
 
-export function stopTestPatch () {
+export function stopTestPatch() {
     if (testPatchTimer) {
         clearInterval(testPatchTimer);
         testPatchTimer = null;
     }
 }
 
-export function startUrus () {
+export function startUrus() {
     if (!urusTimer) {
         const now = new Date();
         const urusDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 22, 30); // 우르스 알림 시간 객체 저장
@@ -164,7 +164,7 @@ export function startUrus () {
     }
 }
 
-export function stopUrus () {
+export function stopUrus() {
     if (urusTimer) {
         clearInterval(urusTimer); // clearInterval과 clearTimeout은 동일한 동작 수행
         urusTimer = null;

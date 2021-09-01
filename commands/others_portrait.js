@@ -2,7 +2,7 @@ import { MessageAttachment } from '../util/discord.js-extend.js';
 import { BOT_SERVER_DOMAIN } from '../soyabot_config.js';
 import fetch from 'node-fetch';
 import { getMessageImage } from '../util/soyabot_util.js';
-// const { cmd } = require('../admin/admin_function');
+// import { cmd } from '../admin/admin_function.js';
 
 export const usage = `${client.prefix}그림`;
 export const command = ['그림', 'ㄱㄹ'];

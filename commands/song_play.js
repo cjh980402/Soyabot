@@ -114,7 +114,7 @@ export async function commandExecute(interaction) {
     if (interaction.options._hoistedOptions.length === 1) {
         try {
             await interaction.deleteReply(); // search 기능으로 실행되지 않은 경우만 삭제 수행
-        } catch { }
+        } catch {}
     }
     if (serverQueue) {
         serverQueue.textChannel = interaction.channel;

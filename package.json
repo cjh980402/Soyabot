@@ -1,6 +1,6 @@
 {
   "name": "soyabot",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "type": "module",
   "description": "MapleStory, Music Discord Bot",
   "main": "index.js",

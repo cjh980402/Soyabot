@@ -32,4 +32,4 @@ export default function (configuration, width, height, color = 'white') {
         }
     }); // 배경색 설정을 위한 플러그인 추가
     return chartCanvas.renderToBuffer(configuration);
-};
+}

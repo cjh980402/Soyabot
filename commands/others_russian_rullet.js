@@ -25,7 +25,7 @@ export async function messageExecute(message, args) {
     const bullet = isNaN(count) || count < 2 || count > 20 ? 6 : count; // 탄환 수 지정
     const gameUser = [message.member]; // 참가자 객체 배열
     message.channel.send(`게임을 시작하셨습니다.\n${client.prefix}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${gameUser[0].nickname ?? gameUser[0].user.username}`);
-    for (let gameChatType = 0; ;) {
+    for (let gameChatType = 0; ; ) {
         await message.channel.awaitMessages({
             filter: (msg) => {
                 const trimContent = msg.content.trim();
@@ -91,7 +91,7 @@ export async function messageExecute(message, args) {
                 time: 60000,
                 errors: ['time']
             });
-        } catch { } // 시간 초과돼도 에러 throw 안하게 catch를 해줌
+        } catch {} // 시간 초과돼도 에러 throw 안하게 catch를 해줌
         if (i === die) {
             try {
                 const dieUser = await message.guild.members.fetch({ user: gameUser[i % gameUser.length].id, cache: false });
@@ -131,7 +131,7 @@ export async function commandExecute(interaction) {
     const bullet = interaction.options.getInteger('탄환_수') ?? 6; // 탄환 수 지정
     const gameUser = [interaction.member]; // 참가자 객체 배열
     await interaction.editReply(`게임을 시작하셨습니다.\n${client.prefix}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${gameUser[0].nickname ?? gameUser[0].user.username}`);
-    for (let gameChatType = 0; ;) {
+    for (let gameChatType = 0; ; ) {
         await interaction.channel.awaitMessages({
             filter: (msg) => {
                 const trimContent = msg.content.trim();
@@ -197,7 +197,7 @@ export async function commandExecute(interaction) {
                 time: 60000,
                 errors: ['time']
             });
-        } catch { } // 시간 초과돼도 에러 throw 안하게 catch를 해줌
+        } catch {} // 시간 초과돼도 에러 throw 안하게 catch를 해줌
         if (i === die) {
             try {
                 const dieUser = await interaction.guild.members.fetch({ user: gameUser[i % gameUser.length].id, cache: false });

@@ -60,7 +60,7 @@ export async function messageExecute(message) {
                         collector.stop();
                         break;
                 }
-            } catch { }
+            } catch {}
         });
     } else {
         await message.channel.send({ embeds: [embeds[0]] });
@@ -108,7 +108,7 @@ export async function commandExecute(interaction) {
                         collector.stop();
                         break;
                 }
-            } catch { }
+            } catch {}
         });
     } else {
         await interaction.editReply({ embeds: [embeds[0]] });

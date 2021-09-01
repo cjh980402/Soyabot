@@ -6,7 +6,7 @@ import { ADMIN_ID } from '../soyabot_config.js';
 import { botNotice, replyRoomID } from './bot_control.js';
 import { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, startTestPatch, stopTestPatch, startUrus, stopUrus } from './maple_auto_notice.js';
 
-export async function adminChat (message) {
+export async function adminChat(message) {
     debugFunc(message);
     const fullContent = await message.fullContent;
     const room = /^\*(.+)\*\s/.exec(fullContent)?.[1];
@@ -36,7 +36,7 @@ export async function adminChat (message) {
     }
 }
 
-export async function cmd (command, { removeEscape = false, ...options } = {}) {
+export async function cmd(command, { removeEscape = false, ...options } = {}) {
     const promiseResult = exec(command, options);
     if (removeEscape) {
         // 제어 문자와 맨 끝 개행 제거
@@ -53,7 +53,7 @@ export async function cmd (command, { removeEscape = false, ...options } = {}) {
     }
 }
 
-export async function initClient () {
+export async function initClient() {
     db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
     db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
     db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');

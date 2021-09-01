@@ -25,7 +25,9 @@ export async function messageExecute(message) {
         .setAuthor(client.user.username)
         .addField(
             '\u200b',
-            `${new Date(seek * 1000).toISOString().substr(11, 8)} [${splitBar(song.duration || seek, seek, 20)[0]}] ${song.duration === 0 ? '◉ LIVE' : new Date(song.duration * 1000).toISOString().substr(11, 8)}`
+            `${new Date(seek * 1000).toISOString().substr(11, 8)} [${splitBar(song.duration || seek, seek, 20)[0]}] ${
+                song.duration === 0 ? '◉ LIVE' : new Date(song.duration * 1000).toISOString().substr(11, 8)
+            }`
         );
 
     if (song.duration > 0) {
@@ -58,7 +60,9 @@ export async function commandExecute(interaction) {
         .setAuthor(client.user.username)
         .addField(
             '\u200b',
-            `${new Date(seek * 1000).toISOString().substr(11, 8)} [${splitBar(song.duration || seek, seek, 20)[0]}] ${song.duration === 0 ? '◉ LIVE' : new Date(song.duration * 1000).toISOString().substr(11, 8)}`
+            `${new Date(seek * 1000).toISOString().substr(11, 8)} [${splitBar(song.duration || seek, seek, 20)[0]}] ${
+                song.duration === 0 ? '◉ LIVE' : new Date(song.duration * 1000).toISOString().substr(11, 8)
+            }`
         );
 
     if (song.duration > 0) {

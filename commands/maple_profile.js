@@ -30,7 +30,11 @@ export async function messageExecute(message, args) {
     const seed = mapleUserInfo.Seed();
 
     const { stdout: profilePic } = await cmd(
-        `python3 ./util/maple_gg_profile.py ${mapleUserInfo.userImg(false)} ${mapleUserInfo.Name} ${mapleUserInfo.serverName()} ${level[0]} '${level[4]}' ${mapleUserInfo.serverImg()} ${level[2].toLocaleString()} '${level[3] || '(없음)'}' '${rankString}' '${murung ? murung[1] : '기록없음'}' '${murung ? murung[2] : ' '}' '${union ? union[3] : '기록없음'}' '${union ? `Lv.${union[0].toLocaleString()}` : ' '}' '${seed ? seed[1] : '기록없음'}' '${seed ? seed[2] : ' '}'`,
+        `python3 ./util/maple_gg_profile.py ${mapleUserInfo.userImg(false)} ${mapleUserInfo.Name} ${mapleUserInfo.serverName()} ${level[0]} '${
+            level[4]
+        }' ${mapleUserInfo.serverImg()} ${level[2].toLocaleString()} '${level[3] || '(없음)'}' '${rankString}' '${murung ? murung[1] : '기록없음'}' '${murung ? murung[2] : ' '}' '${
+            union ? union[3] : '기록없음'
+        }' '${union ? `Lv.${union[0].toLocaleString()}` : ' '}' '${seed ? seed[1] : '기록없음'}' '${seed ? seed[2] : ' '}'`,
         { encoding: 'buffer' }
     );
     const image = new MessageAttachment(profilePic, 'profile.png');
@@ -69,7 +73,11 @@ export async function commandExecute(interaction) {
     const seed = mapleUserInfo.Seed();
 
     const { stdout: profilePic } = await cmd(
-        `python3 ./util/maple_gg_profile.py ${mapleUserInfo.userImg(false)} ${mapleUserInfo.Name} ${mapleUserInfo.serverName()} ${level[0]} '${level[4]}' ${mapleUserInfo.serverImg()} ${level[2].toLocaleString()} '${level[3] || '(없음)'}' '${rankString}' '${murung ? murung[1] : '기록없음'}' '${murung ? murung[2] : ' '}' '${union ? union[3] : '기록없음'}' '${union ? `Lv.${union[0].toLocaleString()}` : ' '}' '${seed ? seed[1] : '기록없음'}' '${seed ? seed[2] : ' '}'`,
+        `python3 ./util/maple_gg_profile.py ${mapleUserInfo.userImg(false)} ${mapleUserInfo.Name} ${mapleUserInfo.serverName()} ${level[0]} '${
+            level[4]
+        }' ${mapleUserInfo.serverImg()} ${level[2].toLocaleString()} '${level[3] || '(없음)'}' '${rankString}' '${murung ? murung[1] : '기록없음'}' '${murung ? murung[2] : ' '}' '${
+            union ? union[3] : '기록없음'
+        }' '${union ? `Lv.${union[0].toLocaleString()}` : ' '}' '${seed ? seed[1] : '기록없음'}' '${seed ? seed[2] : ' '}'`,
         { encoding: 'buffer' }
     );
     const image = new MessageAttachment(profilePic, 'profile.png');
