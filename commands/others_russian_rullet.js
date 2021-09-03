@@ -1,9 +1,22 @@
-const gameRegExp = [
-    new RegExp(`^${client.prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*(참가|ㅊㄱ)$`),
-    new RegExp(`^${client.prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*(시작|ㅅㅈ)$`),
-    new RegExp(`^${client.prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*(종료|ㅈㄹ)$`),
-    new RegExp(`^${client.prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*(빵|ㅃ)$`)
-];
+function findGameCommandType(str) {
+    const [prefixCommand] = str.trim().split(/\s+/);
+    if (!prefixCommand.startsWith(client.prefix)) {
+        return -1;
+    }
+    const command = prefixCommand.substr(client.prefix.length);
+    if (command === '참가' || command === 'ㅊㄱ') {
+        return 1;
+    }
+    if (command === '시작' || command === 'ㅅㅈ') {
+        return 2;
+    }
+    if (command === '종료' || command === 'ㅈㄹ') {
+        return 3;
+    }
+    if (command === '빵' || command === 'ㅃ') {
+        return 4;
+    }
+}
 
 export const usage = `${client.prefix}러시안룰렛 (탄환 수)`;
 export const command = ['러시안룰렛', 'ㄹㅅㅇㄹㄹ', 'ㄽㅇㄹㄹ'];
@@ -25,24 +38,22 @@ export async function messageExecute(message, args) {
     const bullet = isNaN(count) || count < 2 || count > 20 ? 6 : count; // 탄환 수 지정
     const gameUser = [message.member]; // 참가자 객체 배열
     message.channel.send(`게임을 시작하셨습니다.\n${client.prefix}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${gameUser[0].nickname ?? gameUser[0].user.username}`);
-    for (let gameChatType = 0; ; ) {
+    for (let gameCommandType = 0; ; ) {
         await message.channel.awaitMessages({
             filter: (msg) => {
-                const trimContent = msg.content.trim();
-                if (gameRegExp[0].test(trimContent)) {
+                gameCommandType = findGameCommandType(msg.content);
+                if (gameCommandType === 1) {
                     if (gameUser.some((v) => msg.member.id === v.id)) {
                         msg.channel.send('이미 참가하셨습니다.');
                         return false;
                     } else {
-                        gameChatType = 1;
                         gameUser.push(msg.member); // 참가자 리스트에 추가
                         msg.channel.send(`게임에 참가하셨습니다.\n현재 참가자 (${gameUser.length}명): ${gameUser.map((v) => v.nickname ?? v.user.username).join(', ')}`);
                         return true;
                     }
-                } else if (gameRegExp[1].test(trimContent)) {
+                } else if (gameCommandType === 2) {
                     if (gameUser.some((v) => msg.member.id === v.id)) {
                         if (gameUser.length > 1) {
-                            gameChatType = 2;
                             msg.channel.send('러시안룰렛을 시작합니다.');
                             return true;
                         } else {
@@ -53,9 +64,8 @@ export async function messageExecute(message, args) {
                         msg.channel.send('게임에 참가한 사람만 시작할 수 있습니다.');
                         return false;
                     }
-                } else if (gameRegExp[2].test(trimContent)) {
+                } else if (gameCommandType === 3) {
                     if (gameUser.some((v) => msg.member.id === v.id)) {
-                        gameChatType = 3;
                         msg.channel.send('게임을 종료합니다.');
                         return true;
                     } else {
@@ -63,7 +73,7 @@ export async function messageExecute(message, args) {
                         return false;
                     }
                 } else {
-                    // 러시안룰렛과 관련이 없는 채팅인 경우
+                    // 러시안룰렛 시작과 관련이 없는 채팅인 경우
                     return false;
                 }
             },
@@ -71,12 +81,12 @@ export async function messageExecute(message, args) {
             time: 300000,
             errors: ['time']
         }); // 5분 대기
-        if (gameChatType === 1 && gameUser.length === bullet) {
+        if (gameCommandType === 1 && gameUser.length === bullet) {
             await message.channel.send('인원이 가득 차 게임이 자동으로 시작됩니다.');
             break; // 게임 시작
-        } else if (gameChatType === 2) {
+        } else if (gameCommandType === 2) {
             break; // 게임 시작
-        } else if (gameChatType === 3) {
+        } else if (gameCommandType === 3) {
             return; // 게임 종료
         }
     }
@@ -86,7 +96,7 @@ export async function messageExecute(message, args) {
     for (let i = 0; i < bullet; i++) {
         try {
             await message.channel.awaitMessages({
-                filter: (msg) => msg.member.id === gameUser[i % gameUser.length].id && gameRegExp[3].test(msg.content.trim()),
+                filter: (msg) => msg.member.id === gameUser[i % gameUser.length].id && findGameCommandType(msg.content) === 4,
                 max: 1,
                 time: 60000,
                 errors: ['time']
@@ -131,24 +141,22 @@ export async function commandExecute(interaction) {
     const bullet = interaction.options.getInteger('탄환_수') ?? 6; // 탄환 수 지정
     const gameUser = [interaction.member]; // 참가자 객체 배열
     await interaction.editReply(`게임을 시작하셨습니다.\n${client.prefix}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${gameUser[0].nickname ?? gameUser[0].user.username}`);
-    for (let gameChatType = 0; ; ) {
+    for (let gameCommandType = 0; ; ) {
         await interaction.channel.awaitMessages({
             filter: (msg) => {
-                const trimContent = msg.content.trim();
-                if (gameRegExp[0].test(trimContent)) {
+                gameCommandType = findGameCommandType(msg.content);
+                if (gameCommandType === 1) {
                     if (gameUser.some((v) => msg.member.id === v.id)) {
                         msg.channel.send('이미 참가하셨습니다.');
                         return false;
                     } else {
-                        gameChatType = 1;
                         gameUser.push(msg.member); // 참가자 리스트에 추가
                         msg.channel.send(`게임에 참가하셨습니다.\n현재 참가자 (${gameUser.length}명): ${gameUser.map((v) => v.nickname ?? v.user.username).join(', ')}`);
                         return true;
                     }
-                } else if (gameRegExp[1].test(trimContent)) {
+                } else if (gameCommandType === 2) {
                     if (gameUser.some((v) => msg.member.id === v.id)) {
                         if (gameUser.length > 1) {
-                            gameChatType = 2;
                             msg.channel.send('러시안룰렛을 시작합니다.');
                             return true;
                         } else {
@@ -159,9 +167,8 @@ export async function commandExecute(interaction) {
                         msg.channel.send('게임에 참가한 사람만 시작할 수 있습니다.');
                         return false;
                     }
-                } else if (gameRegExp[2].test(trimContent)) {
+                } else if (gameCommandType === 3) {
                     if (gameUser.some((v) => msg.member.id === v.id)) {
-                        gameChatType = 3;
                         msg.channel.send('게임을 종료합니다.');
                         return true;
                     } else {
@@ -169,7 +176,7 @@ export async function commandExecute(interaction) {
                         return false;
                     }
                 } else {
-                    // 러시안룰렛과 관련이 없는 채팅인 경우
+                    // 러시안룰렛 시작과 관련이 없는 채팅인 경우
                     return false;
                 }
             },
@@ -177,12 +184,12 @@ export async function commandExecute(interaction) {
             time: 300000,
             errors: ['time']
         }); // 5분 대기
-        if (gameChatType === 1 && gameUser.length === bullet) {
+        if (gameCommandType === 1 && gameUser.length === bullet) {
             await interaction.channel.send('인원이 가득 차 게임이 자동으로 시작됩니다.');
             break; // 게임 시작
-        } else if (gameChatType === 2) {
+        } else if (gameCommandType === 2) {
             break; // 게임 시작
-        } else if (gameChatType === 3) {
+        } else if (gameCommandType === 3) {
             return; // 게임 종료
         }
     }
@@ -192,7 +199,7 @@ export async function commandExecute(interaction) {
     for (let i = 0; i < bullet; i++) {
         try {
             await interaction.channel.awaitMessages({
-                filter: (msg) => msg.member.id === gameUser[i % gameUser.length].id && gameRegExp[3].test(msg.content.trim()),
+                filter: (msg) => msg.member.id === gameUser[i % gameUser.length].id && findGameCommandType(msg.content) === 4,
                 max: 1,
                 time: 60000,
                 errors: ['time']
