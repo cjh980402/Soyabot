@@ -139,8 +139,7 @@ Object.defineProperty(BaseGuildVoiceChannel.prototype, 'join', {
 
 Object.defineProperty(YouTubeAPI.prototype, 'getVideosByIDs', {
     value: async function (ids, options = {}) {
-        Object.assign(options, { part: PARTS.Videos, id: ids.join(',') });
-        const result = await this.request.make(ENDPOINTS.Videos, options);
+        const result = await this.request.make(ENDPOINTS.Videos, { ...options, part: PARTS.Videos, id: ids.join(',') });
         if (result.items.length > 0) {
             return result.items.map((v) => (v ? new Video(this, v) : null));
         } else {
