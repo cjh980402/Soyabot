@@ -81,16 +81,12 @@ client.on('messageCreate', async (message) => {
             await adminChat(message);
         }
 
-        const prefixRegex = new RegExp(`^\\s*${client.prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`); // client.prefix에 이스케이핑 적용 후 정규식 생성
-
-        const matchedPrefix = prefixRegex.exec(message.content)?.[0]; // 정규식에 대응되는 명령어 접두어 부분을 탐색
-        if (!matchedPrefix) {
+        const [prefixCommand, ...args] = message.content.trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
+        if (!prefixCommand.startsWith(client.prefix)) {
             // client.prefix로 시작하지 않는 경우
             return await botChatting(message); // 잡담 로직
         }
-
-        const args = message.content.substr(matchedPrefix.length).trimEnd().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
-        commandName = args.shift().toLowerCase(); // commandName은 args의 첫번째 원소(명령어 부분), shift로 인해 args에는 뒷부분만 남음
+        commandName = prefixCommand.substr(client.prefix.length).toLowerCase(); // commandName은 args의 첫번째 원소(명령어 부분), shift로 인해 args에는 뒷부분만 남음
 
         const nowCommand = client.commands.find((cmd) => cmd.command.includes(commandName)); // 해당하는 명령어 찾기
 
