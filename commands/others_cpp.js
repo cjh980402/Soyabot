@@ -12,7 +12,7 @@ export async function messageExecute(message, args) {
         if (cppProcess) {
             cppProcess.stdin.write(`${args.join(' ')}\n`);
         } else {
-            const sourceCode = message.content.replace(/\s*.+?\s*.+?\s+/, '').trim();
+            const sourceCode = message.content.replace(/\s*.+?\s+/, '').trim();
             await writeFile(`./other_source/cpp_source.cpp`, sourceCode);
             const compile = (await cmd('g++ -o ./other_source/cpp_result.out ./other_source/cpp_source.cpp', { removeEscape: true })).stdout;
             if (compile) {

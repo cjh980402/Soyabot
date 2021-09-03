@@ -68,7 +68,7 @@ export async function messageExecute(message, args) {
         return message.channel.send(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 '${this.usage}'입니다.\n언어의 목록은 ${client.prefix}번역 목록을 확인해주세요.`);
     }
 
-    const text = message.content.replace(/\s*.+?\s*.+?\s+.+?\s+/, '').trim();
+    const text = message.content.replace(/\s*.+?\s+.+?\s+/, '').trim();
     if (text.length > 5000) {
         return message.channel.send('5000자를 초과하는 내용은 번역하지 않습니다.');
     } else {

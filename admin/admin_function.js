@@ -53,7 +53,7 @@ export async function cmd(command, { removeEscape = false, ...options } = {}) {
     }
 }
 
-export async function initClient() {
+export async function initClient(TOKEN) {
     db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
     db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
     db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');
@@ -68,6 +68,7 @@ export async function initClient() {
         "CREATE TABLE IF NOT EXISTS messagedb(channelsenderid text primary key, messagecnt integer default 0, lettercnt integer default 0, lastmessage text default '', lasttime datetime default (datetime('now', 'localtime')))"
     );
 
+    await client.login(TOKEN);
     await client.application.fetch();
     client.setMaxListeners(20); // 이벤트 개수 제한 증가
     startNotice(); // 공지 자동 알림 기능
