@@ -6,7 +6,7 @@ import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } from '../soyabot_config.js';
 import YouTubeAPI from 'simple-youtube-api';
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 const idRegex = /^[\w-]{11}$/;
-const listRegex = /^[\w-]+$/;
+const listRegex = /^[\w-]{12,}$/;
 const validPathDomains = /^https?:\/\/(youtu\.be\/|(www\.)?youtube\.com\/(embed|v|shorts)\/)/;
 const validQueryDomains = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com', 'gaming.youtube.com'];
 
