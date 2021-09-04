@@ -144,11 +144,15 @@ export async function songDownload(url) {
 }
 
 export async function youtubeSearch(search) {
-    const results = await ytsr(search, { type: 'video', limit: 10 });
-    // const results = await youtube.searchVideos(search, 10);
-    if (!results?.length) {
+    try {
+        const results = await ytsr(search, { type: 'video', limit: 10 });
+        // const results = await youtube.searchVideos(search, 10);
+        if (!results?.length) {
+            return null;
+        } else {
+            return results;
+        }
+    } catch {
         return null;
-    } else {
-        return results;
     }
 }
