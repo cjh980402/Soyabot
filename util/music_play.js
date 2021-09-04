@@ -155,7 +155,7 @@ export async function musicButtonControl(interaction) {
                 break;
             case 'skip':
                 queue.sendMessage(`${interaction.user} ⏭️ 노래를 건너뛰었습니다.`);
-                queue.subscription.player.stop(true);
+                queue.subscription.player.stop();
                 break;
             case 'loop':
                 queue.loop = !queue.loop;

@@ -34,7 +34,7 @@ export async function messageExecute(message, args) {
     } else {
         queue.songs.splice(0, skipto - 2);
     }
-    queue.subscription.player.stop(true);
+    queue.subscription.player.stop();
 }
 export const commandData = {
     name: 'skipto',
@@ -75,5 +75,5 @@ export async function commandExecute(interaction) {
     } else {
         queue.songs.splice(0, skipto - 2);
     }
-    queue.subscription.player.stop(true);
+    queue.subscription.player.stop();
 }

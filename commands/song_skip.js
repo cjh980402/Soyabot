@@ -18,7 +18,7 @@ export async function messageExecute(message) {
     }
 
     message.channel.send(`${message.author} ⏭️ 노래를 건너뛰었습니다.`);
-    queue.subscription.player.stop(true);
+    queue.subscription.player.stop();
 }
 export const commandData = {
     name: 'skip',
@@ -38,5 +38,5 @@ export async function commandExecute(interaction) {
     }
 
     interaction.followUp(`${interaction.user} ⏭️ 노래를 건너뛰었습니다.`);
-    queue.subscription.player.stop(true);
+    queue.subscription.player.stop();
 }
