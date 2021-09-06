@@ -128,7 +128,7 @@ export async function getPlaylistInfo(url, search) {
 
 export async function songDownload(url) {
     if (url.includes('youtube.com')) {
-        const { stream, type } = await ytdl(url);
+        const { stream, type } = await ytdl(url, { retry: true });
         return createAudioResource(stream, {
             inputType: type,
             inlineVolume: true
