@@ -5,7 +5,7 @@ import { stream as ytdl, search as ytsr } from 'play-dl';
 import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } from '../soyabot_config.js';
 import YouTubeAPI from 'simple-youtube-api';
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
-const idRegex = /^[\w-]{11}$/;
+const videoRegex = /^[\w-]{11}$/;
 const listRegex = /^[\w-]{12,}$/;
 const validPathDomains = /^https?:\/\/(youtu\.be\/|(www\.)?youtube\.com\/(embed|v|shorts)\/)/;
 const validQueryDomains = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com', 'gaming.youtube.com'];
@@ -36,7 +36,7 @@ export function getYoutubeVideoID(url) {
         } else if (!validQueryDomains.includes(parsed.hostname)) {
             return null;
         }
-        return idRegex.test(id ?? '') ? id : null;
+        return videoRegex.test(id ?? '') ? id : null;
     } catch {
         return null;
     }
@@ -128,7 +128,7 @@ export async function getPlaylistInfo(url, search) {
 
 export async function songDownload(url) {
     if (url.includes('youtube.com')) {
-        const { stream, type } = await ytdl(url, { retry: true });
+        const { stream, type } = await ytdl(url);
         return createAudioResource(stream, {
             inputType: type,
             inlineVolume: true
