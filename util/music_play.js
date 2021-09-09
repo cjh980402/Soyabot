@@ -166,8 +166,9 @@ export async function musicButtonControl(interaction) {
                 queue.sendMessage(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
                 break;
             case 'mute':
-                await queue.voiceChannel.guild.me.voice.setMute(!queue.voiceChannel.guild.me.voice.serverMute);
-                queue.sendMessage(!queue.voiceChannel.guild.me.voice.serverMute ? `${interaction.user} 🔊 음소거를 해제했습니다.` : `${interaction.user} 🔇 노래를 음소거 했습니다.`);
+                const muted = queue.voiceChannel.guild.me.voice.serverMute;
+                await queue.voiceChannel.guild.me.voice.setMute(!muted);
+                queue.sendMessage(muted ? `${interaction.user} 🔊 음소거를 해제했습니다.` : `${interaction.user} 🔇 노래를 음소거 했습니다.`);
                 break;
             case 'volume_down':
                 queue.volume = Math.max(queue.volume - 10, 0);
