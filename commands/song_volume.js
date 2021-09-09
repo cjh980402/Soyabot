@@ -17,7 +17,9 @@ export async function messageExecute(message, args) {
         return message.reply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
     }
 
-    if (!args[0]) {
+    return message.reply('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
+
+    /*if (!args[0]) {
         return message.reply(`🔊 현재 음량: **${queue.volume}%**`);
     }
     if (isNaN(args[0])) {
@@ -31,7 +33,7 @@ export async function messageExecute(message, args) {
 
     queue.volume = volume;
     queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
-    return message.channel.send(`변경된 음량: **${queue.volume}%**`);
+    return message.channel.send(`변경된 음량: **${queue.volume}%**`);*/
 }
 export const commandData = {
     name: 'volume',
@@ -57,7 +59,9 @@ export async function commandExecute(interaction) {
         return interaction.followUp(`${client.user}과 같은 음성 채널에 참가해주세요!`);
     }
 
-    const volume = interaction.options.getNumber('변경할_음량');
+    return interaction.followUp('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
+
+    /*const volume = interaction.options.getNumber('변경할_음량');
     if (volume === null) {
         return interaction.followUp(`🔊 현재 음량: **${queue.volume}%**`);
     }
@@ -67,5 +71,5 @@ export async function commandExecute(interaction) {
 
     queue.volume = volume;
     queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
-    return interaction.followUp(`변경된 음량: **${queue.volume}%**`);
+    return interaction.followUp(`변경된 음량: **${queue.volume}%**`);*/
 }

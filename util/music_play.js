@@ -92,7 +92,7 @@ export class QueueElement {
 
             this.playingMessage = await this.sendMessage({ embeds: [embed], components: [row1, row2] });
             this.subscription.player.play(await songDownload(this.songs[0].url));
-            this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
+            // this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
         } catch (err) {
             if (err.message.startsWith('While getting info from url')) {
                 this.sendMessage(err.message.substr(28));
@@ -166,19 +166,20 @@ export async function musicButtonControl(interaction) {
                 queue.sendMessage(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
                 break;
             case 'mute':
-                queue.volume = queue.volume <= 0 ? DEFAULT_VOLUME : 0;
-                queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
-                queue.sendMessage(queue.volume ? `${interaction.user} 🔊 음소거를 해제했습니다.` : `${interaction.user} 🔇 노래를 음소거 했습니다.`);
+                await queue.voiceChannel.guild.me.voice.setMute(!queue.voiceChannel.guild.me.voice.serverMute);
+                queue.sendMessage(!queue.voiceChannel.guild.me.voice.serverMute ? `${interaction.user} 🔊 음소거를 해제했습니다.` : `${interaction.user} 🔇 노래를 음소거 했습니다.`);
                 break;
             case 'volume_down':
                 queue.volume = Math.max(queue.volume - 10, 0);
-                queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
-                queue.sendMessage(`${interaction.user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
+                queue.sendMessage('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
+                // queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
+                // queue.sendMessage(`${interaction.user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
                 break;
             case 'volume_up':
                 queue.volume = Math.min(queue.volume + 10, 100);
-                queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
-                queue.sendMessage(`${interaction.user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
+                queue.sendMessage('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
+                // queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
+                // queue.sendMessage(`${interaction.user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
                 break;
             case 'shuffle':
                 queue.songs.shuffle(1); // 첫번째 노래를 제외하고 섞기

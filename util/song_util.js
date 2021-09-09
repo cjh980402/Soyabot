@@ -131,12 +131,12 @@ export async function songDownload(url) {
         const { stream, type } = await ytdl(url);
         return createAudioResource(stream, {
             inputType: type,
-            inlineVolume: true
+            // inlineVolume: true
         });
     } else if (url.includes('soundcloud.com')) {
         return createAudioResource(await (await scdl.getSongInfo(url)).downloadProgressive(), {
             inputType: StreamType.Arbitrary,
-            inlineVolume: true
+            // inlineVolume: true
         });
     } else {
         throw new Error('지원하지 않는 영상 주소입니다.');
