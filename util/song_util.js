@@ -130,12 +130,12 @@ export async function songDownload(url) {
     if (url.includes('youtube.com')) {
         const { stream, type } = await ytdl(url);
         return createAudioResource(stream, {
-            inputType: type,
+            inputType: type
             // inlineVolume: true
         });
     } else if (url.includes('soundcloud.com')) {
         return createAudioResource(await (await scdl.getSongInfo(url)).downloadProgressive(), {
-            inputType: StreamType.Arbitrary,
+            inputType: StreamType.Arbitrary
             // inlineVolume: true
         });
     } else {
@@ -144,15 +144,11 @@ export async function songDownload(url) {
 }
 
 export async function youtubeSearch(search) {
-    try {
-        const results = await ytsr(search, { type: 'video', limit: 10 });
-        // const results = await youtube.searchVideos(search, 10);
-        if (!results?.length) {
-            return null;
-        } else {
-            return results;
-        }
-    } catch {
+    const results = await ytsr(search, { type: 'video', limit: 10 });
+    // const results = await youtube.searchVideos(search, 10);
+    if (!results?.length) {
         return null;
+    } else {
+        return results;
     }
 }
