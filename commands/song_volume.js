@@ -8,8 +8,9 @@ export async function messageExecute(message, args) {
     if (!message.guildId) {
         return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
+    return message.reply('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
 
-    const queue = client.queues.get(message.guildId);
+    /*const queue = client.queues.get(message.guildId);
     if (!queue?.subscription.player.state.resource) {
         return message.reply('재생 중인 노래가 없습니다.');
     }
@@ -17,9 +18,7 @@ export async function messageExecute(message, args) {
         return message.reply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
     }
 
-    return message.reply('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
-
-    /*if (!args[0]) {
+    if (!args[0]) {
         return message.reply(`🔊 현재 음량: **${queue.volume}%**`);
     }
     if (isNaN(args[0])) {
@@ -50,8 +49,9 @@ export async function commandExecute(interaction) {
     if (!interaction.guildId) {
         return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
+    return interaction.followUp('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
 
-    const queue = client.queues.get(interaction.guildId);
+    /*const queue = client.queues.get(interaction.guildId);
     if (!queue?.subscription.player.state.resource) {
         return interaction.followUp('재생 중인 노래가 없습니다.');
     }
@@ -59,9 +59,7 @@ export async function commandExecute(interaction) {
         return interaction.followUp(`${client.user}과 같은 음성 채널에 참가해주세요!`);
     }
 
-    return interaction.followUp('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
-
-    /*const volume = interaction.options.getNumber('변경할_음량');
+    const volume = interaction.options.getNumber('변경할_음량');
     if (volume === null) {
         return interaction.followUp(`🔊 현재 음량: **${queue.volume}%**`);
     }
