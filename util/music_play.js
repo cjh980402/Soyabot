@@ -56,7 +56,7 @@ export class QueueElement {
     }
 
     clearStop() {
-        if (client.queues.delete(this.voiceChannel.guild.id)) {
+        if (client.queues.delete(this.voiceChannel.guildId)) {
             this.songs = [];
             this.subscription.unsubscribe();
             this.subscription.player.stop(true);
@@ -97,8 +97,8 @@ export class QueueElement {
             if (err.message.startsWith('While getting info from url')) {
                 this.sendMessage(err.message.substr(28));
             } else {
-                this.sendMessage('노래 재생을 실패했습니다.');
-                replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]?._p}\n에러 내용: ${err.stack ?? err._p}`);
+                this.sendMessage('노래 시작을 실패했습니다.');
+                replyAdmin(`노래 시작 에러\nsong 객체: ${this.songs[0]?._p}\n에러 내용: ${err.stack ?? err._p}`);
             }
             await this.deleteMessage();
             this.songs.shift();
