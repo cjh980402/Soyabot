@@ -42,8 +42,11 @@ export async function messageExecute(message, args) {
     let song = null;
     try {
         song = await getSongInfo(url, search);
-    } catch (err) {
-        return message.reply(err.message);
+        if (!song) {
+            return message.reply('검색 내용에 해당하는 영상을 찾지 못했습니다.');
+        }
+    } catch {
+        return message.reply('재생할 수 없는 영상입니다.');
     }
 
     if (serverQueue) {
@@ -107,8 +110,11 @@ export async function commandExecute(interaction) {
     let song = null;
     try {
         song = await getSongInfo(url, search);
-    } catch (err) {
-        return interaction.followUp(err.message);
+        if (!song) {
+            return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
+        }
+    } catch {
+        return interaction.followUp('재생할 수 없는 영상입니다.');
     }
 
     if (interaction.options._hoistedOptions.length === 1) {

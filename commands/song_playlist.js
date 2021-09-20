@@ -42,8 +42,11 @@ export async function messageExecute(message, args) {
     let videos = null;
     try {
         videos = await getPlaylistInfo(url, search);
-    } catch (err) {
-        return message.reply(err.message);
+        if (!videos) {
+            return message.reply('검색 내용에 해당하는 재생목록을 찾지 못했습니다.');
+        }
+    } catch {
+        return message.reply('재생할 수 없는 재생목록입니다.');
     }
 
     const playlistEmbed = new MessageEmbed()
@@ -116,8 +119,11 @@ export async function commandExecute(interaction) {
     let videos = null;
     try {
         videos = await getPlaylistInfo(url, search);
-    } catch (err) {
-        return interaction.followUp(err.message);
+        if (!videos) {
+            return interaction.followUp('검색 내용에 해당하는 재생목록을 찾지 못했습니다.');
+        }
+    } catch {
+        return interaction.followUp('재생할 수 없는 재생목록입니다.');
     }
 
     const playlistEmbed = new MessageEmbed()
