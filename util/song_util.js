@@ -1,7 +1,7 @@
-import { createAudioResource, StreamType } from '@discordjs/voice';
+import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import Soundcloud from 'soundcloud-scraper';
 const scdl = new Soundcloud.Client();
-import { stream as ytdl, search as ytsr } from 'play-dl';
+import { download as ytdl, search as ytsr } from 'youtube-scrapper';
 import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } from '../soyabot_config.js';
 import YouTubeAPI from 'simple-youtube-api';
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
@@ -64,7 +64,7 @@ export async function getSongInfo(url, search) {
             thumbnail: songInfo.thumbnail
         };
     } else {
-        const videoID = getYoutubeVideoID(url) ?? (await ytsr(search, { type: 'video', limit: 1 }))[0]?.id;
+        const videoID = getYoutubeVideoID(url) ?? (await ytsr(search, 'video')).videos[0]?.id;
         // (await youtube.searchVideos(search, 1, { part: 'snippet' }))[0]?.id;
         if (!videoID) {
             return null;
@@ -95,7 +95,7 @@ export async function getPlaylistInfo(url, search) {
                 thumbnail: track.thumbnail
             }));
     } else {
-        const playlistID = getYoutubeListID(url) ?? (await ytsr(search, { type: 'playlist', limit: 1 }))[0]?.id;
+        const playlistID = getYoutubeListID(url) ?? (await ytsr(search, 'playlist')).playlists[0]?.id;
         // (await youtube.searchPlaylists(search, 1, { part: 'snippet' }))[0]?.id;
         if (!playlistID) {
             return null;
@@ -119,26 +119,25 @@ export async function getPlaylistInfo(url, search) {
 }
 
 export async function songDownload(url) {
+    let source = null;
     if (url.includes('youtube.com')) {
-        const { stream, type } = await ytdl(url);
-        return createAudioResource(stream, {
-            inputType: type
-            // inlineVolume: true
-        });
+        source = await ytdl(url, null, { chunkMode: true });
     } else if (url.includes('soundcloud.com')) {
-        return createAudioResource(await (await scdl.getSongInfo(url)).downloadProgressive(), {
-            inputType: StreamType.Arbitrary
-            // inlineVolume: true
-        });
+        source = await (await scdl.getSongInfo(url)).downloadProgressive();
     } else {
         throw new Error('지원하지 않는 영상 주소입니다.');
     }
+    const { stream, type } = await demuxProbe(source);
+    return createAudioResource(stream, {
+        inputType: type
+        // inlineVolume: true
+    });
 }
 
 export async function youtubeSearch(search, limit = 10) {
-    const results = await ytsr(search, { type: 'video', limit });
+    const results = (await ytsr(search, 'video')).videos.slice(0, limit);
     // const results = await youtube.searchVideos(search, limit);
-    if (!results?.length) {
+    if (!results.length) {
         return null;
     } else {
         return results;

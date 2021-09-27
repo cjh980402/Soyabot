@@ -94,8 +94,8 @@ export class QueueElement {
             this.subscription.player.play(await songDownload(this.songs[0].url));
             // this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
         } catch (err) {
-            if (err.message.startsWith('While getting info from url')) {
-                this.sendMessage(err.message.substr(28));
+            if (err.message === 'Could not find suitable format for this download.') {
+                this.sendMessage('재생할 수 없는 동영상입니다.');
             } else {
                 this.sendMessage('노래 시작을 실패했습니다.');
                 replyAdmin(`노래 시작 에러\nsong 객체: ${this.songs[0]?._p}\n에러 내용: ${err.stack ?? err._p}`);
