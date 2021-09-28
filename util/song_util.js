@@ -121,7 +121,7 @@ export async function getPlaylistInfo(url, search) {
 export async function songDownload(url) {
     let source = null;
     if (url.includes('youtube.com')) {
-        source = await ytdl(url, null, { chunkMode: true });
+        source = await ytdl(url, null, { chunkMode: {} });
     } else if (url.includes('soundcloud.com')) {
         source = await (await scdl.getSongInfo(url)).downloadProgressive();
     } else {
