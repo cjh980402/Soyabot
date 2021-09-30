@@ -64,7 +64,7 @@ export async function getSongInfo(url, search) {
             thumbnail: songInfo.thumbnail
         };
     } else {
-        const videoID = getYoutubeVideoID(url) ?? (await ytsr(search, { type: 'video', limit: 1 })).results[0]?.id;
+        const videoID = getYoutubeVideoID(url) ?? (await ytsr(search, { type: 'video', limit: 1 }))[0]?.id;
         // (await youtube.searchVideos(search, 1, { part: 'snippet' }))[0]?.id;
         if (!videoID) {
             return null;
@@ -95,7 +95,7 @@ export async function getPlaylistInfo(url, search) {
                 thumbnail: track.thumbnail
             }));
     } else {
-        const playlistID = getYoutubeListID(url) ?? (await ytsr(search, { type: 'playlist', limit: 1 })).results[0]?.id;
+        const playlistID = getYoutubeListID(url) ?? (await ytsr(search, { type: 'playlist', limit: 1 }))[0]?.id;
         // (await youtube.searchPlaylists(search, 1, { part: 'snippet' }))[0]?.id;
         if (!playlistID) {
             return null;
@@ -135,9 +135,9 @@ export async function songDownload(url) {
 }
 
 export async function youtubeSearch(search, limit = 10) {
-    const { results } = await ytsr(search, { type: 'video', limit });
+    const results = await ytsr(search, { type: 'video', limit });
     // const results = await youtube.searchVideos(search, limit);
-    if (!results.length) {
+    if (results.length === 0) {
         return null;
     } else {
         return results;

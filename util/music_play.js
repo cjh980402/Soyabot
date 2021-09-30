@@ -1,5 +1,6 @@
 import { MessageActionRow, MessageButton, MessageEmbed } from './discord.js-extend.js';
 import { AudioPlayerStatus, createAudioPlayer, NoSubscriberBehavior, VoiceConnectionStatus } from '@discordjs/voice';
+import { ErrorCodes } from 'youtube-scrapper';
 import { songDownload } from './song_util.js';
 import { replyAdmin } from '../admin/bot_control.js';
 import { DEFAULT_VOLUME } from '../soyabot_config.js';
@@ -94,7 +95,7 @@ export class QueueElement {
             this.subscription.player.play(await songDownload(this.songs[0].url));
             // this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
         } catch (err) {
-            if (err.message === 'Could not find suitable format for this download.') {
+            if (err.message === ErrorCodes.NO_AVAILABLE_FORMAT) {
                 this.sendMessage('재생할 수 없는 동영상입니다.');
             } else {
                 this.sendMessage('노래 시작을 실패했습니다.');
