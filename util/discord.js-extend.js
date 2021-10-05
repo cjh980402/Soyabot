@@ -68,8 +68,8 @@ function contentSplitCode(content, options) {
 }
 
 Object.defineProperty(Message.prototype, '_patch', {
-    value: function (data, partial = false) {
-        _patch.call(this, data, partial);
+    value: function (data) {
+        _patch.call(this, data);
         if (data.member && this.guild && this.author) {
             this._member = this.guild.members._add({ ...data.member, user: this.author }, false); // 임시 멤버 객체 할당
         }
