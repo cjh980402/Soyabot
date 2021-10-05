@@ -1,17 +1,13 @@
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import Soundcloud from 'soundcloud-scraper';
-const scdl = new Soundcloud.Client();
-import { download as ytdl, search as ytsr } from 'youtube-dlsr';
+import { download as ytdl, search as ytsr, Util } from 'youtube-dlsr';
 import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } from '../soyabot_config.js';
 import YouTubeAPI from 'simple-youtube-api';
+const scdl = new Soundcloud.Client();
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
-const videoRegex = /^[\w-]{11}$/;
-const listRegex = /^[\w-]{12,}$/;
-const validPathDomains = /^https?:\/\/(youtu\.be\/|(www\.)?youtube\.com\/(embed|v|shorts)\/)/;
-const validQueryDomains = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com', 'gaming.youtube.com'];
 
 export function isValidVideo(url) {
-    if (Soundcloud.Util.validateURL(url, 'track') || getYoutubeVideoID(url)) {
+    if (Soundcloud.Util.validateURL(url, 'track') || Util.getVideoId(url)) {
         return true;
     } else {
         return false;
@@ -19,36 +15,10 @@ export function isValidVideo(url) {
 }
 
 export function isValidPlaylist(url) {
-    if (Soundcloud.Util.validateURL(url, 'playlist') || getYoutubeListID(url)) {
+    if (Soundcloud.Util.validateURL(url, 'playlist') || Util.getListId(url)) {
         return true;
     } else {
         return false;
-    }
-}
-
-export function getYoutubeVideoID(url) {
-    try {
-        const parsed = new URL(url);
-        let id = parsed.searchParams.get('v');
-        if (validPathDomains.test(url) && !id) {
-            const paths = parsed.pathname.split('/');
-            id = paths[parsed.hostname === 'youtu.be' ? 1 : 2].substring(0, 11);
-        } else if (!validQueryDomains.includes(parsed.hostname)) {
-            return null;
-        }
-        return videoRegex.test(id ?? '') ? id : null;
-    } catch {
-        return null;
-    }
-}
-
-export function getYoutubeListID(url) {
-    try {
-        const parsed = new URL(url);
-        const id = parsed.searchParams.get('list');
-        return validQueryDomains.includes(parsed.hostname) && listRegex.test(id ?? '') ? id : null;
-    } catch {
-        return null;
     }
 }
 
@@ -64,7 +34,7 @@ export async function getSongInfo(url, search) {
             thumbnail: songInfo.thumbnail
         };
     } else {
-        const videoID = getYoutubeVideoID(url) ?? (await ytsr(search, { type: 'video', limit: 1 }))[0]?.id;
+        const videoID = Util.getVideoId(url) ?? (await ytsr(search, { type: 'video', limit: 1 }))[0]?.id;
         // (await youtube.searchVideos(search, 1, { part: 'snippet' }))[0]?.id;
         if (!videoID) {
             return null;
@@ -95,7 +65,7 @@ export async function getPlaylistInfo(url, search) {
                 thumbnail: track.thumbnail
             }));
     } else {
-        const playlistID = getYoutubeListID(url) ?? (await ytsr(search, { type: 'playlist', limit: 1 }))[0]?.id;
+        const playlistID = Util.getListId(url) ?? (await ytsr(search, { type: 'playlist', limit: 1 }))[0]?.id;
         // (await youtube.searchPlaylists(search, 1, { part: 'snippet' }))[0]?.id;
         if (!playlistID) {
             return null;
