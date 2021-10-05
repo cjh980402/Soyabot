@@ -1,7 +1,7 @@
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import Soundcloud from 'soundcloud-scraper';
 const scdl = new Soundcloud.Client();
-import { download as ytdl, search as ytsr } from 'youtube-scrapper';
+import { download as ytdl, search as ytsr } from 'youtube-dlsr';
 import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } from '../soyabot_config.js';
 import YouTubeAPI from 'simple-youtube-api';
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);

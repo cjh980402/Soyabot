@@ -1,6 +1,6 @@
 {
   "name": "soyabot",
-  "version": "7.0.12",
+  "version": "7.0.13",
   "type": "module",
   "description": "MapleStory, Music Discord Bot",
   "main": "index.js",
@@ -29,7 +29,7 @@
     "chartjs-plugin-doughnutlabel": "^2.0.3",
     "cheerio": "^1.0.0-rc.10",
     "deepai": "^1.0.17",
-    "discord.js": "^13.1.0",
+    "discord.js": "^13.2.0",
     "entities": "^3.0.1",
     "express": "^4.17.1",
     "ffmpeg-static": "^4.4.0",
@@ -43,7 +43,7 @@
     "soundcloud-scraper": "^5.0.2",
     "string-progressbar": "^1.0.4",
     "utf-8-validate": "^5.0.6",
-    "youtube-scrapper": "file:../youtube-scrapper",
+    "youtube-dlsr": "^1.0.3",
     "zlib-sync": "^0.1.7"
   },
   "scripts": {

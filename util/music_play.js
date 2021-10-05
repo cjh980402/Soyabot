@@ -1,6 +1,6 @@
 import { MessageActionRow, MessageButton, MessageEmbed } from './discord.js-extend.js';
 import { AudioPlayerStatus, createAudioPlayer, NoSubscriberBehavior, VoiceConnectionStatus } from '@discordjs/voice';
-import { ErrorCodes } from 'youtube-scrapper';
+import { ErrorCodes } from 'youtube-dlsr';
 import { songDownload } from './song_util.js';
 import { replyAdmin } from '../admin/bot_control.js';
 import { DEFAULT_VOLUME } from '../soyabot_config.js';
