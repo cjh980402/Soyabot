@@ -95,7 +95,7 @@ export class QueueElement {
             this.subscription.player.play(await songDownload(this.songs[0].url));
             // this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
         } catch (err) {
-            if (err.message === ErrorCodes.NO_AVAILABLE_FORMAT) {
+            if (err.message === ErrorCodes.NO_SUITABLE_FORMAT) {
                 this.sendMessage('재생할 수 없는 동영상입니다.');
             } else {
                 this.sendMessage('노래 시작을 실패했습니다.');
