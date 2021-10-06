@@ -137,9 +137,7 @@ function choiceVS(str) {
 }
 
 export default function (message) {
-    if (message.content === '주사위') {
-        return message.channel.send(`주사위 결과: ${Math.floor(Math.random() * 100 + 1)}`);
-    } else if (/vs/i.test(message.content) && !/vsc/i.test(message.content)) {
+    if (/vs/i.test(message.content) && !/vsc/i.test(message.content)) {
         return message.reply(choiceVS(message.content));
     } else if (message.content.endsWith('확률')) {
         return message.reply(`확률: ${Math.floor(Math.random() * 101)}%`);
