@@ -48,7 +48,7 @@ export class QueueElement {
             })
             .on('error', (err) => {
                 this.sendMessage('노래 재생을 실패했습니다.');
-                replyAdmin(`노래 재생 에러\nsong 객체: ${this.songs[0]?._p}\n에러 내용: ${err.stack ?? err._p}`);
+                replyAdmin(`노래 재생 에러\n노래 주소: ${err.resource.metadata}}\n에러 내용: ${err.stack ?? err._p}`);
             });
     }
 
@@ -71,13 +71,9 @@ export class QueueElement {
             return this.sendMessage('🛑 음악 대기열이 끝났습니다.');
         }
 
+        const song = this.songs[0];
         try {
-            const embed = new MessageEmbed()
-                .setTitle('**🎶 노래 재생 중 🎶**')
-                .setColor('#FF9999')
-                .setImage(this.songs[0].thumbnail)
-                .setDescription(`**${this.songs[0].title}**\n${this.songs[0].url}`)
-                .setTimestamp();
+            const embed = new MessageEmbed().setTitle('**🎶 노래 재생 중 🎶**').setColor('#FF9999').setImage(song.thumbnail).setDescription(`**${song.title}**\n${song.url}`).setTimestamp();
             const row1 = new MessageActionRow().addComponents(
                 new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('play_pause').setEmoji('⏯️').setStyle('SECONDARY'),
@@ -92,14 +88,14 @@ export class QueueElement {
             );
 
             this.playingMessage = await this.sendMessage({ embeds: [embed], components: [row1, row2] });
-            this.subscription.player.play(await songDownload(this.songs[0].url));
+            this.subscription.player.play(await songDownload(song.url));
             // this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
         } catch (err) {
             if (err.message === ErrorCodes.NO_SUITABLE_FORMAT) {
                 this.sendMessage('재생할 수 없는 동영상입니다.');
             } else {
                 this.sendMessage('노래 시작을 실패했습니다.');
-                replyAdmin(`노래 시작 에러\nsong 객체: ${this.songs[0]?._p}\n에러 내용: ${err.stack ?? err._p}`);
+                replyAdmin(`노래 시작 에러\nsong 객체: ${song._p}\n에러 내용: ${err.stack ?? err._p}`);
             }
             await this.deleteMessage();
             this.songs.shift();
