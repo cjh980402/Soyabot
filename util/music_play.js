@@ -48,7 +48,7 @@ export class QueueElement {
             })
             .on('error', (err) => {
                 this.sendMessage('노래 재생을 실패했습니다.');
-                replyAdmin(`노래 재생 에러\n노래 주소: ${err.resource.metadata}}\n에러 내용: ${err.stack ?? err._p}`);
+                replyAdmin(`노래 재생 에러\n노래 주소: ${err.resource.metadata}\n에러 내용: ${err.stack ?? err._p}`);
             });
     }
 
