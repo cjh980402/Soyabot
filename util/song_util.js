@@ -7,7 +7,7 @@ const scdl = new Soundcloud.Client();
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 
 export function isValidVideo(url) {
-    if (Soundcloud.Util.validateURL(url, 'track') || Util.getVideoId(url)) {
+    if (Soundcloud.Util.validateURL(url, 'track') || Util.getVideoId(url, true)) {
         return true;
     } else {
         return false;
@@ -15,7 +15,7 @@ export function isValidVideo(url) {
 }
 
 export function isValidPlaylist(url) {
-    if (Soundcloud.Util.validateURL(url, 'playlist') || Util.getListId(url)) {
+    if (Soundcloud.Util.validateURL(url, 'playlist') || Util.getListId(url, true)) {
         return true;
     } else {
         return false;
@@ -34,7 +34,7 @@ export async function getSongInfo(url, search) {
             thumbnail: songInfo.thumbnail
         };
     } else {
-        const videoID = Util.getVideoId(url) ?? (await ytsr(search, { type: 'video', limit: 1 }))[0]?.id;
+        const videoID = Util.getVideoId(url, true) ?? (await ytsr(search, { type: 'video', limit: 1 }))[0]?.id;
         // (await youtube.searchVideos(search, 1, { part: 'snippet' }))[0]?.id;
         if (!videoID) {
             return null;
@@ -65,7 +65,7 @@ export async function getPlaylistInfo(url, search) {
                 thumbnail: track.thumbnail
             }));
     } else {
-        const playlistID = Util.getListId(url) ?? (await ytsr(search, { type: 'playlist', limit: 1 }))[0]?.id;
+        const playlistID = Util.getListId(url, true) ?? (await ytsr(search, { type: 'playlist', limit: 1 }))[0]?.id;
         // (await youtube.searchPlaylists(search, 1, { part: 'snippet' }))[0]?.id;
         if (!playlistID) {
             return null;
@@ -83,9 +83,7 @@ export async function getPlaylistInfo(url, search) {
             thumbnail: video.maxRes.url
         }));
     }
-    videos.title = playlist.title;
-    videos.url = playlist.url;
-    return videos;
+    return { videos, title: playlist.title, url: playlist.url };
 }
 
 export async function songDownload(url) {
@@ -93,7 +91,7 @@ export async function songDownload(url) {
     if (url.includes('youtube.com')) {
         source = await ytdl(url, { chunkMode: {} });
     } else if (url.includes('soundcloud.com')) {
-        source = await (await scdl.getSongInfo(url)).downloadProgressive();
+        source = await (await scdl.getSongInfo(url)).downloadHLS();
     } else {
         throw new Error('지원하지 않는 영상 주소입니다.');
     }

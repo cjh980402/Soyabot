@@ -4,7 +4,7 @@ const chartCanvas = new ChartJSNodeCanvas({
     width: 1000,
     height: 1000,
     plugins: {
-        requireLegacy: ['chartjs-plugin-datalabels', 'chartjs-plugin-doughnutlabel']
+        requireLegacy: ['chartjs-plugin-datalabels']
     },
     chartCallback: (ChartJS) => {
         ChartJS.defaults.global.defaultFontFamily = 'NanumBarunGothic, Symbola, CODE2000';

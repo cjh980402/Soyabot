@@ -39,10 +39,10 @@ export async function messageExecute(message, args) {
         return client.commands.find((cmd) => cmd.command.includes('play')).messageExecute(message, args);
     }
 
-    let videos = null;
+    let playlist = null;
     try {
-        videos = await getPlaylistInfo(url, search);
-        if (!videos) {
+        playlist = await getPlaylistInfo(url, search);
+        if (!playlist) {
             return message.reply('검색 내용에 해당하는 재생목록을 찾지 못했습니다.');
         }
     } catch {
@@ -50,22 +50,22 @@ export async function messageExecute(message, args) {
     }
 
     const playlistEmbed = new MessageEmbed()
-        .setTitle(`**${videos.title.decodeHTML()}**`)
-        .setDescription(Util.splitMessage(videos.map((song, index) => `${index + 1}. ${song.title}`).join('\n'), { char: '\n' })[0])
-        .setURL(videos.url)
+        .setTitle(`**${playlist.title.decodeHTML()}**`)
+        .setDescription(Util.splitMessage(playlist.videos.map((song, index) => `${index + 1}. ${song.title}`).join('\n'), { char: '\n' })[0])
+        .setURL(playlist.url)
         .setColor('#FF9999')
         .setTimestamp();
 
     if (serverQueue) {
         serverQueue.textChannel = message.channel;
-        serverQueue.songs.push(...videos);
+        serverQueue.songs.push(...playlist.videos);
         return message.channel.send({ content: `✅ ${message.author}가 재생목록을 추가하였습니다.`, embeds: [playlistEmbed] });
     }
 
     message.channel.send({ content: `✅ ${message.author}가 재생목록을 시작했습니다.`, embeds: [playlistEmbed] });
 
     try {
-        const newQueue = new QueueElement(message.channel, channel, await channel.join(), [...videos]);
+        const newQueue = new QueueElement(message.channel, channel, await channel.join(), [...playlist.videos]);
         client.queues.set(message.guildId, newQueue);
         newQueue.playSong();
     } catch (err) {
@@ -116,10 +116,10 @@ export async function commandExecute(interaction) {
         return client.commands.find((cmd) => cmd.commandData?.name === 'play').commandExecute(interaction);
     }
 
-    let videos = null;
+    let playlist = null;
     try {
-        videos = await getPlaylistInfo(url, search);
-        if (!videos) {
+        playlist = await getPlaylistInfo(url, search);
+        if (!playlist) {
             return interaction.followUp('검색 내용에 해당하는 재생목록을 찾지 못했습니다.');
         }
     } catch {
@@ -127,22 +127,22 @@ export async function commandExecute(interaction) {
     }
 
     const playlistEmbed = new MessageEmbed()
-        .setTitle(`**${videos.title.decodeHTML()}**`)
-        .setDescription(Util.splitMessage(videos.map((song, index) => `${index + 1}. ${song.title}`).join('\n'), { char: '\n' })[0])
-        .setURL(videos.url)
+        .setTitle(`**${playlist.title.decodeHTML()}**`)
+        .setDescription(Util.splitMessage(playlist.videos.map((song, index) => `${index + 1}. ${song.title}`).join('\n'), { char: '\n' })[0])
+        .setURL(playlist.url)
         .setColor('#FF9999')
         .setTimestamp();
 
     if (serverQueue) {
         serverQueue.textChannel = interaction.channel;
-        serverQueue.songs.push(...videos);
+        serverQueue.songs.push(...playlist.videos);
         return interaction.followUp({ content: `✅ ${interaction.user}가 재생목록을 추가하였습니다.`, embeds: [playlistEmbed] });
     }
 
     await interaction.editReply({ content: `✅ ${interaction.user}가 재생목록을 시작했습니다.`, embeds: [playlistEmbed] });
 
     try {
-        const newQueue = new QueueElement(interaction.channel, channel, await channel.join(), [...videos]);
+        const newQueue = new QueueElement(interaction.channel, channel, await channel.join(), [...playlist.videos]);
         client.queues.set(interaction.guildId, newQueue);
         newQueue.playSong();
     } catch (err) {
