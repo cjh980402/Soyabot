@@ -67,14 +67,14 @@ async function getMessageCountGraph(targetGuild, option) {
             },
             scales: {
                 x: {
-                    gridLines: { lineWidth: 3 },
+                    grid: { lineWidth: 3 },
                     ticks: {
                         font: { size: 30 },
                         beginAtZero: true
                     }
                 }, // X축 0부터 시작하게 하는 옵션
                 y: {
-                    gridLines: { lineWidth: 3 },
+                    grid: { lineWidth: 3 },
                     ticks: { font: { size } }
                 }
             }

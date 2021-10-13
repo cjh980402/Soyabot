@@ -61,11 +61,11 @@ async function getBossMesoEmbed(type) {
             },
             scales: {
                 x: {
-                    gridLines: { lineWidth: 3 },
+                    grid: { lineWidth: 3 },
                     ticks: { font: { size: 23 } }
                 },
                 y: {
-                    gridLines: { lineWidth: 3 },
+                    grid: { lineWidth: 3 },
                     ticks: { font: { size: 23 } }
                 }
             }

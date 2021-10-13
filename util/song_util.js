@@ -89,7 +89,7 @@ export async function getPlaylistInfo(url, search) {
 export async function songDownload(url) {
     let source = null;
     if (url.includes('youtube.com')) {
-        source = await ytdl(url, { chunkMode: {} });
+        source = await ytdl(url, { chunkMode: true });
     } else if (url.includes('soundcloud.com')) {
         source = await (await scdl.getSongInfo(url)).downloadHLS();
     } else {
