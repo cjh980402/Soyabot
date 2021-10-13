@@ -7,7 +7,7 @@ const chartCanvas = new ChartJSNodeCanvas({
         requireLegacy: ['chartjs-plugin-datalabels']
     },
     chartCallback: (ChartJS) => {
-        ChartJS.defaults.global.defaultFontFamily = 'NanumBarunGothic, Symbola, CODE2000';
+        ChartJS.defaults.font.family = 'NanumBarunGothic, Symbola, CODE2000';
     }
 });
 chartCanvas.registerFont('./fonts/NanumBarunGothic.ttf', { family: 'NanumBarunGothic' });

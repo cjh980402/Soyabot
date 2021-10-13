@@ -65,29 +65,25 @@ async function getMesoEmbed(server) {
                     anchor: 'end',
                     align: 'end',
                     font: { size: 23 }
+                },
+                title: {
+                    display: true,
+                    font: { size: 26 },
+                    text: `${server} 서버 메소시세`
+                },
+                legend: {
+                    labels: { font: { size: 23 } }
                 }
             },
             scales: {
-                xAxes: [
-                    {
-                        gridLines: { lineWidth: 3 },
-                        ticks: { fontSize: 23 }
-                    }
-                ],
-                yAxes: [
-                    {
-                        gridLines: { lineWidth: 3 },
-                        ticks: { fontSize: 23 }
-                    }
-                ]
-            },
-            title: {
-                display: true,
-                fontSize: 26,
-                text: `${server} 서버 메소시세`
-            },
-            legend: {
-                labels: { fontSize: 23 }
+                x: {
+                    grid: { lineWidth: 3 },
+                    ticks: { font: { size: 23 } }
+                },
+                y: {
+                    grid: { lineWidth: 3 },
+                    ticks: { font: { size: 23 } }
+                }
             }
         }
     };

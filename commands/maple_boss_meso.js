@@ -49,29 +49,25 @@ async function getBossMesoEmbed(type) {
         },
         options: {
             plugins: {
-                datalabels: { display: false } // 데이터 값 표시하지 않음
+                datalabels: { display: false }, // 데이터 값 표시하지 않음
+                title: {
+                    display: true,
+                    font: { size: 26 },
+                    text: `${type} 결정석 시세 변화`
+                },
+                legend: {
+                    labels: { font: { size: 23 } }
+                }
             },
             scales: {
-                xAxes: [
-                    {
-                        gridLines: { lineWidth: 3 },
-                        ticks: { fontSize: 23 }
-                    }
-                ],
-                yAxes: [
-                    {
-                        gridLines: { lineWidth: 3 },
-                        ticks: { fontSize: 23 }
-                    }
-                ]
-            },
-            title: {
-                display: true,
-                fontSize: 26,
-                text: `${type} 결정석 시세 변화`
-            },
-            legend: {
-                labels: { fontSize: 23 }
+                x: {
+                    gridLines: { lineWidth: 3 },
+                    ticks: { font: { size: 23 } }
+                },
+                y: {
+                    gridLines: { lineWidth: 3 },
+                    ticks: { font: { size: 23 } }
+                }
             }
         }
     };

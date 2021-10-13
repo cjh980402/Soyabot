@@ -33,7 +33,7 @@ async function getMessageStatGraph(targetGuild, option) {
     const height = Math.min(3000, 1200 + 20 * roommessage.length);
     const size = Math.min(40, Math.floor((0.85 * (height - 120 - 3 * (roommessage.length + 1))) / roommessage.length));
     const config = {
-        type: 'horizontalBar',
+        type: 'bar',
         data: {
             labels: roommessage.map((v) => v.member.nickname ?? v.member.user.username),
             datasets: [
@@ -48,6 +48,7 @@ async function getMessageStatGraph(targetGuild, option) {
             ]
         },
         options: {
+            indexAxis: 'y', // Horizontal Bar Chart
             plugins: {
                 datalabels: {
                     // 데이터 값 표시
@@ -56,31 +57,27 @@ async function getMessageStatGraph(targetGuild, option) {
                     anchor: 'end',
                     align: 'end',
                     font: { size }
-                }
+                },
+                title: {
+                    display: true,
+                    font: { size: 35 },
+                    text: `${targetGuild.name} 방의 채팅지수 그래프`
+                },
+                legend: { display: false }
             },
             scales: {
-                xAxes: [
-                    {
-                        gridLines: { lineWidth: 3 },
-                        ticks: {
-                            fontSize: 30,
-                            beginAtZero: true
-                        }
+                x: {
+                    gridLines: { lineWidth: 3 },
+                    ticks: {
+                        font: { size: 30 },
+                        beginAtZero: true
                     }
-                ], // X축 0부터 시작하게 하는 옵션
-                yAxes: [
-                    {
-                        gridLines: { lineWidth: 3 },
-                        ticks: { fontSize: size }
-                    }
-                ]
-            },
-            title: {
-                display: true,
-                fontSize: 35,
-                text: `${targetGuild.name} 방의 채팅지수 그래프`
-            },
-            legend: { display: false }
+                }, // X축 0부터 시작하게 하는 옵션
+                y: {
+                    gridLines: { lineWidth: 3 },
+                    ticks: { font: { size } }
+                }
+            }
         }
     };
 
