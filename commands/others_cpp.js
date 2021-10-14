@@ -14,7 +14,7 @@ export async function messageExecute(message, args) {
         } else {
             const sourceCode = message.content.replace(/\s*.+?\s+/, '').trim();
             await writeFile(`./other_source/cpp_source.cpp`, sourceCode);
-            const compile = (await cmd('g++ -o ./other_source/cpp_result.out ./other_source/cpp_source.cpp', { removeEscape: true })).stdout;
+            const { stdout: compile } = await cmd('g++ ./other_source/cpp_source.cpp -o ./other_source/cpp_result.out', { removeEscape: true });
             if (compile) {
                 return message.channel.send(compile); // 컴파일 에러 출력
             }

@@ -70,9 +70,9 @@ async function getMessageCountGraph(targetGuild, option) {
                     grid: { lineWidth: 3 },
                     ticks: {
                         font: { size: 30 },
-                        beginAtZero: true
+                        beginAtZero: true // X축 0부터 시작하게 하는 옵션
                     }
-                }, // X축 0부터 시작하게 하는 옵션
+                },
                 y: {
                     grid: { lineWidth: 3 },
                     ticks: { font: { size } }
