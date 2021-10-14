@@ -1,7 +1,7 @@
+import fetch from 'node-fetch';
+import FormData from 'form-data';
 import { DEEP_API_KEY } from '../soyabot_config.js';
 import { getMessageImage } from '../util/soyabot_util.js';
-import deepai from 'deepai';
-deepai.setApiKey(DEEP_API_KEY);
 
 export const usage = `${client.prefix}확대`;
 export const command = ['확대', 'ㅎㄷ'];
@@ -12,7 +12,18 @@ export async function messageExecute(message) {
     if (!imageURL) {
         return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
     } else {
-        const resp = await deepai.callStandardApi('waifu2x', { image: imageURL });
+        const form = new FormData();
+        form.append('image', imageURL);
+        const resp = await (
+            await fetch('https://api.deepai.org/api/waifu2x', {
+                method: 'POST',
+                headers: {
+                    'client-library': 'deepai-js-client',
+                    'api-key': DEEP_API_KEY
+                },
+                body: form
+            })
+        ).json();
         return message.channel.send({ files: [resp.output_url] });
     }
 }
