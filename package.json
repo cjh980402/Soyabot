@@ -49,7 +49,7 @@
     "stop": "forever stop index.js",
     "restart": "forever restart index.js",
     "prepublish": "npm run pretty",
-    "pretty": "prettier --config .prettierrc '*.js' '+(admin|commands|util)/*.js' --write"
+    "pretty": "prettier --config .prettierrc '*.js' '*/*.js' --write"
   },
   "devDependencies": {
     "prettier": "^2.4.1"

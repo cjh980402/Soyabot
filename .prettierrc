@@ -1,9 +1,9 @@
 {
-    "printWidth": 200,
-    "tabWidth": 4,
-    "singleQuote": true,
-    "quoteProps": "consistent",
-    "semi": true,
-    "embeddedLanguageFormatting": "off",
-    "trailingComma": "none"
+  "printWidth": 200,
+  "tabWidth": 4,
+  "singleQuote": true,
+  "quoteProps": "consistent",
+  "semi": true,
+  "embeddedLanguageFormatting": "off",
+  "trailingComma": "none"
 }
