@@ -1,23 +1,29 @@
 {
   "name": "soyabot",
   "version": "7.2.0",
-  "type": "module",
   "description": "MapleStory, Music Discord Bot",
-  "main": "index.js",
-  "author": "9804cjh@naver.com",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/cjh980402/Soyabot"
-  },
+  "type": "module",
+  "private": true,
   "keywords": [
     "Discord",
     "MapleStory",
     "Music"
   ],
+  "homepage": "https://github.com/cjh980402/Soyabot",
   "bugs": "https://github.com/cjh980402/Soyabot/issues",
-  "engines": {
-    "node": ">=16.6.0"
+  "license": "MIT",
+  "author": "cjh980402 <9804cjh@naver.com> (https://github.com/cjh980402)",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cjh980402/Soyabot"
+  },
+  "scripts": {
+    "start": "forever start -o ./log/out.log -e ./log/err.log index.js",
+    "stop": "forever stop index.js",
+    "restart": "forever restart index.js",
+    "prepublish": "npm run pretty",
+    "pretty": "prettier --config .prettierrc '*.js' '*/*.js' --write"
   },
   "dependencies": {
     "@discordjs/opus": "^0.6.0",
@@ -44,14 +50,10 @@
     "youtube-dlsr": "^1.2.1",
     "zlib-sync": "^0.1.7"
   },
-  "scripts": {
-    "start": "forever start -o ./log/out.log -e ./log/err.log index.js",
-    "stop": "forever stop index.js",
-    "restart": "forever restart index.js",
-    "prepublish": "npm run pretty",
-    "pretty": "prettier --config .prettierrc '*.js' '*/*.js' --write"
-  },
   "devDependencies": {
     "prettier": "^2.4.1"
+  },
+  "engines": {
+    "node": ">=16.6.0"
   }
 }
