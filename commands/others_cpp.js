@@ -1,7 +1,7 @@
-import { ADMIN_ID } from '../soyabot_config.js';
+import { spawn } from 'child_process';
 import { writeFile } from 'fs/promises';
 import { cmd } from '../admin/admin_function.js';
-import { spawn } from 'child_process';
+import { ADMIN_ID } from '../soyabot_config.js';
 let cppProcess = null;
 
 export const usage = `${client.prefix}cpp (소스코드)`;

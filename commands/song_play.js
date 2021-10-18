@@ -1,7 +1,7 @@
+import { replyAdmin } from '../admin/bot_control.js';
 import { Permissions } from '../util/discord.js-extend.js';
 import { QueueElement } from '../util/music_play.js';
 import { isValidPlaylist, isValidVideo, getSongInfo } from '../util/song_util.js';
-import { replyAdmin } from '../admin/bot_control.js';
 
 export const usage = `${client.prefix}play (영상 주소│영상 제목)`;
 export const command = ['play', 'p', '노래'];

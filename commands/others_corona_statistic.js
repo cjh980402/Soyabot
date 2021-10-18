@@ -1,6 +1,6 @@
+import fetch from 'node-fetch';
 import { MessageAttachment, MessageActionRow, MessageButton, MessageEmbed } from '../util/discord.js-extend.js';
 import { CORONA_API_KEY } from '../soyabot_config.js';
-import fetch from 'node-fetch';
 
 function calcIncrease(data) {
     return `${data >= 0 ? `⬆️ ${data.toLocaleString()}` : `⬇️ ${(-data).toLocaleString()}`}`;

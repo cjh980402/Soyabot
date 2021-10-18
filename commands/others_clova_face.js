@@ -1,7 +1,7 @@
-import fetch from 'node-fetch';
 import FormData from 'form-data';
-import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '../soyabot_config.js';
+import fetch from 'node-fetch';
 import { getMessageImage } from '../util/soyabot_util.js';
+import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '../soyabot_config.js';
 
 async function requestCFR(url) {
     const form = new FormData();

@@ -1,7 +1,7 @@
-import { MessageEmbed } from '../util/discord.js-extend.js';
-import { botNotice, replyAdmin } from './bot_control.js';
 import fetch from 'node-fetch';
 import { load } from 'cheerio';
+import { botNotice, replyAdmin } from './bot_control.js';
+import { MessageEmbed } from '../util/discord.js-extend.js';
 let noticeTimer = null;
 let updateTimer = null;
 let testTimer = null;

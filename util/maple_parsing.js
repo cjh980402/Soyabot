@@ -1,6 +1,6 @@
-import { setTimeout } from 'timers/promises';
 import fetch from 'node-fetch';
 import { load } from 'cheerio';
+import { setTimeout } from 'timers/promises';
 
 async function linkParse(link) {
     return load(await (await fetch(link)).text());

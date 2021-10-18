@@ -1,6 +1,6 @@
-import { MessageAttachment } from '../util/discord.js-extend.js';
-import renderChart from '../util/chartjs_rendering.js';
 import fetch from 'node-fetch';
+import renderChart from '../util/chartjs_rendering.js';
+import { MessageAttachment } from '../util/discord.js-extend.js';
 const typeList = {
     월간보스: 'month',
     주간보스1: 'week1',

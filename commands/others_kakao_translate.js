@@ -1,5 +1,5 @@
-import { KAKAO_API_KEY } from '../soyabot_config.js';
 import fetch from 'node-fetch';
+import { KAKAO_API_KEY } from '../soyabot_config.js';
 const langList = {
     한: ['한국어', 'kr'],
     영: ['영어', 'en'],

@@ -1,10 +1,10 @@
-import { Message } from '../util/discord.js-extend.js';
-import { promisify } from 'util';
 import { exec as _exec } from 'child_process';
-const exec = promisify(_exec);
-import { ADMIN_ID } from '../soyabot_config.js';
+import { promisify } from 'util';
 import { botNotice, replyRoomID } from './bot_control.js';
 import { startNotice, stopNotice, startUpdate, stopUpdate, startTest, stopTest, startTestPatch, stopTestPatch, startUrus, stopUrus } from './maple_auto_notice.js';
+import { Message } from '../util/discord.js-extend.js';
+import { ADMIN_ID } from '../soyabot_config.js';
+const exec = promisify(_exec);
 
 export async function adminChat(message) {
     debugFunc(message);

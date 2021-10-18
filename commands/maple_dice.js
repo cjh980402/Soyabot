@@ -1,5 +1,5 @@
-import { MessageAttachment, MessageActionRow, MessageButton } from '../util/discord.js-extend.js';
 import { cmd } from '../admin/admin_function.js';
+import { MessageAttachment, MessageActionRow, MessageButton } from '../util/discord.js-extend.js';
 
 export const usage = `${client.prefix}데굴데굴`;
 export const command = ['데굴데굴', 'ㄷㄱㄷㄱ'];

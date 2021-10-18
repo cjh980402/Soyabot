@@ -1,6 +1,6 @@
-// import { MapleGuild } from '../util/maple_parsing.js';
-import { BOT_SERVER_DOMAIN } from '../soyabot_config.js';
 import fetch from 'node-fetch';
+import { BOT_SERVER_DOMAIN } from '../soyabot_config.js';
+// import { MapleGuild } from '../util/maple_parsing.js';
 const serverEngName = {
     스카니아: 'scania',
     베라: 'bera',

@@ -1,6 +1,6 @@
+import fetch from 'node-fetch';
 import { MessageEmbed } from '../util/discord.js-extend.js';
 import { bossData } from '../util/soyabot_const.js';
-import fetch from 'node-fetch';
 const bossNameList = {
     세렌: '선택받은 세렌',
     검은마법사: '검은 마법사',

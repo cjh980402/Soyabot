@@ -1,6 +1,6 @@
+import Hangul from 'hangul-js';
 import { setTimeout } from 'timers/promises';
 import { matchString } from '../util/soyabot_const.js';
-import Hangul from 'hangul-js';
 
 export const usage = `${client.prefix}타자대결 (옵션)`;
 export const command = ['타자대결', 'ㅌㅈㄷㄱ'];

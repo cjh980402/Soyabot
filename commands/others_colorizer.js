@@ -1,7 +1,7 @@
-import fetch from 'node-fetch';
 import FormData from 'form-data';
-import { DEEP_API_KEY } from '../soyabot_config.js';
+import fetch from 'node-fetch';
 import { getMessageImage } from '../util/soyabot_util.js';
+import { DEEP_API_KEY } from '../soyabot_config.js';
 
 export const usage = `${client.prefix}채색`;
 export const command = ['채색', 'ㅊㅅ'];

@@ -1,5 +1,5 @@
-import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '../soyabot_config.js';
 import fetch from 'node-fetch';
+import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '../soyabot_config.js';
 
 async function shortURL(url) {
     const params = new URLSearchParams();

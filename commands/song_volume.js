@@ -1,4 +1,4 @@
-import { canModifyQueue } from '../util/soyabot_util.js';
+// import { canModifyQueue } from '../util/soyabot_util.js';
 
 export const usage = `${client.prefix}volume (변경할 음량)`;
 export const command = ['volume', 'v'];

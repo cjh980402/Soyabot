@@ -1,4 +1,4 @@
-import { MessageEmbed, Collection } from '../util/discord.js-extend.js';
+import { Collection, MessageEmbed } from '../util/discord.js-extend.js';
 import { youtubeSearch } from '../util/song_util.js';
 
 export const usage = `${client.prefix}search (영상 제목)`;

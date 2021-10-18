@@ -1,6 +1,6 @@
-import { MessageActionRow, MessageButton, MessageEmbed, Util } from '../util/discord.js-extend.js';
 import fetch from 'node-fetch';
 import { load } from 'cheerio';
+import { MessageActionRow, MessageButton, MessageEmbed, Util } from '../util/discord.js-extend.js';
 
 async function getWeatherEmbed(targetLocal) {
     const $ = load(await (await fetch(`https://weather.naver.com/today/${targetLocal[1][0]}`)).text());

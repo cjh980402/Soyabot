@@ -2,14 +2,14 @@
  * 모듈 import
  */
 import { Client, Collection, Permissions, botClientOption } from './util/discord.js-extend.js'; // 제일 처음에 import 해야하는 모듈
-import { setTimeout } from 'timers/promises';
 import { readdirSync } from 'fs';
+import { setTimeout } from 'timers/promises';
 import { TOKEN, PREFIX, ADMIN_ID } from './soyabot_config.js';
 import { adminChat, initClient, cmd } from './admin/admin_function.js';
 import { replyAdmin } from './admin/bot_control.js';
 import { musicActiveControl, musicButtonControl } from './util/music_play.js';
-import cachingMessage from './util/message_caching.js';
 import botChatting from './util/bot_chatting.js';
+import cachingMessage from './util/message_caching.js';
 import sqlite from './util/sqlite-handler.js';
 globalThis.db = new sqlite('./db/soyabot_data.db'); // db와 client는 여러 기능들에 의해 필수로 최상위 전역
 globalThis.client = new Client(botClientOption);

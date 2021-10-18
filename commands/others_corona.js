@@ -1,7 +1,7 @@
-import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
-import { OPEN_API_KEY } from '../soyabot_config.js';
 import fetch from 'node-fetch';
 import { load } from 'cheerio';
+import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
+import { OPEN_API_KEY } from '../soyabot_config.js';
 
 function calcIncrease($, selector) {
     const today = +$(selector).eq(0).text();
