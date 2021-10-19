@@ -81,7 +81,9 @@ export class QueueElement {
                 .setColor('#FF9999')
                 .setImage(song.thumbnail)
                 .setDescription(`**${song.title}**\n${song.url}`)
-                .setFooter(`전체 재생 시간: ${song.duration.toDurationString()}`);
+                .setFooter(
+                    song.duration === 0 ? '⊚ 실시간 방송' : `전체 재생 시간: ${song.duration.toDurationString()}`
+                );
             const row1 = new MessageActionRow().addComponents(
                 new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('play_pause').setEmoji('⏯️').setStyle('SECONDARY'),

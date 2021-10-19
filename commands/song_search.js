@@ -30,7 +30,7 @@ export async function messageExecute(message, args) {
         .setColor('#FF9999');
     results.forEach((video, index) =>
         resultsEmbed.addField(
-            `**${index + 1}. ${video.title}** \`${video.durationText}\``,
+            `**${index + 1}. ${video.title}** \`${video.duration === 0 ? '⊚ LIVE' : video.durationText}\``,
             `https://youtu.be/${video.id}`
         )
     );
@@ -100,7 +100,7 @@ export async function commandExecute(interaction) {
         .setColor('#FF9999');
     results.forEach((video, index) =>
         resultsEmbed.addField(
-            `**${index + 1}. ${video.title}** \`${video.durationText}\``,
+            `**${index + 1}. ${video.title}** \`${video.duration === 0 ? '⊚ LIVE' : video.durationText}\``,
             `https://youtu.be/${video.id}`
         )
     );

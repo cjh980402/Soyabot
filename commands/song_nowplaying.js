@@ -26,7 +26,7 @@ export async function messageExecute(message) {
         .addField(
             '\u200b',
             `${seek.toDurationString()} [${splitBar(song.duration || seek, seek, 20)[0]}] ${
-                song.duration === 0 ? '◉ LIVE' : song.duration.toDurationString()
+                song.duration === 0 ? '⊚ LIVE' : song.duration.toDurationString()
             }`
         );
 
@@ -61,7 +61,7 @@ export async function commandExecute(interaction) {
         .addField(
             '\u200b',
             `${seek.toDurationString()} [${splitBar(song.duration || seek, seek, 20)[0]}] ${
-                song.duration === 0 ? '◉ LIVE' : song.duration.toDurationString()
+                song.duration === 0 ? '⊚ LIVE' : song.duration.toDurationString()
             }`
         );
 

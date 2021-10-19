@@ -56,7 +56,12 @@ export async function messageExecute(message, args) {
         .setDescription(
             Util.splitMessage(
                 playlist.songs
-                    .map((song, index) => `${index + 1}. ${song.title} \`${song.duration.toDurationString()}\``)
+                    .map(
+                        (song, index) =>
+                            `${index + 1}. ${song.title} \`${
+                                song.duration === 0 ? '⊚ LIVE' : song.duration.toDurationString()
+                            }\``
+                    )
                     .join('\n'),
                 { char: '\n' }
             )[0]
@@ -146,7 +151,12 @@ export async function commandExecute(interaction) {
         .setDescription(
             Util.splitMessage(
                 playlist.songs
-                    .map((song, index) => `${index + 1}. ${song.title} \`${song.duration.toDurationString()}\``)
+                    .map(
+                        (song, index) =>
+                            `${index + 1}. ${song.title} \`${
+                                song.duration === 0 ? '⊚ LIVE' : song.duration.toDurationString()
+                            }\``
+                    )
                     .join('\n'),
                 { char: '\n' }
             )[0]
