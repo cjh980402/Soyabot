@@ -21,7 +21,7 @@ export async function messageExecute(message, args) {
         }
 
         const rslt = `Lv.${startlev} → Lv.${endlev} 경험치통: ${(levelTable[endlev - 1] - levelTable[startlev - 1]).toLocaleString()}
-(${(levelTable[endlev - 1] - levelTable[startlev - 1]).toLocaleUnitString()})
+(${(levelTable[endlev - 1] - levelTable[startlev - 1]).toLocaleUnitString('ko-KR')})
 진행률 (~250): ${(Math.min(levelTable[endlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
 진행률 (~275): ${(Math.min(levelTable[endlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
 진행률 (~300): ${((levelTable[endlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
@@ -32,7 +32,7 @@ export async function messageExecute(message, args) {
         }
 
         const rslt = `Lv.${startlev} 경험치통: ${(levelTable[startlev] - levelTable[startlev - 1]).toLocaleString()}
-(${(levelTable[startlev] - levelTable[startlev - 1]).toLocaleUnitString()})
+(${(levelTable[startlev] - levelTable[startlev - 1]).toLocaleUnitString('ko-KR')})
 진행률 (~250): ${(Math.min(levelTable[startlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
 진행률 (~275): ${(Math.min(levelTable[startlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
 진행률 (~300): ${((levelTable[startlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
@@ -69,7 +69,7 @@ export async function commandExecute(interaction) {
         }
 
         const rslt = `Lv.${startlev} → Lv.${endlev} 경험치통: ${(levelTable[endlev - 1] - levelTable[startlev - 1]).toLocaleString()}
-(${(levelTable[endlev - 1] - levelTable[startlev - 1]).toLocaleUnitString()})
+(${(levelTable[endlev - 1] - levelTable[startlev - 1]).toLocaleUnitString('ko-KR')})
 진행률 (~250): ${(Math.min(levelTable[endlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
 진행률 (~275): ${(Math.min(levelTable[endlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
 진행률 (~300): ${((levelTable[endlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
@@ -80,7 +80,7 @@ export async function commandExecute(interaction) {
         }
 
         const rslt = `Lv.${startlev} 경험치통: ${(levelTable[startlev] - levelTable[startlev - 1]).toLocaleString()}
-(${(levelTable[startlev] - levelTable[startlev - 1]).toLocaleUnitString()})
+(${(levelTable[startlev] - levelTable[startlev - 1]).toLocaleUnitString('ko-KR')})
 진행률 (~250): ${(Math.min(levelTable[startlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
 진행률 (~275): ${(Math.min(levelTable[startlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
 진행률 (~300): ${((levelTable[startlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;

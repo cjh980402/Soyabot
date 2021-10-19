@@ -83,7 +83,7 @@ export async function getPlaylistInfo(url, search) {
             thumbnail: video.maxRes.url
         }));
     }
-    return { videos, title: playlist.title, url: playlist.url };
+    return { songs: videos, title: playlist.title, url: playlist.url };
 }
 
 export async function songDownload(url) {

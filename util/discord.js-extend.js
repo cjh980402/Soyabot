@@ -202,6 +202,20 @@ Object.defineProperty(Number.prototype, 'toLocaleUnitString', {
     }
 });
 
+Object.defineProperty(Number.prototype, 'toDurationString', {
+    value: function () {
+        const hours = Math.floor(this / 3600);
+        const minutes = Math.floor(this / 60) % 60;
+        const seconds = Math.floor(this % 60);
+
+        if (hours > 0) {
+            return `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        } else {
+            return `${minutes}:${String(seconds).padStart(2, '0')}`;
+        }
+    }
+});
+
 Object.defineProperty(String.prototype, 'decodeHTML', {
     value: function () {
         return decodeHTML(this).replace(/<br>/gi, '\n');

@@ -51,21 +51,20 @@ export async function messageExecute(message, args) {
 
     const playlistEmbed = new MessageEmbed()
         .setTitle(`**${playlist.title.decodeHTML()}**`)
-        .setDescription(Util.splitMessage(playlist.videos.map((song, index) => `${index + 1}. ${song.title}`).join('\n'), { char: '\n' })[0])
+        .setDescription(Util.splitMessage(playlist.songs.map((song, index) => `${index + 1}. ${song.title} \`${song.duration.toDurationString()}\``).join('\n'), { char: '\n' })[0])
         .setURL(playlist.url)
-        .setColor('#FF9999')
-        .setTimestamp();
+        .setColor('#FF9999');
 
     if (serverQueue) {
         serverQueue.textChannel = message.channel;
-        serverQueue.songs.push(...playlist.videos);
+        serverQueue.songs.push(...playlist.songs);
         return message.channel.send({ content: `✅ ${message.author}가 재생목록을 추가하였습니다.`, embeds: [playlistEmbed] });
     }
 
     message.channel.send({ content: `✅ ${message.author}가 재생목록을 시작했습니다.`, embeds: [playlistEmbed] });
 
     try {
-        const newQueue = new QueueElement(message.channel, channel, await channel.join(), [...playlist.videos]);
+        const newQueue = new QueueElement(message.channel, channel, await channel.join(), playlist.songs);
         client.queues.set(message.guildId, newQueue);
         newQueue.playSong();
     } catch (err) {
@@ -128,21 +127,20 @@ export async function commandExecute(interaction) {
 
     const playlistEmbed = new MessageEmbed()
         .setTitle(`**${playlist.title.decodeHTML()}**`)
-        .setDescription(Util.splitMessage(playlist.videos.map((song, index) => `${index + 1}. ${song.title}`).join('\n'), { char: '\n' })[0])
+        .setDescription(Util.splitMessage(playlist.songs.map((song, index) => `${index + 1}. ${song.title} \`${song.duration.toDurationString()}\``).join('\n'), { char: '\n' })[0])
         .setURL(playlist.url)
-        .setColor('#FF9999')
-        .setTimestamp();
+        .setColor('#FF9999');
 
     if (serverQueue) {
         serverQueue.textChannel = interaction.channel;
-        serverQueue.songs.push(...playlist.videos);
+        serverQueue.songs.push(...playlist.songs);
         return interaction.followUp({ content: `✅ ${interaction.user}가 재생목록을 추가하였습니다.`, embeds: [playlistEmbed] });
     }
 
     await interaction.editReply({ content: `✅ ${interaction.user}가 재생목록을 시작했습니다.`, embeds: [playlistEmbed] });
 
     try {
-        const newQueue = new QueueElement(interaction.channel, channel, await channel.join(), [...playlist.videos]);
+        const newQueue = new QueueElement(interaction.channel, channel, await channel.join(), playlist.songs);
         client.queues.set(interaction.guildId, newQueue);
         newQueue.playSong();
     } catch (err) {
