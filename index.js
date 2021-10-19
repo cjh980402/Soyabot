@@ -64,16 +64,23 @@ client.on('messageCreate', async (message) => {
     let commandName;
     try {
         console.log(
-            `(${new Date().toLocaleString()}) ${message.channelId} ${message.channel.name} ${message.author.id} ${message.author.username}: ${
-                message.content || message.embeds[0]?.description || ''
-            }\n`
+            `(${new Date().toLocaleString()}) ${message.channelId} ${message.channel.name} ${message.author.id} ${
+                message.author.username
+            }: ${message.content || message.embeds[0]?.description || ''}\n`
         );
         if (message.author.bot) {
             // 봇 여부 체크
             return;
         }
         const permissions = message.channel.permissionsFor?.(message.guild.me);
-        if (permissions && !permissions.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.READ_MESSAGE_HISTORY])) {
+        if (
+            permissions &&
+            !permissions.has([
+                Permissions.FLAGS.VIEW_CHANNEL,
+                Permissions.FLAGS.SEND_MESSAGES,
+                Permissions.FLAGS.READ_MESSAGE_HISTORY
+            ])
+        ) {
             return; // 기본 권한이 없는 채널이므로 바로 종료
         }
         if (message.author.id === ADMIN_ID) {
@@ -101,7 +108,9 @@ client.on('messageCreate', async (message) => {
             return message.channel.send(`'${nowCommand.command[0]}' 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
-        await (nowCommand.channelCool ? nowCommand.messageExecute(message, args) : promiseTimeout(nowCommand.messageExecute(message, args), 300000)); // 명령어 수행 부분
+        await (nowCommand.channelCool
+            ? nowCommand.messageExecute(message, args)
+            : promiseTimeout(nowCommand.messageExecute(message, args), 300000)); // 명령어 수행 부분
         cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
     } catch (err) {
         cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
@@ -112,7 +121,11 @@ client.on('messageCreate', async (message) => {
             } else if (err.message?.startsWith('메이플')) {
                 await message.reply(err.message);
             } else {
-                replyAdmin(`작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${message.content}\n에러 내용: ${err.stack ?? err._p}`);
+                replyAdmin(
+                    `작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${
+                        message.content
+                    }\n에러 내용: ${err.stack ?? err._p}`
+                );
                 await message.reply('에러로그가 전송되었습니다.');
             }
         } catch {}
@@ -130,13 +143,20 @@ client.on('interactionCreate', async (interaction) => {
         try {
             await interaction.deferReply(); // deferReply를 하지 않으면 3초 내로 슬래시 커맨드 응답을 해야함
             console.log(
-                `(${new Date().toLocaleString()}) ${interaction.channelId} ${interaction.channel.name} ${interaction.user.id} ${interaction.user.username}: /${
-                    interaction.commandName
-                }\n${interaction.options._i()}\n`
+                `(${new Date().toLocaleString()}) ${interaction.channelId} ${interaction.channel.name} ${
+                    interaction.user.id
+                } ${interaction.user.username}: /${interaction.commandName}\n${interaction.options._i()}\n`
             );
 
             const permissions = interaction.channel.permissionsFor?.(interaction.guild.me);
-            if (permissions && !permissions.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.READ_MESSAGE_HISTORY])) {
+            if (
+                permissions &&
+                !permissions.has([
+                    Permissions.FLAGS.VIEW_CHANNEL,
+                    Permissions.FLAGS.SEND_MESSAGES,
+                    Permissions.FLAGS.READ_MESSAGE_HISTORY
+                ])
+            ) {
                 return; // 기본 권한이 없는 채널이므로 바로 종료
             }
 
@@ -150,10 +170,14 @@ client.on('interactionCreate', async (interaction) => {
 
             if (cooldowns.has(commandName)) {
                 // 명령이 수행 중인 경우
-                return interaction.followUp(`'${nowCommand.commandData.name}' 명령을 사용하기 위해 잠시 기다려야합니다.`);
+                return interaction.followUp(
+                    `'${nowCommand.commandData.name}' 명령을 사용하기 위해 잠시 기다려야합니다.`
+                );
             }
             cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
-            await (nowCommand.channelCool ? nowCommand.commandExecute(interaction) : promiseTimeout(nowCommand.commandExecute(interaction), 300000)); // 명령어 수행 부분
+            await (nowCommand.channelCool
+                ? nowCommand.commandExecute(interaction)
+                : promiseTimeout(nowCommand.commandExecute(interaction), 300000)); // 명령어 수행 부분
             cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
         } catch (err) {
             cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
@@ -165,7 +189,9 @@ client.on('interactionCreate', async (interaction) => {
                     await interaction.editReply(err.message);
                 } else {
                     replyAdmin(
-                        `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: /${interaction.commandName}\n${interaction.options._i()}\n에러 내용: ${err.stack ?? err._p}`
+                        `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: /${
+                            interaction.commandName
+                        }\n${interaction.options._i()}\n에러 내용: ${err.stack ?? err._p}`
                     );
                     await interaction.editReply('에러로그가 전송되었습니다.');
                 }

@@ -8,7 +8,9 @@ const noticematch = {
 
 export const usage = `${client.prefix}자동알림 (카테고리)`;
 export const command = ['자동알림', 'ㅈㄷㅇㄹ'];
-export const description = `- 입력한 카테고리(${Object.keys(noticematch).join(', ')})에 따른 자동알림 기능 상태를 전환합니다.
+export const description = `- 입력한 카테고리(${Object.keys(noticematch).join(
+    ', '
+)})에 따른 자동알림 기능 상태를 전환합니다.
 카테고리 생략 시 현재 알림상태를 알려줍니다.`;
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
@@ -39,7 +41,9 @@ export async function messageExecute(message, args) {
 }
 export const commandData = {
     name: '자동알림',
-    description: `입력한 카테고리(${Object.keys(noticematch).join(', ')})에 따른 자동알림 기능 상태를 전환합니다. 카테고리 생략 시 현재 알림상태를 알려줍니다.`,
+    description: `입력한 카테고리(${Object.keys(noticematch).join(
+        ', '
+    )})에 따른 자동알림 기능 상태를 전환합니다. 카테고리 생략 시 현재 알림상태를 알려줍니다.`,
     options: [
         {
             name: '카테고리',

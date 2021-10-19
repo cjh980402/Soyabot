@@ -8,7 +8,9 @@ export const description = '- 캐릭터의 메이플 gg 코디 컬렉션을 출�
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     const mapleUserInfo = new MapleUser(args[0]);
@@ -26,9 +28,14 @@ export async function messageExecute(message, args) {
     if (!collection) {
         return message.channel.send(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못하였습니다.`);
     } else {
-        const { stdout: collectionPic } = await cmd(`python3 ./util/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(' ')} ${collection[1].join(' ')}`, {
-            encoding: 'buffer'
-        });
+        const { stdout: collectionPic } = await cmd(
+            `python3 ./util/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(
+                ' '
+            )} ${collection[1].join(' ')}`,
+            {
+                encoding: 'buffer'
+            }
+        );
         const image = new MessageAttachment(collectionPic, 'collection.png');
         return message.channel.send({ content: `${mapleUserInfo.Name}님의 코디 컬렉션`, files: [image] });
     }
@@ -62,9 +69,14 @@ export async function commandExecute(interaction) {
     if (!collection) {
         return interaction.followUp(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못하였습니다.`);
     } else {
-        const { stdout: collectionPic } = await cmd(`python3 ./util/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(' ')} ${collection[1].join(' ')}`, {
-            encoding: 'buffer'
-        });
+        const { stdout: collectionPic } = await cmd(
+            `python3 ./util/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(
+                ' '
+            )} ${collection[1].join(' ')}`,
+            {
+                encoding: 'buffer'
+            }
+        );
         const image = new MessageAttachment(collectionPic, 'collection.png');
         return interaction.followUp({ content: `${mapleUserInfo.Name}님의 코디 컬렉션`, files: [image] });
     }

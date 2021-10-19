@@ -24,9 +24,14 @@ export const description = `- 해당하는 요리의 레시피를 출력합니�
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (picmatch[args[0]]) {
-        return message.channel.send({ content: `${args[0]} 요리의 레시피`, files: [`./pictures/muto/${picmatch[args[0]]}.png`] });
+        return message.channel.send({
+            content: `${args[0]} 요리의 레시피`,
+            files: [`./pictures/muto/${picmatch[args[0]]}.png`]
+        });
     } else {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 }
 export const commandData = {

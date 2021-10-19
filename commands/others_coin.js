@@ -37,15 +37,20 @@ async function getCoinEmbed(searchRslt, type) {
     const chartURL = getChartImage(code, type);
     const nowPrice = todayData.trade_price.toLocaleString();
     const changeType = todayData.change; // RISE, EVEN, FALL
-    const changeString = `${todayData.change_price.toLocaleString()} (${(100 * todayData.signed_change_rate).toFixed(2)}%)`;
+    const changeString = `${todayData.change_price.toLocaleString()} (${(100 * todayData.signed_change_rate).toFixed(
+        2
+    )}%)`;
 
     const minPrice = todayData.low_price.toLocaleString();
     const maxPrice = todayData.high_price.toLocaleString();
     const amount = todayData.acc_trade_price_24h.toLocaleUnitString('ko-KR', 2);
 
-    const { stdout: coinPic } = await cmd(`python3 ./util/make_coin_info.py ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice} ${changeType} '${changeString}' ${minPrice} ${maxPrice}`, {
-        encoding: 'buffer'
-    });
+    const { stdout: coinPic } = await cmd(
+        `python3 ./util/make_coin_info.py ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice} ${changeType} '${changeString}' ${minPrice} ${maxPrice}`,
+        {
+            encoding: 'buffer'
+        }
+    );
     // 파이썬 스크립트 실행
 
     const image = new MessageAttachment(coinPic, `${code}.png`);
@@ -76,7 +81,9 @@ export const description = `- 검색 내용에 해당하는 코인의 정보를 
 export const type = ['기타'];
 export async function messageExecute(message, args) {
     if (args.length < 1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     const type = args.length > 1 && chartType[args[args.length - 1]] ? args.pop() : '1일'; // 차트 종류
@@ -85,7 +92,12 @@ export async function messageExecute(message, args) {
     const searchList = await (await fetch('https://api.upbit.com/v1/market/all')).json();
     const searchRslt = searchList.find((v) => {
         const [currency, code] = v.market.split('-');
-        return currency === 'KRW' && (code.includes(enSearch) || v.korean_name.includes(krSearch) || v.english_name.toUpperCase().includes(enSearch));
+        return (
+            currency === 'KRW' &&
+            (code.includes(enSearch) ||
+                v.korean_name.includes(krSearch) ||
+                v.english_name.toUpperCase().includes(enSearch))
+        );
     });
 
     if (!searchRslt) {
@@ -120,7 +132,12 @@ export async function commandExecute(interaction) {
     const searchList = await (await fetch('https://api.upbit.com/v1/market/all')).json();
     const searchRslt = searchList.find((v) => {
         const [currency, code] = v.market.split('-');
-        return currency === 'KRW' && (code.includes(enSearch) || v.korean_name.includes(krSearch) || v.english_name.toUpperCase().includes(enSearch));
+        return (
+            currency === 'KRW' &&
+            (code.includes(enSearch) ||
+                v.korean_name.includes(krSearch) ||
+                v.english_name.toUpperCase().includes(enSearch))
+        );
     });
 
     if (!searchRslt) {

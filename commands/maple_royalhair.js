@@ -11,16 +11,22 @@ export const description = `- 해당 성별의 목표 헤어를 얻을 때까지
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length === 1 && (args[0] === '확률' || args[0] === 'ㅎㄹ')) {
-        const rslt = `<로얄 헤어 확률>\n\n- 남자 헤어\n${hairList['남'].map((v) => `${v}: 16.67%`).join('\n')}\n\n- 여자 헤어\n${hairList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
+        const rslt = `<로얄 헤어 확률>\n\n- 남자 헤어\n${hairList['남']
+            .map((v) => `${v}: 16.67%`)
+            .join('\n')}\n\n- 여자 헤어\n${hairList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
         return message.channel.send(rslt);
     }
     if (args.length < 2) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
     const gender = args.shift()[0];
     const goalhair = (hairList[gender] ?? []).findIndex((v) => v.replace(/\s+/, '').includes(args.join('')));
     if (goalhair === -1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
     // gender은 성별, goalhair는 목표 헤어의 인덱스
     // random은 0이상 1미만
@@ -32,7 +38,9 @@ export async function messageExecute(message, args) {
         list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 헤어의 인덱스 저장, now 뒤에 더하는 이유는 최근 헤어 제외 목적
     }
 
-    const rslt = `로얄 헤어 (목표: ${hairList[gender][goalhair]}) 결과\n\n수행 횟수: ${list.length}회\n\n진행 과정\n${list.map((v, i) => `${i + 1}번째: ${hairList[gender][v]}`).join('\n')}`;
+    const rslt = `로얄 헤어 (목표: ${hairList[gender][goalhair]}) 결과\n\n수행 횟수: ${
+        list.length
+    }회\n\n진행 과정\n${list.map((v, i) => `${i + 1}번째: ${hairList[gender][v]}`).join('\n')}`;
     return message.channel.send(rslt);
 }
 export const commandData = {
@@ -78,7 +86,9 @@ export async function commandExecute(interaction) {
     const subcommand = interaction.options.getSubcommand();
 
     if (subcommand === '확률') {
-        const rslt = `<로얄 헤어 확률>\n\n- 남자 헤어\n${hairList['남'].map((v) => `${v}: 16.67%`).join('\n')}\n\n- 여자 헤어\n${hairList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
+        const rslt = `<로얄 헤어 확률>\n\n- 남자 헤어\n${hairList['남']
+            .map((v) => `${v}: 16.67%`)
+            .join('\n')}\n\n- 여자 헤어\n${hairList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
         return interaction.followUp(rslt);
     } else {
         const goalhair = hairList[subcommand].indexOf(interaction.options.getString('목표_헤어_이름'));
@@ -92,9 +102,9 @@ export async function commandExecute(interaction) {
             list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 헤어의 인덱스 저장, now 뒤에 더하는 이유는 최근 헤어 제외 목적
         }
 
-        const rslt = `로얄 헤어 (목표: ${hairList[subcommand][goalhair]}) 결과\n\n수행 횟수: ${list.length}회\n\n진행 과정\n${list
-            .map((v, i) => `${i + 1}번째: ${hairList[subcommand][v]}`)
-            .join('\n')}`;
+        const rslt = `로얄 헤어 (목표: ${hairList[subcommand][goalhair]}) 결과\n\n수행 횟수: ${
+            list.length
+        }회\n\n진행 과정\n${list.map((v, i) => `${i + 1}번째: ${hairList[subcommand][v]}`).join('\n')}`;
         return interaction.followUp(rslt);
     }
 }

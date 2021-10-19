@@ -21,7 +21,9 @@ export async function messageExecute(message) {
         .filter((_, v) => $(v).attr('href') === sunday)
         .text()
         .substr(0, 14)}의 썬데이 메이플`;
-    const imgLink = load(await (await fetch(`https://maplestory.nexon.com${sunday}`)).text())('img[alt="썬데이 메이플!"]').attr('src');
+    const imgLink = load(await (await fetch(`https://maplestory.nexon.com${sunday}`)).text())(
+        'img[alt="썬데이 메이플!"]'
+    ).attr('src');
 
     return message.channel.send({ content: sundayTitle, files: [imgLink] });
 }
@@ -45,7 +47,9 @@ export async function commandExecute(interaction) {
         .filter((_, v) => $(v).attr('href') === sunday)
         .text()
         .substr(0, 14)}의 썬데이 메이플`;
-    const imgLink = load(await (await fetch(`https://maplestory.nexon.com${sunday}`)).text())('img[alt="썬데이 메이플!"]').attr('src');
+    const imgLink = load(await (await fetch(`https://maplestory.nexon.com${sunday}`)).text())(
+        'img[alt="썬데이 메이플!"]'
+    ).attr('src');
 
     return interaction.followUp({ content: sundayTitle, files: [imgLink] });
 }

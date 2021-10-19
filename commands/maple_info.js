@@ -23,7 +23,15 @@ async function getInfoEmbed(mapleUserInfo, level) {
         .addField('**직업**', char_job, true)
         .addField('**길드**', char_guild || '-', true)
         .addField('**인기도**', char_popul.toLocaleString(), true)
-        .addField('**유니온 정보**', char_union ? `레벨: ${char_union[0].toLocaleString()} (코인 1일 ${char_union[2]}개)\n전투력: ${char_union[1].toLocaleString()}` : '-', true)
+        .addField(
+            '**유니온 정보**',
+            char_union
+                ? `레벨: ${char_union[0].toLocaleString()} (코인 1일 ${
+                      char_union[2]
+                  }개)\n전투력: ${char_union[1].toLocaleString()}`
+                : '-',
+            true
+        )
         .addField('**무릉 기록**', char_murung ? `${char_murung[1]} (${char_murung[2]})` : '-', true)
         .addField('**시드 기록**', char_seed ? `${char_seed[1]} (${char_seed[2]})` : '-', true)
         .addField('**종합 랭킹**', char_rank ? `전체: ${char_rank[0]}\n월드: ${char_rank[1]}` : '-', true)
@@ -36,7 +44,9 @@ export const description = '- 해당 캐릭터의 전체적인 정보를 출력�
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     const mapleUserInfo = new MapleUser(args[0]);

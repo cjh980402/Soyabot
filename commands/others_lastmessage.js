@@ -18,9 +18,15 @@ export async function messageExecute(message) {
         targetInfo = message.member;
     }
 
-    const messagestat = db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [`${message.guildId} ${targetInfo.user.id}`]);
+    const messagestat = db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [
+        `${message.guildId} ${targetInfo.user.id}`
+    ]);
     if (messagestat) {
-        return message.channel.send(`${targetInfo.nickname ?? targetInfo.user.username}의 최근 채팅\n채팅 내용: ${messagestat.lastmessage}\n${new Date(messagestat.lasttime).toLocaleString()}`);
+        return message.channel.send(
+            `${targetInfo.nickname ?? targetInfo.user.username}의 최근 채팅\n채팅 내용: ${
+                messagestat.lastmessage
+            }\n${new Date(messagestat.lasttime).toLocaleString()}`
+        );
     } else {
         return message.channel.send(`${targetInfo.nickname ?? targetInfo.user.username}의 채팅기록이 없습니다.`);
     }

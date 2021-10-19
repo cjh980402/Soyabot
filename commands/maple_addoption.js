@@ -21,13 +21,20 @@ const picmatch = {
 
 export const usage = `${client.prefix}추옵 (무기)`;
 export const command = ['추옵', 'ㅊㅇ'];
-export const description = `- 해당하는 무기의 추옵표를 출력합니다.\n- (무기): ${Object.keys(picmatch).join(', ')} 입력가능`;
+export const description = `- 해당하는 무기의 추옵표를 출력합니다.\n- (무기): ${Object.keys(picmatch).join(
+    ', '
+)} 입력가능`;
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (picmatch[args[0]]) {
-        return message.channel.send({ content: `${args[0]} 무기의 추옵표`, files: [`./pictures/add_option/${picmatch[args[0]]}.png`] });
+        return message.channel.send({
+            content: `${args[0]} 무기의 추옵표`,
+            files: [`./pictures/add_option/${picmatch[args[0]]}.png`]
+        });
     } else {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 }
 export const commandData = {
@@ -45,5 +52,8 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     const weapon = interaction.options.getString('무기종류');
-    return interaction.followUp({ content: `${weapon} 무기의 추옵표`, files: [`./pictures/add_option/${picmatch[weapon]}.png`] });
+    return interaction.followUp({
+        content: `${weapon} 무기의 추옵표`,
+        files: [`./pictures/add_option/${picmatch[weapon]}.png`]
+    });
 }

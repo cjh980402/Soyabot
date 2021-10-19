@@ -4,15 +4,17 @@ import { ADMIN_ID } from '../soyabot_config.js';
 
 async function getMessageCountGraph(targetGuild, option) {
     const roommessage = (
-        await db.all('SELECT * FROM messagedb WHERE channelsenderid LIKE ?', [`${targetGuild.id}%`]).asyncFilter(async (v) => {
-            try {
-                const senderid = v.channelsenderid.split(' ')[1];
-                v.member = await targetGuild.members.fetch({ user: senderid, cache: false });
-                return v.member && (option !== '-봇' || !v.member.user.bot);
-            } catch {
-                return false;
-            }
-        })
+        await db
+            .all('SELECT * FROM messagedb WHERE channelsenderid LIKE ?', [`${targetGuild.id}%`])
+            .asyncFilter(async (v) => {
+                try {
+                    const senderid = v.channelsenderid.split(' ')[1];
+                    v.member = await targetGuild.members.fetch({ user: senderid, cache: false });
+                    return v.member && (option !== '-봇' || !v.member.user.bot);
+                } catch {
+                    return false;
+                }
+            })
     )
         .sort((a, b) => b.messagecnt - a.messagecnt)
         .slice(0, 180); // 내림차순, 상위 180명
@@ -90,7 +92,11 @@ export const description = `- 상위 180명의 채팅량 통계를 그래프로 
 - 옵션에 -봇을 넣어주면 통계에서 봇을 제외하고 보여줍니다. (생략 시 봇 포함)`;
 export const type = ['기타'];
 export async function messageExecute(message, args) {
-    const targetGuild = (args.length > 0 && message.author.id === ADMIN_ID && client.guilds.cache.find((v) => v.name.includes(args.join(' ')))) || message.guild;
+    const targetGuild =
+        (args.length > 0 &&
+            message.author.id === ADMIN_ID &&
+            client.guilds.cache.find((v) => v.name.includes(args.join(' ')))) ||
+        message.guild;
     if (!targetGuild) {
         return message.reply('사용이 불가능한 채널입니다.');
     }
@@ -110,7 +116,9 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     const option = interaction.options.getString('옵션');
-    const targetGuild = (option && interaction.user.id === ADMIN_ID && client.guilds.cache.find((v) => v.name.includes(option))) || interaction.guild;
+    const targetGuild =
+        (option && interaction.user.id === ADMIN_ID && client.guilds.cache.find((v) => v.name.includes(option))) ||
+        interaction.guild;
     if (!targetGuild) {
         return interaction.followUp('사용이 불가능한 채널입니다.');
     }

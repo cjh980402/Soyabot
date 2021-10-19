@@ -32,7 +32,9 @@ export async function messageExecute(message) {
         memory = 100 - Math.round((freemem() / totalmem()) * 100);
     }
 
-    return message.channel.send(`작동 시간: ${timeKoreanUnit(Math.floor(client.uptime / 1000))}\n메모리 사용량: ${memory}%`);
+    return message.channel.send(
+        `작동 시간: ${timeKoreanUnit(Math.floor(client.uptime / 1000))}\n메모리 사용량: ${memory}%`
+    );
 }
 export const commandData = {
     name: '상태',
@@ -47,5 +49,7 @@ export async function commandExecute(interaction) {
         memory = 100 - Math.round((freemem() / totalmem()) * 100);
     }
 
-    return interaction.followUp(`작동 시간: ${timeKoreanUnit(Math.floor(client.uptime / 1000))}\n메모리 사용량: ${memory}%`);
+    return interaction.followUp(
+        `작동 시간: ${timeKoreanUnit(Math.floor(client.uptime / 1000))}\n메모리 사용량: ${memory}%`
+    );
 }

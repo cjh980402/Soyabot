@@ -9,7 +9,11 @@ export const description = `- 임의의 문장을 빨리 치는 사람이 승리
 export const channelCool = true;
 export const type = ['기타'];
 export async function messageExecute(message, args) {
-    const [min, max] = /^한글?$/.test(args[0]) ? [0, 1119] : /^영어?$/.test(args[0]) ? [1120, matchString.length - 1] : [0, matchString.length - 1];
+    const [min, max] = /^한글?$/.test(args[0])
+        ? [0, 1119]
+        : /^영어?$/.test(args[0])
+        ? [1120, matchString.length - 1]
+        : [0, matchString.length - 1];
     const random = Math.floor(Math.random() * (max - min + 1)) + min; // 랜덤 선택된 문장의 인덱스
     const choice = matchString[random];
     const choiceLength = Hangul.disassemble(choice).length;
@@ -22,7 +26,14 @@ export async function messageExecute(message, args) {
     await message.channel.send(`대결할 문장: ${[...choice].join('\u200b')}\n\n위 문장으로 대결을 수행합니다.`);
 
     const start = Date.now();
-    const winMessage = (await message.channel.awaitMessages({ filter: (msg) => msg.content === choice, max: 1, time: 40000, errors: ['time'] })).first();
+    const winMessage = (
+        await message.channel.awaitMessages({
+            filter: (msg) => msg.content === choice,
+            max: 1,
+            time: 40000,
+            errors: ['time']
+        })
+    ).first();
     const time = (Date.now() - start) / 1000;
     return winMessage.reply(`${winMessage.member?.nickname ?? winMessage.author.username}님이 승리하였습니다!
 소요시간: ${time.toFixed(2)}초\n분당타수: ${((choiceLength * 60) / time).toFixed(2)}타`);
@@ -41,7 +52,8 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     const option = interaction.options.getString('옵션');
-    const [min, max] = option === '한' ? [0, 1119] : option === '영' ? [1120, matchString.length - 1] : [0, matchString.length - 1];
+    const [min, max] =
+        option === '한' ? [0, 1119] : option === '영' ? [1120, matchString.length - 1] : [0, matchString.length - 1];
     const random = Math.floor(Math.random() * (max - min + 1)) + min; // 랜덤 선택된 문장의 인덱스
     const choice = matchString[random];
     const choiceLength = Hangul.disassemble(choice).length;
@@ -54,7 +66,14 @@ export async function commandExecute(interaction) {
     await interaction.channel.send(`대결할 문장: ${[...choice].join('\u200b')}\n\n위 문장으로 대결을 수행합니다.`);
 
     const start = Date.now();
-    const winMessage = (await interaction.channel.awaitMessages({ filter: (msg) => msg.content === choice, max: 1, time: 40000, errors: ['time'] })).first();
+    const winMessage = (
+        await interaction.channel.awaitMessages({
+            filter: (msg) => msg.content === choice,
+            max: 1,
+            time: 40000,
+            errors: ['time']
+        })
+    ).first();
     const time = (Date.now() - start) / 1000;
     return winMessage.reply(`${winMessage.member?.nickname ?? winMessage.author.username}님이 승리하였습니다!
 소요시간: ${time.toFixed(2)}초\n분당타수: ${((choiceLength * 60) / time).toFixed(2)}타`);

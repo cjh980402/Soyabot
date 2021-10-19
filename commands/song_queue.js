@@ -40,7 +40,11 @@ export async function messageExecute(message) {
             new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
             new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
         );
-        const queueEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
+        const queueEmbed = await message.channel.send({
+            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+            embeds: [embeds[currentPage]],
+            components: [row]
+        });
 
         const filter = (itr) => message.author.id === itr.user.id;
         const collector = queueEmbed.createMessageComponentCollector({ filter, time: 60000 });
@@ -50,11 +54,17 @@ export async function messageExecute(message) {
                 switch (itr.customId) {
                     case 'next':
                         currentPage = (currentPage + 1) % embeds.length;
-                        await queueEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        await queueEmbed.edit({
+                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                            embeds: [embeds[currentPage]]
+                        });
                         break;
                     case 'prev':
                         currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        await queueEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        await queueEmbed.edit({
+                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                            embeds: [embeds[currentPage]]
+                        });
                         break;
                     case 'stop':
                         collector.stop();
@@ -88,7 +98,11 @@ export async function commandExecute(interaction) {
             new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
             new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
         );
-        const queueEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
+        const queueEmbed = await interaction.editReply({
+            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+            embeds: [embeds[currentPage]],
+            components: [row]
+        });
 
         const filter = (itr) => interaction.user.id === itr.user.id;
         const collector = queueEmbed.createMessageComponentCollector({ filter, time: 60000 });
@@ -98,11 +112,17 @@ export async function commandExecute(interaction) {
                 switch (itr.customId) {
                     case 'next':
                         currentPage = (currentPage + 1) % embeds.length;
-                        await queueEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        await queueEmbed.edit({
+                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                            embeds: [embeds[currentPage]]
+                        });
                         break;
                     case 'prev':
                         currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        await queueEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        await queueEmbed.edit({
+                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                            embeds: [embeds[currentPage]]
+                        });
                         break;
                     case 'stop':
                         collector.stop();

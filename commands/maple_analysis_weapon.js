@@ -10,7 +10,9 @@ export const description = `- 무기의 작으로 상승한 공격력을 계산�
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 4 && args.length !== 5) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     args = args.map((v) => +v);

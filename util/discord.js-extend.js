@@ -3,7 +3,17 @@ import YouTubeAPI from 'simple-youtube-api';
 import { PARTS, ENDPOINTS } from 'simple-youtube-api/src/util/Constants.js';
 import Video from 'simple-youtube-api/src/structures/Video.js';
 import { entersState, joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
-import { Message, Util, Intents, Options, VoiceState, Channel, CommandInteraction, BaseGuildVoiceChannel, Permissions } from 'discord.js';
+import {
+    Message,
+    Util,
+    Intents,
+    Options,
+    VoiceState,
+    Channel,
+    CommandInteraction,
+    BaseGuildVoiceChannel,
+    Permissions
+} from 'discord.js';
 import { decodeHTML } from 'entities';
 import { inspect } from 'util';
 const { _patch } = Message.prototype;
@@ -14,7 +24,12 @@ export const botClientOption = {
     retryLimit: 3,
     failIfNotExists: false,
     partials: ['CHANNEL'],
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
+    intents: [
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.GUILD_VOICE_STATES,
+        Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.DIRECT_MESSAGES
+    ],
     makeCache: Options.cacheWithLimits({
         BaseGuildEmojiManager: 0,
         ChannelManager: {
@@ -126,7 +141,10 @@ Object.defineProperty(BaseGuildVoiceChannel.prototype, 'join', {
 
         try {
             await entersState(connection, VoiceConnectionStatus.Ready, 30000); // 연결될 때까지 최대 30초 대기
-            if (this.type === 'GUILD_STAGE_VOICE' && this.permissionsFor(this.guild.me).has(Permissions.STAGE_MODERATOR)) {
+            if (
+                this.type === 'GUILD_STAGE_VOICE' &&
+                this.permissionsFor(this.guild.me).has(Permissions.STAGE_MODERATOR)
+            ) {
                 await this.guild.me.voice.setSuppressed(false); // 스테이지 채널이면서 관리 권한이 있으면 봇을 speaker로 설정
             }
             return connection;
@@ -192,7 +210,11 @@ Object.defineProperty(Number.prototype, 'toLocaleUnitString', {
         const unitStd = localeUnits[locales][1];
         const rslt = [];
 
-        for (let i = 0, unitNum = unitStd ** (unitName.length - 1), num = Math.abs(this); i < unitName.length; num %= unitNum, unitNum /= unitStd, i++) {
+        for (
+            let i = 0, unitNum = unitStd ** (unitName.length - 1), num = Math.abs(this);
+            i < unitName.length;
+            num %= unitNum, unitNum /= unitStd, i++
+        ) {
             const quotient = Math.floor(num / unitNum);
             if (quotient > 0 && rslt.length < count) {
                 rslt.push(`${quotient}${unitName[i]}`);

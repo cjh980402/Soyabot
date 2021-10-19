@@ -34,14 +34,14 @@ async function farm_sex(monster) {
             .map((v) => {
                 if (v.type === 'child') {
                     // 결과가 monster인 경우
-                    return `${v.child}(${v.c_grade}): ${v.c_effect}${v.c_effect_value === '+0' ? '' : ` ${v.c_effect_value}`}\n↳${v.mom} (${v.m_species} ${v.m_grade})\n↳${v.dad} (${v.d_species} ${
-                        v.d_grade
-                    })`;
+                    return `${v.child}(${v.c_grade}): ${v.c_effect}${
+                        v.c_effect_value === '+0' ? '' : ` ${v.c_effect_value}`
+                    }\n↳${v.mom} (${v.m_species} ${v.m_grade})\n↳${v.dad} (${v.d_species} ${v.d_grade})`;
                 } else if (v.type === 'parents') {
                     // monster가 재료인 경우
-                    return `↱${v.mom} (${v.m_species} ${v.m_grade})\n↱${v.dad} (${v.d_species} ${v.d_grade})\n${v.child}(${v.c_grade}): ${v.c_effect}${
-                        v.c_effect_value === '+0' ? '' : ` ${v.c_effect_value}`
-                    }`;
+                    return `↱${v.mom} (${v.m_species} ${v.m_grade})\n↱${v.dad} (${v.d_species} ${v.d_grade})\n${
+                        v.child
+                    }(${v.c_grade}): ${v.c_effect}${v.c_effect_value === '+0' ? '' : ` ${v.c_effect_value}`}`;
                 }
             })
             .join('\n\n');
@@ -86,7 +86,9 @@ async function farm_add(end_date, user, monster) {
         // 오류 발생
         return data.error;
     } else {
-        return `${data.monster} 보유 농장 목록에 ${data.user} 농장을 추가하였습니다.\n기간은 ${data.end_date ? `${data.end_date}까지` : '무한'}입니다.`;
+        return `${data.monster} 보유 농장 목록에 ${data.user} 농장을 추가하였습니다.\n기간은 ${
+            data.end_date ? `${data.end_date}까지` : '무한'
+        }입니다.`;
     }
 }
 
@@ -110,7 +112,9 @@ async function farm_read(monster) {
     } else {
         let rslt = `${monster} 보유 농장 목록\n\n`;
         if (data.farm_list.length) {
-            rslt += `${data.farm_list.map((v) => `${v[1] ?? '무한유지'}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})`).join('\n')}`; // 좋아요, 싫어요 값이 0일 때 null로 들어옴
+            rslt += `${data.farm_list
+                .map((v) => `${v[1] ?? '무한유지'}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})`)
+                .join('\n')}`; // 좋아요, 싫어요 값이 0일 때 null로 들어옴
         } else {
             rslt += '등록된 농장 정보가 없습니다.';
         }
@@ -137,7 +141,9 @@ async function farm_info(user) {
     } else {
         let rslt = `${user} 농장의 정보\n\n`;
         if (data.monster_list.length) {
-            rslt += `${data.monster_list.map((v) => `${v[1] ?? '무한유지'}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})`).join('\n')}`; // 좋아요, 싫어요 값이 0일 때 null로 들어옴
+            rslt += `${data.monster_list
+                .map((v) => `${v[1] ?? '무한유지'}: ${v[0]} (👍: ${+v[3]}, 👎: ${+v[4]})`)
+                .join('\n')}`; // 좋아요, 싫어요 값이 0일 때 null로 들어옴
         } else {
             rslt += '등록된 몬스터 정보가 없습니다.';
         }
@@ -156,7 +162,9 @@ export const description = `- 몬스터라이프 관련 기능을 수행합니�
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length < 2) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     try {
@@ -168,11 +176,15 @@ export async function messageExecute(message, args) {
             return message.channel.sendSplitCode(await farm_info(args.slice(1).join('')), { split: { char: '\n' } });
         } else if (args[0] === '추가' || args[0] === 'ㅊㄱ') {
             if (args.length < 4) {
-                return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+                return message.channel.send(
+                    `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+                );
             }
             return message.channel.send(await farm_add(args[1], args[2], args.slice(3).join('')));
         } else {
-            return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+            return message.channel.send(
+                `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+            );
         }
     } catch {
         return message.channel.send('농장 API 서버가 점검 중입니다.');
@@ -253,11 +265,19 @@ export async function commandExecute(interaction) {
 
     try {
         if (subcommand === '목록') {
-            return interaction.sendSplitCode(await farm_read(interaction.options.getString('몬스터_이름').replace(/\s+/g, '')), { split: { char: '\n' } });
+            return interaction.sendSplitCode(
+                await farm_read(interaction.options.getString('몬스터_이름').replace(/\s+/g, '')),
+                { split: { char: '\n' } }
+            );
         } else if (subcommand === '조합식') {
-            return interaction.followUp(await farm_sex(interaction.options.getString('몬스터_이름').replace(/\s+/g, '')));
+            return interaction.followUp(
+                await farm_sex(interaction.options.getString('몬스터_이름').replace(/\s+/g, ''))
+            );
         } else if (subcommand === '정보') {
-            return interaction.sendSplitCode(await farm_info(interaction.options.getString('농장_이름').replace(/\s+/g, '')), { split: { char: '\n' } });
+            return interaction.sendSplitCode(
+                await farm_info(interaction.options.getString('농장_이름').replace(/\s+/g, '')),
+                { split: { char: '\n' } }
+            );
         } else if (subcommand === '추가') {
             return interaction.followUp(
                 await farm_add(

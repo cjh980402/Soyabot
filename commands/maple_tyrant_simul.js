@@ -8,7 +8,9 @@ export const description = `- A: 시작 스타포스 개수
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (!args[0]) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
     const result = new SuperialItem();
     return message.channel.send(result.doingStarforce(args.map((v) => +v)));
@@ -43,6 +45,10 @@ export const commandData = {
 export async function commandExecute(interaction) {
     const result = new SuperialItem();
     return interaction.followUp(
-        result.doingStarforce([interaction.options.getInteger('시작_스타포스_개수'), interaction.options.getInteger('목표_스타포스_개수'), interaction.options.getInteger('스타캐치') ?? 1])
+        result.doingStarforce([
+            interaction.options.getInteger('시작_스타포스_개수'),
+            interaction.options.getInteger('목표_스타포스_개수'),
+            interaction.options.getInteger('스타캐치') ?? 1
+        ])
     );
 }

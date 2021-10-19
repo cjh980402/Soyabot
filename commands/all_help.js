@@ -4,7 +4,11 @@ function getHelpEmbed(help) {
     const embeds = [];
     for (let i = 0; i < help.length; i += 7) {
         const info = help.slice(i, i + 7).join('\n');
-        const embed = new MessageEmbed().setTitle(`**${client.user.username} 도움말**`).setColor('#FF9999').setDescription(`모든 명령어 목록\n\n${info}`).setTimestamp();
+        const embed = new MessageEmbed()
+            .setTitle(`**${client.user.username} 도움말**`)
+            .setColor('#FF9999')
+            .setDescription(`모든 명령어 목록\n\n${info}`)
+            .setTimestamp();
         embeds.push(embed);
     }
     return embeds;
@@ -22,7 +26,9 @@ export async function messageExecute(message, args) {
         if (!target?.description) {
             return message.channel.send('지원하지 않는 도움말입니다.');
         } else {
-            return message.channel.send(`**${target.usage}**\n- 대체 명령어: ${target.command.join(', ')}\n${target.description}`);
+            return message.channel.send(
+                `**${target.usage}**\n- 대체 명령어: ${target.command.join(', ')}\n${target.description}`
+            );
         }
     }
 
@@ -38,7 +44,11 @@ export async function messageExecute(message, args) {
             new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
             new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
         );
-        const helpEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
+        const helpEmbed = await message.channel.send({
+            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+            embeds: [embeds[currentPage]],
+            components: [row]
+        });
 
         const filter = (itr) => message.author.id === itr.user.id;
         const collector = helpEmbed.createMessageComponentCollector({ filter, time: 120000 });
@@ -48,11 +58,17 @@ export async function messageExecute(message, args) {
                 switch (itr.customId) {
                     case 'next':
                         currentPage = (currentPage + 1) % embeds.length;
-                        await helpEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        await helpEmbed.edit({
+                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                            embeds: [embeds[currentPage]]
+                        });
                         break;
                     case 'prev':
                         currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        await helpEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        await helpEmbed.edit({
+                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                            embeds: [embeds[currentPage]]
+                        });
                         break;
                     case 'stop':
                         collector.stop();
@@ -66,7 +82,8 @@ export async function messageExecute(message, args) {
 }
 export const commandData = {
     name: 'help',
-    description: '카테고리나 명령어 이름을 입력하면 해당하는 명령어의 도움말을, 생략 시 모든 명령어의 도움말을 출력합니다.',
+    description:
+        '카테고리나 명령어 이름을 입력하면 해당하는 명령어의 도움말을, 생략 시 모든 명령어의 도움말을 출력합니다.',
     options: [
         {
             name: '세부항목',
@@ -83,7 +100,9 @@ export async function commandExecute(interaction) {
         if (!target?.description) {
             return interaction.followUp('지원하지 않는 도움말입니다.');
         } else {
-            return interaction.followUp(`**${target.usage}**\n- 대체 명령어: ${target.command.join(', ')}\n${target.description}`);
+            return interaction.followUp(
+                `**${target.usage}**\n- 대체 명령어: ${target.command.join(', ')}\n${target.description}`
+            );
         }
     }
 
@@ -99,7 +118,11 @@ export async function commandExecute(interaction) {
             new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
             new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
         );
-        const helpEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
+        const helpEmbed = await interaction.editReply({
+            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+            embeds: [embeds[currentPage]],
+            components: [row]
+        });
 
         const filter = (itr) => interaction.user.id === itr.user.id;
         const collector = helpEmbed.createMessageComponentCollector({ filter, time: 120000 });
@@ -109,11 +132,17 @@ export async function commandExecute(interaction) {
                 switch (itr.customId) {
                     case 'next':
                         currentPage = (currentPage + 1) % embeds.length;
-                        await helpEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        await helpEmbed.edit({
+                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                            embeds: [embeds[currentPage]]
+                        });
                         break;
                     case 'prev':
                         currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        await helpEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        await helpEmbed.edit({
+                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                            embeds: [embeds[currentPage]]
+                        });
                         break;
                     case 'stop':
                         collector.stop();

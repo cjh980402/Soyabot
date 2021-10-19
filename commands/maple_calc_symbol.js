@@ -6,7 +6,9 @@ export const description = `- 시작 레벨부터 목표 레벨까지의 심볼 
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 2) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     const startlev = Math.trunc(args[0]),
@@ -39,7 +41,10 @@ export async function messageExecute(message, args) {
         `아케인 심볼 Lv.${startlev} → Lv.${endlev}\n요구량: ${total_req1}\n여로: ${total_meso1.toLocaleString()}메소\n여로 제외: ${total_meso2.toLocaleString()}메소\n\n어센틱 심볼 Lv.${Math.min(
             11,
             startlev
-        )} → Lv.${Math.min(11, endlev)}\n요구량: ${total_req2}\n세르니움: ${total_meso3.toLocaleString()}메소\n세르니움 제외: ${total_meso4.toLocaleString()}메소`
+        )} → Lv.${Math.min(
+            11,
+            endlev
+        )}\n요구량: ${total_req2}\n세르니움: ${total_meso3.toLocaleString()}메소\n세르니움 제외: ${total_meso4.toLocaleString()}메소`
     );
 }
 export const commandData = {
@@ -90,6 +95,9 @@ export async function commandExecute(interaction) {
         `아케인 심볼 Lv.${startlev} → Lv.${endlev}\n요구량: ${total_req1}\n여로: ${total_meso1.toLocaleString()}메소\n여로 제외: ${total_meso2.toLocaleString()}메소\n\n어센틱 심볼 Lv.${Math.min(
             11,
             startlev
-        )} → Lv.${Math.min(11, endlev)}\n요구량: ${total_req2}\n세르니움: ${total_meso3.toLocaleString()}메소\n세르니움 제외: ${total_meso4.toLocaleString()}메소`
+        )} → Lv.${Math.min(
+            11,
+            endlev
+        )}\n요구량: ${total_req2}\n세르니움: ${total_meso3.toLocaleString()}메소\n세르니움 제외: ${total_meso4.toLocaleString()}메소`
     );
 }

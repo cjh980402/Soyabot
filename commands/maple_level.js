@@ -8,7 +8,9 @@ export const description = `- 캐릭터의 공식 홈페이지의 레벨과 경�
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     const mapleUserInfo = new MapleUser(args[0]);

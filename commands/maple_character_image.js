@@ -6,7 +6,9 @@ export const description = '- 해당 캐릭터의 배경 없는 이미지를 출
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     const mapleUserInfo = new MapleUser(args[0]);
@@ -20,7 +22,10 @@ export async function messageExecute(message, args) {
         }
     }
 
-    return message.channel.send({ content: `${mapleUserInfo.Name}님의 캐릭터 이미지`, files: [mapleUserInfo.userImg()] });
+    return message.channel.send({
+        content: `${mapleUserInfo.Name}님의 캐릭터 이미지`,
+        files: [mapleUserInfo.userImg()]
+    });
 }
 export const commandData = {
     name: '이미지',
@@ -47,5 +52,8 @@ export async function commandExecute(interaction) {
         }
     }
 
-    return interaction.followUp({ content: `${mapleUserInfo.Name}님의 캐릭터 이미지`, files: [mapleUserInfo.userImg()] });
+    return interaction.followUp({
+        content: `${mapleUserInfo.Name}님의 캐릭터 이미지`,
+        files: [mapleUserInfo.userImg()]
+    });
 }

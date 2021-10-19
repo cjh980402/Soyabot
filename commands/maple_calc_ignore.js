@@ -5,7 +5,9 @@ export const description = `- 실방무와 딜량을 계산합니다. 추가 방
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length < 2) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     const igList = args.map((v) => +v);
@@ -23,7 +25,9 @@ export async function messageExecute(message, args) {
     }
 
     const boss_damage = Math.max(100 - monster * sum, 0);
-    return message.channel.send(`총 합 방무: ${((1 - sum) * 100).toFixed(2)}%\n방어율 ${monster}%인 대상에게 딜량: ${boss_damage.toFixed(2)}%`);
+    return message.channel.send(
+        `총 합 방무: ${((1 - sum) * 100).toFixed(2)}%\n방어율 ${monster}%인 대상에게 딜량: ${boss_damage.toFixed(2)}%`
+    );
 }
 export const commandData = {
     name: '방무',
@@ -55,7 +59,11 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     const monster = interaction.options.getNumber('몬스터의_방어율');
-    const igList = [interaction.options.getNumber('현재_방무'), interaction.options.getNumber('추가_방무1') ?? 0, interaction.options.getNumber('추가_방무2') ?? 0];
+    const igList = [
+        interaction.options.getNumber('현재_방무'),
+        interaction.options.getNumber('추가_방무1') ?? 0,
+        interaction.options.getNumber('추가_방무2') ?? 0
+    ];
     if (monster < 0) {
         return interaction.followUp('입력한 값이 잘못되었습니다.');
     }
@@ -69,5 +77,7 @@ export async function commandExecute(interaction) {
     }
 
     const boss_damage = Math.max(100 - monster * sum, 0);
-    return interaction.followUp(`총 합 방무: ${((1 - sum) * 100).toFixed(2)}%\n방어율 ${monster}%인 대상에게 딜량: ${boss_damage.toFixed(2)}%`);
+    return interaction.followUp(
+        `총 합 방무: ${((1 - sum) * 100).toFixed(2)}%\n방어율 ${monster}%인 대상에게 딜량: ${boss_damage.toFixed(2)}%`
+    );
 }

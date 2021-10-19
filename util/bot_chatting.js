@@ -49,7 +49,15 @@ function recommendWork() {
 }
 
 function recommendFood() {
-    const badgelist = ['뱃지 오브 준나', '뱃지 오브 마노', '뱃지 오브 치우', '뱃지 오브 보탄', '뱃지 오브 도나르', '뱃지 오브 프루바', '뱃지 오브 사투르누스']; // 일, 월, 화, 수, 목, 금, 토
+    const badgelist = [
+        '뱃지 오브 준나',
+        '뱃지 오브 마노',
+        '뱃지 오브 치우',
+        '뱃지 오브 보탄',
+        '뱃지 오브 도나르',
+        '뱃지 오브 프루바',
+        '뱃지 오브 사투르누스'
+    ]; // 일, 월, 화, 수, 목, 금, 토
     const daybadge = badgelist[new Date().getDay()]; // 오늘에 해당하는 뱃지
     const foodlist = [
         daybadge,
@@ -159,7 +167,9 @@ export default function (message) {
         } else if (cmd === 3) {
             return message.channel.send('이노시스 조아');
         } else {
-            return message.channel.send(`'${message.member?.nickname ?? message.author.username}'님이 ${client.user.username}을 불렀습니다.`);
+            return message.channel.send(
+                `'${message.member?.nickname ?? message.author.username}'님이 ${client.user.username}을 불렀습니다.`
+            );
         }
     } else if (message.content.includes('ㅊㅊㅊㅊ')) {
         const cmd = Math.floor(Math.random() * 3);

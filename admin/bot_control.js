@@ -15,7 +15,9 @@ export async function botNotice(data, type = null) {
             try {
                 const guildText = v.channels.cache.filter((v) => v.type === 'GUILD_TEXT');
                 const target = guildText.find((v) => noticeRegex.test(v.name)) ?? guildText.first();
-                if (target?.permissionsFor(v.me).has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES])) {
+                if (
+                    target?.permissionsFor(v.me).has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES])
+                ) {
                     await target.send(data);
                 }
             } catch {}

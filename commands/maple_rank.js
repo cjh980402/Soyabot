@@ -6,7 +6,9 @@ export const description = '- 캐릭터의 랭킹을 출력합니다.';
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     const mapleUserInfo = new MapleUser(args[0]);
@@ -24,7 +26,9 @@ export async function messageExecute(message, args) {
     if (!rank) {
         return message.channel.send(`[${mapleUserInfo.Name}]\n랭킹 정보를 가져오지 못했습니다.`);
     } else {
-        return message.channel.send(`[${mapleUserInfo.Name}]\n종합 랭킹(전체): ${rank[0]}\n종합 랭킹(월드): ${rank[1]}\n직업 랭킹(전체): ${rank[3]}\n직업 랭킹(월드): ${rank[2]}`);
+        return message.channel.send(
+            `[${mapleUserInfo.Name}]\n종합 랭킹(전체): ${rank[0]}\n종합 랭킹(월드): ${rank[1]}\n직업 랭킹(전체): ${rank[3]}\n직업 랭킹(월드): ${rank[2]}`
+        );
     }
 }
 export const commandData = {
@@ -56,6 +60,8 @@ export async function commandExecute(interaction) {
     if (!rank) {
         return interaction.followUp(`[${mapleUserInfo.Name}]\n랭킹 정보를 가져오지 못했습니다.`);
     } else {
-        return interaction.followUp(`[${mapleUserInfo.Name}]\n종합 랭킹(전체): ${rank[0]}\n종합 랭킹(월드): ${rank[1]}\n직업 랭킹(전체): ${rank[3]}\n직업 랭킹(월드): ${rank[2]}`);
+        return interaction.followUp(
+            `[${mapleUserInfo.Name}]\n종합 랭킹(전체): ${rank[0]}\n종합 랭킹(월드): ${rank[1]}\n직업 랭킹(전체): ${rank[3]}\n직업 랭킹(월드): ${rank[2]}`
+        );
     }
 }

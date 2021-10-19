@@ -2,7 +2,8 @@
 
 export const usage = `${client.prefix}volume (변경할 음량)`;
 export const command = ['volume', 'v'];
-export const description = '- 지금 재생 중인 노래의 음량(0 ~ 100 범위)을 변경합니다. 음량을 생략 시 현재 음량을 알려줍니다.';
+export const description =
+    '- 지금 재생 중인 노래의 음량(0 ~ 100 범위)을 변경합니다. 음량을 생략 시 현재 음량을 알려줍니다.';
 export const type = ['음악'];
 export async function messageExecute(message, args) {
     if (!message.guildId) {

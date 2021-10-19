@@ -6,7 +6,9 @@ export const description = '- 캐릭터의 유니온 정보와 일일 코인 수
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     const mapleUserInfo = new MapleUser(args[0]);
@@ -14,7 +16,13 @@ export async function messageExecute(message, args) {
     if (!union) {
         return message.channel.send(`[${mapleUserInfo.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
     } else {
-        return message.channel.send(`[${mapleUserInfo.Name}]\n직업: ${union[3]}\n유니온 레벨: ${union[0].toLocaleString()}\n전투력: ${union[1].toLocaleString()}\n일일 코인 수급량: ${union[2]}`);
+        return message.channel.send(
+            `[${mapleUserInfo.Name}]\n직업: ${
+                union[3]
+            }\n유니온 레벨: ${union[0].toLocaleString()}\n전투력: ${union[1].toLocaleString()}\n일일 코인 수급량: ${
+                union[2]
+            }`
+        );
     }
 }
 export const commandData = {
@@ -36,6 +44,12 @@ export async function commandExecute(interaction) {
     if (!union) {
         return interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
     } else {
-        return interaction.followUp(`[${mapleUserInfo.Name}]\n직업: ${union[3]}\n유니온 레벨: ${union[0].toLocaleString()}\n전투력: ${union[1].toLocaleString()}\n일일 코인 수급량: ${union[2]}`);
+        return interaction.followUp(
+            `[${mapleUserInfo.Name}]\n직업: ${
+                union[3]
+            }\n유니온 레벨: ${union[0].toLocaleString()}\n전투력: ${union[1].toLocaleString()}\n일일 코인 수급량: ${
+                union[2]
+            }`
+        );
     }
 }

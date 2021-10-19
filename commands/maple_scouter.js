@@ -31,7 +31,12 @@ function getScouterEmbed(mapleUserInfo, union) {
         time = min * 60 + sec;
     }
 
-    const score = Math.floor(level - (level >= 275 ? 50 : 100) + (murungfl + 1 - time / 900) * (murungfl >= 45 ? 4 : 3) + union / (union >= 8000 ? 32 : 40));
+    const score = Math.floor(
+        level -
+            (level >= 275 ? 50 : 100) +
+            (murungfl + 1 - time / 900) * (murungfl >= 45 ? 4 : 3) +
+            union / (union >= 8000 ? 32 : 40)
+    );
     let grade;
     for (let i = 0; i < scoreGrade.length - 1; i++) {
         if (scoreGrade[i][0] <= score && score < scoreGrade[i + 1][0]) {
@@ -54,7 +59,8 @@ function getScouterEmbed(mapleUserInfo, union) {
 
 export const usage = `${client.prefix}스카우터 (닉네임)`;
 export const command = ['스카우터', 'ㅅㅋㅇㅌ'];
-export const description = '- 정해진 조건으로 해당 캐릭터의 점수를 평가합니다. 닉네임을 생략시에는 기준 점수표를 보여줍니다.';
+export const description =
+    '- 정해진 조건으로 해당 캐릭터의 점수를 평가합니다. 닉네임을 생략시에는 기준 점수표를 보여줍니다.';
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 1) {

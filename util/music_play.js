@@ -53,7 +53,10 @@ export class QueueElement {
     }
 
     get playing() {
-        return this.subscription.player.state.status === AudioPlayerStatus.Buffering || this.subscription.player.state.status === AudioPlayerStatus.Playing;
+        return (
+            this.subscription.player.state.status === AudioPlayerStatus.Buffering ||
+            this.subscription.player.state.status === AudioPlayerStatus.Playing
+        );
     }
 
     clearStop() {
@@ -137,7 +140,11 @@ export async function musicButtonControl(interaction) {
     const queue = client.queues.get(guild?.id);
     try {
         await interaction.deferUpdate(); // 버튼이 로딩 상태가 되었다가 원래대로 돌아옴
-        if (interaction.user.bot || queue?.playingMessage?.id !== interaction.message.id || !queue.subscription.player.state.resource) {
+        if (
+            interaction.user.bot ||
+            queue?.playingMessage?.id !== interaction.message.id ||
+            !queue.subscription.player.state.resource
+        ) {
             return;
         }
 
@@ -170,7 +177,11 @@ export async function musicButtonControl(interaction) {
             case 'mute':
                 const muted = queue.voiceChannel.guild.me.voice.serverMute;
                 await queue.voiceChannel.guild.me.voice.setMute(!muted);
-                queue.sendMessage(muted ? `${interaction.user} 🔊 음소거를 해제했습니다.` : `${interaction.user} 🔇 노래를 음소거 했습니다.`);
+                queue.sendMessage(
+                    muted
+                        ? `${interaction.user} 🔊 음소거를 해제했습니다.`
+                        : `${interaction.user} 🔇 노래를 음소거 했습니다.`
+                );
                 break;
             case 'volume_down':
                 queue.sendMessage('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
@@ -215,7 +226,12 @@ export function musicActiveControl(oldState, newState) {
 
             if (oldVoice) {
                 const oldQueue = client.queues.get(oldVoice.guild.id);
-                if (oldQueue?.subscription.player.state.resource && oldVoice.id === oldQueue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.has(client.user.id)) {
+                if (
+                    oldQueue?.subscription.player.state.resource &&
+                    oldVoice.id === oldQueue.voiceChannel.id &&
+                    oldVoice.members.size === 1 &&
+                    oldVoice.members.has(client.user.id)
+                ) {
                     // 봇만 음성 채널에 있는 경우
                     if (oldQueue.playing) {
                         oldQueue.subscription.player.pause();
@@ -223,7 +239,12 @@ export function musicActiveControl(oldState, newState) {
                     }
                     setTimeout(() => {
                         const queue = client.queues.get(oldVoice.guild.id);
-                        if (queue?.subscription.player.state.resource && oldVoice.id === queue.voiceChannel.id && oldVoice.members.size === 1 && oldVoice.members.has(client.user.id)) {
+                        if (
+                            queue?.subscription.player.state.resource &&
+                            oldVoice.id === queue.voiceChannel.id &&
+                            oldVoice.members.size === 1 &&
+                            oldVoice.members.has(client.user.id)
+                        ) {
                             // 5분이 지나도 봇만 음성 채널에 있는 경우
                             queue.sendMessage(`5분 동안 ${client.user.username}이 비활성화 되어 대기열을 끝냅니다.`);
                             queue.clearStop();

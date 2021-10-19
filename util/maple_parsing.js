@@ -118,11 +118,17 @@ export class MapleUser {
         this.#ggData = await linkParse(this.#ggURL); // this.#ggData는 함수
         if (this.#ggData('div.alert.alert-warning.mt-3').length !== 0) {
             throw new Error('메이플 GG 서버가 점검 중입니다.');
-        } else if (/Bad Gateway|Error/.test(this.#ggData('title').text()) || this.#ggData('div.flex-center.position-ref.full-height').length !== 0) {
+        } else if (
+            /Bad Gateway|Error/.test(this.#ggData('title').text()) ||
+            this.#ggData('div.flex-center.position-ref.full-height').length !== 0
+        ) {
             throw new Error('메이플 GG 서버에 에러가 발생했습니다.');
         }
 
-        if (this.#ggData('.d-block.font-weight-light').text().replace(/\s+/g, '') !== '마지막업데이트:오늘' || this.#ggData('.container.mt-5.text-center > h3').text() === '검색결과가 없습니다.') {
+        if (
+            this.#ggData('.d-block.font-weight-light').text().replace(/\s+/g, '') !== '마지막업데이트:오늘' ||
+            this.#ggData('.container.mt-5.text-center > h3').text() === '검색결과가 없습니다.'
+        ) {
             return false;
         } else {
             return true;
@@ -363,7 +369,10 @@ export class MapleGuild {
         this.#ggData = await linkParse(`${this.#ggURL}/members?sort=level`); // this.#ggData는 함수
         if (this.#ggData('div.alert.alert-warning.mt-3').length !== 0) {
             throw new Error('메이플 GG 서버가 점검 중입니다.');
-        } else if (/Bad Gateway|Error/.test(this.#ggData('title').text()) || this.#ggData('div.flex-center.position-ref.full-height').length !== 0) {
+        } else if (
+            /Bad Gateway|Error/.test(this.#ggData('title').text()) ||
+            this.#ggData('div.flex-center.position-ref.full-height').length !== 0
+        ) {
             throw new Error('메이플 GG 서버에 에러가 발생했습니다.');
         }
 
@@ -374,12 +383,16 @@ export class MapleGuild {
     async memberDataList() {
         const rslt = [];
         const memberList = this.#memberData.map((_, v) => new MapleUser(this.#ggData(v).find('.mb-2 a').eq(1).text()));
-        const updateRslt = await Promise.all(memberList.map(async (_, v) => (await v.isLatest()) || (await v.updateGG())));
+        const updateRslt = await Promise.all(
+            memberList.map(async (_, v) => (await v.isLatest()) || (await v.updateGG()))
+        );
         for (let i = 0; i < this.MemberCount; i++) {
             rslt.push(
-                `[갱신 ${updateRslt[i] ? '성공' : '실패'}] ${this.#memberData.eq(i).find('header > span').text() || '길드원'}: ${memberList[i].Name}, ${memberList[i].Job()} / Lv.${memberList[
-                    i
-                ].Level()}, 유니온: ${memberList[i].Union()?.[0].toLocaleString() ?? '-'}, 무릉: ${memberList[i].Murung()?.[1] ?? '-'} (${memberList[i].lastActiveDay()})`
+                `[갱신 ${updateRslt[i] ? '성공' : '실패'}] ${
+                    this.#memberData.eq(i).find('header > span').text() || '길드원'
+                }: ${memberList[i].Name}, ${memberList[i].Job()} / Lv.${memberList[i].Level()}, 유니온: ${
+                    memberList[i].Union()?.[0].toLocaleString() ?? '-'
+                }, 무릉: ${memberList[i].Murung()?.[1] ?? '-'} (${memberList[i].lastActiveDay()})`
             );
         }
 

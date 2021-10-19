@@ -32,7 +32,9 @@ export const description = `- 1 ~ 20000 범위의 횟수를 입력하면 그만�
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length > 1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
     if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
         let rslt = '<로얄스타일 확률>';

@@ -37,7 +37,9 @@ export const description = `- 카테고리(스윗, 드림)와 1 ~ 20000 범위�
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length > 2 || !probTable[args[0]]) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     const category = args[0];

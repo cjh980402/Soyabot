@@ -19,7 +19,9 @@ const redirectURL = {
 };
 
 function getChartImage(identifer, type, isWorld = false, isWorldItem = false) {
-    return `https://ssl.pstatic.net/imgfinance/chart/mobile${isWorld ? '/world' : ''}${isWorldItem ? '/item' : ''}/${chartType[type]}/${identifer}_end.png?sidcode=${Date.now()}`;
+    return `https://ssl.pstatic.net/imgfinance/chart/mobile${isWorld ? '/world' : ''}${isWorldItem ? '/item' : ''}/${
+        chartType[type]
+    }/${identifer}_end.png?sidcode=${Date.now()}`;
 }
 
 function getRedirectURL(url) {
@@ -32,18 +34,24 @@ function getTotalInfoObj(totalInfos) {
 }
 
 async function getStockEmbed(search, searchRslt, type) {
-    const stockfind = searchRslt.find((v) => v[0][0].toLowerCase() === search || v[1][0].toLowerCase() === search) ?? searchRslt[0]; // 내용과 일치하거나 첫번째 항목
+    const stockfind =
+        searchRslt.find((v) => v[0][0].toLowerCase() === search || v[1][0].toLowerCase() === search) ?? searchRslt[0]; // 내용과 일치하거나 첫번째 항목
     const code = stockfind[0][0];
     const name = stockfind[1][0];
     const link = getRedirectURL(stockfind[3][0]); // 리다이렉트 로직 반영
     const identifer = stockfind[4][0];
     let image = null;
 
-    const stockEmbed = new MessageEmbed().setTitle(`**${name} (${code}) ${type}**`).setColor('#FF9999').setURL(`https://m.stock.naver.com${link}`);
+    const stockEmbed = new MessageEmbed()
+        .setTitle(`**${name} (${code}) ${type}**`)
+        .setColor('#FF9999')
+        .setURL(`https://m.stock.naver.com${link}`);
     if (stockfind[2][0] === '국내지수') {
         // 국내 지수
         const data = await (await fetch(`https://m.stock.naver.com/api/index/${identifer}/integration`)).json();
-        const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_INDEX%3A${identifer}`)).json();
+        const nowData = await (
+            await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_INDEX%3A${identifer}`)
+        ).json();
         if (nowData.result.areas[0].datas.length === 0) {
             return '검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.';
         }
@@ -104,14 +112,17 @@ async function getStockEmbed(search, searchRslt, type) {
     } else if (stockfind[3][0].startsWith('/item/main')) {
         // 국내 주식
         const data = await (await fetch(`https://m.stock.naver.com/api/stock/${identifer}/integration`)).json();
-        const nowData = await (await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_ITEM%3A${identifer}`)).json();
+        const nowData = await (
+            await fetch(`https://polling.finance.naver.com/api/realtime?query=SERVICE_ITEM%3A${identifer}`)
+        ).json();
         if (nowData.result.areas[0].datas.length === 0) {
             return '검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.';
         }
 
         const chartURL = getChartImage(identifer, type);
         const nowPrice = nowData.result.areas[0].datas[0].nv;
-        const changeAmount = (nowData.result.areas[0].datas[0].rf !== '5' ? 1 : -1) * nowData.result.areas[0].datas[0].cv;
+        const changeAmount =
+            (nowData.result.areas[0].datas[0].rf !== '5' ? 1 : -1) * nowData.result.areas[0].datas[0].cv;
         const changeRate = (nowData.result.areas[0].datas[0].rf !== '5' ? 1 : -1) * nowData.result.areas[0].datas[0].cr;
 
         data.totalInfos = getTotalInfoObj(data.totalInfos);
@@ -127,7 +138,9 @@ async function getStockEmbed(search, searchRslt, type) {
         // 파이썬 스크립트 실행
         image = new MessageAttachment(stockPic, `${code}.png`);
 
-        stockEmbed.addField('**거래량**', data.totalInfos['거래량'], true).addField('**거래대금**', `${data.totalInfos['대금']}원`, true);
+        stockEmbed
+            .addField('**거래량**', data.totalInfos['거래량'], true)
+            .addField('**거래대금**', `${data.totalInfos['대금']}원`, true);
         if (data.stockEndType === 'etf') {
             stockEmbed
                 .addField('**최근 1개월 수익률**', data.totalInfos['최근 1개월 수익률'], true)
@@ -212,12 +225,18 @@ export const description = `- 검색 내용에 해당하는 주식의 정보를 
 export const type = ['기타'];
 export async function messageExecute(message, args) {
     if (args.length < 1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     const type = args.length > 1 && chartType[args[args.length - 1]] ? args.pop() : '일봉'; // 차트 종류
     const search = args.join(' ').toLowerCase();
-    const searchRslt = (await (await fetch(`https://ac.finance.naver.com/ac?q=${encodeURIComponent(search)}&t_koreng=1&st=111&r_lt=111`)).json()).items[0];
+    const searchRslt = (
+        await (
+            await fetch(`https://ac.finance.naver.com/ac?q=${encodeURIComponent(search)}&t_koreng=1&st=111&r_lt=111`)
+        ).json()
+    ).items[0];
 
     if (!searchRslt?.length) {
         return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
@@ -246,7 +265,11 @@ export const commandData = {
 export async function commandExecute(interaction) {
     const type = interaction.options.getString('차트_종류') ?? '일봉'; // 차트 종류
     const search = interaction.options.getString('검색_내용');
-    const searchRslt = (await (await fetch(`https://ac.finance.naver.com/ac?q=${encodeURIComponent(search)}&t_koreng=1&st=111&r_lt=111`)).json()).items[0];
+    const searchRslt = (
+        await (
+            await fetch(`https://ac.finance.naver.com/ac?q=${encodeURIComponent(search)}&t_koreng=1&st=111&r_lt=111`)
+        ).json()
+    ).items[0];
 
     if (!searchRslt?.length) {
         return interaction.followUp('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');

@@ -6,7 +6,9 @@ export const description = '- 캐릭터의 메이플 gg 정보를 갱신합니�
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     const mapleUserInfo = new MapleUser(args[0]);
@@ -18,10 +20,14 @@ export async function messageExecute(message, args) {
         if (!(await mapleUserInfo.updateGG())) {
             return message.channel.send('제한시간 내에 갱신 작업을 실패하였습니다.');
         } else {
-            return message.channel.send(`[${mapleUserInfo.Name}]\n갱신이 완료되었습니다.\n\n${decodeURI(mapleUserInfo.GGURL)}`);
+            return message.channel.send(
+                `[${mapleUserInfo.Name}]\n갱신이 완료되었습니다.\n\n${decodeURI(mapleUserInfo.GGURL)}`
+            );
         }
     } else {
-        return message.channel.send(`[${mapleUserInfo.Name}]\n이미 최신 상태입니다.\n\n${decodeURI(mapleUserInfo.GGURL)}`);
+        return message.channel.send(
+            `[${mapleUserInfo.Name}]\n이미 최신 상태입니다.\n\n${decodeURI(mapleUserInfo.GGURL)}`
+        );
     }
 }
 export const commandData = {
@@ -47,9 +53,13 @@ export async function commandExecute(interaction) {
         if (!(await mapleUserInfo.updateGG())) {
             return interaction.followUp('제한시간 내에 갱신 작업을 실패하였습니다.');
         } else {
-            return interaction.followUp(`[${mapleUserInfo.Name}]\n갱신이 완료되었습니다.\n\n${decodeURI(mapleUserInfo.GGURL)}`);
+            return interaction.followUp(
+                `[${mapleUserInfo.Name}]\n갱신이 완료되었습니다.\n\n${decodeURI(mapleUserInfo.GGURL)}`
+            );
         }
     } else {
-        return interaction.followUp(`[${mapleUserInfo.Name}]\n이미 최신 상태입니다.\n\n${decodeURI(mapleUserInfo.GGURL)}`);
+        return interaction.followUp(
+            `[${mapleUserInfo.Name}]\n이미 최신 상태입니다.\n\n${decodeURI(mapleUserInfo.GGURL)}`
+        );
     }
 }

@@ -42,7 +42,9 @@ export const description = '- 계산식에 해당하는 결과값을 보여줍�
 export const type = ['기타'];
 export async function messageExecute(message, args) {
     if (args.length < 1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     try {
@@ -65,7 +67,10 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     try {
-        return interaction.sendSplitCode(String(originEvaluate(inputExpression(interaction.options.getString('계산식')))), { code: 'js' });
+        return interaction.sendSplitCode(
+            String(originEvaluate(inputExpression(interaction.options.getString('계산식')))),
+            { code: 'js' }
+        );
     } catch {
         return interaction.followUp('올바르지 않은 수식입니다.');
     }

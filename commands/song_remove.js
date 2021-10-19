@@ -9,7 +9,9 @@ export async function messageExecute(message, args) {
         return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
     if (args.length < 1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     const queue = client.queues.get(message.guildId);
@@ -42,7 +44,11 @@ export async function messageExecute(message, args) {
         return message.reply(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래를 삭제할 수 있습니다.`);
     }
 
-    return message.channel.send(`❌ ${message.author}가 대기열에서 **${removed.map((song, i) => `${songRemove[i]}. ${song.title}`).join(', ')}**을 삭제했습니다.`);
+    return message.channel.send(
+        `❌ ${message.author}가 대기열에서 **${removed
+            .map((song, i) => `${songRemove[i]}. ${song.title}`)
+            .join(', ')}**을 삭제했습니다.`
+    );
 }
 export const commandData = {
     name: 'remove',
@@ -91,5 +97,9 @@ export async function commandExecute(interaction) {
         return interaction.followUp(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래를 삭제할 수 있습니다.`);
     }
 
-    return interaction.followUp(`❌ ${interaction.user}가 대기열에서 **${removed.map((song, i) => `${songRemove[i]}. ${song.title}`).join(', ')}**을 삭제했습니다.`);
+    return interaction.followUp(
+        `❌ ${interaction.user}가 대기열에서 **${removed
+            .map((song, i) => `${songRemove[i]}. ${song.title}`)
+            .join(', ')}**을 삭제했습니다.`
+    );
 }

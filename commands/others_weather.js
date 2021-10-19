@@ -5,7 +5,12 @@ import { MessageActionRow, MessageButton, MessageEmbed, Util } from '../util/dis
 async function getWeatherEmbed(targetLocal) {
     const $ = load(await (await fetch(`https://weather.naver.com/today/${targetLocal[1][0]}`)).text());
     const nowWeather = $('.weather_area');
-    const weatherDesc = [`현재 날씨\n\n현재온도: ${nowWeather.find('.current').contents()[1].data}° (${nowWeather.find('.summary > .weather').text()})`, '날씨 예보\n'];
+    const weatherDesc = [
+        `현재 날씨\n\n현재온도: ${nowWeather.find('.current').contents()[1].data}° (${nowWeather
+            .find('.summary > .weather')
+            .text()})`,
+        '날씨 예보\n'
+    ];
 
     const summaryTerm = nowWeather.find('.summary_list > .term');
     const summaryDesc = nowWeather.find('.summary_list > .desc');
@@ -15,7 +20,10 @@ async function getWeatherEmbed(targetLocal) {
 
     const todayInfo = $('.today_chart_list .item_inner');
     for (let i = 0; i < todayInfo.length; i++) {
-        weatherDesc[0] += `${i % 2 ? '│' : '\n'}${todayInfo.eq(i).find('.ttl').text()}: ${todayInfo.eq(i).find('.level_text').text()}`;
+        weatherDesc[0] += `${i % 2 ? '│' : '\n'}${todayInfo.eq(i).find('.ttl').text()}: ${todayInfo
+            .eq(i)
+            .find('.level_text')
+            .text()}`;
     }
 
     const weather = $('.time_list > .item_time');
@@ -25,18 +33,20 @@ async function getWeatherEmbed(targetLocal) {
         const humidity = $('div[data-name="humidity"] .row_graph > .data');
         const wind = $('div[data-name="wind"] .row_graph > .data');
         for (let i = 0; i < weather.length - 1; i++) {
-            weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${weather.eq(i).attr('data-wetr-txt')})│강수량: ${rain
+            weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${weather
+                .eq(i)
+                .attr('data-wetr-txt')})│강수량: ${rain.eq(i).text().trim()}㎜│습도: ${humidity
                 .eq(i)
                 .text()
-                .trim()}㎜│습도: ${humidity.eq(i).text().trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
+                .trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
         }
     } else {
         let data = $('body > script').filter((_, v) => /\[{.+naverRgnCd.+}\]/.test($(v).html()));
         data = JSON.parse(/\[{.+naverRgnCd.+}\]/.exec(data.eq(0).html())[0]);
         for (let i = 0; i < weather.length - 1; i++) {
-            weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${data[i + 1].wetrTxt})│강수량: ${data[i + 1].rainAmt}㎜│습도: ${
-                data[i + 1].humd
-            }%│풍속: ${data[i + 1].windSpd}㎧`;
+            weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${
+                data[i + 1].wetrTxt
+            })│강수량: ${data[i + 1].rainAmt}㎜│습도: ${data[i + 1].humd}%│풍속: ${data[i + 1].windSpd}㎧`;
         }
     }
 
@@ -59,7 +69,15 @@ export const channelCool = true;
 export const type = ['기타'];
 export async function messageExecute(message, args) {
     const search = args.length > 0 ? args.join(' ') : '동대문구 전농동';
-    const searchRslt = (await (await fetch(`https://ac.weather.naver.com/ac?q_enc=utf-8&r_format=json&r_enc=utf-8&r_lt=1&st=1&q=${encodeURIComponent(search)}`)).json()).items[0];
+    const searchRslt = (
+        await (
+            await fetch(
+                `https://ac.weather.naver.com/ac?q_enc=utf-8&r_format=json&r_enc=utf-8&r_lt=1&st=1&q=${encodeURIComponent(
+                    search
+                )}`
+            )
+        ).json()
+    ).items[0];
     let targetLocal;
     if (!searchRslt?.length) {
         return message.channel.send('검색된 지역이 없습니다.');
@@ -74,7 +92,11 @@ export async function messageExecute(message, args) {
         message.channel.send({ embeds: [localListEmbed] });
 
         const rslt = await message.channel.awaitMessages({
-            filter: (msg) => msg.author.id === message.author.id && !isNaN(msg.content) && 1 <= +msg.content && +msg.content <= searchRslt.length,
+            filter: (msg) =>
+                msg.author.id === message.author.id &&
+                !isNaN(msg.content) &&
+                1 <= +msg.content &&
+                +msg.content <= searchRslt.length,
             max: 1,
             time: 20000,
             errors: ['time']
@@ -89,7 +111,11 @@ export async function messageExecute(message, args) {
         new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
         new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
     );
-    const weatherEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
+    const weatherEmbed = await message.channel.send({
+        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+        embeds: [embeds[currentPage]],
+        components: [row]
+    });
 
     const filter = (itr) => message.author.id === itr.user.id;
     const collector = weatherEmbed.createMessageComponentCollector({ filter, time: 60000 });
@@ -99,11 +125,17 @@ export async function messageExecute(message, args) {
             switch (itr.customId) {
                 case 'next':
                     currentPage = (currentPage + 1) % embeds.length;
-                    await weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                    await weatherEmbed.edit({
+                        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                        embeds: [embeds[currentPage]]
+                    });
                     break;
                 case 'prev':
                     currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                    await weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                    await weatherEmbed.edit({
+                        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                        embeds: [embeds[currentPage]]
+                    });
                     break;
                 case 'stop':
                     collector.stop();
@@ -125,7 +157,15 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     const search = interaction.options.getString('지역') ?? '동대문구 전농동';
-    const searchRslt = (await (await fetch(`https://ac.weather.naver.com/ac?q_enc=utf-8&r_format=json&r_enc=utf-8&r_lt=1&st=1&q=${encodeURIComponent(search)}`)).json()).items[0];
+    const searchRslt = (
+        await (
+            await fetch(
+                `https://ac.weather.naver.com/ac?q_enc=utf-8&r_format=json&r_enc=utf-8&r_lt=1&st=1&q=${encodeURIComponent(
+                    search
+                )}`
+            )
+        ).json()
+    ).items[0];
     let targetLocal;
     if (!searchRslt?.length) {
         return interaction.followUp('검색된 지역이 없습니다.');
@@ -140,7 +180,11 @@ export async function commandExecute(interaction) {
         await interaction.editReply({ embeds: [localListEmbed] });
 
         const rslt = await interaction.channel.awaitMessages({
-            filter: (msg) => msg.author.id === interaction.user.id && !isNaN(msg.content) && 1 <= +msg.content && +msg.content <= searchRslt.length,
+            filter: (msg) =>
+                msg.author.id === interaction.user.id &&
+                !isNaN(msg.content) &&
+                1 <= +msg.content &&
+                +msg.content <= searchRslt.length,
             max: 1,
             time: 20000,
             errors: ['time']
@@ -155,7 +199,11 @@ export async function commandExecute(interaction) {
         new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
         new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
     );
-    const weatherEmbed = await interaction.followUp({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
+    const weatherEmbed = await interaction.followUp({
+        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+        embeds: [embeds[currentPage]],
+        components: [row]
+    });
 
     const filter = (itr) => interaction.user.id === itr.user.id;
     const collector = weatherEmbed.createMessageComponentCollector({ filter, time: 60000 });
@@ -165,11 +213,17 @@ export async function commandExecute(interaction) {
             switch (itr.customId) {
                 case 'next':
                     currentPage = (currentPage + 1) % embeds.length;
-                    await weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                    await weatherEmbed.edit({
+                        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                        embeds: [embeds[currentPage]]
+                    });
                     break;
                 case 'prev':
                     currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                    await weatherEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                    await weatherEmbed.edit({
+                        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                        embeds: [embeds[currentPage]]
+                    });
                     break;
                 case 'stop':
                     collector.stop();

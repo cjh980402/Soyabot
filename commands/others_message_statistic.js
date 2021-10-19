@@ -1,6 +1,7 @@
 export const usage = `${client.prefix}채팅량 (멘션)`;
 export const command = ['채팅량', 'ㅊㅌㄹ'];
-export const description = '- 첫번째 멘션에 해당하는 유저의 채팅 통계를 보여줍니다. 멘션을 생략 시에는 본인의 채팅 통계를 보여줍니다.';
+export const description =
+    '- 첫번째 멘션에 해당하는 유저의 채팅 통계를 보여줍니다. 멘션을 생략 시에는 본인의 채팅 통계를 보여줍니다.';
 export const channelCool = true;
 export const type = ['기타'];
 export async function messageExecute(message) {
@@ -19,19 +20,24 @@ export async function messageExecute(message) {
         targetInfo = message.member;
     }
 
-    const messagestat = db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [`${message.guildId} ${targetInfo.user.id}`]);
+    const messagestat = db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [
+        `${message.guildId} ${targetInfo.user.id}`
+    ]);
     if (messagestat) {
         return message.channel.send(`[${targetInfo.nickname ?? targetInfo.user.username}]
 채팅 건수: ${messagestat.messagecnt.toLocaleString()}
 문자 개수: ${messagestat.lettercnt.toLocaleString()}
 채팅 지수: ${(messagestat.lettercnt / messagestat.messagecnt).toFixed(2)}`);
     } else {
-        return message.channel.send(`[${targetInfo.nickname ?? targetInfo.user.username}]\n채팅 건수: 0\n문자 개수: 0\n채팅 지수: 0.00`);
+        return message.channel.send(
+            `[${targetInfo.nickname ?? targetInfo.user.username}]\n채팅 건수: 0\n문자 개수: 0\n채팅 지수: 0.00`
+        );
     }
 }
 export const commandData = {
     name: '채팅량',
-    description: '첫번째 멘션에 해당하는 유저의 채팅 통계를 보여줍니다. 멘션을 생략 시에는 본인의 채팅 통계를 보여줍니다.',
+    description:
+        '첫번째 멘션에 해당하는 유저의 채팅 통계를 보여줍니다. 멘션을 생략 시에는 본인의 채팅 통계를 보여줍니다.',
     options: [
         {
             name: '멘션',
@@ -47,13 +53,17 @@ export async function commandExecute(interaction) {
 
     const targetInfo = interaction.options.getMember('멘션') ?? interaction.member;
 
-    const messagestat = db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [`${interaction.guildId} ${targetInfo.user.id}`]);
+    const messagestat = db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [
+        `${interaction.guildId} ${targetInfo.user.id}`
+    ]);
     if (messagestat) {
         return interaction.followUp(`[${targetInfo.nickname ?? targetInfo.user.username}]
 채팅 건수: ${messagestat.messagecnt.toLocaleString()}
 문자 개수: ${messagestat.lettercnt.toLocaleString()}
 채팅 지수: ${(messagestat.lettercnt / messagestat.messagecnt).toFixed(2)}`);
     } else {
-        return interaction.followUp(`[${targetInfo.nickname ?? targetInfo.user.username}]\n채팅 건수: 0\n문자 개수: 0\n채팅 지수: 0.00`);
+        return interaction.followUp(
+            `[${targetInfo.nickname ?? targetInfo.user.username}]\n채팅 건수: 0\n문자 개수: 0\n채팅 지수: 0.00`
+        );
     }
 }

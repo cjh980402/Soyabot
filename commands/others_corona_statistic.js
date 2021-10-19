@@ -46,7 +46,9 @@ export const description = '- 최신 기준 코로나 국내 현황 통계를 �
 export const type = ['기타'];
 export async function messageExecute(message) {
     const countData = await (await fetch(`https://api.corona-19.kr/korea/?serviceKey=${CORONA_API_KEY}`)).json();
-    const countryData = await (await fetch(`https://api.corona-19.kr/korea/country/new/?serviceKey=${CORONA_API_KEY}`)).json();
+    const countryData = await (
+        await fetch(`https://api.corona-19.kr/korea/country/new/?serviceKey=${CORONA_API_KEY}`)
+    ).json();
 
     if (countData.resultCode === '0' && countryData.resultCode === '0') {
         let currentPage = 0;
@@ -72,11 +74,17 @@ export async function messageExecute(message) {
                 switch (itr.customId) {
                     case 'next':
                         currentPage = (currentPage + 1) % embeds.length;
-                        await coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        await coronaEmbed.edit({
+                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                            embeds: [embeds[currentPage]]
+                        });
                         break;
                     case 'prev':
                         currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        await coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        await coronaEmbed.edit({
+                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                            embeds: [embeds[currentPage]]
+                        });
                         break;
                     case 'stop':
                         collector.stop();
@@ -94,7 +102,9 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     const countData = await (await fetch(`https://api.corona-19.kr/korea/?serviceKey=${CORONA_API_KEY}`)).json();
-    const countryData = await (await fetch(`https://api.corona-19.kr/korea/country/new/?serviceKey=${CORONA_API_KEY}`)).json();
+    const countryData = await (
+        await fetch(`https://api.corona-19.kr/korea/country/new/?serviceKey=${CORONA_API_KEY}`)
+    ).json();
 
     if (countData.resultCode === '0' && countryData.resultCode === '0') {
         let currentPage = 0;
@@ -120,11 +130,17 @@ export async function commandExecute(interaction) {
                 switch (itr.customId) {
                     case 'next':
                         currentPage = (currentPage + 1) % embeds.length;
-                        await coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        await coronaEmbed.edit({
+                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                            embeds: [embeds[currentPage]]
+                        });
                         break;
                     case 'prev':
                         currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        await coronaEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                        await coronaEmbed.edit({
+                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                            embeds: [embeds[currentPage]]
+                        });
                         break;
                     case 'stop':
                         collector.stop();

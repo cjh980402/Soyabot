@@ -24,7 +24,9 @@ export const description = '- 입력한 내용에 해당하는 길드의 길드�
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 2 || !serverEngName[args[0]]) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     /*const mapleGuildInfo = new MapleGuild(serverEngName[args[0]], args[1]);
@@ -37,7 +39,9 @@ export async function messageExecute(message, args) {
     const rslt = `${args[0]} ${args[1]} 길드 (${mapleGuildInfo.MemberCount}명)\n길드원 목록 갱신 ${isLatest ? '성공' : '실패'}\n\n${(await mapleGuildInfo.memberDataList()).join('\n\n')}`;
 
     return message.channel.sendSplitCode(rslt, { split: { char: '\n' } });*/
-    const response = await fetch(`http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(args[0])}/${encodeURIComponent(args[1])}`);
+    const response = await fetch(
+        `http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(args[0])}/${encodeURIComponent(args[1])}`
+    );
     if (response.status === 200) {
         return message.channel.sendSplitCode(await response.text(), { split: { char: '\n' } });
     } else {
@@ -77,7 +81,9 @@ export async function commandExecute(interaction) {
     const rslt = `${serverName} ${guildName} 길드 (${mapleGuildInfo.MemberCount}명)\n길드원 목록 갱신 ${isLatest ? '성공' : '실패'}\n\n${(await mapleGuildInfo.memberDataList()).join('\n\n')}`;
 
     return interaction.sendSplitCode(rslt, { split: { char: '\n' } });*/
-    const response = await fetch(`http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(serverName)}/${encodeURIComponent(guildName)}`);
+    const response = await fetch(
+        `http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(serverName)}/${encodeURIComponent(guildName)}`
+    );
     if (response.status === 200) {
         return interaction.sendSplitCode(await response.text(), { split: { char: '\n' } });
     } else {

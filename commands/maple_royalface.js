@@ -11,16 +11,22 @@ export const description = `- 해당 성별의 목표 성형을 얻을 때까지
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length === 1 && (args[0] === '확률' || args[0] === 'ㅎㄹ')) {
-        const rslt = `<로얄 성형 확률>\n\n- 남자 성형\n${faceList['남'].map((v) => `${v}: 16.67%`).join('\n')}\n\n- 여자 성형\n${faceList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
+        const rslt = `<로얄 성형 확률>\n\n- 남자 성형\n${faceList['남']
+            .map((v) => `${v}: 16.67%`)
+            .join('\n')}\n\n- 여자 성형\n${faceList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
         return message.channel.send(rslt);
     }
     if (args.length < 2) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
     const gender = args.shift()[0];
     const goalface = (faceList[gender] ?? []).findIndex((v) => v.replace(/\s+/, '').includes(args.join('')));
     if (goalface === -1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
     // gender은 성별, goalface는 목표 성형의 인덱스
     // random은 0이상 1미만
@@ -32,7 +38,9 @@ export async function messageExecute(message, args) {
         list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 성형의 인덱스 저장, now 뒤에 더하는 이유는 최근 성형 제외 목적
     }
 
-    const rslt = `로얄 성형 (목표: ${faceList[gender][goalface]}) 결과\n\n수행 횟수: ${list.length}회\n\n진행 과정\n${list.map((v, i) => `${i + 1}번째: ${faceList[gender][v]}`).join('\n')}`;
+    const rslt = `로얄 성형 (목표: ${faceList[gender][goalface]}) 결과\n\n수행 횟수: ${
+        list.length
+    }회\n\n진행 과정\n${list.map((v, i) => `${i + 1}번째: ${faceList[gender][v]}`).join('\n')}`;
     return message.channel.send(rslt);
 }
 export const commandData = {
@@ -78,7 +86,9 @@ export async function commandExecute(interaction) {
     const subcommand = interaction.options.getSubcommand();
 
     if (subcommand === '확률') {
-        const rslt = `<로얄 성형 확률>\n\n- 남자 성형\n${faceList['남'].map((v) => `${v}: 16.67%`).join('\n')}\n\n- 여자 성형\n${faceList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
+        const rslt = `<로얄 성형 확률>\n\n- 남자 성형\n${faceList['남']
+            .map((v) => `${v}: 16.67%`)
+            .join('\n')}\n\n- 여자 성형\n${faceList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
         return interaction.followUp(rslt);
     } else {
         const goalface = faceList[subcommand].indexOf(interaction.options.getString('목표_성형_이름'));
@@ -92,9 +102,9 @@ export async function commandExecute(interaction) {
             list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 성형의 인덱스 저장, now 뒤에 더하는 이유는 최근 성형 제외 목적
         }
 
-        const rslt = `로얄 성형 (목표: ${faceList[subcommand][goalface]}) 결과\n\n수행 횟수: ${list.length}회\n\n진행 과정\n${list
-            .map((v, i) => `${i + 1}번째: ${faceList[subcommand][v]}`)
-            .join('\n')}`;
+        const rslt = `로얄 성형 (목표: ${faceList[subcommand][goalface]}) 결과\n\n수행 횟수: ${
+            list.length
+        }회\n\n진행 과정\n${list.map((v, i) => `${i + 1}번째: ${faceList[subcommand][v]}`).join('\n')}`;
         return interaction.followUp(rslt);
     }
 }

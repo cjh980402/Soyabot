@@ -9,10 +9,16 @@ function getEventEmbed(links, names, dates) {
         const curNames = names.slice(i, i + 5);
         const curDates = dates.slice(i, i + 5);
         const info = curLinks
-            .map((j, link) => `${i + j + 1}. [${curNames[j]}](https://maplestory.nexon.com${link})\n기간: ${curDates[j]}`)
+            .map(
+                (j, link) => `${i + j + 1}. [${curNames[j]}](https://maplestory.nexon.com${link})\n기간: ${curDates[j]}`
+            )
             .get()
             .join('\n\n');
-        const embed = new MessageEmbed().setTitle('**진행중인 이벤트**').setColor('#FF9999').setDescription(info).setTimestamp();
+        const embed = new MessageEmbed()
+            .setTitle('**진행중인 이벤트**')
+            .setColor('#FF9999')
+            .setDescription(info)
+            .setTimestamp();
         embeds.push(embed);
     }
     return embeds;
@@ -40,7 +46,11 @@ export async function messageExecute(message) {
                 new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
             );
-            const eventEmbed = await message.channel.send({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
+            const eventEmbed = await message.channel.send({
+                content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                embeds: [embeds[currentPage]],
+                components: [row]
+            });
 
             const filter = (itr) => message.author.id === itr.user.id;
             const collector = eventEmbed.createMessageComponentCollector({ filter, time: 60000 });
@@ -50,11 +60,17 @@ export async function messageExecute(message) {
                     switch (itr.customId) {
                         case 'next':
                             currentPage = (currentPage + 1) % embeds.length;
-                            await eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                            await eventEmbed.edit({
+                                content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                                embeds: [embeds[currentPage]]
+                            });
                             break;
                         case 'prev':
                             currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                            await eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                            await eventEmbed.edit({
+                                content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                                embeds: [embeds[currentPage]]
+                            });
                             break;
                         case 'stop':
                             collector.stop();
@@ -89,7 +105,11 @@ export async function commandExecute(interaction) {
                 new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
                 new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
             );
-            const eventEmbed = await interaction.editReply({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]], components: [row] });
+            const eventEmbed = await interaction.editReply({
+                content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                embeds: [embeds[currentPage]],
+                components: [row]
+            });
 
             const filter = (itr) => interaction.user.id === itr.user.id;
             const collector = eventEmbed.createMessageComponentCollector({ filter, time: 60000 });
@@ -99,11 +119,17 @@ export async function commandExecute(interaction) {
                     switch (itr.customId) {
                         case 'next':
                             currentPage = (currentPage + 1) % embeds.length;
-                            await eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                            await eventEmbed.edit({
+                                content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                                embeds: [embeds[currentPage]]
+                            });
                             break;
                         case 'prev':
                             currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                            await eventEmbed.edit({ content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`, embeds: [embeds[currentPage]] });
+                            await eventEmbed.edit({
+                                content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                                embeds: [embeds[currentPage]]
+                            });
                             break;
                         case 'stop':
                             collector.stop();

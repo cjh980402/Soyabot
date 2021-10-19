@@ -55,11 +55,15 @@ export async function messageExecute(message, args) {
         return message.channel.send(`<지원하는 번역 종류>\n\n${list.replace(/, /g, '\n')}\n\n순서는 바뀌어도 됩니다.`);
     }
     if (args.length < 3) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     if (!checkLan(args[0], args[1]) && !checkLan(args[1], args[0])) {
-        return message.channel.send(`형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 '${this.usage}'입니다.\n언어의 형식은 ${client.prefix}파파고 목록을 확인해주세요.`);
+        return message.channel.send(
+            `형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 '${this.usage}'입니다.\n언어의 형식은 ${client.prefix}파파고 목록을 확인해주세요.`
+        );
     }
 
     const text = message.content.replace(/\s*.+?\s+.+?\s+.+?\s+/, '').trim();
@@ -88,14 +92,18 @@ export const commandData = {
                     type: 'STRING',
                     description: '대상 언어의 영어 코드',
                     required: true,
-                    choices: ['ko', 'en', 'ja', 'zh-CN', 'zh-TW', 'es', 'fr', 'ru', 'vi', 'th', 'id', 'de', 'it'].map((v) => ({ name: v, value: v }))
+                    choices: ['ko', 'en', 'ja', 'zh-CN', 'zh-TW', 'es', 'fr', 'ru', 'vi', 'th', 'id', 'de', 'it'].map(
+                        (v) => ({ name: v, value: v })
+                    )
                 },
                 {
                     name: '결과언어',
                     type: 'STRING',
                     description: '결과 언어의 영어 코드',
                     required: true,
-                    choices: ['ko', 'en', 'ja', 'zh-CN', 'zh-TW', 'es', 'fr', 'ru', 'vi', 'th', 'id', 'de', 'it'].map((v) => ({ name: v, value: v }))
+                    choices: ['ko', 'en', 'ja', 'zh-CN', 'zh-TW', 'es', 'fr', 'ru', 'vi', 'th', 'id', 'de', 'it'].map(
+                        (v) => ({ name: v, value: v })
+                    )
                 },
                 {
                     name: '내용',

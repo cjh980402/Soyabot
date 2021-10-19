@@ -10,7 +10,9 @@ function calcIncrease($, selector) {
         .filter((i) => dateList.eq(i).text() !== dateList.eq(0).text())
         .eq(0)
         .text();
-    return `${today.toLocaleString()} (${today >= yesterday ? `⬆️ ${(today - yesterday).toLocaleString()}` : `⬇️ ${(yesterday - today).toLocaleString()}`})`;
+    return `${today.toLocaleString()} (${
+        today >= yesterday ? `⬆️ ${(today - yesterday).toLocaleString()}` : `⬇️ ${(yesterday - today).toLocaleString()}`
+    })`;
 }
 
 export const usage = `${client.prefix}코로나2`;
@@ -24,9 +26,25 @@ export async function messageExecute(message) {
     params.append('serviceKey', OPEN_API_KEY);
     params.append('pageNo', '1');
     params.append('numOfRows', '10');
-    params.append('startCreateDt', `${startday.getFullYear()}${String(startday.getMonth() + 1).padStart(2, '0')}${String(startday.getDate()).padStart(2, '0')}`);
-    params.append('endCreateDt', `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`);
-    const $ = load(await (await fetch(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?${params}`)).text(), { xmlMode: true });
+    params.append(
+        'startCreateDt',
+        `${startday.getFullYear()}${String(startday.getMonth() + 1).padStart(2, '0')}${String(
+            startday.getDate()
+        ).padStart(2, '0')}`
+    );
+    params.append(
+        'endCreateDt',
+        `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(
+            2,
+            '0'
+        )}`
+    );
+    const $ = load(
+        await (
+            await fetch(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?${params}`)
+        ).text(),
+        { xmlMode: true }
+    );
 
     if ($('resultCode').text() === '00') {
         const thumbnail = new MessageAttachment('./pictures/mohw.png');
@@ -57,9 +75,25 @@ export async function commandExecute(interaction) {
     params.append('serviceKey', OPEN_API_KEY);
     params.append('pageNo', '1');
     params.append('numOfRows', '10');
-    params.append('startCreateDt', `${startday.getFullYear()}${String(startday.getMonth() + 1).padStart(2, '0')}${String(startday.getDate()).padStart(2, '0')}`);
-    params.append('endCreateDt', `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`);
-    const $ = load(await (await fetch(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?${params}`)).text(), { xmlMode: true });
+    params.append(
+        'startCreateDt',
+        `${startday.getFullYear()}${String(startday.getMonth() + 1).padStart(2, '0')}${String(
+            startday.getDate()
+        ).padStart(2, '0')}`
+    );
+    params.append(
+        'endCreateDt',
+        `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(
+            2,
+            '0'
+        )}`
+    );
+    const $ = load(
+        await (
+            await fetch(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?${params}`)
+        ).text(),
+        { xmlMode: true }
+    );
 
     if ($('resultCode').text() === '00') {
         const thumbnail = new MessageAttachment('./pictures/mohw.png');

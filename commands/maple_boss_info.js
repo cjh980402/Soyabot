@@ -40,11 +40,14 @@ async function getBossEmbed(bossName, bossGrade) {
 
 export const usage = `${client.prefix}보스 (보스 이름) (보스 난이도)`;
 export const command = ['보스', 'ㅂㅅ', 'ㅄ'];
-export const description = '- 해당하는 보스의 보상과 체력, 방어율을 알려줍니다.\n- 난이도를 생략하면 상위 등급의 정보를 보여줍니다.';
+export const description =
+    '- 해당하는 보스의 보상과 체력, 방어율을 알려줍니다.\n- 난이도를 생략하면 상위 등급의 정보를 보여줍니다.';
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length < 1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
     let bossName = args.join(''),
         bossGrade = Object.keys(bossData[bossName] ?? {})[0];
@@ -86,5 +89,9 @@ export async function commandExecute(interaction) {
     }
     const bossGrade = interaction.options.getString('보스_난이도');
 
-    return interaction.followUp({ embeds: [await getBossEmbed(bossName, bossData[bossName][bossGrade] ? bossGrade : Object.keys(bossData[bossName])[0])] });
+    return interaction.followUp({
+        embeds: [
+            await getBossEmbed(bossName, bossData[bossName][bossGrade] ? bossGrade : Object.keys(bossData[bossName])[0])
+        ]
+    });
 }

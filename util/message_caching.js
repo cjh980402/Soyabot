@@ -10,7 +10,9 @@ export default function (messageOrInteraction) {
         db.replace('messagedb', {
             channelsenderid: senderKey,
             messagecnt: (messagestat?.messagecnt ?? 0) + 1,
-            lettercnt: (messagestat?.lettercnt ?? 0) + messageOrInteraction.content.replace(/[\s\u2007\u200b\u202d\u3164]/g, '').length,
+            lettercnt:
+                (messagestat?.lettercnt ?? 0) +
+                messageOrInteraction.content.replace(/[\s\u2007\u200b\u202d\u3164]/g, '').length,
             lastmessage: messageOrInteraction.content
         });
     } else if (messageOrInteraction instanceof CommandInteraction) {
@@ -19,7 +21,9 @@ export default function (messageOrInteraction) {
         }
         const senderKey = `${messageOrInteraction.guildId} ${messageOrInteraction.user.id}`;
         const messagestat = db.get('SELECT * FROM messagedb WHERE channelsenderid = ?', [senderKey]);
-        const content = `/${messageOrInteraction.commandName}${messageOrInteraction.options._hoistedOptions.map((v) => ` ${v.value}`).join('')}`;
+        const content = `/${messageOrInteraction.commandName}${messageOrInteraction.options._hoistedOptions
+            .map((v) => ` ${v.value}`)
+            .join('')}`;
         db.replace('messagedb', {
             channelsenderid: senderKey,
             messagecnt: (messagestat?.messagecnt ?? 0) + 1,

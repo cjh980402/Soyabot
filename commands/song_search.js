@@ -10,7 +10,9 @@ export async function messageExecute(message, args) {
         return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
     if (args.length < 1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
     if (!message.member.voice.channel) {
         return message.reply('음성 채널에 먼저 참가해주세요!');
@@ -22,8 +24,16 @@ export async function messageExecute(message, args) {
         return message.reply('검색 내용에 해당하는 영상을 찾지 못했습니다.');
     }
 
-    const resultsEmbed = new MessageEmbed().setTitle('**재생할 노래의 번호를 알려주세요.**').setDescription(`${search}의 검색 결과`).setColor('#FF9999');
-    results.forEach((video, index) => resultsEmbed.addField(`**${index + 1}. ${video.title}** \`${video.durationText}\``, `https://youtu.be/${video.id}`));
+    const resultsEmbed = new MessageEmbed()
+        .setTitle('**재생할 노래의 번호를 알려주세요.**')
+        .setDescription(`${search}의 검색 결과`)
+        .setColor('#FF9999');
+    results.forEach((video, index) =>
+        resultsEmbed.addField(
+            `**${index + 1}. ${video.title}** \`${video.durationText}\``,
+            `https://youtu.be/${video.id}`
+        )
+    );
     const resultsMessage = await message.channel.send({ embeds: [resultsEmbed] });
 
     try {
@@ -84,8 +94,16 @@ export async function commandExecute(interaction) {
         return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
     }
 
-    const resultsEmbed = new MessageEmbed().setTitle('**재생할 노래의 번호를 알려주세요.**').setDescription(`${search}의 검색 결과`).setColor('#FF9999');
-    results.forEach((video, index) => resultsEmbed.addField(`**${index + 1}. ${video.title}** \`${video.durationText}\``, `https://youtu.be/${video.id}`));
+    const resultsEmbed = new MessageEmbed()
+        .setTitle('**재생할 노래의 번호를 알려주세요.**')
+        .setDescription(`${search}의 검색 결과`)
+        .setColor('#FF9999');
+    results.forEach((video, index) =>
+        resultsEmbed.addField(
+            `**${index + 1}. ${video.title}** \`${video.durationText}\``,
+            `https://youtu.be/${video.id}`
+        )
+    );
     const resultsMessage = await interaction.editReply({ embeds: [resultsEmbed] });
 
     try {
@@ -104,7 +122,11 @@ export async function commandExecute(interaction) {
 
         const playCommand = client.commands.find((cmd) => cmd.commandData?.name === 'play');
         for (const song of songChoice) {
-            interaction.options._hoistedOptions[1] = { name: '영상_주소_제목', type: 'STRING', value: resultsEmbed.fields[song - 1].value };
+            interaction.options._hoistedOptions[1] = {
+                name: '영상_주소_제목',
+                type: 'STRING',
+                value: resultsEmbed.fields[song - 1].value
+            };
             await playCommand.commandExecute(interaction);
         }
 

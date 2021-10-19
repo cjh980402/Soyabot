@@ -12,7 +12,9 @@ export function startNotice() {
     if (!noticeTimer) {
         noticeTimer = setInterval(async () => {
             try {
-                const data = load(await (await fetch('https://maplestory.nexon.com/News/Notice')).text())('.news_board li > p');
+                const data = load(await (await fetch('https://maplestory.nexon.com/News/Notice')).text())(
+                    '.news_board li > p'
+                );
 
                 const notice = [];
                 for (let i = 0; i < data.length; i++) {
@@ -27,7 +29,11 @@ export function startNotice() {
                 }
 
                 if (notice.length > 0) {
-                    const noticeEmbed = new MessageEmbed().setTitle('**메이플 공지사항**').setDescription(notice.join('\n\n')).setColor('#FF9999').setTimestamp();
+                    const noticeEmbed = new MessageEmbed()
+                        .setTitle('**메이플 공지사항**')
+                        .setDescription(notice.join('\n\n'))
+                        .setColor('#FF9999')
+                        .setTimestamp();
 
                     botNotice(noticeEmbed, 'notice');
                 }
@@ -49,7 +55,9 @@ export function startUpdate() {
     if (!updateTimer) {
         updateTimer = setInterval(async () => {
             try {
-                const data = load(await (await fetch('https://maplestory.nexon.com/News/Update')).text())('.update_board li > p');
+                const data = load(await (await fetch('https://maplestory.nexon.com/News/Update')).text())(
+                    '.update_board li > p'
+                );
 
                 const update = [];
                 for (let i = 0; i < data.length; i++) {
@@ -64,7 +72,11 @@ export function startUpdate() {
                 }
 
                 if (update.length > 0) {
-                    const noticeEmbed = new MessageEmbed().setTitle('**메이플 업데이트**').setDescription(update.join('\n\n')).setColor('#FF9999').setTimestamp();
+                    const noticeEmbed = new MessageEmbed()
+                        .setTitle('**메이플 업데이트**')
+                        .setDescription(update.join('\n\n'))
+                        .setColor('#FF9999')
+                        .setTimestamp();
 
                     botNotice(noticeEmbed, 'update');
                 }
@@ -86,7 +98,9 @@ export function startTest() {
     if (!testTimer) {
         testTimer = setInterval(async () => {
             try {
-                const data = load(await (await fetch('https://maplestory.nexon.com/Testworld/Totalnotice')).text())('.news_board li > p');
+                const data = load(await (await fetch('https://maplestory.nexon.com/Testworld/Totalnotice')).text())(
+                    '.news_board li > p'
+                );
 
                 const test = [];
                 for (let i = 0; i < data.length; i++) {
@@ -97,13 +111,23 @@ export function startTest() {
                         db.replace('mapletest', { title: data.eq(i).text().trim(), url: url });
                         // 중복방지 위해 db에 삽입
                         const picurl = data.eq(i).find('img').attr('src');
-                        const type = picurl.endsWith('1.png') ? '[공지]' : picurl.endsWith('2.png') ? '[GM]' : picurl.endsWith('3.png') ? '[점검]' : '[패치]';
+                        const type = picurl.endsWith('1.png')
+                            ? '[공지]'
+                            : picurl.endsWith('2.png')
+                            ? '[GM]'
+                            : picurl.endsWith('3.png')
+                            ? '[점검]'
+                            : '[패치]';
                         test.push(`${type} [${data.eq(i).text().trim()}](${url})`);
                     }
                 }
 
                 if (test.length > 0) {
-                    const noticeEmbed = new MessageEmbed().setTitle('**메이플 테스트월드 공지**').setDescription(test.join('\n\n')).setColor('#FF9999').setTimestamp();
+                    const noticeEmbed = new MessageEmbed()
+                        .setTitle('**메이플 테스트월드 공지**')
+                        .setDescription(test.join('\n\n'))
+                        .setColor('#FF9999')
+                        .setTimestamp();
 
                     botNotice(noticeEmbed, 'test');
                 }
@@ -127,13 +151,20 @@ export function startTestPatch() {
             try {
                 const lastPatch = db.get('SELECT * FROM testpatch ORDER BY version DESC LIMIT 1');
                 const patchVersion = lastPatch.version + 1; // 새로 가져올 패치의 버전
-                const patchURL = `http://maplestory.dn.nexoncdn.co.kr/PatchT/01${patchVersion}/01${patchVersion - 1}to01${patchVersion}.patch`;
+                const patchURL = `http://maplestory.dn.nexoncdn.co.kr/PatchT/01${patchVersion}/01${
+                    patchVersion - 1
+                }to01${patchVersion}.patch`;
                 const patchHeader = (await fetch(patchURL)).headers;
                 if (patchHeader.get('content-type') === 'application/octet-stream') {
                     // 파일이 감지된 경우
                     const fileSize = +patchHeader.get('content-length') / 1024 / 1024;
                     db.insert('testpatch', { version: patchVersion, url: patchURL });
-                    botNotice(`[Tver 1.2.${patchVersion}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기: ${fileSize.toFixed(2)}MB\n패치파일 주소: ${patchURL}`, 'testpatch');
+                    botNotice(
+                        `[Tver 1.2.${patchVersion}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기: ${fileSize.toFixed(
+                            2
+                        )}MB\n패치파일 주소: ${patchURL}`,
+                        'testpatch'
+                    );
                 }
             } catch (err) {
                 replyAdmin(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${err.stack ?? err._p}`);

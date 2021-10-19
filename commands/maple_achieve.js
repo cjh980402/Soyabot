@@ -6,7 +6,9 @@ export const description = '- 캐릭터의 업적 등급, 점수, 랭킹을 출�
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 1) {
-        return message.channel.send(`**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`);
+        return message.channel.send(
+            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
+        );
     }
 
     const mapleUserInfo = new MapleUser(args[0]);
@@ -24,7 +26,9 @@ export async function messageExecute(message, args) {
     if (!rslt) {
         return message.channel.send(`[${mapleUserInfo.Name}]\n기록이 없습니다.`);
     } else {
-        return message.channel.send(`[${mapleUserInfo.Name}]\n등급: ${rslt[0]}\n업적점수: ${rslt[1]}\n월드랭킹: ${rslt[2]}\n전체랭킹: ${rslt[3]}`);
+        return message.channel.send(
+            `[${mapleUserInfo.Name}]\n등급: ${rslt[0]}\n업적점수: ${rslt[1]}\n월드랭킹: ${rslt[2]}\n전체랭킹: ${rslt[3]}`
+        );
     }
 }
 export const commandData = {
@@ -56,6 +60,8 @@ export async function commandExecute(interaction) {
     if (!rslt) {
         return interaction.followUp(`[${mapleUserInfo.Name}]\n기록이 없습니다.`);
     } else {
-        return interaction.followUp(`[${mapleUserInfo.Name}]\n등급: ${rslt[0]}\n업적점수: ${rslt[1]}\n월드랭킹: ${rslt[2]}\n전체랭킹: ${rslt[3]}`);
+        return interaction.followUp(
+            `[${mapleUserInfo.Name}]\n등급: ${rslt[0]}\n업적점수: ${rslt[1]}\n월드랭킹: ${rslt[2]}\n전체랭킹: ${rslt[3]}`
+        );
     }
 }
