@@ -35,7 +35,7 @@ export async function getSongInfo(url, search) {
         };
     } else {
         const videoID = Util.getVideoId(url, true) ?? (await ytsr(search, { type: 'video', limit: 1 }))[0]?.id;
-        // (await youtube.searchVideos(search, 1, { part: 'snippet' }))[0]?.id;
+        // (await youtube.searchVideos(search, 1))[0]?.id;
         if (!videoID) {
             return null;
         }
@@ -66,13 +66,13 @@ export async function getPlaylistInfo(url, search) {
             }));
     } else {
         const playlistID = Util.getListId(url, true) ?? (await ytsr(search, { type: 'playlist', limit: 1 }))[0]?.id;
-        // (await youtube.searchPlaylists(search, 1, { part: 'snippet' }))[0]?.id;
+        // (await youtube.searchPlaylists(search, 1))[0]?.id;
         if (!playlistID) {
             return null;
         }
-        playlist = await youtube.getPlaylistByID(playlistID, { part: 'snippet' });
-        videos = (await playlist.getVideos(200, { part: 'snippet' }))
-            .filter((video) => !/(Private|Deleted) video/.test(video.title)) // 비공개 또는 삭제된 영상 제외하기
+        playlist = await youtube.getPlaylistByID(playlistID);
+        videos = (await playlist.getVideos(200))
+            .filter((video) => video.raw.status.privacyStatus === 'public') // 비공개 또는 삭제된 영상 제외하기
             .shuffle()
             .slice(0, MAX_PLAYLIST_SIZE)
             .map((video) => video.id);
