@@ -58,9 +58,9 @@ export async function messageExecute(message, args) {
                 playlist.songs
                     .map(
                         (song, index) =>
-                            `${index + 1}. ${song.title} \`${
+                            `${index + 1}. ${song.title} \`[${
                                 song.duration === 0 ? '⊚ LIVE' : song.duration.toDurationString()
-                            }\``
+                            }]\``
                     )
                     .join('\n'),
                 { char: '\n' }
@@ -153,9 +153,9 @@ export async function commandExecute(interaction) {
                 playlist.songs
                     .map(
                         (song, index) =>
-                            `${index + 1}. ${song.title} \`${
+                            `${index + 1}. ${song.title} \`[${
                                 song.duration === 0 ? '⊚ LIVE' : song.duration.toDurationString()
-                            }\``
+                            }]\``
                     )
                     .join('\n'),
                 { char: '\n' }

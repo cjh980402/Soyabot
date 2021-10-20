@@ -55,9 +55,9 @@ export async function messageExecute(message, args) {
         serverQueue.textChannel = message.channel;
         serverQueue.songs.push(song);
         return message.channel.send(
-            `✅ ${message.author}가 **${song.title}** \`${
+            `✅ ${message.author}가 **${song.title}** \`[${
                 song.duration === 0 ? '⊚ LIVE' : song.duration.toDurationString()
-            }\`를 대기열에 추가했습니다.`
+            }]\`를 대기열에 추가했습니다.`
         );
     }
 
@@ -136,9 +136,9 @@ export async function commandExecute(interaction) {
         serverQueue.textChannel = interaction.channel;
         serverQueue.songs.push(song);
         return interaction.channel.send(
-            `✅ ${interaction.user}가 **${song.title}** \`${
+            `✅ ${interaction.user}가 **${song.title}** \`[${
                 song.duration === 0 ? '⊚ LIVE' : song.duration.toDurationString()
-            }\`를 대기열에 추가했습니다.`
+            }]\`를 대기열에 추가했습니다.`
         );
     }
 
