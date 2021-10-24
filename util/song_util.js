@@ -1,13 +1,15 @@
-import Soundcloud from 'soundcloud-scraper';
+import Soundcloud from 'soundcloud.ts';
 import YouTubeAPI from 'simple-youtube-api';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { download as ytdl, search as ytsr, Util } from 'youtube-dlsr';
 import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } from '../soyabot_config.js';
-const scdl = new Soundcloud.Client();
+const scTrackRegex = /^https?:\/\/(soundcloud\.com|snd\.sc)\/([\w-]+)\/([\w-]+)\/?$/;
+const scSetRegex = /^https?:\/\/(soundcloud\.com|snd\.sc)\/([\w-]+)\/sets\/([\w-]+)\/?$/;
+const soundcloud = new Soundcloud.default();
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 
 export function isValidVideo(url) {
-    if (Soundcloud.Util.validateURL(url, 'track') || Util.getVideoId(url, true)) {
+    if (scTrackRegex.test(url) || Util.getVideoId(url, true)) {
         return true;
     } else {
         return false;
@@ -15,7 +17,7 @@ export function isValidVideo(url) {
 }
 
 export function isValidPlaylist(url) {
-    if (Soundcloud.Util.validateURL(url, 'playlist') || Util.getListId(url, true)) {
+    if (scSetRegex.test(url) || Util.getListId(url, true)) {
         return true;
     } else {
         return false;
@@ -25,13 +27,13 @@ export function isValidPlaylist(url) {
 export async function getSongInfo(url, search) {
     let songInfo = null,
         song = null;
-    if (Soundcloud.Util.validateURL(url, 'track')) {
-        songInfo = await scdl.getSongInfo(url);
+    if (scTrackRegex.test(url)) {
+        songInfo = await soundcloud.tracks.getV2(url);
         song = {
             title: songInfo.title,
-            url: songInfo.url,
+            url: songInfo.permalink_url,
             duration: Math.ceil(songInfo.duration / 1000),
-            thumbnail: songInfo.thumbnail
+            thumbnail: songInfo.artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
         };
     } else {
         const videoID = Util.getVideoId(url, true) ?? (await ytsr(search, { type: 'video', limit: 1 }))[0]?.id;
@@ -53,16 +55,17 @@ export async function getSongInfo(url, search) {
 export async function getPlaylistInfo(url, search) {
     let playlist = null,
         videos = null;
-    if (Soundcloud.Util.validateURL(url, 'playlist')) {
-        playlist = await scdl.getPlaylist(url);
+    if (scSetRegex.test(url)) {
+        playlist = await soundcloud.playlists.getV2(url);
         videos = playlist.tracks
+            .filter((track) => track.sharing === 'public') // 비공개 또는 삭제된 영상 제외하기
             .shuffle()
             .slice(0, MAX_PLAYLIST_SIZE)
             .map((track) => ({
                 title: track.title,
-                url: track.url,
+                url: track.permalink_url,
                 duration: Math.ceil(track.duration / 1000),
-                thumbnail: track.thumbnail
+                thumbnail: track.artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
             }));
     } else {
         const playlistID = Util.getListId(url, true) ?? (await ytsr(search, { type: 'playlist', limit: 1 }))[0]?.id;
@@ -83,7 +86,7 @@ export async function getPlaylistInfo(url, search) {
             thumbnail: video.maxRes.url
         }));
     }
-    return { songs: videos, title: playlist.title, url: playlist.url };
+    return { songs: videos, title: playlist.title, url: playlist.url ?? playlist.permalink_url };
 }
 
 export async function songDownload(url) {
@@ -91,7 +94,7 @@ export async function songDownload(url) {
     if (url.includes('youtube.com')) {
         source = await ytdl(url);
     } else if (url.includes('soundcloud.com')) {
-        source = await (await scdl.getSongInfo(url)).downloadHLS();
+        source = await soundcloud.util.streamTrack(url);
     } else {
         throw new Error('지원하지 않는 영상 주소입니다.');
     }
