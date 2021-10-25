@@ -1,11 +1,11 @@
-import Soundcloud from 'soundcloud.ts';
+import SoundcloudAPI from 'soundcloud.ts';
 import YouTubeAPI from 'simple-youtube-api';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { download as ytdl, search as ytsr, Util } from 'youtube-dlsr';
 import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } from '../soyabot_config.js';
-const scTrackRegex = /^https?:\/\/(www\.|m\.)?soundcloud\.com\/[\w-]+\/[\w-]+\/?$/;
-const scSetRegex = /^https?:\/\/(www\.|m\.)?soundcloud\.com\/[\w-]+\/sets\/[\w-]+\/?$/;
-const soundcloud = new Soundcloud.default();
+const scTrackRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/[\w-]+\/?$/;
+const scSetRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/sets\/[\w-]+\/?$/;
+const soundcloud = new SoundcloudAPI.default();
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 
 export function isValidVideo(url) {
