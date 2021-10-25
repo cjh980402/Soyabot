@@ -3,8 +3,8 @@ import YouTubeAPI from 'simple-youtube-api';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { download as ytdl, search as ytsr, Util } from 'youtube-dlsr';
 import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } from '../soyabot_config.js';
-const scTrackRegex = /^https?:\/\/(soundcloud\.com|snd\.sc)\/([\w-]+)\/([\w-]+)\/?$/;
-const scSetRegex = /^https?:\/\/(soundcloud\.com|snd\.sc)\/([\w-]+)\/sets\/([\w-]+)\/?$/;
+const scTrackRegex = /^https?:\/\/(www\.|m\.)?soundcloud\.com\/[\w-]+\/[\w-]+\/?$/;
+const scSetRegex = /^https?:\/\/(www\.|m\.)?soundcloud\.com\/[\w-]+\/sets\/[\w-]+\/?$/;
 const soundcloud = new Soundcloud.default();
 const youtube = new YouTubeAPI(GOOGLE_API_KEY);
 
