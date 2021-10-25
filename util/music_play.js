@@ -60,7 +60,8 @@ export class QueueElement {
     }
 
     clearStop() {
-        if (client.queues.delete(this.voiceChannel.guildId)) {
+        if (this.subscription.connection.state.status !== VoiceConnectionStatus.Destroyed) {
+            client.queues.delete(this.voiceChannel.guildId);
             this.songs = [];
             this.subscription.unsubscribe();
             this.subscription.player.stop(true);
