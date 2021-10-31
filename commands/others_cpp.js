@@ -1,5 +1,5 @@
-import { spawn } from 'child_process';
-import { writeFile } from 'fs/promises';
+import { spawn } from 'node:child_process';
+import { writeFile } from 'node:fs/promises';
 import { cmd } from '../admin/admin_function.js';
 import { ADMIN_ID } from '../soyabot_config.js';
 let cppProcess = null;

@@ -15,7 +15,7 @@ import {
     Permissions
 } from 'discord.js';
 import { decodeHTML } from 'entities';
-import { inspect } from 'util';
+import { inspect } from 'node:util';
 const { _patch } = Message.prototype;
 
 export * from 'discord.js';

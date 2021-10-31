@@ -1,4 +1,4 @@
-import { freemem, totalmem } from 'os';
+import { freemem, totalmem } from 'node:os';
 import { cmd } from '../admin/admin_function.js';
 
 function timeKoreanUnit(num) {

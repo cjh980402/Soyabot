@@ -1,5 +1,5 @@
-import { exec as _exec } from 'child_process';
-import { promisify } from 'util';
+import { exec as _exec } from 'node:child_process';
+import { promisify } from 'node:util';
 import { botNotice, replyRoomID } from './bot_control.js';
 import {
     startNotice,

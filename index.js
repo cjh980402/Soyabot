@@ -2,8 +2,8 @@
  * 모듈 import
  */
 import { Client, Collection, Permissions, botClientOption } from './util/discord.js-extend.js'; // 제일 처음에 import 해야하는 모듈
-import { readdirSync } from 'fs';
-import { setTimeout } from 'timers/promises';
+import { readdirSync } from 'node:fs';
+import { setTimeout } from 'node:timers/promises';
 import { TOKEN, PREFIX, ADMIN_ID } from './soyabot_config.js';
 import { adminChat, initClient, cmd } from './admin/admin_function.js';
 import { replyAdmin } from './admin/bot_control.js';

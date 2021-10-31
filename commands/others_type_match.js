@@ -1,5 +1,5 @@
 import Hangul from 'hangul-js';
-import { setTimeout } from 'timers/promises';
+import { setTimeout } from 'node:timers/promises';
 import { matchString } from '../util/soyabot_const.js';
 
 export const usage = `${client.prefix}타자대결 (옵션)`;
