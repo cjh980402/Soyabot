@@ -33,7 +33,7 @@ async function getMessageCountGraph(targetGuild, option) {
             return `rgba(${r}, ${g}, ${b}, ${a})`;
         });
     const height = Math.min(3000, 1200 + 20 * roommessage.length);
-    const size = Math.min(40, Math.floor((0.85 * (height - 120 - 3 * (roommessage.length + 1))) / roommessage.length));
+    const size = Math.min(40, Math.floor((0.8 * (height - 120 - 3 * (roommessage.length + 1))) / roommessage.length));
     const config = {
         type: 'bar',
         data: {
