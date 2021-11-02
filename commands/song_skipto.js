@@ -8,7 +8,7 @@ export async function messageExecute(message, args) {
     if (!message.guildId) {
         return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
-    if (args.length < 1 || isNaN(args[0])) {
+    if (args.length !== 1 || isNaN(args[0])) {
         return message.channel.send(
             `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
         );
