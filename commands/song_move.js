@@ -35,7 +35,7 @@ export async function messageExecute(message, args) {
         return message.reply(`현재 대기열에서 2 ~ ${queue.songs.length}번째 위치로만 이동할 수 있습니다.`);
     }
 
-    if (target != dest) {
+    if (target !== dest) {
         queue.songs.splice(dest - 1, 0, queue.songs.splice(target - 1, 1)[0]);
     }
     return message.channel.send(
@@ -86,7 +86,7 @@ export async function commandExecute(interaction) {
         return interaction.followUp(`현재 대기열에서 2 ~ ${queue.songs.length}번째 위치로만 이동할 수 있습니다.`);
     }
 
-    if (target != dest) {
+    if (target !== dest) {
         queue.songs.splice(dest - 1, 0, queue.songs.splice(target - 1, 1)[0]);
     }
     return interaction.followUp(
