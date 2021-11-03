@@ -143,15 +143,11 @@ export async function musicButtonControl(interaction) {
     const queue = client.queues.get(guild?.id);
     try {
         await interaction.deferUpdate(); // 버튼이 로딩 상태가 되었다가 원래대로 돌아옴
-        if (
-            interaction.user.bot ||
-            queue?.playingMessage?.id !== interaction.message.id ||
-            !queue.subscription.player.state.resource
-        ) {
+        if (queue?.playingMessage?.id !== interaction.message.id || !queue.subscription.player.state.resource) {
             return;
         }
 
-        if (!canModifyQueue(await guild.members.fetch({ user: interaction.user.id, cache: false }))) {
+        if (!canModifyQueue(interaction.member)) {
             return queue.sendMessage(`${client.user}과 같은 음성 채널에 참가해주세요!`);
         }
 

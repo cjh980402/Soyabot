@@ -68,8 +68,8 @@ client.on('messageCreate', async (message) => {
                 message.author.username
             }: ${message.content || message.embeds[0]?.description || ''}\n`
         );
-        if (message.author.bot) {
-            // 봇 여부 체크
+        if (message.author.bot || message.author.system) {
+            // 봇 또는 시스템 유저 여부 체크
             return;
         }
         const permissions = message.channel.permissionsFor?.(message.guild.me);
