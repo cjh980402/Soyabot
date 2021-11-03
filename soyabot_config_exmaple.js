@@ -11,4 +11,3 @@ export const GOOGLE_API_KEY = '';
 export const DEEP_API_KEY = '';
 export const KAKAO_API_KEY = '';
 export const OPEN_API_KEY = '';
-export const CORONA_API_KEY = '';
