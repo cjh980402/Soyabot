@@ -35,7 +35,7 @@
     "form-data": "^4.0.0",
     "hangul-js": "^0.2.6",
     "iconv-lite": "^0.6.3",
-    "mathjs": "^9.5.1",
+    "mathjs": "^10.0.0",
     "node-fetch": "^3.0.0",
     "simple-youtube-api": "^5.2.1",
     "sodium": "^3.0.2",
