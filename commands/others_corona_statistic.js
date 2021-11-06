@@ -7,7 +7,6 @@ async function getCoronaEmbed() {
     const today = countData('.occurrenceStatus .occur_graph tbody span');
     const accumulated = countData('.occurrenceStatus .occur_num .box');
     const updateDate = /\((.+ 기준).+\)/.exec(countData('.occurrenceStatus .livedate').text())[1];
-
     const corona1 = new MessageEmbed()
         .setTitle(`**${updateDate}**`)
         .setThumbnail('attachment://mohw.png')
