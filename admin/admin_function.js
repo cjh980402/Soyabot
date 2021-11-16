@@ -19,7 +19,7 @@ const exec = promisify(_exec);
 
 export async function adminChat(message) {
     debugFunc(message);
-    const fullContent = await message.fullContent;
+    const fullContent = await message.fetchfullContent();
     const room = /^\*(.+)\*\s/.exec(fullContent)?.[1];
     if (fullContent.startsWith('>')) {
         // 노드 코드 실행 후 출력

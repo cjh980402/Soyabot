@@ -1,6 +1,9 @@
 export function canModifyQueue(member) {
     const botChannelId = member.guild.me.voice.channelId;
-    return !botChannelId || botChannelId === member.voice.channelId; // 봇이 참가한 음성채널과 다른 경우 false 반환
+    if (!botChannelId) {
+        throw new Error('봇이 음성채널에 참가하지 않은 상태입니다.');
+    }
+    return botChannelId === member.voice.channelId; // 봇이 참가한 음성채널과 다른 경우 false 반환
 }
 
 export async function getMessageImage(message) {

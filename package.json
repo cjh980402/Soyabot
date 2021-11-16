@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "soyabot",
-  "version": "7.4.3",
+  "version": "7.4.4",
   "description": "MapleStory, Music Discord Bot",
   "license": "MIT",
   "author": "cjh980402 <9804cjh@naver.com> (https://github.com/cjh980402)",
@@ -21,8 +21,8 @@
     "pretty": "prettier --config .prettierrc '*.js' '*/*.js' --write"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.6.0",
-    "@discordjs/voice": "^0.6.0",
+    "@discordjs/opus": "^0.7.0",
+    "@discordjs/voice": "^0.7.5",
     "better-sqlite3": "^7.4.4",
     "bufferutil": "^4.0.5",
     "chartjs-node-canvas": "^4.1.4",
