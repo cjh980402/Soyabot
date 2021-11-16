@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import renderChart from '../util/chartjs_rendering.js';
 import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
 const serverList = {
@@ -18,7 +18,7 @@ const serverList = {
 
 async function getMesoEmbed(server) {
     const params = new URLSearchParams();
-    params.append('term', '15d');
+    params.set('term', '15d');
     const data = await (
         await fetch('https://commapi.gamemarket.kr/comm/graph', {
             method: 'POST',

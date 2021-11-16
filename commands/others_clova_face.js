@@ -1,12 +1,12 @@
-import FormData from 'form-data';
-import fetch from 'node-fetch';
+import { Blob } from 'buffer';
+import { fetch, FormData } from 'undici';
 import { getMessageImage } from '../util/soyabot_util.js';
 import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '../soyabot_config.js';
 
 async function requestCFR(url) {
     const form = new FormData();
-    const buffer = await (await fetch(url)).buffer();
-    form.append('image', buffer);
+    const blob = new Blob([await (await fetch(url)).arrayBuffer()]);
+    form.set('image', blob);
     return (
         await fetch('https://openapi.naver.com/v1/vision/face', {
             method: 'POST',

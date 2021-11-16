@@ -1,5 +1,5 @@
 import iconv from 'iconv-lite';
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import { load } from 'cheerio';
 
 export const usage = `${client.prefix}한강`;
@@ -9,7 +9,9 @@ export const type = ['기타'];
 export async function messageExecute(message) {
     const $ = load(
         iconv.decode(
-            await (await fetch('http://www.koreawqi.go.kr/wQSCHomeLayout_D.wq?action_type=T#')).buffer(),
+            Buffer.from(
+                await (await fetch('http://www.koreawqi.go.kr/wQSCHomeLayout_D.wq?action_type=T#')).arrayBuffer()
+            ),
             'euc-kr'
         )
     );
@@ -38,7 +40,9 @@ export const commandData = {
 export async function commandExecute(interaction) {
     const $ = load(
         iconv.decode(
-            await (await fetch('http://www.koreawqi.go.kr/wQSCHomeLayout_D.wq?action_type=T#')).buffer(),
+            Buffer.from(
+                await (await fetch('http://www.koreawqi.go.kr/wQSCHomeLayout_D.wq?action_type=T#')).arrayBuffer()
+            ),
             'euc-kr'
         )
     );

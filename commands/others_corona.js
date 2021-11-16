@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import { load } from 'cheerio';
 import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
 import { OPEN_API_KEY } from '../soyabot_config.js';
@@ -19,16 +19,16 @@ async function getCoronaEmbed() {
     const today = new Date();
     const startday = new Date(Date.now() - 604800000); // 일주일 전을 시작일로 설정
     const params = new URLSearchParams();
-    params.append('serviceKey', OPEN_API_KEY);
-    params.append('pageNo', '1');
-    params.append('numOfRows', '10');
-    params.append(
+    params.set('serviceKey', OPEN_API_KEY);
+    params.set('pageNo', '1');
+    params.set('numOfRows', '10');
+    params.set(
         'startCreateDt',
         `${startday.getFullYear()}${String(startday.getMonth() + 1).padStart(2, '0')}${String(
             startday.getDate()
         ).padStart(2, '0')}`
     );
-    params.append(
+    params.set(
         'endCreateDt',
         `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(
             2,

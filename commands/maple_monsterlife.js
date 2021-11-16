@@ -1,9 +1,9 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 
 async function farm_monster(monster) {
     // 몬스터 이름
     const params = new URLSearchParams();
-    params.append('monster', monster);
+    params.set('monster', monster);
     return (
         await fetch('http://wachan.me/farm_monster.php', {
             method: 'POST',
@@ -19,7 +19,7 @@ async function farm_sex(monster) {
         return '데이터에 없는 몬스터거나 올바르지 않은 몬스터입니다.';
     }
     const params = new URLSearchParams();
-    params.append('monster', monster);
+    params.set('monster', monster);
     const data = await (
         await fetch('http://wachan.me/farm_sex.php', {
             method: 'POST',
@@ -73,9 +73,9 @@ async function farm_add(end_date, user, monster) {
         return '데이터에 없는 몬스터거나 올바르지 않은 몬스터입니다.';
     }
     const params = new URLSearchParams();
-    params.append('monster', monster);
-    params.append('user', user);
-    params.append('end_date', end_date);
+    params.set('monster', monster);
+    params.set('user', user);
+    params.set('end_date', end_date);
     const data = await (
         await fetch('http://wachan.me/farm_info_adding.php', {
             method: 'POST',
@@ -99,7 +99,7 @@ async function farm_read(monster) {
         return '데이터에 없는 몬스터거나 올바르지 않은 몬스터입니다.';
     }
     const params = new URLSearchParams();
-    params.append('monster', monster);
+    params.set('monster', monster);
     const data = await (
         await fetch('http://wachan.me/farm_read2.php', {
             method: 'POST',
@@ -128,7 +128,7 @@ async function farm_info(user) {
         return '올바르지 않은 농장 이름입니다. 농장 이름은 2 ~ 6글자의 한글이어야 합니다.';
     }
     const params = new URLSearchParams();
-    params.append('farm', user);
+    params.set('farm', user);
     const data = await (
         await fetch('http://wachan.me/farm_read_from_name.php', {
             method: 'POST',

@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import { MessageEmbed } from '../util/discord.js-extend.js';
 import { bossData } from '../util/soyabot_const.js';
 const bossNameList = {
@@ -20,9 +20,9 @@ async function getBossEmbed(bossName, bossGrade) {
 
     try {
         const params = new URLSearchParams();
-        params.append('boss', bossNameList[bossName] ?? bossName);
-        params.append('difficulty', difficultyList[bossGrade]);
-        params.append('option', 1);
+        params.set('boss', bossNameList[bossName] ?? bossName);
+        params.set('difficulty', difficultyList[bossGrade]);
+        params.set('option', 1);
         const data = await (
             await fetch('http://wachan.me/boss_api.php', {
                 method: 'POST',

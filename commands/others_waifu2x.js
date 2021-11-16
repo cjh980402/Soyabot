@@ -1,5 +1,4 @@
-import FormData from 'form-data';
-import fetch from 'node-fetch';
+import { fetch, FormData } from 'undici';
 import { getMessageImage } from '../util/soyabot_util.js';
 import { DEEP_API_KEY } from '../soyabot_config.js';
 
@@ -14,7 +13,7 @@ export async function messageExecute(message) {
         return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
     } else {
         const form = new FormData();
-        form.append('image', imageURL);
+        form.set('image', imageURL);
         const resp = await (
             await fetch('https://api.deepai.org/api/waifu2x', {
                 method: 'POST',

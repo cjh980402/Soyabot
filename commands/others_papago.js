@@ -1,11 +1,11 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '../soyabot_config.js';
 
 async function tran(source, target, text) {
     const params = new URLSearchParams();
-    params.append('source', source);
-    params.append('target', target);
-    params.append('text', text);
+    params.set('source', source);
+    params.set('target', target);
+    params.set('text', text);
     const data = await (
         await fetch('https://openapi.naver.com/v1/papago/n2mt', {
             method: 'POST',

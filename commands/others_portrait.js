@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 // import { cmd } from '../admin/admin_function.js';
 import { MessageAttachment } from '../util/discord.js-extend.js';
 import { getMessageImage } from '../util/soyabot_util.js';
@@ -17,7 +17,7 @@ export async function messageExecute(message) {
         const image = new MessageAttachment(portraitPic, 'portrait.png');*/
         const response = await fetch(`http://${BOT_SERVER_DOMAIN}/portrait/${encodeURIComponent(imageURL)}`);
         if (response.status === 200) {
-            const image = new MessageAttachment(await response.buffer(), 'portrait.png');
+            const image = new MessageAttachment(Buffer.from(await response.arrayBuffer()), 'portrait.png');
             return message.channel.send({ files: [image] });
         } else {
             return message.channel.send('그림 작업을 실패하였습니다.');

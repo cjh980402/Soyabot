@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import renderChart from '../util/chartjs_rendering.js';
 import { MessageAttachment } from '../util/discord.js-extend.js';
 const typeList = {
@@ -10,8 +10,8 @@ const typeList = {
 
 async function getBossMesoEmbed(type) {
     const params = new URLSearchParams();
-    params.append('date', 10);
-    params.append('type', typeList[type]);
+    params.set('date', 10);
+    params.set('type', typeList[type]);
     const data = await (
         await fetch('http://wachan.me/boss_api2.php', {
             method: 'POST',

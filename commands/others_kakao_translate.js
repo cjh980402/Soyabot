@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import { KAKAO_API_KEY } from '../soyabot_config.js';
 const langList = {
     한: ['한국어', 'kr'],
@@ -24,9 +24,9 @@ const langList = {
 
 async function tran(source, target, text) {
     const params = new URLSearchParams();
-    params.append('src_lang', source);
-    params.append('target_lang', target);
-    params.append('query', text);
+    params.set('src_lang', source);
+    params.set('target_lang', target);
+    params.set('query', text);
     const data = await (
         await fetch('https://dapi.kakao.com/v2/translation/translate', {
             method: 'POST',

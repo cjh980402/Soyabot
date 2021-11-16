@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import { cmd } from '../admin/admin_function.js';
 import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
 const chartType = {
