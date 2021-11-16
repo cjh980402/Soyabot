@@ -1,11 +1,10 @@
-import { Blob } from 'buffer';
 import { fetch, FormData } from 'undici';
 import { getMessageImage } from '../util/soyabot_util.js';
 import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '../soyabot_config.js';
 
 async function requestCFR(url) {
     const form = new FormData();
-    const blob = new Blob([await (await fetch(url)).arrayBuffer()]);
+    const blob = await (await fetch(url)).blob();
     form.set('image', blob);
     return (
         await fetch('https://openapi.naver.com/v1/vision/celebrity', {
