@@ -23,7 +23,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.7.0",
     "@discordjs/voice": "^0.7.5",
-    "better-sqlite3": "^7.4.4",
+    "better-sqlite3": "^7.4.5",
     "bufferutil": "^4.0.5",
     "chartjs-node-canvas": "^4.1.4",
     "chartjs-plugin-datalabels": "^2.0.0",
@@ -33,16 +33,17 @@
     "erlpack": "github:discord/erlpack",
     "express": "^4.17.1",
     "ffmpeg-static": "^4.4.0",
+    "formdata-polyfill": "^4.0.10",
     "hangul-js": "^0.2.6",
     "iconv-lite": "^0.6.3",
     "mathjs": "^10.0.0",
+    "node-fetch": "^3.1.0",
     "simple-youtube-api": "^5.2.1",
     "sodium": "^3.0.2",
     "soundcloud.ts": "^0.4.5",
     "string-progressbar": "^1.0.4",
-    "undici": "^4.10.0",
     "utf-8-validate": "^5.0.7",
-    "youtube-dlsr": "^2.2.0",
+    "youtube-dlsr": "^2.2.1",
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {

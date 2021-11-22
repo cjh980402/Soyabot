@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import fetch from 'node-fetch';
 import { load } from 'cheerio';
 import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
 import { OPEN_API_KEY } from '../soyabot_config.js';

@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import fetch from 'node-fetch';
 
 export const usage = `${client.prefix}실검`;
 export const command = ['실검', 'ㅅㄱ'];

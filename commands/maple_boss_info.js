@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import fetch from 'node-fetch';
 import { MessageEmbed } from '../util/discord.js-extend.js';
 import { bossData } from '../util/soyabot_const.js';
 const bossNameList = {

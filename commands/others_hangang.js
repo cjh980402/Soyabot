@@ -1,5 +1,5 @@
 import iconv from 'iconv-lite';
-import { fetch } from 'undici';
+import fetch from 'node-fetch';
 import { load } from 'cheerio';
 
 export const usage = `${client.prefix}한강`;

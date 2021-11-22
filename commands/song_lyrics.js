@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import fetch from 'node-fetch';
 import { load } from 'cheerio';
 import { MessageEmbed, Util } from '../util/discord.js-extend.js';
 

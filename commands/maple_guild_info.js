@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import fetch from 'node-fetch';
 import { BOT_SERVER_DOMAIN } from '../soyabot_config.js';
 // import { MapleGuild } from '../util/maple_parsing.js';
 const serverEngName = {

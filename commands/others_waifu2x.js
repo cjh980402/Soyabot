@@ -1,4 +1,5 @@
-import { fetch, FormData } from 'undici';
+import fetch from 'node-fetch';
+import { FormData } from 'formdata-polyfill/esm.min.js';
 import { getMessageImage } from '../util/soyabot_util.js';
 import { DEEP_API_KEY } from '../soyabot_config.js';
 

@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import fetch from 'node-fetch';
 import renderChart from '../util/chartjs_rendering.js';
 import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
 const serverList = {
