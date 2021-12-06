@@ -12,13 +12,10 @@ export async function messageExecute(message) {
     params.set('siteId', '');
 
     const data = await (
-        await fetch(
-            'http://swo.seoul.go.kr/water/waterMesntkInfoResult.do?schFrDate=&schEnDate=&currentPage=1&siteId=',
-            {
-                method: 'POST',
-                body: params
-            }
-        )
+        await fetch('http://swo.seoul.go.kr/water/waterMesntkInfoResult.do', {
+            method: 'POST',
+            body: params
+        })
     ).json();
 
     const result = data.resultList.find((v) => v.SITE_ID.startsWith('노량진'));
@@ -42,13 +39,10 @@ export async function commandExecute(interaction) {
     params.set('siteId', '');
 
     const data = await (
-        await fetch(
-            'http://swo.seoul.go.kr/water/waterMesntkInfoResult.do?schFrDate=&schEnDate=&currentPage=1&siteId=',
-            {
-                method: 'POST',
-                body: params
-            }
-        )
+        await fetch('http://swo.seoul.go.kr/water/waterMesntkInfoResult.do', {
+            method: 'POST',
+            body: params
+        })
     ).json();
 
     const result = data.resultList.find((v) => v.SITE_ID.startsWith('노량진'));
