@@ -42,7 +42,7 @@ export async function messageExecute(message, args) {
     const response = await fetch(
         `http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(args[0])}/${encodeURIComponent(args[1])}`
     );
-    if (response.status === 200) {
+    if (response.ok) {
         return message.channel.sendSplitCode(await response.text(), { split: { char: '\n' } });
     } else {
         return message.channel.send('길드 정보 작업을 실패하였습니다.');
@@ -84,7 +84,7 @@ export async function commandExecute(interaction) {
     const response = await fetch(
         `http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(serverName)}/${encodeURIComponent(guildName)}`
     );
-    if (response.status === 200) {
+    if (response.ok) {
         return interaction.sendSplitCode(await response.text(), { split: { char: '\n' } });
     } else {
         return interaction.followUp('길드 정보 작업을 실패하였습니다.');

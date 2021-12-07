@@ -16,7 +16,7 @@ export async function messageExecute(message) {
         /*const { stdout: portraitPic } = await cmd(`python3 ./util/gl2face_portrait.py ${imageURL}`, { encoding: 'buffer' }); // 파이썬 스크립트 실행
         const image = new MessageAttachment(portraitPic, 'portrait.png');*/
         const response = await fetch(`http://${BOT_SERVER_DOMAIN}/portrait/${encodeURIComponent(imageURL)}`);
-        if (response.status === 200) {
+        if (response.ok) {
             const image = new MessageAttachment(Buffer.from(await response.arrayBuffer()), 'portrait.png');
             return message.channel.send({ files: [image] });
         } else {
