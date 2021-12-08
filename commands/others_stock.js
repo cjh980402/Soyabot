@@ -109,7 +109,7 @@ async function getStockEmbed(search, searchRslt, type) {
         );
         // 파이썬 스크립트 실행
         image = new MessageAttachment(stockPic, `${code}.png`);
-    } else if (stockfind[3][0].startsWith('/item/main')) {
+    } else if (stockfind[2][0] === '코스피' || stockfind[2][0] === '코스닥' || stockfind[2][0] === '코넥스') {
         // 국내 주식
         const data = await (await fetch(`https://m.stock.naver.com/api/stock/${identifer}/integration`)).json();
         const nowData = await (
