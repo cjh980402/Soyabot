@@ -9,7 +9,7 @@ export async function messageExecute(message) {
     params.set('schFrDate', '');
     params.set('schEnDate', '');
     params.set('currentPage', 1);
-    params.set('siteId', '');
+    params.set('siteId', '노량진_자동');
 
     const data = await (
         await fetch('http://swo.seoul.go.kr/water/waterMesntkInfoResult.do', {
@@ -18,7 +18,7 @@ export async function messageExecute(message) {
         })
     ).json();
 
-    const result = data.resultList.find((v) => v.SITE_ID.startsWith('노량진'));
+    const result = data.resultList.find((v) => v.W_TEMP);
 
     return message.channel.send(
         `지금 한강온도: ${result.W_TEMP}°C\n업데이트 시간: ${result.MSR_DATE.replace(
@@ -36,7 +36,7 @@ export async function commandExecute(interaction) {
     params.set('schFrDate', '');
     params.set('schEnDate', '');
     params.set('currentPage', 1);
-    params.set('siteId', '');
+    params.set('siteId', '노량진_자동');
 
     const data = await (
         await fetch('http://swo.seoul.go.kr/water/waterMesntkInfoResult.do', {
@@ -45,7 +45,7 @@ export async function commandExecute(interaction) {
         })
     ).json();
 
-    const result = data.resultList.find((v) => v.SITE_ID.startsWith('노량진'));
+    const result = data.resultList.find((v) => v.W_TEMP);
 
     return interaction.followUp(
         `지금 한강온도: ${result.W_TEMP}°C\n업데이트 시간: ${result.MSR_DATE.replace(
