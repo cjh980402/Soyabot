@@ -53,7 +53,7 @@ export async function messageExecute(message) {
             });
 
             const filter = (itr) => message.author.id === itr.user.id;
-            const collector = eventEmbed.createMessageComponentCollector({ filter, time: 60000 });
+            const collector = eventEmbed.createMessageComponentCollector({ filter, time: 120000 });
 
             collector.on('collect', async (itr) => {
                 try {
@@ -112,7 +112,7 @@ export async function commandExecute(interaction) {
             });
 
             const filter = (itr) => interaction.user.id === itr.user.id;
-            const collector = eventEmbed.createMessageComponentCollector({ filter, time: 60000 });
+            const collector = eventEmbed.createMessageComponentCollector({ filter, time: 120000 });
 
             collector.on('collect', async (itr) => {
                 try {

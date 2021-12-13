@@ -57,7 +57,7 @@ export async function messageExecute(message, args) {
                 });
 
                 const filter = (itr) => message.author.id === itr.user.id;
-                const collector = haksikEmbed.createMessageComponentCollector({ filter, time: 60000 });
+                const collector = haksikEmbed.createMessageComponentCollector({ filter, time: 120000 });
 
                 return collector.on('collect', async (itr) => {
                     try {
