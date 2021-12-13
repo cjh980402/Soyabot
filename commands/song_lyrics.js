@@ -21,7 +21,7 @@ async function getLyricsEmbed(search) {
             .contents()
             .get()
             .filter((v) => v.type === 'text' || v.name === 'br')
-            .map((v) => (v.type === 'text' ? v.data : '\n'))
+            .map((v) => v.data ?? '\n')
             .join('')
             .trim(); // 멜론 사이트 소스 오타 대응
         lyricsEmbed
