@@ -52,10 +52,6 @@ export const botClientOption = {
         GuildStickerManager: 0,
         MessageManager: 0,
         PresenceManager: 0,
-        RoleManager: {
-            maxSize: 1,
-            keepOverLimit: (v) => v.id === v.guild.id || v.guild.me?._roles.includes(v.id)
-        },
         UserManager: 0,
         VoiceStateManager: {
             maxSize: Infinity,
