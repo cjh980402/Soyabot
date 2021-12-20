@@ -31,7 +31,6 @@
     "discord.js": "^13.3.1",
     "entities": "^3.0.1",
     "erlpack": "github:discord/erlpack",
-    "express": "^4.17.1",
     "ffmpeg-static": "^4.4.0",
     "formdata-polyfill": "^4.0.10",
     "hangul-js": "^0.2.6",
