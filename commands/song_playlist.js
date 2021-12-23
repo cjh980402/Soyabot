@@ -52,7 +52,7 @@ export async function messageExecute(message, args) {
     }
 
     const playlistEmbed = new MessageEmbed()
-        .setTitle(`**${playlist.title.decodeHTML()}**`)
+        .setTitle(`**${playlist.title}**`)
         .setDescription(
             Util.splitMessage(
                 playlist.songs
@@ -147,7 +147,7 @@ export async function commandExecute(interaction) {
     }
 
     const playlistEmbed = new MessageEmbed()
-        .setTitle(`**${playlist.title.decodeHTML()}**`)
+        .setTitle(`**${playlist.title}**`)
         .setDescription(
             Util.splitMessage(
                 playlist.songs

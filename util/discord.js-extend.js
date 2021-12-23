@@ -14,7 +14,6 @@ import {
     BaseGuildVoiceChannel,
     Permissions
 } from 'discord.js';
-import { decodeHTML } from 'entities';
 import { inspect } from 'node:util';
 const { _patch } = Message.prototype;
 
@@ -234,12 +233,6 @@ Object.defineProperty(Number.prototype, 'toDurationString', {
     }
 });
 
-Object.defineProperty(String.prototype, 'decodeHTML', {
-    value: function () {
-        return decodeHTML(this).replace(/<br>/gi, '\n');
-    }
-});
-
 Object.defineProperty(String.prototype, 'hashCode', {
     value: function () {
         let h = 0;
@@ -280,14 +273,14 @@ Object.defineProperty(Object.prototype, '_k', {
 });
 
 Object.defineProperty(Object.prototype, '__p', {
-    // 상위 프로토타입의 키와 값 출력
+    // 객체의 프로토타입의 키와 값 출력
     get: function () {
         return Object.getPrototypeOf(this)._p;
     }
 });
 
 Object.defineProperty(Object.prototype, '__k', {
-    // 상위 프로토타입의 키만 출력
+    // 객체의 프로토타입의 키만 출력
     get: function () {
         return Object.getPrototypeOf(this)._k;
     }

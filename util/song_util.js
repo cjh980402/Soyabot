@@ -1,6 +1,7 @@
 import SoundcloudAPI from 'soundcloud.ts';
 import YouTubeAPI from 'simple-youtube-api';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
+import { decodeHTML } from 'entities';
 import { download as ytdl, search as ytsr, Util } from 'youtube-dlsr';
 import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } from '../soyabot_config.js';
 const scTrackRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/[\w-]+\/?$/;
@@ -43,7 +44,7 @@ export async function getSongInfo(url, search) {
         }
         songInfo = await youtube.getVideoByID(videoID);
         song = {
-            title: songInfo.title.decodeHTML(),
+            title: decodeHTML(songInfo.title),
             url: songInfo.url,
             duration: songInfo.durationSeconds,
             thumbnail: songInfo.maxRes.url
@@ -80,13 +81,13 @@ export async function getPlaylistInfo(url, search) {
             .slice(0, MAX_PLAYLIST_SIZE)
             .map((video) => video.id);
         videos = (await youtube.getVideosByIDs(videos)).map((video) => ({
-            title: video.title.decodeHTML(),
+            title: decodeHTML(video.title),
             url: video.url,
             duration: video.durationSeconds,
             thumbnail: video.maxRes.url
         }));
     }
-    return { songs: videos, title: playlist.title, url: playlist.url ?? playlist.permalink_url };
+    return { songs: videos, title: decodeHTML(playlist.title), url: playlist.url ?? playlist.permalink_url };
 }
 
 export async function songDownload(url) {
