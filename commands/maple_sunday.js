@@ -10,22 +10,17 @@ export async function messageExecute(message) {
     const eventdata = $('.event_all_banner li dl');
     const sunday = eventdata
         .find('dt a')
-        .filter((_, v) => /^썬데이\s*메이플$/.test($(v).text()))
+        .filter((_, v) => /썬데이\s*메이플$/.test($(v).text()))
         .attr('href');
     if (!sunday) {
         return message.channel.send('썬데이 메이플 공지가 아직 없습니다.');
     }
 
-    const sundayTitle = `${eventdata
-        .find('dd a')
-        .filter((_, v) => $(v).attr('href') === sunday)
-        .text()
-        .substr(0, 14)}의 썬데이 메이플`;
-    const imgLink = load(await (await fetch(`https://maplestory.nexon.com${sunday}`)).text())(
-        'img[alt="썬데이 메이플!"]'
-    ).attr('src');
+    const sundayData = load(await (await fetch(`https://maplestory.nexon.com${sunday}`)).text())('.contents_wrap');
+    const sundayDate = sundayData.find('.event_date').text();
+    const sundayImg = sundayData.find('img[alt="썬데이 메이플!"]').attr('src');
 
-    return message.channel.send({ content: sundayTitle, files: [imgLink] });
+    return message.channel.send({ content: sundayDate, files: [sundayImg] });
 }
 export const commandData = {
     name: '썬데이',
@@ -36,20 +31,15 @@ export async function commandExecute(interaction) {
     const eventdata = $('.event_all_banner li dl');
     const sunday = eventdata
         .find('dt a')
-        .filter((_, v) => /^썬데이\s*메이플$/.test($(v).text()))
+        .filter((_, v) => /썬데이\s*메이플$/.test($(v).text()))
         .attr('href');
     if (!sunday) {
         return interaction.followUp('썬데이 메이플 공지가 아직 없습니다.');
     }
 
-    const sundayTitle = `${eventdata
-        .find('dd a')
-        .filter((_, v) => $(v).attr('href') === sunday)
-        .text()
-        .substr(0, 14)}의 썬데이 메이플`;
-    const imgLink = load(await (await fetch(`https://maplestory.nexon.com${sunday}`)).text())(
-        'img[alt="썬데이 메이플!"]'
-    ).attr('src');
+    const sundayData = load(await (await fetch(`https://maplestory.nexon.com${sunday}`)).text())('.contents_wrap');
+    const sundayDate = sundayData.find('.event_date').text();
+    const sundayImg = sundayData.find('img[alt="썬데이 메이플!"]').attr('src');
 
-    return interaction.followUp({ content: sundayTitle, files: [imgLink] });
+    return interaction.followUp({ content: sundayDate, files: [sundayImg] });
 }
