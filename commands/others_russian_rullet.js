@@ -3,7 +3,7 @@ function findGameCommandType(str) {
     if (!prefixCommand.startsWith(client.prefix)) {
         return -1;
     }
-    const command = prefixCommand.substr(client.prefix.length);
+    const command = prefixCommand.slice(client.prefix.length);
     if (command === '참가' || command === 'ㅊㄱ') {
         return 1;
     }

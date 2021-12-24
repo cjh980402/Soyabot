@@ -70,7 +70,7 @@ export class MapleUser {
         }
 
         const job = data.eq(1).find('dl > dd').text().split(' / ')[1]; // 직업
-        const lev = +data.eq(2).text().substr(3); // 레벨, 숫자값
+        const lev = +data.eq(2).text().slice(3); // 레벨, 숫자값
         const exper = +data.eq(3).text().replace(/,/g, ''); // 경험치, 숫자값
         const popul = +data.eq(4).text().replace(/,/g, ''); // 인기도, 숫자값
         const guild = data.eq(5).text(); // 길드
@@ -191,7 +191,7 @@ export class MapleUser {
             return null;
         }
 
-        const lev = +union.find('.user-summary-level').text().substr(3); // 유니온 레벨, 숫자값
+        const lev = +union.find('.user-summary-level').text().slice(3); // 유니온 레벨, 숫자값
         const stat = +union.find('.d-block.mb-1 > span').contents().last().text().replace(/[\s,]/g, ''); // 유니온 전투력, 숫자값
         const coin = Math.floor(stat * 0.000000864); // 일일 코인 수급량, 숫자값
         const grade = union.find('.user-summary-tier-string.font-weight-bold').text(); // 유니온 등급
@@ -207,7 +207,7 @@ export class MapleUser {
         }
 
         const grade = achieve.find('.user-summary-tier-string.font-weight-bold').text(); // 업적 등급
-        const score = achieve.find('.user-summary-level').text().substr(5); // 업적 점수
+        const score = achieve.find('.user-summary-level').text().slice(5); // 업적 점수
         const worldrank = achieve.find('.mb-2 > span').eq(0).text().replace(/\s+/g, ''); // 월드랭킹
         const allrank = achieve.find('.mb-2 > span').eq(1).text(); // 전체랭킹
 

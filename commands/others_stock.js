@@ -25,8 +25,8 @@ function getChartImage(identifer, type, isWorld = false, isWorldItem = false) {
 }
 
 function getRedirectURL(url) {
-    const afterRedirect = redirectURL[url.substring(0, url.indexOf('.nhn')).replace(/\//g, '')];
-    return afterRedirect ? url.replace(url.substring(0, url.indexOf('?')), afterRedirect) : url;
+    const afterRedirect = redirectURL[url.slice(0, url.indexOf('.nhn')).replace(/\//g, '')];
+    return afterRedirect ? url.replace(url.slice(0, url.indexOf('?')), afterRedirect) : url;
 }
 
 function getTotalInfoObj(totalInfos) {

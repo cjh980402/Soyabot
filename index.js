@@ -93,7 +93,7 @@ client.on('messageCreate', async (message) => {
             // client.prefix로 시작하지 않는 경우
             return await botChatting(message); // 잡담 로직
         }
-        commandName = prefixCommand.substr(client.prefix.length).toLowerCase(); // commandName은 client.prefix를 제외한 명령어 부분
+        commandName = prefixCommand.slice(client.prefix.length).toLowerCase(); // commandName은 client.prefix를 제외한 명령어 부분
 
         const nowCommand = client.commands.find((cmd) => cmd.command.includes(commandName)); // 해당하는 명령어 찾기
 

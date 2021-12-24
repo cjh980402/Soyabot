@@ -32,7 +32,7 @@ async function getMesoEmbed(server) {
     const config = {
         type: 'line',
         data: {
-            labels: market.map((v) => new Date(v.reg_date).toLocaleDateString().substr(6)),
+            labels: market.map((v) => new Date(v.reg_date).toLocaleDateString().slice(6)),
             datasets: [
                 {
                     label: '메소마켓(메포)',

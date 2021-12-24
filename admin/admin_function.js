@@ -23,7 +23,7 @@ export async function adminChat(message) {
     const room = /^\*(.+)\*\s/.exec(fullContent)?.[1];
     if (fullContent.startsWith('>')) {
         // 노드 코드 실행 후 출력
-        const funcBody = fullContent.substr(1).trim().split('\n'); // 긴 코드 테스트를 위해 fullContent 이용
+        const funcBody = fullContent.slice(1).trim().split('\n'); // 긴 코드 테스트를 위해 fullContent 이용
         funcBody.push(`return ${funcBody.pop()};`); // 함수의 마지막 줄 내용은 자동으로 반환
         message.channel.sendSplitCode(String(await eval(`(async () => {\n${funcBody.join('\n')}\n})()`)), {
             code: 'js',
@@ -32,13 +32,13 @@ export async function adminChat(message) {
         // eval의 내부가 async 함수의 리턴값이므로 await까지 해준다. js의 코드 스타일을 적용해서 출력한다.
     } else if (fullContent.startsWith(')')) {
         // 콘솔 명령 실행 후 출력
-        message.channel.sendSplitCode((await cmd(fullContent.substr(1).trim(), { removeEscape: true })).stdout, {
+        message.channel.sendSplitCode((await cmd(fullContent.slice(1).trim(), { removeEscape: true })).stdout, {
             code: 'shell',
             split: { char: '' }
         });
     } else if (room) {
         // 원하는 방에 봇으로 채팅 전송 (텍스트 채널 ID 이용)
-        const rslt = await replyRoomID(room, fullContent.substr(room.length + 3));
+        const rslt = await replyRoomID(room, fullContent.slice(room.length + 3));
         message.channel.send(rslt ? '채팅이 전송되었습니다.' : '존재하지 않는 방입니다.');
     } else if (message.channel.recipient?.id === ADMIN_ID && message.reference) {
         // 건의 답변 기능
