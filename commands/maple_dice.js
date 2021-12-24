@@ -25,7 +25,7 @@ export async function messageExecute(message) {
         collector.stop();
         try {
             await dice.delete();
-            await this.messageExecute(message);
+            await messageExecute(message);
         } catch {}
     });
 }
@@ -56,7 +56,7 @@ export async function commandExecute(interaction) {
         collector.stop();
         try {
             await dice.delete();
-            await this.commandExecute(interaction);
+            await commandExecute(interaction);
         } catch {}
     });
 }

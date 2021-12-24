@@ -28,7 +28,7 @@
     "chartjs-node-canvas": "^4.1.5",
     "chartjs-plugin-datalabels": "^2.0.0",
     "cheerio": "^1.0.0-rc.10",
-    "discord.js": "^13.3.1",
+    "discord.js": "^13.4.0",
     "entities": "^3.0.1",
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^4.4.0",
@@ -41,7 +41,7 @@
     "soundcloud.ts": "^0.4.5",
     "string-progressbar": "^1.0.4",
     "utf-8-validate": "^5.0.7",
-    "youtube-dlsr": "^2.2.3",
+    "youtube-dlsr": "^2.2.4",
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {
