@@ -26,15 +26,13 @@ export function isValidPlaylist(url) {
 }
 
 export async function getSongInfo(url, search) {
-    let songInfo = null,
-        song = null;
     if (scTrackRegex.test(url)) {
-        songInfo = await soundcloud.tracks.getV2(url);
-        song = {
-            title: songInfo.title,
-            url: songInfo.permalink_url,
-            duration: Math.ceil(songInfo.duration / 1000),
-            thumbnail: songInfo.artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
+        const { title, permalink_url, duration, artwork_url } = await soundcloud.tracks.getV2(url);
+        return {
+            title,
+            url: permalink_url,
+            duration: Math.ceil(duration / 1000),
+            thumbnail: artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
         };
     } else {
         const videoID = Util.getVideoId(url, true) ?? (await ytsr(search, { type: 'video', limit: 1 }))[0]?.id;
@@ -42,23 +40,20 @@ export async function getSongInfo(url, search) {
         if (!videoID) {
             return null;
         }
-        songInfo = await youtube.getVideoByID(videoID);
-        song = {
-            title: decodeHTML(songInfo.title),
-            url: songInfo.url,
-            duration: songInfo.durationSeconds,
-            thumbnail: songInfo.maxRes.url
+        const { title, url: songURL, durationSeconds, maxRes } = await youtube.getVideoByID(videoID);
+        return {
+            title: decodeHTML(title),
+            url: songURL,
+            duration: durationSeconds,
+            thumbnail: maxRes.url
         };
     }
-    return song;
 }
 
 export async function getPlaylistInfo(url, search) {
-    let playlist = null,
-        videos = null;
     if (scSetRegex.test(url)) {
-        playlist = await soundcloud.playlists.getV2(url);
-        videos = playlist.tracks
+        const { tracks, title, permalink_url } = await soundcloud.playlists.getV2(url);
+        const songs = tracks
             .filter((track) => track.sharing === 'public') // 비공개 또는 삭제된 영상 제외하기
             .shuffle()
             .slice(0, MAX_PLAYLIST_SIZE)
@@ -68,26 +63,27 @@ export async function getPlaylistInfo(url, search) {
                 duration: Math.ceil(track.duration / 1000),
                 thumbnail: track.artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
             }));
+        return { title, url: permalink_url, songs };
     } else {
         const playlistID = Util.getListId(url, true) ?? (await ytsr(search, { type: 'playlist', limit: 1 }))[0]?.id;
         // (await youtube.searchPlaylists(search, 1))[0]?.id;
         if (!playlistID) {
             return null;
         }
-        playlist = await youtube.getPlaylistByID(playlistID);
-        videos = (await playlist.getVideos(200))
+        const playlist = await youtube.getPlaylistByID(playlistID);
+        const videoIds = (await playlist.getVideos(200))
             .filter((video) => video.raw.status.privacyStatus === 'public') // 비공개 또는 삭제된 영상 제외하기
             .shuffle()
             .slice(0, MAX_PLAYLIST_SIZE)
             .map((video) => video.id);
-        videos = (await youtube.getVideosByIDs(videos)).map((video) => ({
+        const songs = (await youtube.getVideosByIDs(videoIds)).map((video) => ({
             title: decodeHTML(video.title),
             url: video.url,
             duration: video.durationSeconds,
             thumbnail: video.maxRes.url
         }));
+        return { title: decodeHTML(playlist.title), url: playlist.url, songs };
     }
-    return { songs: videos, title: decodeHTML(playlist.title), url: playlist.url ?? playlist.permalink_url };
 }
 
 export async function songDownload(url) {
