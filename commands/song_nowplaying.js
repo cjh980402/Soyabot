@@ -22,7 +22,7 @@ export async function messageExecute(message) {
         .setTitle('**현재 재생 중인 노래**')
         .setDescription(`${song.title}\n${song.url}`)
         .setColor('#FF9999')
-        .setAuthor(client.user.username)
+        .setAuthor({ name: client.user.username })
         .addField(
             '\u200b',
             `${seek.toDurationString()} [${splitBar(song.duration || seek, seek, 20)[0]}] ${
@@ -31,7 +31,7 @@ export async function messageExecute(message) {
         );
 
     if (song.duration > 0) {
-        nowPlaying.setFooter(`남은 재생 시간: ${(song.duration - seek).toDurationString()}`);
+        nowPlaying.setFooter({ text: `남은 재생 시간: ${(song.duration - seek).toDurationString()}` });
     }
 
     return message.channel.send({ embeds: [nowPlaying] });
@@ -57,7 +57,7 @@ export async function commandExecute(interaction) {
         .setTitle('**현재 재생 중인 노래**')
         .setDescription(`${song.title}\n${song.url}`)
         .setColor('#FF9999')
-        .setAuthor(client.user.username)
+        .setAuthor({ name: client.user.username })
         .addField(
             '\u200b',
             `${seek.toDurationString()} [${splitBar(song.duration || seek, seek, 20)[0]}] ${
@@ -66,7 +66,7 @@ export async function commandExecute(interaction) {
         );
 
     if (song.duration > 0) {
-        nowPlaying.setFooter(`남은 재생 시간: ${(song.duration - seek).toDurationString()}`);
+        nowPlaying.setFooter({ text: `남은 재생 시간: ${(song.duration - seek).toDurationString()}` });
     }
 
     return interaction.followUp({ embeds: [nowPlaying] });
