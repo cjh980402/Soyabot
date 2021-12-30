@@ -34,7 +34,7 @@
     "ffmpeg-static": "^4.4.0",
     "formdata-polyfill": "^4.0.10",
     "hangul-js": "^0.2.6",
-    "mathjs": "^10.0.1",
+    "mathjs": "^10.0.2",
     "node-fetch": "^3.1.0",
     "simple-youtube-api": "^5.2.1",
     "sodium": "^3.0.2",
