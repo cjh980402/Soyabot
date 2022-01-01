@@ -11,12 +11,12 @@ import { musicActiveControl, musicButtonControl } from './util/music_play.js';
 import botChatting from './util/bot_chatting.js';
 import cachingMessage from './util/message_caching.js';
 import sqlite from './util/sqlite-handler.js';
-globalThis.db = new sqlite('./db/soyabot_data.db'); // db와 client는 여러 기능들에 의해 필수로 최상위 전역
+globalThis.db = new sqlite('./db/soyabot_data.db'); // db와 client는 빈번하게 사용되므로 global 객체에 저장
 globalThis.client = new Client(botClientOption);
 client.commands = []; // 명령어 객체 저장할 배열
 client.queues = new Map(); // 음악기능 정보 저장용
 client.prefix = PREFIX; // 명령어 접두사
-const cooldowns = new Set(); // 중복 명령 방지할 set
+const cooldowns = new Set(); // 중복 명령 방지용
 const promiseTimeout = (promise, ms) => Promise.race([promise, setTimeout(ms)]);
 
 process.on('unhandledRejection', (err) => {
@@ -105,7 +105,7 @@ client.on('messageCreate', async (message) => {
 
         if (cooldowns.has(commandName)) {
             // 명령이 수행 중인 경우
-            return message.channel.send(`'${nowCommand.command[0]}' 명령을 사용하기 위해 잠시 기다려야합니다.`);
+            return await message.channel.send(`'${nowCommand.command[0]}' 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
         await (nowCommand.channelCool
@@ -170,7 +170,7 @@ client.on('interactionCreate', async (interaction) => {
 
             if (cooldowns.has(commandName)) {
                 // 명령이 수행 중인 경우
-                return interaction.followUp(
+                return await interaction.followUp(
                     `'${nowCommand.commandData.name}' 명령을 사용하기 위해 잠시 기다려야합니다.`
                 );
             }
