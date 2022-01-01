@@ -33,7 +33,7 @@ try {
     for (const file of readdirSync('./commands')) {
         if (file.endsWith('.js')) {
             const cmd = await import(`./commands/${file}`);
-            client.commands.push(cmd); // 걸러낸 js파일의 명령 객체를 배열에 push
+            client.commands.push(cmd); // js파일의 명령 객체를 배열에 push
             if (cmd.commandData) {
                 datas.push(cmd.commandData);
             }
@@ -64,22 +64,23 @@ client.on('messageCreate', async (message) => {
     let commandName;
     try {
         console.log(
-            `(${new Date().toLocaleString()}) ${message.channelId} ${message.channel.name} ${message.author.id} ${
-                message.author.username
-            }: ${message.content || message.embeds[0]?.description || ''}\n`
+            `(${new Date().toLocaleString()}) ${message.channelId} ${message.channel.name ?? 'DM'} ${
+                message.author.id
+            } ${message.author.username}: ${message.content || message.embeds[0]?.description || ''}\n`
         );
         if (message.author.bot || message.author.system) {
             // 봇 또는 시스템 유저 여부 체크
             return;
         }
-        const permissions = message.channel.permissionsFor?.(message.guild.me);
         if (
-            permissions &&
-            !permissions.has([
-                Permissions.FLAGS.VIEW_CHANNEL,
-                Permissions.FLAGS.SEND_MESSAGES,
-                Permissions.FLAGS.READ_MESSAGE_HISTORY
-            ])
+            message.channel.type.startsWith('GUILD') &&
+            !message.channel
+                .permissionsFor(message.guild.me)
+                .has([
+                    Permissions.FLAGS.VIEW_CHANNEL,
+                    Permissions.FLAGS.SEND_MESSAGES,
+                    Permissions.FLAGS.READ_MESSAGE_HISTORY
+                ])
         ) {
             return; // 기본 권한이 없는 채널이므로 바로 종료
         }
@@ -143,19 +144,20 @@ client.on('interactionCreate', async (interaction) => {
         try {
             await interaction.deferReply(); // deferReply를 하지 않으면 3초 내로 슬래시 커맨드 응답을 해야함
             console.log(
-                `(${new Date().toLocaleString()}) ${interaction.channelId} ${interaction.channel.name} ${
+                `(${new Date().toLocaleString()}) ${interaction.channelId} ${interaction.channel.name ?? 'DM'} ${
                     interaction.user.id
                 } ${interaction.user.username}: /${interaction.commandName}\n${interaction.options._i()}\n`
             );
 
-            const permissions = interaction.channel.permissionsFor?.(interaction.guild.me);
             if (
-                permissions &&
-                !permissions.has([
-                    Permissions.FLAGS.VIEW_CHANNEL,
-                    Permissions.FLAGS.SEND_MESSAGES,
-                    Permissions.FLAGS.READ_MESSAGE_HISTORY
-                ])
+                interaction.channel.type.startsWith('GUILD') &&
+                !interaction.channel
+                    .permissionsFor(interaction.guild.me)
+                    .has([
+                        Permissions.FLAGS.VIEW_CHANNEL,
+                        Permissions.FLAGS.SEND_MESSAGES,
+                        Permissions.FLAGS.READ_MESSAGE_HISTORY
+                    ])
             ) {
                 return; // 기본 권한이 없는 채널이므로 바로 종료
             }

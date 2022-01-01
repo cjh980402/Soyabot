@@ -27,7 +27,7 @@ export async function messageExecute(message, args) {
     }
 
     const permissions = channel.permissionsFor(message.guild.me);
-    if (!permissions.has(Permissions.FLAGS.CONNECT)) {
+    if (!permissions.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.CONNECT])) {
         return message.reply('권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.');
     }
     if (!permissions.has(Permissions.FLAGS.SPEAK)) {
@@ -121,7 +121,7 @@ export async function commandExecute(interaction) {
     }
 
     const permissions = channel.permissionsFor(interaction.guild.me);
-    if (!permissions.has(Permissions.FLAGS.CONNECT)) {
+    if (!permissions.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.CONNECT])) {
         return interaction.followUp('권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.');
     }
     if (!permissions.has(Permissions.FLAGS.SPEAK)) {
