@@ -18,7 +18,7 @@
     "restart": "forever restart index.js",
     "start": "forever start -o ./log/out.log -e ./log/err.log index.js",
     "stop": "forever stop index.js",
-    "pretty": "prettier --config .prettierrc '*.js' '*/*.js' --write"
+    "pretty": "prettier --config .prettierrc --write '**/*.js'"
   },
   "dependencies": {
     "@discordjs/opus": "^0.7.0",
