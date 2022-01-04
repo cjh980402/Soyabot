@@ -103,7 +103,7 @@ export class QueueElement {
             // this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
         } catch (err) {
             if (err.message === ErrorCodes.NO_SUITABLE_FORMAT) {
-                this.sendMessage('재생할 수 없는 동영상입니다.');
+                this.sendMessage('재생할 수 없는 영상입니다.');
             } else {
                 this.sendMessage('노래 시작을 실패했습니다.');
                 replyAdmin(`노래 시작 에러\nsong 객체: ${song._p}\n에러 내용: ${err.stack ?? err._p}`);
