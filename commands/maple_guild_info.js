@@ -24,9 +24,7 @@ export const description = '- 입력한 내용에 해당하는 길드의 길드�
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 2 || !serverEngName[args[0]]) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
     /*const mapleGuildInfo = new MapleGuild(serverEngName[args[0]], args[1]);

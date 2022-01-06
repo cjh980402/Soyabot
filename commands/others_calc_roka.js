@@ -4,9 +4,7 @@ export const description = '- YYMMDD 형식으로 입력한 입대일을 기준�
 export const type = ['기타'];
 export async function messageExecute(message, args) {
     if (args.length !== 1) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
     const date = /^(\d{2})(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/.exec(args[0]);
     // 올바른 YYMMDD 형식인지 확인하는 정규식 → 인덱스 1: 연도, 2: 월, 3: 일

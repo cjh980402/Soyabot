@@ -55,14 +55,12 @@ export async function messageExecute(message, args) {
         return message.channel.send(`<지원하는 번역 종류>\n\n${list.replace(/, /g, '\n')}\n\n순서는 바뀌어도 됩니다.`);
     }
     if (args.length < 3) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
     if (!checkLan(args[0], args[1]) && !checkLan(args[1], args[0])) {
         return message.channel.send(
-            `형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 '${this.usage}'입니다.\n언어의 형식은 ${client.prefix}파파고 목록을 확인해주세요.`
+            `형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 '${usage}'입니다.\n언어의 형식은 ${client.prefix}파파고 목록을 확인해주세요.`
         );
     }
 

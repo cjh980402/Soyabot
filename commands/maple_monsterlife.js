@@ -162,9 +162,7 @@ export const description = `- 몬스터라이프 관련 기능을 수행합니�
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length < 2) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
     try {
@@ -176,15 +174,11 @@ export async function messageExecute(message, args) {
             return message.channel.sendSplitCode(await farm_info(args.slice(1).join('')), { split: { char: '\n' } });
         } else if (args[0] === '추가' || args[0] === 'ㅊㄱ') {
             if (args.length < 4) {
-                return message.channel.send(
-                    `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-                );
+                return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
             }
             return message.channel.send(await farm_add(args[1], args[2], args.slice(3).join('')));
         } else {
-            return message.channel.send(
-                `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-            );
+            return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
         }
     } catch {
         return message.channel.send('농장 API 서버가 점검 중입니다.');

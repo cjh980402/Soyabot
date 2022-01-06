@@ -17,16 +17,12 @@ export async function messageExecute(message, args) {
         return message.channel.send(rslt);
     }
     if (args.length < 2) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
     const gender = args.shift()[0];
     const goalhair = (hairList[gender] ?? []).findIndex((v) => v.replace(/\s+/, '').includes(args.join('')));
     if (goalhair === -1) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
     // gender은 성별, goalhair는 목표 헤어의 인덱스
     // random은 0이상 1미만

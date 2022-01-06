@@ -106,9 +106,7 @@ export const description = '- 해당 서버의 메소 시세를 알려줍니다.
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 1 || !serverList[args[0]]) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
     return message.channel.send(await getMesoEmbed(args[0]));

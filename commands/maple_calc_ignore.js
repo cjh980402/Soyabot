@@ -5,9 +5,7 @@ export const description = `- 실방무와 딜량을 계산합니다. 추가 방
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length < 2) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
     const igList = args.map((v) => +v);

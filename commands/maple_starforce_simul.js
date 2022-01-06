@@ -16,9 +16,7 @@ export const description = `- A: 아이템 레벨 제한 (98 ~ 200)
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (!args[0]) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
     const result = new NormalItem();
     return message.channel.send(result.doingStarforce(args.map((v) => +v)));

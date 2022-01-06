@@ -42,9 +42,7 @@ export const description = '- 계산식에 해당하는 결과값을 보여줍�
 export const type = ['기타'];
 export async function messageExecute(message, args) {
     if (args.length < 1) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
     try {

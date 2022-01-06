@@ -10,9 +10,7 @@ export async function messageExecute(message, args) {
         return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
     if (args.length < 1) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
     if (!message.member.voice.channel) {
         return message.reply('음성 채널에 먼저 참가해주세요!');

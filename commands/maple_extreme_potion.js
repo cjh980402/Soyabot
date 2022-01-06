@@ -88,9 +88,7 @@ export const description = `- 시작 레벨 ~ 목표 레벨의 익성비 시뮬�
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 1 && args.length !== 2) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
     if (args[0] === '확률' || args[0] === 'ㅎㄹ') {

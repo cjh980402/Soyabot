@@ -6,9 +6,7 @@ export const description = '캐릭터의 직업, 시드 최고기록, 시간을 
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 1) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
     const mapleUserInfo = new MapleUser(args[0]);

@@ -27,9 +27,7 @@ export const description = '- 입력한 주소를 짧은 형태의 주소로 변
 export const type = ['기타'];
 export async function messageExecute(message, args) {
     if (args.length !== 1) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
     return message.channel.send(await shortURL(args[0]));

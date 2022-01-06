@@ -9,9 +9,7 @@ export async function messageExecute(message, args) {
         return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
     if (args.length < 1) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
     const queue = client.queues.get(message.guildId);

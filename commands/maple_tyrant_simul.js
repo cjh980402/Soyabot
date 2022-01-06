@@ -8,9 +8,7 @@ export const description = `- A: 시작 스타포스 개수
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (!args[0]) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
     const result = new SuperialItem();
     return message.channel.send(result.doingStarforce(args.map((v) => +v)));

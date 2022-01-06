@@ -21,9 +21,7 @@ export async function messageExecute(message, args) {
         return message.reply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
     }
     if (args.length < 1) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
     const permissions = channel.permissionsFor(message.guild.me);

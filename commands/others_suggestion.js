@@ -6,9 +6,7 @@ export const description = '- 개발자에게 건의 사항을 전송합니다.'
 export const type = ['기타'];
 export function messageExecute(message, args) {
     if (args.length < 1) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
     const rslt = replyAdmin(

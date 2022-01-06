@@ -29,9 +29,7 @@ export async function messageExecute(message, args) {
             files: [`./pictures/muto/${picmatch[args[0]]}.png`]
         });
     } else {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 }
 export const commandData = {

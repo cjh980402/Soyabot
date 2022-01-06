@@ -6,9 +6,7 @@ export const description = `- 시작 레벨부터 목표 레벨까지의 심볼 
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 2) {
-        return message.channel.send(
-            `**${this.usage}**\n- 대체 명령어: ${this.command.join(', ')}\n${this.description}`
-        );
+        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
     const startlev = Math.trunc(args[0]),
