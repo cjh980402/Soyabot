@@ -186,7 +186,7 @@ Object.defineProperty(Array.prototype, 'shuffle', {
     }
 });
 
-Object.defineProperty(Number.prototype, 'toLocaleUnitString', {
+Object.defineProperty(Number.prototype, 'toUnitString', {
     value: function (count = 5) {
         // count는 출력할 단위의 개수
         const unitName = ['경', '조', '억', '만', ''];
