@@ -43,7 +43,7 @@ async function getCoinEmbed(searchRslt, type) {
 
     const minPrice = todayData.low_price.toLocaleString();
     const maxPrice = todayData.high_price.toLocaleString();
-    const amount = todayData.acc_trade_price_24h.toLocaleUnitString('ko-KR', 2);
+    const amount = todayData.acc_trade_price_24h.toLocaleUnitString(2);
 
     const { stdout: coinPic } = await cmd(
         `python3 ./util/make_coin_info.py ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice} ${changeType} '${changeString}' ${minPrice} ${maxPrice}`,

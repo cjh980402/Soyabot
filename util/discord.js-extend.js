@@ -187,33 +187,21 @@ Object.defineProperty(Array.prototype, 'shuffle', {
 });
 
 Object.defineProperty(Number.prototype, 'toLocaleUnitString', {
-    value: function (locales = Intl.NumberFormat().resolvedOptions().locale, count = 5) {
-        // locales는 출력할 형식의 로케일, count는 출력할 단위의 개수
-        const localeUnits = {
-            'ko-KR': [['경', '조', '억', '만', ''], 10000],
-            'ja-JP': [['京', '兆', '億', '万', ''], 10000],
-            'zh-CN': [['京', '兆', '亿', '万', ''], 10000],
-            'en-US': [['Trillion', 'Billion', 'Million', 'Thousand', ''], 1000],
-            'IEC': [['Ti', 'Gi', 'Mi', 'Ki', ''], 1024],
-            'SI': [['T', 'G', 'M', 'k', ''], 1000]
-        };
-
-        if (!localeUnits[locales]) {
-            throw new RangeError('Incorrect locale information provided');
-        }
-        const unitName = localeUnits[locales][0];
-        const unitStd = localeUnits[locales][1];
+    value: function (count = 5) {
+        // count는 출력할 단위의 개수
+        const unitName = ['경', '조', '억', '만', ''];
+        const unitStd = 10000;
         const rslt = [];
+        let unitNum = unitStd ** (unitName.length - 1);
+        let num = Math.abs(this);
 
-        for (
-            let i = 0, unitNum = unitStd ** (unitName.length - 1), num = Math.abs(this);
-            i < unitName.length;
-            num %= unitNum, unitNum /= unitStd, i++
-        ) {
+        for (const unit of unitName) {
             const quotient = Math.floor(num / unitNum);
             if (quotient > 0 && rslt.length < count) {
-                rslt.push(`${quotient}${unitName[i]}`);
+                rslt.push(`${quotient}${unit}`);
             }
+            num %= unitNum;
+            unitNum /= unitStd;
         }
         return `${this < 0 ? '- ' : ''}${rslt.join(' ') || '0'}`;
     }
@@ -222,7 +210,7 @@ Object.defineProperty(Number.prototype, 'toLocaleUnitString', {
 Object.defineProperty(Number.prototype, 'toDurationString', {
     value: function () {
         const hours = Math.floor(this / 3600);
-        const minutes = Math.floor(this / 60) % 60;
+        const minutes = Math.floor((this % 3600) / 60);
         const seconds = Math.floor(this % 60);
 
         if (hours > 0) {
