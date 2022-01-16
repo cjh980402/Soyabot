@@ -42,8 +42,8 @@ async function getWeatherEmbed(targetLocal) {
         }
     } else {
         // 국내 날씨
-        let summary = $('body > script').filter((_, v) => /\{"nowFcast".+}/.test($(v).html()));
-        summary = JSON.parse(/\{"nowFcast".+}/.exec(summary.eq(0).html())[0]);
+        let summary = $('body > script').filter((_, v) => /{"nowFcast".+}/.test($(v).html()));
+        summary = JSON.parse(/{"nowFcast".+}/.exec(summary.eq(0).html())[0]);
         weatherDesc[0] += `\n습도: ${summary.nowFcast.humd}%│${summary.nowFcast.windDrctnName}: ${
             summary.nowFcast.windSpd
         }m/s
