@@ -12,24 +12,24 @@ async function getWeatherEmbed(targetLocal) {
         '날씨 예보\n'
     ];
 
-    const summaryTerm = nowWeather.find('.summary_list > .term');
-    const summaryDesc = nowWeather.find('.summary_list > .desc');
-    for (let i = 0; i < summaryTerm.length; i++) {
-        weatherDesc[0] += `${i % 2 ? '│' : '\n'}${summaryTerm.eq(i).text()}: ${summaryDesc.eq(i).text()}`;
-    }
+    if (targetLocal[1][0].includes('WD')) {
+        // 해외 날씨
+        const summaryTerm = nowWeather.find('.summary_list > .term');
+        const summaryDesc = nowWeather.find('.summary_list > .desc');
+        for (let i = 0; i < summaryTerm.length; i++) {
+            weatherDesc[0] += `${i % 2 ? '│' : '\n'}${summaryTerm.eq(i).text()}: ${summaryDesc.eq(i).text()}`;
+        }
 
-    const todayInfo = $('.today_chart_list .item_inner');
-    for (let i = 0; i < todayInfo.length; i++) {
-        weatherDesc[0] += `${i % 2 ? '│' : '\n'}${todayInfo.eq(i).find('.ttl').text()}: ${todayInfo
-            .eq(i)
-            .find('.level_text')
-            .text()}`;
-    }
+        const todayInfo = $('.today_chart_list .item_inner');
+        for (let i = 0; i < todayInfo.length; i++) {
+            weatherDesc[0] += `${i % 2 ? '│' : '\n'}${todayInfo.eq(i).find('.ttl').text()}: ${todayInfo
+                .eq(i)
+                .find('.level_text')
+                .text()}`;
+        }
 
-    const weather = $('.time_list > .item_time');
-    const rain = $('div[data-name="rain"] .row_graph.row_rain > .data');
-
-    if (rain.length > 0) {
+        const weather = $('.time_list > .item_time');
+        const rain = $('div[data-name="rain"] .row_graph.row_rain > .data');
         const humidity = $('div[data-name="humidity"] .row_graph > .data');
         const wind = $('div[data-name="wind"] .row_graph > .data');
         for (let i = 0; i < weather.length - 1; i++) {
@@ -41,12 +41,22 @@ async function getWeatherEmbed(targetLocal) {
                 .trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
         }
     } else {
-        let data = $('body > script').filter((_, v) => /\[{.+naverRgnCd.+}\]/.test($(v).html()));
-        data = JSON.parse(/\[{.+naverRgnCd.+}\]/.exec(data.eq(0).html())[0]);
-        for (let i = 0; i < weather.length - 1; i++) {
-            weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${
-                data[i + 1].wetrTxt
-            })│강수량: ${data[i + 1].rainAmt}㎜│습도: ${data[i + 1].humd}%│풍속: ${data[i + 1].windSpd}㎧`;
+        // 국내 날씨
+        let summary = $('body > script').filter((_, v) => /\{"nowFcast".+}/.test($(v).html()));
+        summary = JSON.parse(/\{"nowFcast".+}/.exec(summary.eq(0).html())[0]);
+        weatherDesc[0] += `\n습도: ${summary.nowFcast.humd}%│${summary.nowFcast.windDrctnName}: ${
+            summary.nowFcast.windSpd
+        }m/s
+체감: ${summary.nowFcast.stmpr}°
+미세먼지: ${summary.airFcast.stationPM10Legend1 || '-'}│초미세먼지: ${summary.airFcast.stationPM25Legend1 || '-'}
+자외선: ${summary.uv.labelText}`;
+
+        let castList = $('body > script').filter((_, v) => /\[{.+naverRgnCd.+}\]/.test($(v).html()));
+        castList = JSON.parse(/\[{.+naverRgnCd.+}\]/.exec(castList.eq(0).html())[0]);
+        for (let i = 0; i < castList.length - 1; i++) {
+            weatherDesc[1] += `\n${+castList[i].aplTm}시: ${castList[i].tmpr}° (${castList[i + 1].wetrTxt})│강수량: ${
+                castList[i + 1].rainAmt
+            }㎜│습도: ${castList[i + 1].humd}%│풍속: ${castList[i + 1].windSpd}㎧`;
         }
     }
 
