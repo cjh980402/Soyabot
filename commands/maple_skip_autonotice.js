@@ -17,7 +17,9 @@ export async function messageExecute(message, args) {
     if (!message.guildId) {
         return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
-    if (!noticematch[args[0]]) {
+    return message.reply('현재 봇 프로필에 있는 공지 채널에서만 자동알림을 받을 수 있습니다.');
+
+    /*if (!noticematch[args[0]]) {
         const notice = [];
         for (const key in noticematch) {
             if (db.get(`SELECT * FROM ${noticematch[key]}skip WHERE channelid = ?`, [message.guildId])) {
@@ -37,7 +39,7 @@ export async function messageExecute(message, args) {
         // 기존상태: ON
         db.insert(`${noticematch[args[0]]}skip`, { channelid: message.guildId, name: message.guild.name });
         return message.channel.send(`${args[0]} 자동알림: **ON → OFF**`);
-    }
+    }*/
 }
 export const commandData = {
     name: '자동알림',
@@ -57,8 +59,9 @@ export async function commandExecute(interaction) {
     if (!interaction.guildId) {
         return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
+    return interaction.followUp('현재 봇 프로필에 있는 공지 채널에서만 자동알림을 받을 수 있습니다.');
 
-    const category = interaction.options.getString('카테고리');
+    /*const category = interaction.options.getString('카테고리');
     if (!category) {
         const notice = [];
         for (const key in noticematch) {
@@ -79,5 +82,5 @@ export async function commandExecute(interaction) {
         // 기존상태: ON
         db.insert(`${noticematch[category]}skip`, { channelid: interaction.guildId, name: interaction.guild.name });
         return interaction.followUp(`${category} 자동알림: **ON → OFF**`);
-    }
+    }*/
 }
