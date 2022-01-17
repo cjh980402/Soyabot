@@ -7,10 +7,6 @@ export default class SQLiteHandler {
         this.#db = new Database(db);
     }
 
-    get raw() {
-        return this.#db;
-    }
-
     get tableList() {
         return this.all("SELECT name, sql FROM sqlite_master WHERE type='table'");
     }
