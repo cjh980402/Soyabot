@@ -42,8 +42,7 @@ async function getWeatherEmbed(targetLocal) {
         }
     } else {
         // 국내 날씨
-        let summary = $('body > script').filter((_, v) => /{"nowFcast".+}/.test($(v).html()));
-        summary = JSON.parse(/{"nowFcast".+}/.exec(summary.eq(0).html())[0]);
+        const summary = JSON.parse(/var\s+weatherSummary\s*=\s*({.+?})\s*;/s.exec($.html())[1]);
         weatherDesc[0] += `\n습도: ${summary.nowFcast.humd}%│${summary.nowFcast.windDrctnName}: ${
             summary.nowFcast.windSpd
         }m/s
@@ -51,8 +50,7 @@ async function getWeatherEmbed(targetLocal) {
 미세먼지: ${summary.airFcast.stationPM10Legend1 || '-'}│초미세먼지: ${summary.airFcast.stationPM25Legend1 || '-'}
 자외선: ${summary.uv.labelText}`;
 
-        let castList = $('body > script').filter((_, v) => /\[{.+naverRgnCd.+}\]/.test($(v).html()));
-        castList = JSON.parse(/\[{.+naverRgnCd.+}\]/.exec(castList.eq(0).html())[0]);
+        const castList = JSON.parse(/var\s+townFcastListJson\s*=\s*(\[.+?\])\s*;/s.exec($.html())[1]);
         for (let i = 0; i < castList.length - 1; i++) {
             weatherDesc[1] += `\n${+castList[i].aplTm}시: ${castList[i].tmpr}° (${castList[i + 1].wetrTxt})│강수량: ${
                 castList[i + 1].rainAmt

@@ -241,29 +241,31 @@ export class MapleUser {
     }
 
     ExpHistory() {
-        let data = this.#ggData('body > script').filter((_, v) => /\[{.+exp.+}\]/.test(this.#ggData(v).html()));
+        const data = JSON.parse(/var\s+expHistoryLabels\s*=\s*(\[.+?\])\s*\n/.exec(this.#ggData.html())?.[1] ?? '[]');
         if (data.length === 0) {
             return null;
         }
-        let date = this.#ggData('body > script').filter((_, v) => /\[\[.+exp.+\]\]/.test(this.#ggData(v).html()));
+        const date = JSON.parse(
+            /columns\s*:\s*(\[\["x".+?\],\s*\["exp".+?\]\])\s*,/.exec(this.#ggData.html())?.[1] ?? '[]'
+        );
         if (date.length === 0) {
             return null;
         }
 
-        data = JSON.parse(/\[{.+exp.+}\]/.exec(data.eq(0).html())[0]);
-        date = JSON.parse(/\[\[.+exp.+\]\]/.exec(date.eq(0).html())[0])[0].slice(1);
-        data.forEach((v, i) => (v.date = date[i]));
+        date[0].slice(1).forEach((v, i) => (data[i].date = v));
 
         return data; // 배열의 원소 구성: date, level, exp
     }
 
     LevelHistory() {
-        const data = this.#ggData('body > script').filter((_, v) => /\[\[.+level.+\]\]/.test(this.#ggData(v).html()));
+        const data = JSON.parse(
+            /columns\s*:\s*(\[\["x".+?\],\s*\["level".+?\]\])\s*,/.exec(this.#ggData.html())?.[1] ?? '[]'
+        );
         if (data.length === 0) {
             return null;
         }
 
-        return JSON.parse(/\[\[.+level.+\]\]/.exec(data.eq(0).html())[0]); // 0번째 배열 = 날짜, 1번째 배열 = 레벨 (각각 0번 인덱스는 제외 필요)
+        return data; // 0번째 배열 = 날짜, 1번째 배열 = 레벨 (각각 0번 인덱스는 제외 필요)
     }
 
     MurungHistory() {
