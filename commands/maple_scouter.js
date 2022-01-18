@@ -1,4 +1,4 @@
-import { MessageEmbed } from '../util/discord.js-extend.js';
+import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
 import { MapleUser } from '../util/maple_parsing.js';
 const scoreGrade = [
     [0, '메린이'],
@@ -49,7 +49,7 @@ function getScouterEmbed(mapleUserInfo, union) {
         .setTitle(`**${mapleUserInfo.Name}님의 측정결과**`)
         .setColor('#FF9999')
         .setURL(mapleUserInfo.GGURL)
-        .setImage(mapleUserInfo.userImg())
+        .setImage('attachment://character.png')
         .addField('**직업**', job, true)
         .addField('**레벨**', String(level), true)
         .addField('**유니온**', union.toLocaleString(), true)
@@ -85,7 +85,8 @@ export async function messageExecute(message, args) {
         }
     }
 
-    return message.channel.send({ embeds: [getScouterEmbed(mapleUserInfo, union)] });
+    const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
+    return message.channel.send({ embeds: [getScouterEmbed(mapleUserInfo, union)], files: [image] });
 }
 export const commandData = {
     name: '스카우터',
@@ -122,5 +123,6 @@ export async function commandExecute(interaction) {
         }
     }
 
-    return interaction.followUp({ embeds: [getScouterEmbed(mapleUserInfo, union)] });
+    const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
+    return interaction.followUp({ embeds: [getScouterEmbed(mapleUserInfo, union)], files: [image] });
 }

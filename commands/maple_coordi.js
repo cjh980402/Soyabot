@@ -1,4 +1,4 @@
-import { MessageEmbed } from '../util/discord.js-extend.js';
+import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
 import { MapleUser } from '../util/maple_parsing.js';
 
 export const usage = `${client.prefix}코디 (닉네임)`;
@@ -25,11 +25,12 @@ export async function messageExecute(message, args) {
     if (!coordi) {
         return message.channel.send(`[${mapleUserInfo.Name}]\n코디 정보가 없습니다.`);
     } else {
+        const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
         const coordiEmbed = new MessageEmbed()
             .setTitle(`**${mapleUserInfo.Name}님의 코디**`)
             .setColor('#FF9999')
             .setURL(mapleUserInfo.GGURL)
-            .setImage(mapleUserInfo.userImg())
+            .setImage('attachment://character.png')
             .addField('**헤어**', coordi[1], true)
             .addField('**성형**', coordi[2], true)
             .addField('**모자**', coordi[0], true)
@@ -38,7 +39,7 @@ export async function messageExecute(message, args) {
             .addField('**신발**', coordi[5], true)
             .addField('**무기**', coordi[6], true);
 
-        return message.channel.send({ embeds: [coordiEmbed] });
+        return message.channel.send({ embeds: [coordiEmbed], files: [image] });
     }
 }
 export const commandData = {
@@ -70,11 +71,12 @@ export async function commandExecute(interaction) {
     if (!coordi) {
         return interaction.followUp(`[${mapleUserInfo.Name}]\n코디 정보가 없습니다.`);
     } else {
+        const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
         const coordiEmbed = new MessageEmbed()
             .setTitle(`**${mapleUserInfo.Name}님의 코디**`)
             .setColor('#FF9999')
             .setURL(mapleUserInfo.GGURL)
-            .setImage(mapleUserInfo.userImg())
+            .setImage('attachment://character.png')
             .addField('**헤어**', coordi[1], true)
             .addField('**성형**', coordi[2], true)
             .addField('**모자**', coordi[0], true)
@@ -83,6 +85,6 @@ export async function commandExecute(interaction) {
             .addField('**신발**', coordi[5], true)
             .addField('**무기**', coordi[6], true);
 
-        return interaction.followUp({ embeds: [coordiEmbed] });
+        return interaction.followUp({ embeds: [coordiEmbed], files: [image] });
     }
 }

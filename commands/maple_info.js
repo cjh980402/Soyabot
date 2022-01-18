@@ -1,4 +1,4 @@
-import { MessageEmbed } from '../util/discord.js-extend.js';
+import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
 import { MapleUser } from '../util/maple_parsing.js';
 import { levelTable } from '../util/soyabot_const.js';
 
@@ -18,7 +18,7 @@ async function getInfoEmbed(mapleUserInfo, level) {
         .setTitle(`**${mapleUserInfo.Name}님의 정보**`)
         .setColor('#FF9999')
         .setURL(mapleUserInfo.GGURL)
-        .setImage(mapleUserInfo.userImg())
+        .setImage('attachment://character.png')
         .addField('**레벨**', char_lv < 300 ? `${char_lv} (${char_percent}%)` : char_lv, true)
         .addField('**직업**', char_job, true)
         .addField('**길드**', char_guild || '-', true)
@@ -59,7 +59,8 @@ export async function messageExecute(message, args) {
         }
     }
 
-    return message.channel.send({ embeds: [await getInfoEmbed(mapleUserInfo, level)] });
+    const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
+    return message.channel.send({ embeds: [await getInfoEmbed(mapleUserInfo, level)], files: [image] });
 }
 export const commandData = {
     name: '정보',
@@ -87,5 +88,6 @@ export async function commandExecute(interaction) {
         }
     }
 
-    return interaction.followUp({ embeds: [await getInfoEmbed(mapleUserInfo, level)] });
+    const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
+    return interaction.followUp({ embeds: [await getInfoEmbed(mapleUserInfo, level)], files: [image] });
 }
