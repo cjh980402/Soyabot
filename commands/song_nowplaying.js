@@ -20,8 +20,8 @@ export async function messageExecute(message) {
 
     const nowPlaying = new MessageEmbed()
         .setTitle('**현재 재생 중인 노래**')
-        .setDescription(`${song.title}\n${song.url}`)
         .setColor('#FF9999')
+        .setDescription(`${song.title}\n${song.url}`)
         .setAuthor({ name: client.user.username })
         .addField(
             '\u200b',
@@ -55,8 +55,8 @@ export async function commandExecute(interaction) {
 
     const nowPlaying = new MessageEmbed()
         .setTitle('**현재 재생 중인 노래**')
-        .setDescription(`${song.title}\n${song.url}`)
         .setColor('#FF9999')
+        .setDescription(`${song.title}\n${song.url}`)
         .setAuthor({ name: client.user.username })
         .addField(
             '\u200b',

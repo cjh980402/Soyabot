@@ -24,8 +24,8 @@ export async function messageExecute(message, args) {
 
     const resultsEmbed = new MessageEmbed()
         .setTitle('**재생할 노래의 번호를 알려주세요.**')
-        .setDescription(`${search}의 검색 결과`)
-        .setColor('#FF9999');
+        .setColor('#FF9999')
+        .setDescription(`${search}의 검색 결과`);
     results.forEach((video, index) =>
         resultsEmbed.addField(
             `**${index + 1}. ${video.title}** \`[${video.duration === 0 ? '⊚ LIVE' : video.durationText}]\``,
@@ -94,8 +94,8 @@ export async function commandExecute(interaction) {
 
     const resultsEmbed = new MessageEmbed()
         .setTitle('**재생할 노래의 번호를 알려주세요.**')
-        .setDescription(`${search}의 검색 결과`)
-        .setColor('#FF9999');
+        .setColor('#FF9999')
+        .setDescription(`${search}의 검색 결과`);
     results.forEach((video, index) =>
         resultsEmbed.addField(
             `**${index + 1}. ${video.title}** \`[${video.duration === 0 ? '⊚ LIVE' : video.durationText}]\``,

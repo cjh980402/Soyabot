@@ -3,7 +3,8 @@ import { load } from 'cheerio';
 import { MessageActionRow, MessageButton, MessageEmbed, Util } from '../util/discord.js-extend.js';
 
 async function getWeatherEmbed(targetLocal) {
-    const $ = load(await (await fetch(`https://weather.naver.com/today/${targetLocal[1][0]}`)).text());
+    const targetURL = `https://weather.naver.com/today/${targetLocal[1][0]}`;
+    const $ = load(await (await fetch(targetURL)).text());
     const nowWeather = $('.weather_area');
     const weatherDesc = [
         `현재 날씨\n\n현재온도: ${nowWeather.find('.current').contents()[1].data}° (${nowWeather
@@ -63,6 +64,7 @@ async function getWeatherEmbed(targetLocal) {
         const embed = new MessageEmbed()
             .setTitle(`**${targetLocal[0][0]}**`)
             .setColor('#FF9999')
+            .setURL(targetURL)
             .setDescription(Util.splitMessage(desc, { char: '\n' })[0])
             .setTimestamp();
         embeds.push(embed);
@@ -76,7 +78,7 @@ export const description = '- 입력한 지역의 날씨를 알려줍니다.';
 export const channelCool = true;
 export const type = ['기타'];
 export async function messageExecute(message, args) {
-    const search = args.length > 0 ? args.join(' ') : '동대문구 전농동';
+    const search = args.length > 0 ? args.join(' ') : '동대문구 전농1동';
     const searchRslt = (
         await (
             await fetch(
@@ -94,8 +96,8 @@ export async function messageExecute(message, args) {
     } else {
         const localListEmbed = new MessageEmbed()
             .setTitle('**검색할 지역의 번호를 알려주세요.**')
-            .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`).join('\n'))
             .setColor('#FF9999')
+            .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`).join('\n'))
             .setTimestamp();
         message.channel.send({ embeds: [localListEmbed] });
 
@@ -164,7 +166,7 @@ export const commandData = {
     ]
 };
 export async function commandExecute(interaction) {
-    const search = interaction.options.getString('지역') ?? '동대문구 전농동';
+    const search = interaction.options.getString('지역') ?? '동대문구 전농1동';
     const searchRslt = (
         await (
             await fetch(
@@ -182,8 +184,8 @@ export async function commandExecute(interaction) {
     } else {
         const localListEmbed = new MessageEmbed()
             .setTitle('**검색할 지역의 번호를 알려주세요.**')
-            .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`).join('\n'))
             .setColor('#FF9999')
+            .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`).join('\n'))
             .setTimestamp();
         await interaction.editReply({ embeds: [localListEmbed] });
 

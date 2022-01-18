@@ -51,6 +51,8 @@ export async function messageExecute(message, args) {
 
     const playlistEmbed = new MessageEmbed()
         .setTitle(`**${playlist.title}**`)
+        .setColor('#FF9999')
+        .setURL(playlist.url)
         .setDescription(
             Util.splitMessage(
                 playlist.songs
@@ -63,9 +65,7 @@ export async function messageExecute(message, args) {
                     .join('\n'),
                 { char: '\n' }
             )[0]
-        )
-        .setURL(playlist.url)
-        .setColor('#FF9999');
+        );
 
     if (serverQueue) {
         serverQueue.textChannel = message.channel;
@@ -146,6 +146,8 @@ export async function commandExecute(interaction) {
 
     const playlistEmbed = new MessageEmbed()
         .setTitle(`**${playlist.title}**`)
+        .setColor('#FF9999')
+        .setURL(playlist.url)
         .setDescription(
             Util.splitMessage(
                 playlist.songs
@@ -158,9 +160,7 @@ export async function commandExecute(interaction) {
                     .join('\n'),
                 { char: '\n' }
             )[0]
-        )
-        .setURL(playlist.url)
-        .setColor('#FF9999');
+        );
 
     if (serverQueue) {
         serverQueue.textChannel = interaction.channel;
