@@ -18,31 +18,33 @@ export async function messageExecute(message, args) {
         return message.channel.send('시작 레벨 ~ 20 범위의 목표 레벨을 입력해주세요.');
     }
 
-    let total_req1 = 0,
-        total_req2 = 0,
-        total_meso1 = 0,
-        total_meso2 = 0,
-        total_meso3 = 0,
-        total_meso4 = 0;
+    const total_req = [0, 0];
+    const total_meso = [0, 0, 0, 0, 0, 0];
     for (let i = startlev; i < endlev; i++) {
-        total_req1 += i * i + 11; // 요구량 = i^2 + 11
-        total_meso1 += 2370000 + 7130000 * i; // 여로 심볼
-        total_meso2 += 12440000 + 6600000 * i; // 여로 제외 아케인
+        total_req[0] += i * i + 11; // 요구량 = i^2 + 11
+        total_meso[0] += 3110000 + 3960000 * i; // 여로 심볼
+        total_meso[1] += 6220000 + 4620000 * i; // 츄츄 심볼
+        total_meso[2] += 9330000 + 5280000 * i; // 레헬른 심볼
+        total_meso[3] += 11196000 + 5940000 * i; // 아르카나, 모라스, 에스페라 심볼
         if (i < 11) {
-            total_req2 += 9 * i * i + 20 * i; // 요구량 = 9i^2 + 20i
-            total_meso3 += 96900000 + 88500000 * i; // 세르니움 심볼
-            total_meso4 += 106600000 + 97300000 * i; // 세르니움 제외 어센틱 심볼
+            total_req[1] += 9 * i * i + 20 * i; // 요구량 = 9i^2 + 20i
+            total_meso[4] += 96900000 + 88500000 * i; // 세르니움 심볼
+            total_meso[5] += 106600000 + 97300000 * i; // 아르크스 심볼
         }
     }
 
     return message.channel.send(
-        `아케인 심볼 Lv.${startlev} → Lv.${endlev}\n요구량: ${total_req1}\n여로: ${total_meso1.toLocaleString()}메소\n여로 제외: ${total_meso2.toLocaleString()}메소\n\n어센틱 심볼 Lv.${Math.min(
-            11,
-            startlev
-        )} → Lv.${Math.min(
-            11,
-            endlev
-        )}\n요구량: ${total_req2}\n세르니움: ${total_meso3.toLocaleString()}메소\n세르니움 제외: ${total_meso4.toLocaleString()}메소`
+        `아케인 심볼 Lv.${startlev} → Lv.${endlev}
+요구량: ${total_req[0]}
+여로: ${total_meso[0].toLocaleString()}메소
+츄츄: ${total_meso[1].toLocaleString()}메소
+레헬른: ${total_meso[2].toLocaleString()}메소
+아르카나 이상: ${total_meso[3].toLocaleString()}메소
+
+어센틱 심볼 Lv.${Math.min(11, startlev)} → Lv.${Math.min(11, endlev)}
+요구량: ${total_req[1]}
+세르니움: ${total_meso[4].toLocaleString()}메소
+아르크스: ${total_meso[5].toLocaleString()}메소`
     );
 }
 export const commandData = {
@@ -72,30 +74,32 @@ export async function commandExecute(interaction) {
         return interaction.followUp('시작 레벨 이상의 목표 레벨을 입력해주세요.');
     }
 
-    let total_req1 = 0,
-        total_req2 = 0,
-        total_meso1 = 0,
-        total_meso2 = 0,
-        total_meso3 = 0,
-        total_meso4 = 0;
+    const total_req = [0, 0];
+    const total_meso = [0, 0, 0, 0, 0, 0];
     for (let i = startlev; i < endlev; i++) {
-        total_req1 += i * i + 11; // 요구량 = i^2 + 11
-        total_meso1 += 2370000 + 7130000 * i; // 여로 심볼
-        total_meso2 += 12440000 + 6600000 * i; // 여로 제외 아케인
+        total_req[0] += i * i + 11; // 요구량 = i^2 + 11
+        total_meso[0] += 3110000 + 3960000 * i; // 여로 심볼
+        total_meso[1] += 6220000 + 4620000 * i; // 츄츄 심볼
+        total_meso[2] += 9330000 + 5280000 * i; // 레헬른 심볼
+        total_meso[3] += 11196000 + 5940000 * i; // 아르카나, 모라스, 에스페라 심볼
         if (i < 11) {
-            total_req2 += 9 * i * i + 20 * i; // 요구량 = 9i^2 + 20i
-            total_meso3 += 96900000 + 88500000 * i; // 세르니움 심볼
-            total_meso4 += 106600000 + 97300000 * i; // 세르니움 제외 어센틱 심볼
+            total_req[1] += 9 * i * i + 20 * i; // 요구량 = 9i^2 + 20i
+            total_meso[4] += 96900000 + 88500000 * i; // 세르니움 심볼
+            total_meso[5] += 106600000 + 97300000 * i; // 아르크스 심볼
         }
     }
 
     return interaction.followUp(
-        `아케인 심볼 Lv.${startlev} → Lv.${endlev}\n요구량: ${total_req1}\n여로: ${total_meso1.toLocaleString()}메소\n여로 제외: ${total_meso2.toLocaleString()}메소\n\n어센틱 심볼 Lv.${Math.min(
-            11,
-            startlev
-        )} → Lv.${Math.min(
-            11,
-            endlev
-        )}\n요구량: ${total_req2}\n세르니움: ${total_meso3.toLocaleString()}메소\n세르니움 제외: ${total_meso4.toLocaleString()}메소`
+        `아케인 심볼 Lv.${startlev} → Lv.${endlev}
+요구량: ${total_req[0]}
+여로: ${total_meso[0].toLocaleString()}메소
+츄츄: ${total_meso[1].toLocaleString()}메소
+레헬른: ${total_meso[2].toLocaleString()}메소
+아르카나 이상: ${total_meso[3].toLocaleString()}메소
+
+어센틱 심볼 Lv.${Math.min(11, startlev)} → Lv.${Math.min(11, endlev)}
+요구량: ${total_req[1]}
+세르니움: ${total_meso[4].toLocaleString()}메소
+아르크스: ${total_meso[5].toLocaleString()}메소`
     );
 }
