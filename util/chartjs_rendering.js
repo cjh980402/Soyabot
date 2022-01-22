@@ -17,7 +17,7 @@ chartCanvas.registerFont('./fonts/CODE2000.ttf', { family: 'CODE2000' });
 export default function (configuration, width, height, color = 'white') {
     chartCanvas._width = width; // 차트의 너비 변경
     chartCanvas._height = height; // 차트의 높이 변경
-    if (!(configuration.plugins instanceof Array)) {
+    if (!Array.isArray(configuration.plugins)) {
         configuration.plugins = []; // configuration.plugins은 항상 배열
     }
     configuration.plugins.push({
