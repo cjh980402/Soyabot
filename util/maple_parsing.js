@@ -116,7 +116,9 @@ export class MapleUser {
 
     async isLatest() {
         this.#ggData = await linkParse(this.#ggURL); // this.#ggData는 함수
-        if (this.#ggData('div.alert.alert-warning.mt-3').length !== 0) {
+        if (this.#ggData('img[alt="검색결과 없음"]').length !== 0) {
+            throw new Error('메이플 GG에서 캐릭터 정보를 가져올 수 없습니다.');
+        } else if (this.#ggData('div.alert.alert-warning.mt-3').length !== 0) {
             throw new Error('메이플 GG 서버가 점검 중입니다.');
         } else if (
             /Bad Gateway|Error/.test(this.#ggData('title').text()) ||
@@ -369,7 +371,9 @@ export class MapleGuild {
     async isLatest() {
         const updateResult = await this.#updateGuild();
         this.#ggData = await linkParse(`${this.#ggURL}/members?sort=level`); // this.#ggData는 함수
-        if (this.#ggData('div.alert.alert-warning.mt-3').length !== 0) {
+        if (this.#ggData('img[alt="검색결과 없음"]').length !== 0) {
+            throw new Error('메이플 GG에서 길드 정보를 가져올 수 없습니다.');
+        } else if (this.#ggData('div.alert.alert-warning.mt-3').length !== 0) {
             throw new Error('메이플 GG 서버가 점검 중입니다.');
         } else if (
             /Bad Gateway|Error/.test(this.#ggData('title').text()) ||
