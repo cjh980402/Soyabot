@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-// import { cmd } from '../admin/admin_function.js';
+// import { exec } from '../admin/admin_function.js';
 import { MessageAttachment } from '../util/discord.js-extend.js';
 import { getMessageImage } from '../util/soyabot_util.js';
 import { BOT_SERVER_DOMAIN } from '../soyabot_config.js';
@@ -13,7 +13,7 @@ export async function messageExecute(message) {
     if (!imageURL) {
         return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
     } else {
-        /*const { stdout: portraitPic } = await cmd(`python3 ./util/gl2face_portrait.py ${imageURL}`, { encoding: 'buffer' }); // 파이썬 스크립트 실행
+        /*const { stdout: portraitPic } = await exec(`python3 ./util/gl2face_portrait.py ${imageURL}`, { encoding: 'buffer' }); // 파이썬 스크립트 실행
         const image = new MessageAttachment(portraitPic, 'portrait.png');*/
         const response = await fetch(`http://${BOT_SERVER_DOMAIN}/portrait/${encodeURIComponent(imageURL)}`);
         if (response.ok) {

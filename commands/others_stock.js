@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { cmd } from '../admin/admin_function.js';
+import { exec } from '../admin/admin_function.js';
 import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
 const chartType = {
     '일봉': 'candle/day',
@@ -67,7 +67,7 @@ async function getStockEmbed(search, searchRslt, type) {
         const min_52weeks = data.totalInfos['52주 최저'];
         const max_52weeks = data.totalInfos['52주 최고'];
 
-        const { stdout: stockPic } = await cmd(
+        const { stdout: stockPic } = await exec(
             `python3 ./util/make_stock_info.py ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`,
             { encoding: 'buffer' }
         );
@@ -103,7 +103,7 @@ async function getStockEmbed(search, searchRslt, type) {
         const min_52weeks = data.stockItemTotalInfos['52주 최저'];
         const max_52weeks = data.stockItemTotalInfos['52주 최고'];
 
-        const { stdout: stockPic } = await cmd(
+        const { stdout: stockPic } = await exec(
             `python3 ./util/make_stock_info.py ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`,
             { encoding: 'buffer' }
         );
@@ -131,7 +131,7 @@ async function getStockEmbed(search, searchRslt, type) {
         const min_52weeks = data.totalInfos['52주 최저'];
         const max_52weeks = data.totalInfos['52주 최고'];
 
-        const { stdout: stockPic } = await cmd(
+        const { stdout: stockPic } = await exec(
             `python3 ./util/make_stock_info.py ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`,
             { encoding: 'buffer' }
         );
@@ -178,7 +178,7 @@ async function getStockEmbed(search, searchRslt, type) {
         const min_52weeks = data.stockItemTotalInfos['52주 최저'];
         const max_52weeks = data.stockItemTotalInfos['52주 최고'];
 
-        const { stdout: stockPic } = await cmd(
+        const { stdout: stockPic } = await exec(
             `python3 ./util/make_stock_info.py ${chartURL} '${name} (${code}) ${type}' ${
                 data.currencyType.name
             } ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`,

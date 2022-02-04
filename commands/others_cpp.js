@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process';
 import { writeFile } from 'node:fs/promises';
-import { cmd } from '../admin/admin_function.js';
+import { exec } from '../admin/admin_function.js';
 import { ADMIN_ID } from '../soyabot_config.js';
 let cppProcess = null;
 
@@ -14,7 +14,7 @@ export async function messageExecute(message, args) {
         } else {
             const sourceCode = message.content.replace(/\s*.+?\s+/, '').trim();
             await writeFile(`./other_source/cpp_source.cpp`, sourceCode);
-            const { stdout: compile } = await cmd(
+            const { stdout: compile } = await exec(
                 'g++ ./other_source/cpp_source.cpp -o ./other_source/cpp_result.out',
                 { removeEscape: true }
             );

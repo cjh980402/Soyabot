@@ -1,5 +1,5 @@
 import { freemem, totalmem } from 'node:os';
-import { cmd } from '../admin/admin_function.js';
+import { exec } from '../admin/admin_function.js';
 
 function timeKoreanUnit(num) {
     // 시간 값에 한글 단위를 붙이는 함수
@@ -26,8 +26,8 @@ export const type = ['기타'];
 export async function messageExecute(message) {
     let memory;
     if (process.platform === 'linux') {
-        const memorycmd = (await cmd('free', { removeEscape: true })).stdout.split(/\s+/);
-        memory = 100 - Math.round((memorycmd[13] / memorycmd[8]) * 100);
+        const freeExec = (await exec('free', { removeEscape: true })).stdout.split(/\s+/);
+        memory = 100 - Math.round((freeExec[13] / freeExec[8]) * 100);
     } else {
         memory = 100 - Math.round((freemem() / totalmem()) * 100);
     }
@@ -43,8 +43,8 @@ export const commandData = {
 export async function commandExecute(interaction) {
     let memory;
     if (process.platform === 'linux') {
-        const memorycmd = (await cmd('free', { removeEscape: true })).stdout.split(/\s+/);
-        memory = 100 - Math.round((memorycmd[13] / memorycmd[8]) * 100);
+        const freeExec = (await exec('free', { removeEscape: true })).stdout.split(/\s+/);
+        memory = 100 - Math.round((freeExec[13] / freeExec[8]) * 100);
     } else {
         memory = 100 - Math.round((freemem() / totalmem()) * 100);
     }

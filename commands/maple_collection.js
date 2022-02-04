@@ -1,4 +1,4 @@
-import { cmd } from '../admin/admin_function.js';
+import { exec } from '../admin/admin_function.js';
 import { MessageAttachment } from '../util/discord.js-extend.js';
 import { MapleUser } from '../util/maple_parsing.js';
 
@@ -26,7 +26,7 @@ export async function messageExecute(message, args) {
     if (!collection) {
         return message.channel.send(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못하였습니다.`);
     } else {
-        const { stdout: collectionPic } = await cmd(
+        const { stdout: collectionPic } = await exec(
             `python3 ./util/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(
                 ' '
             )} ${collection[1].join(' ')}`,
@@ -67,7 +67,7 @@ export async function commandExecute(interaction) {
     if (!collection) {
         return interaction.followUp(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못하였습니다.`);
     } else {
-        const { stdout: collectionPic } = await cmd(
+        const { stdout: collectionPic } = await exec(
             `python3 ./util/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(
                 ' '
             )} ${collection[1].join(' ')}`,

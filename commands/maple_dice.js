@@ -1,4 +1,4 @@
-import { cmd } from '../admin/admin_function.js';
+import { exec } from '../admin/admin_function.js';
 import { MessageAttachment, MessageActionRow, MessageButton } from '../util/discord.js-extend.js';
 
 export const usage = `${client.prefix}데굴데굴`;
@@ -7,7 +7,7 @@ export const description = '- 추억의 메이플스토리 주사위!';
 export const type = ['메이플'];
 export async function messageExecute(message) {
     const nickname = message.member?.nickname ?? message.author.username;
-    const { stdout: dicePic } = await cmd(
+    const { stdout: dicePic } = await exec(
         `python3 ./util/maple_stats_drawer.py '${nickname.replace(/'/g, '$&"$&"$&')}'`,
         { encoding: 'buffer' }
     );
@@ -29,7 +29,7 @@ export async function messageExecute(message) {
     collector.on('collect', async () => {
         try {
             const nickname = message.member?.nickname ?? message.author.username;
-            const { stdout: dicePic } = await cmd(
+            const { stdout: dicePic } = await exec(
                 `python3 ./util/maple_stats_drawer.py '${nickname.replace(/'/g, '$&"$&"$&')}'`,
                 { encoding: 'buffer' }
             );
@@ -45,7 +45,7 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     const nickname = interaction.member?.nickname ?? interaction.user.username;
-    const { stdout: dicePic } = await cmd(
+    const { stdout: dicePic } = await exec(
         `python3 ./util/maple_stats_drawer.py '${nickname.replace(/'/g, '$&"$&"$&')}'`,
         { encoding: 'buffer' }
     );
@@ -70,7 +70,7 @@ export async function commandExecute(interaction) {
     collector.on('collect', async () => {
         try {
             const nickname = interaction.member?.nickname ?? interaction.user.username;
-            const { stdout: dicePic } = await cmd(
+            const { stdout: dicePic } = await exec(
                 `python3 ./util/maple_stats_drawer.py '${nickname.replace(/'/g, '$&"$&"$&')}'`,
                 { encoding: 'buffer' }
             );

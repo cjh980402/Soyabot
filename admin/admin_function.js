@@ -1,4 +1,4 @@
-import { exec as _exec } from 'node:child_process';
+import { exec as __exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import { botNotice, replyRoomID } from './bot_control.js';
 import {
@@ -15,7 +15,7 @@ import {
 } from './maple_auto_notice.js';
 import { Message } from '../util/discord.js-extend.js';
 import { ADMIN_ID } from '../soyabot_config.js';
-const exec = promisify(_exec);
+const _exec = promisify(__exec);
 
 export async function adminChat(message) {
     debugFunc(message);
@@ -32,7 +32,7 @@ export async function adminChat(message) {
         // eval의 내부가 async 함수의 리턴값이므로 await까지 해준다. js의 코드 스타일을 적용해서 출력한다.
     } else if (fullContent.startsWith(')')) {
         // 콘솔 명령 실행 후 출력
-        message.channel.sendSplitCode((await cmd(fullContent.slice(1).trim(), { removeEscape: true })).stdout, {
+        message.channel.sendSplitCode((await exec(fullContent.slice(1).trim(), { removeEscape: true })).stdout, {
             code: 'shell',
             split: { char: '' }
         });
@@ -53,8 +53,8 @@ export async function adminChat(message) {
     }
 }
 
-export async function cmd(command, { removeEscape = false, ...options } = {}) {
-    const promiseResult = exec(command, options);
+export async function exec(command, { removeEscape = false, ...options } = {}) {
+    const promiseResult = _exec(command, options);
     if (removeEscape) {
         // 제어 문자와 맨 끝 개행 제거
         try {

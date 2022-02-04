@@ -157,14 +157,14 @@ export default function (message) {
         if (/바\s*보|멍\s*청\s*이/.test(message.content)) {
             return message.channel.send('🤔');
         }
-        const cmd = Math.floor(Math.random() * 5);
-        if (cmd === 0) {
+        const msgType = Math.floor(Math.random() * 5);
+        if (msgType === 0) {
             return message.channel.send('ㅋㅋㅋ');
-        } else if (cmd === 1) {
+        } else if (msgType === 1) {
             return message.channel.send('제로조아');
-        } else if (cmd === 2) {
+        } else if (msgType === 2) {
             return message.channel.send('헤비...');
-        } else if (cmd === 3) {
+        } else if (msgType === 3) {
             return message.channel.send('이노시스 조아');
         } else {
             return message.channel.send(
@@ -172,8 +172,8 @@ export default function (message) {
             );
         }
     } else if (message.content.includes('ㅊㅊㅊㅊ')) {
-        const cmd = Math.floor(Math.random() * 3);
-        if (cmd === 0) {
+        const msgType = Math.floor(Math.random() * 3);
+        if (msgType === 0) {
             return message.channel.send('👍');
         }
     }

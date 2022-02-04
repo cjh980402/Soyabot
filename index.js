@@ -5,7 +5,7 @@ import { Client, Collection, Permissions, botClientOption } from './util/discord
 import { readdirSync } from 'node:fs';
 import { setTimeout } from 'node:timers/promises';
 import { TOKEN, PREFIX, ADMIN_ID } from './soyabot_config.js';
-import { adminChat, initClient, cmd } from './admin/admin_function.js';
+import { adminChat, initClient, exec } from './admin/admin_function.js';
 import { replyAdmin } from './admin/bot_control.js';
 import { musicActiveControl, musicButtonControl } from './util/music_play.js';
 import botChatting from './util/bot_chatting.js';
@@ -44,7 +44,7 @@ try {
     replyAdmin(`${client.user.tag}이 작동 중입니다.`);
 } catch (err) {
     console.error('로그인 에러 발생:', err);
-    await cmd('npm stop');
+    await exec('npm stop');
 }
 /**
  * 클라이언트 이벤트
@@ -54,7 +54,7 @@ client.on('warn', console.log);
 client.on('error', async (err) => {
     console.error('클라이언트 에러 발생:', err);
     await setTimeout(30000); // 30초 대기
-    await cmd('npm restart'); // 재시작
+    await exec('npm restart'); // 재시작
 });
 
 client.on('voiceStateUpdate', musicActiveControl); // 유저 음성채팅 상태 변경 이벤트

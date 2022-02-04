@@ -1,4 +1,4 @@
-import { cmd } from '../admin/admin_function.js';
+import { exec } from '../admin/admin_function.js';
 import { MessageAttachment } from '../util/discord.js-extend.js';
 import { MapleUser } from '../util/maple_parsing.js';
 
@@ -29,7 +29,7 @@ export async function messageExecute(message, args) {
     const union = mapleUserInfo.Union();
     const seed = mapleUserInfo.Seed();
 
-    const { stdout: profilePic } = await cmd(
+    const { stdout: profilePic } = await exec(
         `python3 ./util/maple_gg_profile.py ${mapleUserInfo.userImg(false)} ${
             mapleUserInfo.Name
         } ${mapleUserInfo.serverName()} ${level[0]} '${
@@ -76,7 +76,7 @@ export async function commandExecute(interaction) {
     const union = mapleUserInfo.Union();
     const seed = mapleUserInfo.Seed();
 
-    const { stdout: profilePic } = await cmd(
+    const { stdout: profilePic } = await exec(
         `python3 ./util/maple_gg_profile.py ${mapleUserInfo.userImg(false)} ${
             mapleUserInfo.Name
         } ${mapleUserInfo.serverName()} ${level[0]} '${

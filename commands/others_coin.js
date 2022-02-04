@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { cmd } from '../admin/admin_function.js';
+import { exec } from '../admin/admin_function.js';
 import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
 const chartType = {
     '1일': 'd',
@@ -45,7 +45,7 @@ async function getCoinEmbed(searchRslt, type) {
     const maxPrice = todayData.high_price.toLocaleString();
     const amount = todayData.acc_trade_price_24h.toUnitString(2);
 
-    const { stdout: coinPic } = await cmd(
+    const { stdout: coinPic } = await exec(
         `python3 ./util/make_coin_info.py ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice} ${changeType} '${changeString}' ${minPrice} ${maxPrice}`,
         {
             encoding: 'buffer'
