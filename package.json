@@ -33,7 +33,7 @@
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^4.4.1",
     "hangul-js": "^0.2.6",
-    "mathjs": "^10.1.0",
+    "mathjs": "^10.1.1",
     "node-fetch": "^3.2.0",
     "simple-youtube-api": "^5.2.1",
     "sodium": "^3.0.2",
