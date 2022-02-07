@@ -29,9 +29,6 @@ export async function messageExecute(message, args) {
 
     /*const mapleGuildInfo = new MapleGuild(serverEngName[args[0]], args[1]);
     const isLatest = await mapleGuildInfo.isLatest();
-    if (mapleGuildInfo.MemberCount === 0) {
-        return message.channel.send('존재하지 않는 길드입니다.');
-    }
 
     message.channel.send('정보 가져오는 중...');
     const rslt = `${args[0]} ${args[1]} 길드 (${mapleGuildInfo.MemberCount}명)\n길드원 목록 갱신 ${isLatest ? '성공' : '실패'}\n\n${(await mapleGuildInfo.memberDataList()).join('\n\n')}`;
@@ -43,7 +40,7 @@ export async function messageExecute(message, args) {
     if (response.ok) {
         return message.channel.sendSplitCode(await response.text(), { split: { char: '\n' } });
     } else {
-        return message.channel.send('길드 정보 작업을 실패하였습니다.');
+        return message.channel.send('길드 정보를 가져올 수 없습니다.');
     }
 }
 export const commandData = {
@@ -71,9 +68,6 @@ export async function commandExecute(interaction) {
 
     /*const mapleGuildInfo = new MapleGuild(serverEngName[serverName], guildName);
     const isLatest = await mapleGuildInfo.isLatest();
-    if (mapleGuildInfo.MemberCount === 0) {
-        return interaction.followUp('존재하지 않는 길드입니다.');
-    }
 
     await interaction.editReply('정보 가져오는 중...');
     const rslt = `${serverName} ${guildName} 길드 (${mapleGuildInfo.MemberCount}명)\n길드원 목록 갱신 ${isLatest ? '성공' : '실패'}\n\n${(await mapleGuildInfo.memberDataList()).join('\n\n')}`;
@@ -85,6 +79,6 @@ export async function commandExecute(interaction) {
     if (response.ok) {
         return interaction.sendSplitCode(await response.text(), { split: { char: '\n' } });
     } else {
-        return interaction.followUp('길드 정보 작업을 실패하였습니다.');
+        return interaction.followUp('길드 정보를 가져올 수 없습니다.');
     }
 }
