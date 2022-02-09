@@ -1,15 +1,4 @@
-const probTable = {
-    '[원더블랙] 아로': 332,
-    '[원더블랙] 폴라': 332,
-    '[원더블랙] 하링': 332,
-    '맑음하트': 1200,
-    '빠직번개': 1200,
-    '눈물구름': 1200,
-    '설탕탕': 1200,
-    '초코코': 1200,
-    '고농축 프리미엄 생명의 물': 1502,
-    '오가닉 원더 쿠키': 1502
-};
+import { MapleProb } from '../util/maple_probtable.js';
 
 export const usage = `${client.prefix}원더베리 (횟수)`;
 export const command = ['원더베리', 'ㅇㄷㅂㄹ', '원기베리', 'ㅇㄱㅂㄹ'];
@@ -21,8 +10,8 @@ export async function messageExecute(message, args) {
     }
     if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
         let rslt = '<원더베리 확률>';
-        for (const key in probTable) {
-            rslt += `\n${key}: ${probTable[key] / 100}%`;
+        for (const key in MapleProb.WONDERBERRY_PROBTABLE) {
+            rslt += `\n${key}: ${MapleProb.WONDERBERRY_PROBTABLE[key] / 100}%`;
         }
         return message.channel.send(rslt);
     }
@@ -35,13 +24,13 @@ export async function messageExecute(message, args) {
     // count는 원더베리 횟수
     // random은 0이상 1미만
     const list = {}; // 횟수 담을 객체
-    const propsum = Object.values(probTable).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
+    const propsum = Object.values(MapleProb.WONDERBERRY_PROBTABLE).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
 
     for (let i = 0; i < count; i++) {
         const now = Math.floor(Math.random() * propsum + 1);
         let sum = 0;
-        for (const key in probTable) {
-            sum += probTable[key];
+        for (const key in MapleProb.WONDERBERRY_PROBTABLE) {
+            sum += MapleProb.WONDERBERRY_PROBTABLE[key];
             if (now <= sum) {
                 list[key] = (list[key] ?? 0) + 1;
                 break;
@@ -50,7 +39,7 @@ export async function messageExecute(message, args) {
     }
 
     let rslt = `원더베리 ${count}회 결과\n`;
-    for (const key in probTable) {
+    for (const key in MapleProb.WONDERBERRY_PROBTABLE) {
         if (list[key]) {
             rslt += `\n${key}: ${list[key]}회`;
         }
@@ -73,8 +62,8 @@ export async function commandExecute(interaction) {
 
     if (countString === '확률' || countString === 'ㅎㄹ') {
         let rslt = '<원더베리 확률>';
-        for (const key in probTable) {
-            rslt += `\n${key}: ${probTable[key] / 100}%`;
+        for (const key in MapleProb.WONDERBERRY_PROBTABLE) {
+            rslt += `\n${key}: ${MapleProb.WONDERBERRY_PROBTABLE[key] / 100}%`;
         }
         return interaction.followUp(rslt);
     }
@@ -87,13 +76,13 @@ export async function commandExecute(interaction) {
     // count는 원더베리 횟수
     // random은 0이상 1미만
     const list = {}; // 횟수 담을 객체
-    const propsum = Object.values(probTable).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
+    const propsum = Object.values(MapleProb.WONDERBERRY_PROBTABLE).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
 
     for (let i = 0; i < count; i++) {
         const now = Math.floor(Math.random() * propsum + 1);
         let sum = 0;
-        for (const key in probTable) {
-            sum += probTable[key];
+        for (const key in MapleProb.WONDERBERRY_PROBTABLE) {
+            sum += MapleProb.WONDERBERRY_PROBTABLE[key];
             if (now <= sum) {
                 list[key] = (list[key] ?? 0) + 1;
                 break;
@@ -102,7 +91,7 @@ export async function commandExecute(interaction) {
     }
 
     let rslt = `원더베리 ${count}회 결과\n`;
-    for (const key in probTable) {
+    for (const key in MapleProb.WONDERBERRY_PROBTABLE) {
         if (list[key]) {
             rslt += `\n${key}: ${list[key]}회`;
         }

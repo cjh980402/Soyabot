@@ -1,7 +1,4 @@
-const hairList = {
-    남: ['채운 헤어', '포숑 헤어', '블링 루야 헤어', '산구름 헤어', '따뜻한 라떼 헤어', '포동이 헤어'],
-    여: ['채화 헤어', '메블리 헤어', '버블리 헤어', '병아리콩 헤어', '베이글 헤어', '다니카 헤어']
-}; // 헤어는 모두 동일 확률이므로 배열을 이용
+import { MapleProb } from '../util/maple_probtable.js';
 
 export const usage = `${client.prefix}헤어 (성별) (목표 헤어 이름)`;
 export const command = ['헤어', 'ㅎㅇ'];
@@ -11,18 +8,24 @@ export const description = `- 해당 성별의 목표 헤어를 얻을 때까지
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length === 1 && (args[0] === '확률' || args[0] === 'ㅎㄹ')) {
-        const rslt = `<로얄 헤어 확률>\n\n- 남자 헤어\n${hairList['남']
+        const rslt = `<로얄 헤어 확률>\n\n- 남자 헤어\n${MapleProb.ROYALHAIR_PROBTABLE['남']
             .map((v) => `${v}: 16.67%`)
-            .join('\n')}\n\n- 여자 헤어\n${hairList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
+            .join('\n')}\n\n- 여자 헤어\n${MapleProb.ROYALHAIR_PROBTABLE['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
         return message.channel.send(rslt);
     }
     if (args.length < 2) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
     const gender = args.shift()[0];
-    const goalhair = (hairList[gender] ?? []).findIndex((v) => v.replace(/\s+/, '').includes(args.join('')));
+    const goalhair = (MapleProb.ROYALHAIR_PROBTABLE[gender] ?? []).findIndex((v) =>
+        v.replace(/\s+/, '').includes(args.join(''))
+    );
     if (goalhair === -1) {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
+        return message.channel.send(
+            `**${usage}**\n현재 로얄 헤어의 시뮬레이션만 수행할 수 있습니다.\n남: ${MapleProb.ROYALHAIR_PROBTABLE[
+                '남'
+            ].join(', ')}\n여: ${MapleProb.ROYALHAIR_PROBTABLE['여'].join(', ')}`
+        );
     }
     // gender은 성별, goalhair는 목표 헤어의 인덱스
     // random은 0이상 1미만
@@ -30,13 +33,13 @@ export async function messageExecute(message, args) {
 
     while (list[list.length - 1] !== goalhair) {
         // 목표 헤어을 띄웠으면 종료
-        const now = Math.floor(Math.random() * (hairList[gender].length - +(list.length > 0)));
+        const now = Math.floor(Math.random() * (MapleProb.ROYALHAIR_PROBTABLE[gender].length - +(list.length > 0)));
         list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 헤어의 인덱스 저장, now 뒤에 더하는 이유는 최근 헤어 제외 목적
     }
 
-    const rslt = `로얄 헤어 (목표: ${hairList[gender][goalhair]}) 결과\n\n수행 횟수: ${
+    const rslt = `로얄 헤어 (목표: ${MapleProb.ROYALHAIR_PROBTABLE[gender][goalhair]}) 결과\n\n수행 횟수: ${
         list.length
-    }회\n\n진행 과정\n${list.map((v, i) => `${i + 1}번째: ${hairList[gender][v]}`).join('\n')}`;
+    }회\n\n진행 과정\n${list.map((v, i) => `${i + 1}번째: ${MapleProb.ROYALHAIR_PROBTABLE[gender][v]}`).join('\n')}`;
     return message.channel.send(rslt);
 }
 export const commandData = {
@@ -57,8 +60,7 @@ export const commandData = {
                     name: '목표_헤어_이름',
                     type: 'STRING',
                     description: '시뮬레이션의 목표 헤어',
-                    required: true,
-                    choices: hairList['남'].map((v) => ({ name: v, value: v }))
+                    required: true
                 }
             ]
         },
@@ -71,8 +73,7 @@ export const commandData = {
                     name: '목표_헤어_이름',
                     type: 'STRING',
                     description: '시뮬레이션의 목표 헤어',
-                    required: true,
-                    choices: hairList['여'].map((v) => ({ name: v, value: v }))
+                    required: true
                 }
             ]
         }
@@ -82,25 +83,38 @@ export async function commandExecute(interaction) {
     const subcommand = interaction.options.getSubcommand();
 
     if (subcommand === '확률') {
-        const rslt = `<로얄 헤어 확률>\n\n- 남자 헤어\n${hairList['남']
+        const rslt = `<로얄 헤어 확률>\n\n- 남자 헤어\n${MapleProb.ROYALHAIR_PROBTABLE['남']
             .map((v) => `${v}: 16.67%`)
-            .join('\n')}\n\n- 여자 헤어\n${hairList['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
+            .join('\n')}\n\n- 여자 헤어\n${MapleProb.ROYALHAIR_PROBTABLE['여'].map((v) => `${v}: 16.67%`).join('\n')}`;
         return interaction.followUp(rslt);
     } else {
-        const goalhair = hairList[subcommand].indexOf(interaction.options.getString('목표_헤어_이름'));
+        const goalhair = MapleProb.ROYALHAIR_PROBTABLE[subcommand].findIndex((v) =>
+            v.replace(/\s+/, '').includes(interaction.options.getString('목표_헤어_이름'))
+        );
+        if (goalhair === -1) {
+            return interaction.followUp(
+                `**${usage}**\n현재 로얄 헤어의 시뮬레이션만 수행할 수 있습니다.\n남: ${MapleProb.ROYALHAIR_PROBTABLE[
+                    '남'
+                ].join(', ')}\n여: ${MapleProb.ROYALHAIR_PROBTABLE['여'].join(', ')}`
+            );
+        }
         // subcommand은 성별, goalhair는 목표 헤어의 인덱스
         // random은 0이상 1미만
         const list = []; // 진행 과정 담을 배열 (인덱스 저장)
 
         while (list[list.length - 1] !== goalhair) {
             // 목표 헤어를 띄웠으면 종료
-            const now = Math.floor(Math.random() * (hairList[subcommand].length - +(list.length > 0)));
+            const now = Math.floor(
+                Math.random() * (MapleProb.ROYALHAIR_PROBTABLE[subcommand].length - +(list.length > 0))
+            );
             list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 헤어의 인덱스 저장, now 뒤에 더하는 이유는 최근 헤어 제외 목적
         }
 
-        const rslt = `로얄 헤어 (목표: ${hairList[subcommand][goalhair]}) 결과\n\n수행 횟수: ${
+        const rslt = `로얄 헤어 (목표: ${MapleProb.ROYALHAIR_PROBTABLE[subcommand][goalhair]}) 결과\n\n수행 횟수: ${
             list.length
-        }회\n\n진행 과정\n${list.map((v, i) => `${i + 1}번째: ${hairList[subcommand][v]}`).join('\n')}`;
+        }회\n\n진행 과정\n${list
+            .map((v, i) => `${i + 1}번째: ${MapleProb.ROYALHAIR_PROBTABLE[subcommand][v]}`)
+            .join('\n')}`;
         return interaction.followUp(rslt);
     }
 }

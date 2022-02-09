@@ -1,50 +1,19 @@
-const probTable = {
-    스윗: {
-        '눈냥냥': 960,
-        '토냥냥': 960,
-        '판냥냥': 960,
-        '리틀 울프룻': 960,
-        '리틀 무토': 960,
-        '리틀 램나나': 960,
-        '피치버블': 960,
-        '리프버블': 960,
-        '민트버블': 960,
-        '[루나 쁘띠] 토트': 388,
-        '[루나 쁘띠] 벨라': 388,
-        '[루나 쁘띠] 쁘띠 데스': 388,
-        '루나 크리스탈 키': 196
-    },
-    드림: {
-        '눈냥냥': 840,
-        '토냥냥': 840,
-        '판냥냥': 840,
-        '리틀 울프룻': 840,
-        '리틀 무토': 840,
-        '리틀 램나나': 840,
-        '피치버블': 840,
-        '리프버블': 840,
-        '민트버블': 840,
-        '[루나 쁘띠] 토트': 680,
-        '[루나 쁘띠] 벨라': 680,
-        '[루나 쁘띠] 쁘띠 데스': 680,
-        '루나 크리스탈 키': 400
-    }
-};
+import { MapleProb } from '../util/maple_probtable.js';
 
 export const usage = `${client.prefix}루나크리스탈 (카테고리) (횟수)`;
 export const command = ['루나크리스탈', 'ㄹㄴㅋㄹㅅㅌ', 'ㄹㄴㅋㄽㅌ'];
 export const description = `- 카테고리(스윗, 드림)와 1 ~ 20000 범위의 횟수를 입력하면 그만큼의 루나크리스탈 시뮬을 수행합니다.\n- 참고. ${client.prefix}루나크리스탈 (카테고리) 확률`;
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
-    if (args.length > 2 || !probTable[args[0]]) {
+    if (args.length > 2 || !MapleProb.LUNACRYSTAL_PROBTABLE[args[0]]) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
     const category = args[0];
     if (args[1] === '확률' || args[1] === 'ㅎㄹ') {
         let rslt = `<루나크리스탈 ${category} 확률>`;
-        for (const key in probTable[category]) {
-            rslt += `\n${key}: ${probTable[category][key] / 100}%`;
+        for (const key in MapleProb.LUNACRYSTAL_PROBTABLE[category]) {
+            rslt += `\n${key}: ${MapleProb.LUNACRYSTAL_PROBTABLE[category][key] / 100}%`;
         }
         return message.channel.send(rslt);
     }
@@ -57,13 +26,13 @@ export async function messageExecute(message, args) {
     // category는 루나크리스탈 종류, count는 루나크리스탈 횟수
     // random은 0이상 1미만
     const list = {}; // 횟수 담을 객체
-    const probSum = Object.values(probTable[category]).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
+    const probSum = Object.values(MapleProb.LUNACRYSTAL_PROBTABLE[category]).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
 
     for (let i = 0; i < count; i++) {
         const now = Math.floor(Math.random() * probSum + 1);
         let sum = 0;
-        for (const key in probTable[category]) {
-            sum += probTable[category][key];
+        for (const key in MapleProb.LUNACRYSTAL_PROBTABLE[category]) {
+            sum += MapleProb.LUNACRYSTAL_PROBTABLE[category][key];
             if (now <= sum) {
                 list[key] = (list[key] ?? 0) + 1;
                 break;
@@ -72,7 +41,7 @@ export async function messageExecute(message, args) {
     }
 
     let rslt = `루나크리스탈 ${category} ${count}회 결과\n`;
-    for (const key in probTable[category]) {
+    for (const key in MapleProb.LUNACRYSTAL_PROBTABLE[category]) {
         if (list[key]) {
             rslt += `\n${key}: ${list[key]}회`;
         }
@@ -88,7 +57,7 @@ export const commandData = {
             type: 'STRING',
             description: '시뮬레이션을 수행할 루나크리스탈 카테고리',
             required: true,
-            choices: Object.keys(probTable).map((v) => ({ name: v, value: v }))
+            choices: Object.keys(MapleProb.LUNACRYSTAL_PROBTABLE).map((v) => ({ name: v, value: v }))
         },
         {
             name: '횟수',
@@ -103,8 +72,8 @@ export async function commandExecute(interaction) {
 
     if (countString === '확률' || countString === 'ㅎㄹ') {
         let rslt = `<루나크리스탈 ${category} 확률>`;
-        for (const key in probTable[category]) {
-            rslt += `\n${key}: ${probTable[category][key] / 100}%`;
+        for (const key in MapleProb.LUNACRYSTAL_PROBTABLE[category]) {
+            rslt += `\n${key}: ${MapleProb.LUNACRYSTAL_PROBTABLE[category][key] / 100}%`;
         }
         return interaction.followUp(rslt);
     }
@@ -117,13 +86,13 @@ export async function commandExecute(interaction) {
     // category는 루나크리스탈 종류, count는 루나크리스탈 횟수
     // random은 0이상 1미만
     const list = {}; // 횟수 담을 객체
-    const probSum = Object.values(probTable[category]).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
+    const probSum = Object.values(MapleProb.LUNACRYSTAL_PROBTABLE[category]).reduce((acc, cur) => acc + cur); // 확률표의 확률값의 합
 
     for (let i = 0; i < count; i++) {
         const now = Math.floor(Math.random() * probSum + 1);
         let sum = 0;
-        for (const key in probTable[category]) {
-            sum += probTable[category][key];
+        for (const key in MapleProb.LUNACRYSTAL_PROBTABLE[category]) {
+            sum += MapleProb.LUNACRYSTAL_PROBTABLE[category][key];
             if (now <= sum) {
                 list[key] = (list[key] ?? 0) + 1;
                 break;
@@ -132,7 +101,7 @@ export async function commandExecute(interaction) {
     }
 
     let rslt = `루나크리스탈 ${category} ${count}회 결과\n`;
-    for (const key in probTable[category]) {
+    for (const key in MapleProb.LUNACRYSTAL_PROBTABLE[category]) {
         if (list[key]) {
             rslt += `\n${key}: ${list[key]}회`;
         }
