@@ -14,11 +14,11 @@ import {
     stopUrus
 } from './maple_auto_notice.js';
 import { Message } from '../util/discord.js-extend.js';
+import { MapleProb } from '../util/maple_probtable.js';
 import { ADMIN_ID } from '../soyabot_config.js';
 const _exec = promisify(__exec);
 
 export async function adminChat(message) {
-    debugFunc(message);
     const fullContent = await message.fetchfullContent();
     const room = /^\*(.+)\*\s/.exec(fullContent)?.[1];
     if (fullContent.startsWith('>')) {
@@ -85,16 +85,14 @@ export async function initClient(TOKEN) {
         "CREATE TABLE IF NOT EXISTS messagedb(channelsenderid text primary key, messagecnt integer default 0, lettercnt integer default 0, lastmessage text default '', lasttime datetime default (datetime('now', 'localtime')))"
     );
 
+    await MapleProb.fetchAllProb();
     await client.login(TOKEN);
     await client.application.fetch();
+
     client.setMaxListeners(20); // 이벤트 개수 제한 증가
     startNotice(); // 공지 자동 알림 기능
     startUpdate(); // 업데이트 자동 알림 기능
     startTest(); // 테섭 자동 알림 기능
     startTestPatch(); // 테섭 패치 감지 기능
     startUrus(); // 우르스 2배 종료 30분 전 알림
-}
-
-function debugFunc(message) {
-    // 특정 기능 디버깅할 때 내용을 바꿔서 테스트 해주면 됨
 }

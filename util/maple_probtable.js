@@ -33,7 +33,7 @@ export class MapleProb extends null {
                 MapleProb.fetchRoyalStyle(),
                 MapleProb.fetchWonderBerry()
             ]);
-            setTimeout(MapleProb.fetchAllProb, 120 * 60 * 1000);
+            setTimeout(MapleProb.fetchAllProb, 7200000); // 2시간 후에 재실행
         } catch {}
     }
 
@@ -142,5 +142,3 @@ export class MapleProb extends null {
         }
     }
 }
-
-MapleProb.fetchAllProb();
