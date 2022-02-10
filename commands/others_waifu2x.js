@@ -1,4 +1,4 @@
-import fetch, { FormData } from 'node-fetch';
+import { fetch, FormData } from 'undici';
 import { getMessageImage } from '../util/soyabot_util.js';
 import { DEEP_API_KEY } from '../soyabot_config.js';
 

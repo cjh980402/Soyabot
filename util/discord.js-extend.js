@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import YouTubeAPI from 'simple-youtube-api';
 import { PARTS, ENDPOINTS } from 'simple-youtube-api/src/util/Constants.js';
 import Video from 'simple-youtube-api/src/structures/Video.js';

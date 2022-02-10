@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import { BOT_SERVER_DOMAIN } from '../soyabot_config.js';
 // import { MapleGuild } from '../util/maple_parsing.js';
 const serverEngName = {
@@ -40,6 +40,7 @@ export async function messageExecute(message, args) {
     if (response.ok) {
         return message.channel.sendSplitCode(await response.text(), { split: { char: '\n' } });
     } else {
+        for await (const _ of response.body); // 메모리 누수 방지를 위한 force consumption of body
         return message.channel.send('길드 정보를 가져올 수 없습니다.');
     }
 }
@@ -79,6 +80,7 @@ export async function commandExecute(interaction) {
     if (response.ok) {
         return interaction.sendSplitCode(await response.text(), { split: { char: '\n' } });
     } else {
+        for await (const _ of response.body); // 메모리 누수 방지를 위한 force consumption of body
         return interaction.followUp('길드 정보를 가져올 수 없습니다.');
     }
 }

@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import { load } from 'cheerio';
 import { setTimeout } from 'node:timers/promises';
 

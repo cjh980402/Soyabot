@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import { load } from 'cheerio';
 
 export const usage = `${client.prefix}미세먼지`;

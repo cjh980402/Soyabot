@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import { load } from 'cheerio';
 import { botNotice, replyAdmin } from './bot_control.js';
 import { MessageEmbed } from '../util/discord.js-extend.js';
@@ -154,10 +154,10 @@ export function startTestPatch() {
                 const patchURL = `http://maplestory.dn.nexoncdn.co.kr/PatchT/01${patchVersion}/01${
                     patchVersion - 1
                 }to01${patchVersion}.patch`;
-                const patchHeader = (await fetch(patchURL)).headers;
-                if (patchHeader.get('content-type') === 'application/octet-stream') {
+                const response = await fetch(patchURL);
+                if (response.headers.get('content-type') === 'application/octet-stream') {
                     // 파일이 감지된 경우
-                    const fileSize = +patchHeader.get('content-length') / 1024 / 1024;
+                    const fileSize = +response.headers.get('content-length') / 1024 / 1024;
                     db.insert('testpatch', { version: patchVersion, url: patchURL });
                     botNotice(
                         `[Tver 1.2.${patchVersion}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기: ${fileSize.toFixed(
@@ -166,6 +166,7 @@ export function startTestPatch() {
                         'testpatch'
                     );
                 }
+                for await (const _ of response.body); // 메모리 누수 방지를 위한 force consumption of body
             } catch (err) {
                 replyAdmin(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${err.stack ?? err._p}`);
             }

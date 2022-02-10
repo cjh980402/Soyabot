@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 
 async function farm_monster(monster) {
     // 몬스터 이름

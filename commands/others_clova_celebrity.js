@@ -1,4 +1,4 @@
-import fetch, { FormData } from 'node-fetch';
+import { fetch, FormData } from 'undici';
 import { getMessageImage } from '../util/soyabot_util.js';
 import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '../soyabot_config.js';
 

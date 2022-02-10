@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 // import { exec } from '../admin/admin_function.js';
 import { MessageAttachment } from '../util/discord.js-extend.js';
 import { getMessageImage } from '../util/soyabot_util.js';
@@ -20,6 +20,7 @@ export async function messageExecute(message) {
             const image = new MessageAttachment(Buffer.from(await response.arrayBuffer()), 'portrait.png');
             return message.channel.send({ files: [image] });
         } else {
+            for await (const _ of response.body); // 메모리 누수 방지를 위한 force consumption of body
             return message.channel.send('그림 작업을 실패하였습니다.');
         }
     }

@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import { KAKAO_API_KEY } from '../soyabot_config.js';
 const langList = {
     한: ['한국어', 'kr'],
