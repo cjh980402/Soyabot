@@ -40,6 +40,9 @@ export class MapleProb extends null {
     static async fetchGoldApple() {
         // 골드애플 파싱
         const appleData = await getRawProbData('https://maplestory.nexon.com/Guide/CashShop/Probability/GoldApple');
+        if (appleData.length < 2) {
+            return;
+        }
 
         MapleProb.GOLDAPPLE_PROBTABLE = {};
         for (let i = 0; i < appleData.length; i += 2) {
@@ -56,6 +59,9 @@ export class MapleProb extends null {
         const sweetData = await getRawProbData(
             'https://maplestory.nexon.com/Guide/CashShop/Probability/LunaCrystalSweet'
         );
+        if (sweetData.length < 2) {
+            return;
+        }
 
         MapleProb.LUNACRYSTAL_PROBTABLE['스윗'] = {};
         for (let i = 0; i < sweetData.length; i += 2) {
@@ -63,12 +69,19 @@ export class MapleProb extends null {
                 .eq(i + 1)
                 .text()
                 .replace(/\D+/g, '');
-            MapleProb.LUNACRYSTAL_PROBTABLE['스윗'][sweetData.eq(i).text()] = prob;
+            if (prob === 388) {
+                MapleProb.LUNACRYSTAL_PROBTABLE['스윗'][`[루나 쁘띠] ${sweetData.eq(i).text()}`] = prob;
+            } else {
+                MapleProb.LUNACRYSTAL_PROBTABLE['스윗'][sweetData.eq(i).text()] = prob;
+            }
         }
 
         const dreamData = await getRawProbData(
             'https://maplestory.nexon.com/Guide/CashShop/Probability/LunaCrystalDream'
         );
+        if (dreamData.length < 2) {
+            return;
+        }
 
         MapleProb.LUNACRYSTAL_PROBTABLE['드림'] = {};
         for (let i = 0; i < dreamData.length; i += 2) {
@@ -76,7 +89,11 @@ export class MapleProb extends null {
                 .eq(i + 1)
                 .text()
                 .replace(/\D+/g, '');
-            MapleProb.LUNACRYSTAL_PROBTABLE['드림'][dreamData.eq(i).text()] = prob;
+            if (prob === 680) {
+                MapleProb.LUNACRYSTAL_PROBTABLE['드림'][`[루나 쁘띠] ${dreamData.eq(i).text()}`] = prob;
+            } else {
+                MapleProb.LUNACRYSTAL_PROBTABLE['드림'][dreamData.eq(i).text()] = prob;
+            }
         }
     }
 
@@ -85,6 +102,9 @@ export class MapleProb extends null {
         const faceData = await getRawProbData(
             'https://maplestory.nexon.com/Guide/CashShop/Probability/RoyalPlasticSurgeryCoupon'
         );
+        if (faceData.length < 4) {
+            return;
+        }
 
         MapleProb.ROYALFACE_PROBTABLE['남'] = [];
         for (let i = 0; i < faceData.length / 2; i += 2) {
@@ -101,6 +121,9 @@ export class MapleProb extends null {
         const hairData = await getRawProbData(
             'https://maplestory.nexon.com/Guide/CashShop/Probability/RoyalHairCoupon'
         );
+        if (hairData.length < 4) {
+            return;
+        }
 
         MapleProb.ROYALHAIR_PROBTABLE['남'] = [];
         for (let i = 0; i < hairData.length / 2; i += 2) {
@@ -115,6 +138,9 @@ export class MapleProb extends null {
     static async fetchRoyalStyle() {
         // 로얄스타일 파싱
         const royalData = await getRawProbData('https://maplestory.nexon.com/Guide/CashShop/Probability/RoyalStyle');
+        if (royalData.length < 2) {
+            return;
+        }
 
         MapleProb.ROYALSTYLE_PROBTABLE = {};
         for (let i = 0; i < royalData.length; i += 2) {
@@ -131,6 +157,9 @@ export class MapleProb extends null {
         const wonderData = await getRawProbData(
             'https://maplestory.nexon.com/Guide/CashShop/Probability/WispsWonderBerry'
         );
+        if (wonderData.length < 2) {
+            return;
+        }
 
         MapleProb.WONDERBERRY_PROBTABLE = {};
         for (let i = 0; i < wonderData.length; i += 2) {
@@ -138,7 +167,11 @@ export class MapleProb extends null {
                 .eq(i + 1)
                 .text()
                 .replace(/\D+/g, '');
-            MapleProb.WONDERBERRY_PROBTABLE[wonderData.eq(i).text()] = prob;
+            if (prob === 332) {
+                MapleProb.WONDERBERRY_PROBTABLE[`[원더 블랙] ${wonderData.eq(i).text()}`] = prob;
+            } else {
+                MapleProb.WONDERBERRY_PROBTABLE[wonderData.eq(i).text()] = prob;
+            }
         }
     }
 }
