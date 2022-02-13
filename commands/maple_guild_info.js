@@ -75,7 +75,7 @@ export async function commandExecute(interaction) {
 
     return interaction.sendSplitCode(rslt, { split: { char: '\n' } });*/
     const { statusCode, body } = await request(
-        `http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(args[0])}/${encodeURIComponent(args[1])}`
+        `http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(serverName)}/${encodeURIComponent(guildName)}`
     );
     if (200 <= statusCode && statusCode <= 299) {
         return interaction.sendSplitCode(await body.text(), { split: { char: '\n' } });
