@@ -35,8 +35,11 @@ export async function messageExecute(message, args) {
 
     return message.channel.sendSplitCode(rslt, { split: { char: '\n' } });*/
     const { statusCode, body } = await request(
-        `http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(args[0])}/${encodeURIComponent(args[1])}`
-    );
+        `http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(args[0])}/${encodeURIComponent(args[1])}`,
+        {
+            headersTimeout: 240000
+        }
+    ); // 길드 작업은 오래걸리므로 시간 제한을 4분으로 변경
     if (200 <= statusCode && statusCode <= 299) {
         return message.channel.sendSplitCode(await body.text(), { split: { char: '\n' } });
     } else {
@@ -75,8 +78,11 @@ export async function commandExecute(interaction) {
 
     return interaction.sendSplitCode(rslt, { split: { char: '\n' } });*/
     const { statusCode, body } = await request(
-        `http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(serverName)}/${encodeURIComponent(guildName)}`
-    );
+        `http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(serverName)}/${encodeURIComponent(guildName)}`,
+        {
+            headersTimeout: 240000
+        }
+    ); // 길드 작업은 오래걸리므로 시간 제한을 4분으로 변경
     if (200 <= statusCode && statusCode <= 299) {
         return interaction.sendSplitCode(await body.text(), { split: { char: '\n' } });
     } else {
