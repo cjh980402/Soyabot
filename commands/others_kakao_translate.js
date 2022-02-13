@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 import { KAKAO_API_KEY } from '../soyabot_config.js';
 const langList = {
     한: ['한국어', 'kr'],
@@ -27,15 +27,15 @@ async function tran(source, target, text) {
     params.set('src_lang', source);
     params.set('target_lang', target);
     params.set('query', text);
-    const data = await (
-        await fetch('https://dapi.kakao.com/v2/translation/translate', {
-            method: 'POST',
-            headers: {
-                Authorization: `KakaoAK ${KAKAO_API_KEY}`
-            },
-            body: params
-        })
-    ).json(); // 번역 성공 시 translated_text에 문단(문장의 배열)의 배열이 들어옴
+    const { body } = await request('https://dapi.kakao.com/v2/translation/translate', {
+        method: 'POST',
+        headers: {
+            'Authorization': `KakaoAK ${KAKAO_API_KEY}`,
+            'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: params.toString()
+    });
+    const data = await body.json(); // 번역 성공 시 translated_text에 문단(문장의 배열)의 배열이 들어옴
     return data.translated_text?.map((v) => v.join(' ')).join('\n') || '번역에 실패하였습니다.'; // 빈 문자열 대응
 }
 

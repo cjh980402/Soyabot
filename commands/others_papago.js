@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '../soyabot_config.js';
 
 async function tran(source, target, text) {
@@ -6,16 +6,16 @@ async function tran(source, target, text) {
     params.set('source', source);
     params.set('target', target);
     params.set('text', text);
-    const data = await (
-        await fetch('https://openapi.naver.com/v1/papago/n2mt', {
-            method: 'POST',
-            headers: {
-                'X-Naver-Client-Id': NAVER_CLIENT_ID,
-                'X-Naver-Client-Secret': NAVER_CLIENT_SECRET
-            },
-            body: params
-        })
-    ).json();
+    const { body } = await request('https://openapi.naver.com/v1/papago/n2mt', {
+        method: 'POST',
+        headers: {
+            'X-Naver-Client-Id': NAVER_CLIENT_ID,
+            'X-Naver-Client-Secret': NAVER_CLIENT_SECRET,
+            'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: params.toString()
+    });
+    const data = await body.json();
     return data.message?.result.translatedText ?? '번역에 실패하였습니다.';
 }
 

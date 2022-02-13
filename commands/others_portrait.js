@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 // import { exec } from '../admin/admin_function.js';
 import { MessageAttachment } from '../util/discord.js-extend.js';
 import { getMessageImage } from '../util/soyabot_util.js';
@@ -15,12 +15,14 @@ export async function messageExecute(message) {
     } else {
         /*const { stdout: portraitPic } = await exec(`python3 ./util/gl2face_portrait.py ${imageURL}`, { encoding: 'buffer' }); // 파이썬 스크립트 실행
         const image = new MessageAttachment(portraitPic, 'portrait.png');*/
-        const response = await fetch(`http://${BOT_SERVER_DOMAIN}/portrait/${encodeURIComponent(imageURL)}`);
-        if (response.ok) {
-            const image = new MessageAttachment(Buffer.from(await response.arrayBuffer()), 'portrait.png');
+        const { statusCode, body } = await request(
+            `http://${BOT_SERVER_DOMAIN}/portrait/${encodeURIComponent(imageURL)}`
+        );
+        if (200 <= statusCode && statusCode <= 299) {
+            const image = new MessageAttachment(Buffer.from(await body.arrayBuffer()), 'portrait.png');
             return message.channel.send({ files: [image] });
         } else {
-            for await (const _ of response.body); // 메모리 누수 방지를 위한 force consumption of body
+            for await (const _ of body); // 메모리 누수 방지를 위한 force consumption of body
             return message.channel.send('그림 작업을 실패하였습니다.');
         }
     }

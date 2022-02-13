@@ -1,21 +1,24 @@
-import { fetch, FormData } from 'undici';
+import { FormData, request } from 'undici';
+import { safelyExtractBody } from 'undici/lib/fetch/body.js';
 import { getMessageImage } from '../util/soyabot_util.js';
 import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '../soyabot_config.js';
 
 async function requestCFR(url) {
     const form = new FormData();
-    const blob = await (await fetch(url)).blob();
-    form.set('image', blob);
-    return (
-        await fetch('https://openapi.naver.com/v1/vision/celebrity', {
-            method: 'POST',
-            headers: {
-                'X-Naver-Client-Id': NAVER_CLIENT_ID,
-                'X-Naver-Client-Secret': NAVER_CLIENT_SECRET
-            },
-            body: form
-        })
-    ).json();
+    const { body: imageBody } = await request(url);
+    form.set('image', await imageBody.blob());
+
+    const [formBody, contentType] = safelyExtractBody(form);
+    const { body } = await request('https://openapi.naver.com/v1/vision/celebrity', {
+        method: 'POST',
+        headers: {
+            'X-Naver-Client-Id': NAVER_CLIENT_ID,
+            'X-Naver-Client-Secret': NAVER_CLIENT_SECRET,
+            'content-type': contentType
+        },
+        body: formBody.stream
+    });
+    return body.json();
 }
 
 async function clova_celebrity(url) {

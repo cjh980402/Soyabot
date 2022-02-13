@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 import YouTubeAPI from 'simple-youtube-api';
 import { PARTS, ENDPOINTS } from 'simple-youtube-api/src/util/Constants.js';
 import Video from 'simple-youtube-api/src/structures/Video.js';
@@ -101,7 +101,8 @@ Object.defineProperty(VoiceState.prototype, 'member', {
 Object.defineProperty(Message.prototype, 'fetchfullContent', {
     value: async function () {
         if (this.type === 'DEFAULT' && this.attachments.first()?.name === 'message.txt') {
-            return (await fetch(this.attachments.first().url)).text();
+            const { body } = await request(this.attachments.first().url);
+            return body.text();
         } else {
             return this.content;
         }

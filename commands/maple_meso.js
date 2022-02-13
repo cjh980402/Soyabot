@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 import renderChart from '../util/chartjs_rendering.js';
 import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
 const serverList = {
@@ -19,12 +19,14 @@ const serverList = {
 async function getMesoEmbed(server) {
     const params = new URLSearchParams();
     params.set('term', '15d');
-    const data = await (
-        await fetch('https://commapi.gamemarket.kr/comm/graph', {
-            method: 'POST',
-            body: params
-        })
-    ).json();
+    const { body } = await request('https://commapi.gamemarket.kr/comm/graph', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: params.toString()
+    });
+    const data = await body.json();
     const market = data.dbo;
     const direct = data.dbo2;
     // 각각 배열, 길이는 15, 앞에서부터 과거 날짜

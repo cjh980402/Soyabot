@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 import { load } from 'cheerio';
 import { MessageActionRow, MessageButton, MessageEmbed } from '../util/discord.js-extend.js';
 
@@ -29,7 +29,8 @@ export const command = ['이벤트', 'ㅇㅂㅌ'];
 export const description = '- 현재 진행 중인 이벤트를 알려줍니다.';
 export const type = ['메이플'];
 export async function messageExecute(message) {
-    const $ = load(await (await fetch('https://maplestory.nexon.com/News/Event')).text());
+    const { body } = await request('https://maplestory.nexon.com/News/Event');
+    const $ = load(await body.text());
     const eventData = $('.event_all_banner li dl');
     const links = eventData.find('dt a').map((_, v) => $(v).attr('href'));
     const names = eventData.find('dt a').map((_, v) => $(v).text());
@@ -88,7 +89,8 @@ export const commandData = {
     description: '현재 진행 중인 이벤트를 알려줍니다.'
 };
 export async function commandExecute(interaction) {
-    const $ = load(await (await fetch('https://maplestory.nexon.com/News/Event')).text());
+    const { body } = await request('https://maplestory.nexon.com/News/Event');
+    const $ = load(await body.text());
     const eventData = $('.event_all_banner li dl');
     const links = eventData.find('dt a').map((_, v) => $(v).attr('href'));
     const names = eventData.find('dt a').map((_, v) => $(v).text());

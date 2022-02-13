@@ -1,9 +1,10 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 import { load } from 'cheerio';
 import { MessageAttachment, MessageActionRow, MessageButton, MessageEmbed } from '../util/discord.js-extend.js';
 
 async function getCoronaEmbed() {
-    const countData = load(await (await fetch('http://ncov.mohw.go.kr')).text());
+    const { body: countBody } = await request('http://ncov.mohw.go.kr');
+    const countData = load(await countBody.text());
     const today = countData('.occurrenceStatus .occur_graph tbody span');
     const accumulated = countData('.occurrenceStatus .occur_num .box');
     const updateDate = /\((.+ 기준).+\)/.exec(countData('.occurrenceStatus .livedate').text())[1];
@@ -18,9 +19,8 @@ async function getCoronaEmbed() {
         .addField('**재원 위중증**', `${today.eq(2).text()}`)
         .setTimestamp();
 
-    const countryData = load(
-        await (await fetch('http://ncov.mohw.go.kr/bdBoardList_Real.do?brdId=1&brdGubun=13')).text()
-    );
+    const { body: countryBody } = await request('http://ncov.mohw.go.kr/bdBoardList_Real.do?brdId=1&brdGubun=13');
+    const countryData = load(await countryBody.text());
     const rslt = countryData('.data_table.midd.mgt24 tbody tr')
         .map((_, v) => ({
             name: countryData(v).find('th').text(),

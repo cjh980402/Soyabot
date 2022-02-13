@@ -1,10 +1,11 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 import { load } from 'cheerio';
 import { MessageActionRow, MessageButton, MessageEmbed, Util } from '../util/discord.js-extend.js';
 
 async function getWeatherEmbed(targetLocal) {
     const targetURL = `https://weather.naver.com/today/${targetLocal[1][0]}`;
-    const $ = load(await (await fetch(targetURL)).text());
+    const { body } = await request(targetURL);
+    const $ = load(await body.text());
     const nowWeather = $('.weather_area');
     const weatherDesc = [
         `현재 날씨\n\n현재온도: ${nowWeather.find('.current').contents()[1].data}° (${nowWeather
@@ -79,15 +80,12 @@ export const channelCool = true;
 export const type = ['기타'];
 export async function messageExecute(message, args) {
     const search = args.length > 0 ? args.join(' ') : '동대문구 전농1동';
-    const searchRslt = (
-        await (
-            await fetch(
-                `https://ac.weather.naver.com/ac?q_enc=utf-8&r_format=json&r_enc=utf-8&r_lt=1&st=1&q=${encodeURIComponent(
-                    search
-                )}`
-            )
-        ).json()
-    ).items[0];
+    const { body } = await request(
+        `https://ac.weather.naver.com/ac?q_enc=utf-8&r_format=json&r_enc=utf-8&r_lt=1&st=1&q=${encodeURIComponent(
+            search
+        )}`
+    );
+    const searchRslt = (await body.json()).items[0];
     let targetLocal;
     if (!searchRslt?.length) {
         return message.channel.send('검색된 지역이 없습니다.');
@@ -167,15 +165,12 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     const search = interaction.options.getString('지역') ?? '동대문구 전농1동';
-    const searchRslt = (
-        await (
-            await fetch(
-                `https://ac.weather.naver.com/ac?q_enc=utf-8&r_format=json&r_enc=utf-8&r_lt=1&st=1&q=${encodeURIComponent(
-                    search
-                )}`
-            )
-        ).json()
-    ).items[0];
+    const { body } = await request(
+        `https://ac.weather.naver.com/ac?q_enc=utf-8&r_format=json&r_enc=utf-8&r_lt=1&st=1&q=${encodeURIComponent(
+            search
+        )}`
+    );
+    const searchRslt = (await body.json()).items[0];
     let targetLocal;
     if (!searchRslt?.length) {
         return interaction.followUp('검색된 지역이 없습니다.');

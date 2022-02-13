@@ -1,19 +1,19 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '../soyabot_config.js';
 
 async function shortURL(url) {
     const params = new URLSearchParams();
     params.set('url', url);
-    const data = await (
-        await fetch('https://openapi.naver.com/v1/util/shorturl', {
-            method: 'POST',
-            headers: {
-                'X-Naver-Client-Id': NAVER_CLIENT_ID,
-                'X-Naver-Client-Secret': NAVER_CLIENT_SECRET
-            },
-            body: params
-        })
-    ).json();
+    const { body } = await request('https://openapi.naver.com/v1/util/shorturl', {
+        method: 'POST',
+        headers: {
+            'X-Naver-Client-Id': NAVER_CLIENT_ID,
+            'X-Naver-Client-Secret': NAVER_CLIENT_SECRET,
+            'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: params.toString()
+    });
+    const data = await body.json();
     if (data.message === 'ok') {
         return data.result.url;
     } else {

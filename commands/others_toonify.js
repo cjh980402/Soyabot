@@ -1,4 +1,4 @@
-import { fetch, FormData } from 'undici';
+import { request } from 'undici';
 import { getMessageImage } from '../util/soyabot_util.js';
 import { DEEP_API_KEY } from '../soyabot_config.js';
 
@@ -11,22 +11,22 @@ export async function messageExecute(message) {
     if (!imageURL) {
         return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
     } else {
-        const form = new FormData();
-        form.set('image', imageURL);
-        const resp = await (
-            await fetch('https://api.deepai.org/api/toonify', {
-                method: 'POST',
-                headers: {
-                    'client-library': 'deepai-js-client',
-                    'api-key': DEEP_API_KEY
-                },
-                body: form
-            })
-        ).json();
-        if (resp.err) {
+        const params = new URLSearchParams();
+        params.set('image', imageURL);
+        const { body } = await request('https://api.deepai.org/api/toonify', {
+            method: 'POST',
+            headers: {
+                'client-library': 'deepai-js-client',
+                'api-key': DEEP_API_KEY,
+                'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
+            },
+            body: params.toString()
+        });
+        const data = await body.json();
+        if (data.err) {
             return message.channel.send('사진에서 적절한 대상 인물을 찾지 못했습니다.');
         } else {
-            return message.channel.send({ files: [resp.output_url] });
+            return message.channel.send({ files: [data.output_url] });
         }
     }
 }

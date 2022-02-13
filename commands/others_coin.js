@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 import { exec } from '../admin/admin_function.js';
 import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
 const chartType = {
@@ -14,7 +14,8 @@ function getChartImage(code, type) {
 }
 
 async function getCoinBinancePrice(code) {
-    const binance = await (await fetch('https://api.binance.com/api/v1/ticker/allPrices')).json();
+    const { body } = await request('https://api.binance.com/api/v1/ticker/allPrices');
+    const binance = await body.json();
     const coinName = `${code}USDT`;
     for (const coin of binance) {
         if (coinName === coin.symbol) {
@@ -25,7 +26,8 @@ async function getCoinBinancePrice(code) {
 }
 
 async function usdToKRW(usd) {
-    const usdData = await (await fetch('https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD')).json();
+    const { body } = await request('https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD');
+    const usdData = await body.json();
     return usd * usdData[0].basePrice;
 }
 
@@ -33,7 +35,8 @@ async function getCoinEmbed(searchRslt, type) {
     const name = searchRslt.korean_name;
     const code = searchRslt.market.split('-')[1];
 
-    const todayData = (await (await fetch(`https://api.upbit.com/v1/ticker?markets=${searchRslt.market}`)).json())[0];
+    const { body } = await request(`https://api.upbit.com/v1/ticker?markets=${searchRslt.market}`);
+    const todayData = (await body.json())[0];
     const chartURL = getChartImage(code, type);
     const nowPrice = todayData.trade_price.toLocaleString();
     const changeType = todayData.change; // RISE, EVEN, FALL
@@ -87,7 +90,8 @@ export async function messageExecute(message, args) {
     const type = args.length > 1 && chartType[args[args.length - 1]] ? args.pop() : '1일'; // 차트 종류
     const krSearch = args.join('');
     const enSearch = args.join(' ').toUpperCase();
-    const searchList = await (await fetch('https://api.upbit.com/v1/market/all')).json();
+    const { body } = await request('https://api.upbit.com/v1/market/all');
+    const searchList = await body.json();
     const searchRslt = searchList.find((v) => {
         const [currency, code] = v.market.split('-');
         return (
@@ -127,7 +131,8 @@ export async function commandExecute(interaction) {
     const search = interaction.options.getString('검색_내용');
     const krSearch = search.replace(/\s+/g, '');
     const enSearch = search.toUpperCase();
-    const searchList = await (await fetch('https://api.upbit.com/v1/market/all')).json();
+    const { body } = await request('https://api.upbit.com/v1/market/all');
+    const searchList = await body.json();
     const searchRslt = searchList.find((v) => {
         const [currency, code] = v.market.split('-');
         return (

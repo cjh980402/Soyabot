@@ -1,15 +1,17 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 
 async function farm_monster(monster) {
     // 몬스터 이름
     const params = new URLSearchParams();
     params.set('monster', monster);
-    return (
-        await fetch('http://wachan.me/farm_monster.php', {
-            method: 'POST',
-            body: params
-        })
-    ).text(); // 결과값이 'false'면 DB에 없는 몬스터
+    const { body } = await request('http://wachan.me/farm_monster.php', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: params.toString()
+    });
+    return body.text(); // 결과값이 'false'면 DB에 없는 몬스터
 }
 
 async function farm_sex(monster) {
@@ -20,12 +22,14 @@ async function farm_sex(monster) {
     }
     const params = new URLSearchParams();
     params.set('monster', monster);
-    const data = await (
-        await fetch('http://wachan.me/farm_sex.php', {
-            method: 'POST',
-            body: params
-        })
-    ).json();
+    const { body } = await request('http://wachan.me/farm_sex.php', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: params.toString()
+    });
+    const data = await body.json();
     if (data.error) {
         // 오류 발생
         return data.error;
@@ -76,12 +80,14 @@ async function farm_add(end_date, user, monster) {
     params.set('monster', monster);
     params.set('user', user);
     params.set('end_date', end_date);
-    const data = await (
-        await fetch('http://wachan.me/farm_info_adding.php', {
-            method: 'POST',
-            body: params
-        })
-    ).json();
+    const { body } = await request('http://wachan.me/farm_info_adding.php', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: params.toString()
+    });
+    const data = await body.json();
     if (data.error !== false) {
         // 오류 발생
         return data.error;
@@ -100,12 +106,14 @@ async function farm_read(monster) {
     }
     const params = new URLSearchParams();
     params.set('monster', monster);
-    const data = await (
-        await fetch('http://wachan.me/farm_read2.php', {
-            method: 'POST',
-            body: params
-        })
-    ).json();
+    const { body } = await request('http://wachan.me/farm_read2.php', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: params.toString()
+    });
+    const data = await body.json();
     if (data.error !== false) {
         // 오류 발생
         return data.error;
@@ -129,12 +137,14 @@ async function farm_info(user) {
     }
     const params = new URLSearchParams();
     params.set('farm', user);
-    const data = await (
-        await fetch('http://wachan.me/farm_read_from_name.php', {
-            method: 'POST',
-            body: params
-        })
-    ).json();
+    const { body } = await request('http://wachan.me/farm_read_from_name.php', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: params.toString()
+    });
+    const data = await body.json();
     if (data.error !== false) {
         // 오류 발생
         return data.error;

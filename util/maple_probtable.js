@@ -1,8 +1,9 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 import { load } from 'cheerio';
 
 async function getRawProbData(url) {
-    const $ = load(await (await fetch(url)).text());
+    const { body } = await request(url);
+    const $ = load(await body.text());
     return $('.contents_wrap .my_page_tb2 tr > td').filter((_, v) => !$(v).attr('rowspan'));
 }
 

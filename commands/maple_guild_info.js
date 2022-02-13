@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 import { BOT_SERVER_DOMAIN } from '../soyabot_config.js';
 // import { MapleGuild } from '../util/maple_parsing.js';
 const serverEngName = {
@@ -34,13 +34,13 @@ export async function messageExecute(message, args) {
     const rslt = `${args[0]} ${args[1]} 길드 (${mapleGuildInfo.MemberCount}명)\n길드원 목록 갱신 ${isLatest ? '성공' : '실패'}\n\n${(await mapleGuildInfo.memberDataList()).join('\n\n')}`;
 
     return message.channel.sendSplitCode(rslt, { split: { char: '\n' } });*/
-    const response = await fetch(
+    const { statusCode, body } = await request(
         `http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(args[0])}/${encodeURIComponent(args[1])}`
     );
-    if (response.ok) {
-        return message.channel.sendSplitCode(await response.text(), { split: { char: '\n' } });
+    if (200 <= statusCode && statusCode <= 299) {
+        return message.channel.sendSplitCode(await body.text(), { split: { char: '\n' } });
     } else {
-        for await (const _ of response.body); // 메모리 누수 방지를 위한 force consumption of body
+        for await (const _ of body); // 메모리 누수 방지를 위한 force consumption of body
         return message.channel.send('길드 정보를 가져올 수 없습니다.');
     }
 }
@@ -74,13 +74,13 @@ export async function commandExecute(interaction) {
     const rslt = `${serverName} ${guildName} 길드 (${mapleGuildInfo.MemberCount}명)\n길드원 목록 갱신 ${isLatest ? '성공' : '실패'}\n\n${(await mapleGuildInfo.memberDataList()).join('\n\n')}`;
 
     return interaction.sendSplitCode(rslt, { split: { char: '\n' } });*/
-    const response = await fetch(
-        `http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(serverName)}/${encodeURIComponent(guildName)}`
+    const { statusCode, body } = await request(
+        `http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(args[0])}/${encodeURIComponent(args[1])}`
     );
-    if (response.ok) {
-        return interaction.sendSplitCode(await response.text(), { split: { char: '\n' } });
+    if (200 <= statusCode && statusCode <= 299) {
+        return interaction.sendSplitCode(await body.text(), { split: { char: '\n' } });
     } else {
-        for await (const _ of response.body); // 메모리 누수 방지를 위한 force consumption of body
+        for await (const _ of body); // 메모리 누수 방지를 위한 force consumption of body
         return interaction.followUp('길드 정보를 가져올 수 없습니다.');
     }
 }

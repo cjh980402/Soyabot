@@ -1,19 +1,22 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 import { load } from 'cheerio';
 import { MessageEmbed, Util } from '../util/discord.js-extend.js';
 
 async function getLyricsEmbed(search) {
     const lyricsEmbed = new MessageEmbed().setColor('#FF9999');
-    const songData = load(
-        await (await fetch(`https://www.melon.com/search/song/index.htm?q=${encodeURIComponent(search)}`)).text()
-    )('input[name="input_check"]'); // length가 검색 결과 수
-    const lyricData = load(
-        await (await fetch(`https://www.melon.com/search/lyric/index.htm?q=${encodeURIComponent(search)}`)).text()
-    )('.list_lyric .cntt_lyric .btn.btn_icon_detail'); // length가 검색 결과 수
+    const { body: songBody } = await request(
+        `https://www.melon.com/search/song/index.htm?q=${encodeURIComponent(search)}`
+    );
+    const songData = load(await songBody.text())('input[name="input_check"]'); // length가 검색 결과 수
+    const { body: lyricBody } = await request(
+        `https://www.melon.com/search/lyric/index.htm?q=${encodeURIComponent(search)}`
+    );
+    const lyricData = load(await lyricBody.text())('.list_lyric .cntt_lyric .btn.btn_icon_detail'); // length가 검색 결과 수
     const songId = songData.eq(0).attr('value') ?? lyricData.eq(0).attr('data-song-no');
 
     if (songId) {
-        const $ = load(await (await fetch(`https://www.melon.com/song/detail.htm?songId=${songId}`)).text());
+        const { body } = await request(`https://www.melon.com/song/detail.htm?songId=${songId}`);
+        const $ = load(await body.text());
         const title = $('.song_name').contents().last().text().trim();
         const is19 = $('.song_name .bullet_icons.age_19.large').length;
         const artist = $('.artist').eq(0).text().trim();

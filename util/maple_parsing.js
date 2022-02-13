@@ -1,13 +1,15 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 import { load } from 'cheerio';
 import { setTimeout } from 'node:timers/promises';
 
-async function linkParse(link) {
-    return load(await (await fetch(link)).text());
+async function requestCheerio(url) {
+    const { body } = await request(url);
+    return load(await body.text());
 }
 
-async function linkJSON(link) {
-    return (await fetch(link)).json();
+async function requestJSON(url) {
+    const { body } = await request(url);
+    return body.json();
 }
 
 export class MapleUser {
@@ -41,14 +43,14 @@ export class MapleUser {
     // 메소드
     async homeLevel() {
         const len = this.#name.length + (this.#name.match(/[가-힣]/g)?.length ?? 0);
-        this.#homeLevelData = await linkParse(this.#homeLevelURL);
+        this.#homeLevelData = await requestCheerio(this.#homeLevelURL);
         if (this.#homeLevelData('img[alt="메이플스토리 서비스 점검중!"]').length !== 0) {
             throw new Error('메이플 공식 홈페이지가 서비스 점검 중입니다.');
         }
 
         if (this.#homeLevelData('tr[class]').length !== 10) {
             this.#homeLevelURL += '&w=254'; // 리부트 서버 목록
-            this.#homeLevelData = await linkParse(this.#homeLevelURL);
+            this.#homeLevelData = await requestCheerio(this.#homeLevelURL);
         }
         if (len < 1 || len > 12 || this.#homeLevelData('tr[class]').length !== 10) {
             return null; // 없는 캐릭터
@@ -80,7 +82,7 @@ export class MapleUser {
 
     async homeUnion() {
         const len = this.#name.length + (this.#name.match(/[가-힣]/g)?.length ?? 0);
-        this.#homeUnionData = await linkParse(this.#homeUnionURL);
+        this.#homeUnionData = await requestCheerio(this.#homeUnionURL);
         if (this.#homeUnionData('img[alt="메이플스토리 서비스 점검중!"]').length !== 0) {
             throw new Error('메이플 공식 홈페이지가 서비스 점검 중입니다.');
         }
@@ -115,7 +117,7 @@ export class MapleUser {
     }
 
     async isLatest() {
-        this.#ggData = await linkParse(this.#ggURL); // this.#ggData는 함수
+        this.#ggData = await requestCheerio(this.#ggURL); // this.#ggData는 함수
         if (this.#ggData('img[alt="검색결과 없음"]').length !== 0) {
             throw new Error('메이플 GG에서 캐릭터 정보를 가져올 수 없습니다.');
         } else if (this.#ggData('div.alert.alert-warning.mt-3').length !== 0) {
@@ -141,9 +143,9 @@ export class MapleUser {
         const start = Date.now();
         while (1) {
             try {
-                const rslt = await linkJSON(`${this.#ggURL}/sync`);
+                const rslt = await requestJSON(`${this.#ggURL}/sync`);
                 if (!rslt.error && rslt.done) {
-                    this.#ggData = await linkParse(this.#ggURL);
+                    this.#ggData = await requestCheerio(this.#ggURL);
                     return true; // 갱신성공
                 }
             } catch {
@@ -370,7 +372,7 @@ export class MapleGuild {
     // 메소드
     async isLatest() {
         const updateResult = await this.#updateGuild();
-        this.#ggData = await linkParse(`${this.#ggURL}/members?sort=level`); // this.#ggData는 함수
+        this.#ggData = await requestCheerio(`${this.#ggURL}/members?sort=level`); // this.#ggData는 함수
         if (this.#ggData('img[alt="404 ERROR"]').length !== 0) {
             throw new Error('메이플 GG에서 길드 정보를 가져올 수 없습니다.');
         } else if (this.#ggData('div.alert.alert-warning.mt-3').length !== 0) {
@@ -409,7 +411,7 @@ export class MapleGuild {
         const start = Date.now();
         while (1) {
             try {
-                const rslt = await linkJSON(`${this.#ggURL}/sync`);
+                const rslt = await requestJSON(`${this.#ggURL}/sync`);
                 if (rslt.done) {
                     return true; // 갱신성공
                 } else if (rslt.error) {

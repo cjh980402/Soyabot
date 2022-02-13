@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 
 export const usage = `${client.prefix}한강`;
 export const command = ['한강', 'ㅎㄱ'];
@@ -11,12 +11,14 @@ export async function messageExecute(message) {
     params.set('currentPage', 1);
     params.set('siteId', '노량진_자동');
 
-    const data = await (
-        await fetch('http://swo.seoul.go.kr/water/waterMesntkInfoResult.do', {
-            method: 'POST',
-            body: params
-        })
-    ).json();
+    const { body } = await request('http://swo.seoul.go.kr/water/waterMesntkInfoResult.do', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: params.toString()
+    });
+    const data = await body.json();
 
     const result = data.resultList.find((v) => v.W_TEMP);
 
@@ -38,12 +40,14 @@ export async function commandExecute(interaction) {
     params.set('currentPage', 1);
     params.set('siteId', '노량진_자동');
 
-    const data = await (
-        await fetch('http://swo.seoul.go.kr/water/waterMesntkInfoResult.do', {
-            method: 'POST',
-            body: params
-        })
-    ).json();
+    const { body } = await request('http://swo.seoul.go.kr/water/waterMesntkInfoResult.do', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: params.toString()
+    });
+    const data = await body.json();
 
     const result = data.resultList.find((v) => v.W_TEMP);
 

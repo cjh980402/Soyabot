@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import { request } from 'undici';
 import { load } from 'cheerio';
 import { MessageActionRow, MessageButton, MessageEmbed } from '../util/discord.js-extend.js';
 
@@ -35,7 +35,8 @@ export async function messageExecute(message, args) {
         return message.channel.send('지원하지 않는 요일입니다.');
     }
 
-    const data = load(await (await fetch('https://www.uos.ac.kr/food/placeList.do')).text())('#week tr');
+    const { body } = await request('https://www.uos.ac.kr/food/placeList.do');
+    const data = load(await body.text())('#week tr');
     if (data.length > 0) {
         // 하루 이상의 학식 데이터가 존재
         for (let i = 0; i < data.length; i++) {
