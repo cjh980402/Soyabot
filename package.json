@@ -40,7 +40,7 @@
     "string-progressbar": "^1.0.4",
     "undici": "^4.14.1",
     "utf-8-validate": "^5.0.8",
-    "youtube-dlsr": "^2.3.1",
+    "youtube-dlsr": "^2.3.2",
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {
