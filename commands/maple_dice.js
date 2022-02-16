@@ -1,22 +1,27 @@
 import { exec } from '../admin/admin_function.js';
 import { MessageAttachment, MessageActionRow, MessageButton } from '../util/discord.js-extend.js';
 
+async function getDiceAttachment(nickname) {
+    const { stdout: dicePic } = await exec(
+        `python3 ./util/maple_stats_drawer.py '${nickname.replace(/'/g, '$&"$&"$&')}'`,
+        { encoding: 'buffer' }
+    );
+    // 파이썬 스크립트 실행, 쉘에서 작은 따옴표로 감싸서 쉘 특수문자 이스케이핑, 닉네임의 작은 따옴표는 별도로 이스케이핑
+
+    return new MessageAttachment(dicePic, 'dice.png');
+}
+
 export const usage = `${client.prefix}데굴데굴`;
 export const command = ['데굴데굴', 'ㄷㄱㄷㄱ'];
 export const description = '- 추억의 메이플스토리 주사위!';
 export const type = ['메이플'];
 export async function messageExecute(message) {
     const nickname = message.member?.nickname ?? message.author.username;
-    const { stdout: dicePic } = await exec(
-        `python3 ./util/maple_stats_drawer.py '${nickname.replace(/'/g, '$&"$&"$&')}'`,
-        { encoding: 'buffer' }
-    );
-    // 파이썬 스크립트 실행, 쉘에서 작은 따옴표로 감싸서 쉘 특수문자 이스케이핑, 닉네임의 작은 따옴표는 별도로 이스케이핑
-    let count = 1;
-    const image = new MessageAttachment(dicePic, 'dice.png');
+    const image = await getDiceAttachment(nickname);
     const row = new MessageActionRow().addComponents(
         new MessageButton().setCustomId('repeat').setEmoji('🎲').setStyle('SECONDARY')
     );
+    let count = 1;
     const dice = await message.channel.send({
         content: `${nickname}님의 ${count}번째 스탯 주사위`,
         files: [image],
@@ -29,12 +34,7 @@ export async function messageExecute(message) {
     collector.on('collect', async () => {
         try {
             const nickname = message.member?.nickname ?? message.author.username;
-            const { stdout: dicePic } = await exec(
-                `python3 ./util/maple_stats_drawer.py '${nickname.replace(/'/g, '$&"$&"$&')}'`,
-                { encoding: 'buffer' }
-            );
-            // 파이썬 스크립트 실행, 쉘에서 작은 따옴표로 감싸서 쉘 특수문자 이스케이핑, 닉네임의 작은 따옴표는 별도로 이스케이핑
-            const image = new MessageAttachment(dicePic, 'dice.png');
+            const image = await getDiceAttachment(nickname);
             dice.edit({ content: `${nickname}님의 ${++count}번째 스탯 주사위`, files: [image] });
         } catch {}
     });
@@ -45,16 +45,11 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     const nickname = interaction.member?.nickname ?? interaction.user.username;
-    const { stdout: dicePic } = await exec(
-        `python3 ./util/maple_stats_drawer.py '${nickname.replace(/'/g, '$&"$&"$&')}'`,
-        { encoding: 'buffer' }
-    );
-    // 파이썬 스크립트 실행, 쉘에서 작은 따옴표로 감싸서 쉘 특수문자 이스케이핑, 닉네임의 작은 따옴표는 별도로 이스케이핑
-    let count = 1;
-    const image = new MessageAttachment(dicePic, 'dice.png');
+    const image = await getDiceAttachment(nickname);
     const row = new MessageActionRow().addComponents(
         new MessageButton().setCustomId('repeat').setEmoji('🎲').setStyle('SECONDARY')
     );
+    let count = 1;
     const dice = await interaction.channel.send({
         content: `${nickname}님의 ${count}번째 스탯 주사위`,
         files: [image],
@@ -70,12 +65,7 @@ export async function commandExecute(interaction) {
     collector.on('collect', async () => {
         try {
             const nickname = interaction.member?.nickname ?? interaction.user.username;
-            const { stdout: dicePic } = await exec(
-                `python3 ./util/maple_stats_drawer.py '${nickname.replace(/'/g, '$&"$&"$&')}'`,
-                { encoding: 'buffer' }
-            );
-            // 파이썬 스크립트 실행, 쉘에서 작은 따옴표로 감싸서 쉘 특수문자 이스케이핑, 닉네임의 작은 따옴표는 별도로 이스케이핑
-            const image = new MessageAttachment(dicePic, 'dice.png');
+            const image = await getDiceAttachment(nickname);
             dice.edit({ content: `${nickname}님의 ${++count}번째 스탯 주사위`, files: [image] });
         } catch {}
     });
