@@ -50,14 +50,11 @@ export async function commandExecute(interaction) {
         new MessageButton().setCustomId('repeat').setEmoji('🎲').setStyle('SECONDARY')
     );
     let count = 1;
-    const dice = await interaction.channel.send({
+    const dice = await interaction.editReply({
         content: `${nickname}님의 ${count}번째 스탯 주사위`,
         files: [image],
         components: [row]
     });
-    try {
-        await interaction.deleteReply();
-    } catch {}
 
     const filter = (itr) => itr.customId === 'repeat' && interaction.user.id === itr.user.id;
     const collector = dice.createMessageComponentCollector({ filter, time: 120000 });
