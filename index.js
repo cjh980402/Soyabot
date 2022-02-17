@@ -7,6 +7,7 @@ import { setTimeout } from 'node:timers/promises';
 import { TOKEN, PREFIX, ADMIN_ID } from './soyabot_config.js';
 import { adminChat, initClient, exec } from './admin/admin_function.js';
 import { replyAdmin } from './admin/bot_control.js';
+import { MapleError } from './util/maple_parsing.js';
 import { musicActiveControl, musicButtonControl } from './util/music_play.js';
 import botChatting from './util/bot_chatting.js';
 import cachingMessage from './util/message_caching.js';
@@ -119,7 +120,7 @@ client.on('messageCreate', async (message) => {
             if (err instanceof Collection) {
                 // awaitMessages에서 시간초과한 경우
                 await message.channel.send(`'${commandName.split('_')[0]}'의 입력 대기 시간이 초과되었습니다.`);
-            } else if (err.message?.startsWith('메이플')) {
+            } else if (err instanceof MapleError) {
                 await message.reply(err.message);
             } else {
                 replyAdmin(
@@ -187,7 +188,7 @@ client.on('interactionCreate', async (interaction) => {
                 if (err instanceof Collection) {
                     // awaitMessages에서 시간초과한 경우
                     await interaction.followUp(`'${commandName.split('_')[0]}'의 입력 대기 시간이 초과되었습니다.`);
-                } else if (err.message?.startsWith('메이플')) {
+                } else if (err instanceof MapleError) {
                     await interaction.editReply(err.message);
                 } else {
                     replyAdmin(

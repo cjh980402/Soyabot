@@ -4,7 +4,7 @@ import { MapleUser } from '../util/maple_parsing.js';
 
 export const usage = `${client.prefix}컬렉션 (닉네임)`;
 export const command = ['컬렉션', 'ㅋㄹㅅ', 'ㅋㄽ'];
-export const description = '- 캐릭터의 메이플 gg 코디 컬렉션을 출력합니다.';
+export const description = '- 캐릭터의 maple.GG 코디 컬렉션을 출력합니다.';
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 1) {
@@ -40,7 +40,7 @@ export async function messageExecute(message, args) {
 }
 export const commandData = {
     name: '컬렉션',
-    description: '캐릭터의 메이플 gg 코디 컬렉션을 출력합니다.',
+    description: '캐릭터의 maple.GG 코디 컬렉션을 출력합니다.',
     options: [
         {
             name: '닉네임',

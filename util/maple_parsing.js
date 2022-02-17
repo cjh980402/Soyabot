@@ -12,6 +12,14 @@ async function requestJSON(url) {
     return body.json();
 }
 
+export class MapleError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'MapleError';
+        this.code = 'MAPLE_ERR';
+    }
+}
+
 export class MapleUser {
     // private property
     #name;
@@ -45,7 +53,7 @@ export class MapleUser {
         const len = this.#name.length + (this.#name.match(/[가-힣]/g)?.length ?? 0);
         this.#homeLevelData = await requestCheerio(this.#homeLevelURL);
         if (this.#homeLevelData('img[alt="메이플스토리 서비스 점검중!"]').length !== 0) {
-            throw new Error('메이플 공식 홈페이지가 서비스 점검 중입니다.');
+            throw new MapleError('공식 홈페이지가 서비스 점검 중입니다.');
         }
 
         if (this.#homeLevelData('tr[class]').length !== 10) {
@@ -84,7 +92,7 @@ export class MapleUser {
         const len = this.#name.length + (this.#name.match(/[가-힣]/g)?.length ?? 0);
         this.#homeUnionData = await requestCheerio(this.#homeUnionURL);
         if (this.#homeUnionData('img[alt="메이플스토리 서비스 점검중!"]').length !== 0) {
-            throw new Error('메이플 공식 홈페이지가 서비스 점검 중입니다.');
+            throw new MapleError('공식 홈페이지가 서비스 점검 중입니다.');
         }
 
         if (len < 1 || len > 12 || this.#homeUnionData('tr').length !== 12) {
@@ -119,14 +127,14 @@ export class MapleUser {
     async isLatest() {
         this.#ggData = await requestCheerio(this.#ggURL); // this.#ggData는 함수
         if (this.#ggData('img[alt="검색결과 없음"]').length !== 0) {
-            throw new Error('메이플 GG에서 캐릭터 정보를 가져올 수 없습니다.');
+            throw new MapleError('maple.GG에서 캐릭터 정보를 가져올 수 없습니다.');
         } else if (this.#ggData('div.alert.alert-warning.mt-3').length !== 0) {
-            throw new Error('메이플 GG 서버가 점검 중입니다.');
+            throw new MapleError('maple.GG 서버가 점검 중입니다.');
         } else if (
             /Bad Gateway|Error/.test(this.#ggData('title').text()) ||
             this.#ggData('div.flex-center.position-ref.full-height').length !== 0
         ) {
-            throw new Error('메이플 GG 서버에 에러가 발생했습니다.');
+            throw new MapleError('maple.GG 서버에 에러가 발생했습니다.');
         }
 
         if (
@@ -374,14 +382,14 @@ export class MapleGuild {
         const updateResult = await this.#updateGuild();
         this.#ggData = await requestCheerio(`${this.#ggURL}/members?sort=level`); // this.#ggData는 함수
         if (this.#ggData('img[alt="404 ERROR"]').length !== 0) {
-            throw new Error('메이플 GG에서 길드 정보를 가져올 수 없습니다.');
+            throw new MapleError('maple.GG에서 길드 정보를 가져올 수 없습니다.');
         } else if (this.#ggData('div.alert.alert-warning.mt-3').length !== 0) {
-            throw new Error('메이플 GG 서버가 점검 중입니다.');
+            throw new MapleError('maple.GG 서버가 점검 중입니다.');
         } else if (
             /Bad Gateway|Error/.test(this.#ggData('title').text()) ||
             this.#ggData('div.flex-center.position-ref.full-height').length !== 0
         ) {
-            throw new Error('메이플 GG 서버에 에러가 발생했습니다.');
+            throw new MapleError('maple.GG 서버에 에러가 발생했습니다.');
         }
 
         this.#memberData = this.#ggData('.pt-2.bg-white.rounded.border.font-size-0.line-height-1');

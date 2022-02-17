@@ -2,7 +2,7 @@ import { MapleUser } from '../util/maple_parsing.js';
 
 export const usage = `${client.prefix}갱신 (닉네임)`;
 export const command = ['갱신', 'ㄱㅅ', 'ㄳ'];
-export const description = '- 캐릭터의 메이플 gg 정보를 갱신합니다.';
+export const description = '- 캐릭터의 maple.GG 정보를 갱신합니다.';
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 1) {
@@ -30,7 +30,7 @@ export async function messageExecute(message, args) {
 }
 export const commandData = {
     name: '갱신',
-    description: '캐릭터의 메이플 gg 정보를 갱신합니다.',
+    description: '캐릭터의 maple.GG 정보를 갱신합니다.',
     options: [
         {
             name: '닉네임',
