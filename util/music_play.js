@@ -139,10 +139,10 @@ export class QueueElement {
 }
 
 export async function musicButtonControl(interaction) {
-    const { guild } = interaction;
-    const queue = client.queues.get(guild?.id);
     try {
         await interaction.deferUpdate(); // 버튼이 로딩 상태가 되었다가 원래대로 돌아옴
+
+        const queue = client.queues.get(interaction.guildId);
         if (queue?.playingMessage?.id !== interaction.message.id || !queue.subscription.player.state.resource) {
             return;
         }

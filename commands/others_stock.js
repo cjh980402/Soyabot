@@ -235,7 +235,7 @@ export async function messageExecute(message, args) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
-    const type = args.length > 1 && chartType[args[args.length - 1]] ? args.pop() : '일봉'; // 차트 종류
+    const type = args.length > 1 && chartType[args.at(-1)] ? args.pop() : '일봉'; // 차트 종류
     const search = args.join(' ').toLowerCase();
     const { body } = await request(
         `https://ac.finance.naver.com/ac?q=${encodeURIComponent(search)}&t_koreng=1&st=111&r_lt=111`

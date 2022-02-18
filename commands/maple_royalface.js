@@ -31,10 +31,10 @@ export async function messageExecute(message, args) {
     // random은 0이상 1미만
     const list = []; // 진행 과정 담을 배열 (인덱스 저장)
 
-    while (list[list.length - 1] !== goalface) {
+    while (list.at(-1) !== goalface) {
         // 목표 성형을 띄웠으면 종료
         const now = Math.floor(Math.random() * (MapleProb.ROYALFACE_PROBTABLE[gender].length - +(list.length > 0)));
-        list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 성형의 인덱스 저장, now 뒤에 더하는 이유는 최근 성형 제외 목적
+        list.push(now + +(list.at(-1) <= now)); // 현재 뜬 성형의 인덱스 저장, now 뒤에 더하는 이유는 최근 성형 제외 목적
     }
 
     const rslt = `로얄 성형 (목표: ${MapleProb.ROYALFACE_PROBTABLE[gender][goalface]}) 결과\n\n수행 횟수: ${
@@ -102,12 +102,12 @@ export async function commandExecute(interaction) {
         // random은 0이상 1미만
         const list = []; // 진행 과정 담을 배열 (인덱스 저장)
 
-        while (list[list.length - 1] !== goalface) {
+        while (list.at(-1) !== goalface) {
             // 목표 성형을 띄웠으면 종료
             const now = Math.floor(
                 Math.random() * (MapleProb.ROYALFACE_PROBTABLE[subcommand].length - +(list.length > 0))
             );
-            list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 성형의 인덱스 저장, now 뒤에 더하는 이유는 최근 성형 제외 목적
+            list.push(now + +(list.at(-1) <= now)); // 현재 뜬 성형의 인덱스 저장, now 뒤에 더하는 이유는 최근 성형 제외 목적
         }
 
         const rslt = `로얄 성형 (목표: ${MapleProb.ROYALFACE_PROBTABLE[subcommand][goalface]}) 결과\n\n수행 횟수: ${

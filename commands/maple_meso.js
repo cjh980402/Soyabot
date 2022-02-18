@@ -96,8 +96,8 @@ async function getMesoEmbed(server) {
         .setColor('#FF9999')
         .setURL('https://talk.gamemarket.kr/maple/graph')
         .setImage('attachment://meso.png')
-        .addField('**메소마켓**', `${market[market.length - 1][serverList[server]]}메포`)
-        .addField('**무통거래**', `${direct[direct.length - 1][serverList[server]]}원`);
+        .addField('**메소마켓**', `${market.at(-1)[serverList[server]]}메포`)
+        .addField('**무통거래**', `${direct.at(-1)[serverList[server]]}원`);
 
     return { embeds: [mesoEmbed], files: [image] };
 }

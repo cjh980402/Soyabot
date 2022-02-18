@@ -126,17 +126,16 @@ export async function commandExecute(interaction) {
         return interaction.followUp('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
     }
 
-    const url = interaction.options.getString('재생목록_주소_제목');
-    const search = url;
+    const urlOrSearch = interaction.options.getString('재생목록_주소_제목');
     // 영상 주소가 주어진 경우는 play 기능을 실행
-    if (isValidVideo(url) && !isValidPlaylist(url)) {
+    if (isValidVideo(urlOrSearch) && !isValidPlaylist(urlOrSearch)) {
         interaction.options._hoistedOptions[0].name = '영상_주소_제목';
         return client.commands.find((cmd) => cmd.commandData?.name === 'play').commandExecute(interaction);
     }
 
     let playlist = null;
     try {
-        playlist = await getPlaylistInfo(url, search);
+        playlist = await getPlaylistInfo(urlOrSearch, urlOrSearch);
         if (!playlist) {
             return interaction.followUp('검색 내용에 해당하는 재생목록을 찾지 못했습니다.');
         }

@@ -107,17 +107,16 @@ export async function commandExecute(interaction) {
         return interaction.followUp('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
     }
 
-    const url = interaction.options.getString('영상_주소_제목');
-    const search = url;
+    const urlOrSearch = interaction.options.getString('영상_주소_제목');
     // 재생목록 주소가 주어진 경우는 playlist 기능을 실행
-    if (!isValidVideo(url) && isValidPlaylist(url)) {
+    if (!isValidVideo(urlOrSearch) && isValidPlaylist(urlOrSearch)) {
         interaction.options._hoistedOptions[0].name = '재생목록_주소_제목';
         return client.commands.find((cmd) => cmd.commandData?.name === 'playlist').commandExecute(interaction);
     }
 
     let song = null;
     try {
-        song = await getSongInfo(url, search);
+        song = await getSongInfo(urlOrSearch, urlOrSearch);
         if (!song) {
             return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
         }
@@ -151,6 +150,6 @@ export async function commandExecute(interaction) {
                 interaction.commandName
             }\n${interaction.options._i()}\n에러 내용: ${err.stack ?? err._p}`
         );
-        return interaction.followUp(`채널에 참가할 수 없습니다: ${err.message ?? err}`);
+        return interaction.channel.send(`채널에 참가할 수 없습니다: ${err.message ?? err}`);
     }
 }

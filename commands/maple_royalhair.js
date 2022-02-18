@@ -31,10 +31,10 @@ export async function messageExecute(message, args) {
     // random은 0이상 1미만
     const list = []; // 진행 과정 담을 배열 (인덱스 저장)
 
-    while (list[list.length - 1] !== goalhair) {
+    while (list.at(-1) !== goalhair) {
         // 목표 헤어을 띄웠으면 종료
         const now = Math.floor(Math.random() * (MapleProb.ROYALHAIR_PROBTABLE[gender].length - +(list.length > 0)));
-        list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 헤어의 인덱스 저장, now 뒤에 더하는 이유는 최근 헤어 제외 목적
+        list.push(now + +(list.at(-1) <= now)); // 현재 뜬 헤어의 인덱스 저장, now 뒤에 더하는 이유는 최근 헤어 제외 목적
     }
 
     const rslt = `로얄 헤어 (목표: ${MapleProb.ROYALHAIR_PROBTABLE[gender][goalhair]}) 결과\n\n수행 횟수: ${
@@ -102,12 +102,12 @@ export async function commandExecute(interaction) {
         // random은 0이상 1미만
         const list = []; // 진행 과정 담을 배열 (인덱스 저장)
 
-        while (list[list.length - 1] !== goalhair) {
+        while (list.at(-1) !== goalhair) {
             // 목표 헤어를 띄웠으면 종료
             const now = Math.floor(
                 Math.random() * (MapleProb.ROYALHAIR_PROBTABLE[subcommand].length - +(list.length > 0))
             );
-            list.push(now + +(list[list.length - 1] <= now)); // 현재 뜬 헤어의 인덱스 저장, now 뒤에 더하는 이유는 최근 헤어 제외 목적
+            list.push(now + +(list.at(-1) <= now)); // 현재 뜬 헤어의 인덱스 저장, now 뒤에 더하는 이유는 최근 헤어 제외 목적
         }
 
         const rslt = `로얄 헤어 (목표: ${MapleProb.ROYALHAIR_PROBTABLE[subcommand][goalhair]}) 결과\n\n수행 횟수: ${

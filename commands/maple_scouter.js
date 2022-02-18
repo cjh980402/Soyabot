@@ -68,7 +68,7 @@ export async function messageExecute(message, args) {
         for (let i = 0; i < scoreGrade.length - 2; i++) {
             rslt += `\n${scoreGrade[i][0]} ~ ${scoreGrade[i + 1][0] - 1}점: ${scoreGrade[i][1]}`;
         }
-        rslt += `\n${scoreGrade[scoreGrade.length - 2][0]}점 이상: ${scoreGrade[scoreGrade.length - 2][1]}`;
+        rslt += `\n${scoreGrade.at(-2)[0]}점 이상: ${scoreGrade.at(-2)[1]}`;
         return message.channel.send(rslt);
     }
 
@@ -106,7 +106,7 @@ export async function commandExecute(interaction) {
         for (let i = 0; i < scoreGrade.length - 2; i++) {
             rslt += `\n${scoreGrade[i][0]} ~ ${scoreGrade[i + 1][0] - 1}점: ${scoreGrade[i][1]}`;
         }
-        rslt += `\n${scoreGrade[scoreGrade.length - 2][0]}점 이상: ${scoreGrade[scoreGrade.length - 2][1]}`;
+        rslt += `\n${scoreGrade.at(-2)[0]}점 이상: ${scoreGrade.at(-2)[1]}`;
         return interaction.followUp(rslt);
     }
 
