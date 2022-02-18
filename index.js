@@ -75,7 +75,7 @@ client.on('messageCreate', async (message) => {
             return;
         }
         if (
-            message.channel.type.startsWith('GUILD') &&
+            message.guildId &&
             !message.channel
                 .permissionsFor(message.guild.me)
                 .has([
@@ -84,7 +84,8 @@ client.on('messageCreate', async (message) => {
                     Permissions.FLAGS.READ_MESSAGE_HISTORY
                 ])
         ) {
-            return; // 기본 권한이 없는 채널이므로 바로 종료
+            // 기본 권한이 없는 채널이므로 바로 종료
+            return;
         }
         if (message.author.id === ADMIN_ID) {
             // 관리자 여부 체크
@@ -101,7 +102,8 @@ client.on('messageCreate', async (message) => {
         const nowCommand = client.commands.find((cmd) => cmd.command.includes(commandName)); // 해당하는 명령어 찾기
 
         if (!nowCommand?.messageExecute) {
-            return; // 해당하는 명령어 없으면 종료
+            // 해당하는 명령어 없으면 종료
+            return;
         }
 
         commandName = nowCommand.channelCool ? `${nowCommand.command[0]}_${message.channelId}` : nowCommand.command[0];
@@ -152,7 +154,7 @@ client.on('interactionCreate', async (interaction) => {
             );
 
             if (
-                interaction.channel.type.startsWith('GUILD') &&
+                interaction.guildId &&
                 !interaction.channel
                     .permissionsFor(interaction.guild.me)
                     .has([
@@ -161,13 +163,15 @@ client.on('interactionCreate', async (interaction) => {
                         Permissions.FLAGS.READ_MESSAGE_HISTORY
                     ])
             ) {
-                return; // 기본 권한이 없는 채널이므로 바로 종료
+                // 기본 권한이 없는 채널이므로 바로 종료
+                return;
             }
 
             const nowCommand = client.commands.find((cmd) => cmd.commandData?.name === commandName); // 해당하는 명령어 찾기
 
             if (!nowCommand?.commandExecute) {
-                return; // 해당하는 명령어 없으면 종료
+                // 해당하는 명령어 없으면 종료
+                return;
             }
 
             commandName = nowCommand.channelCool ? `${commandName}_${interaction.channelId}` : commandName;
