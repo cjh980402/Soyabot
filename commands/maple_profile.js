@@ -1,5 +1,5 @@
+import { MessageAttachment } from 'discord.js';
 import { exec } from '../admin/admin_function.js';
-import { MessageAttachment } from '../util/discord.js-extend.js';
 import { MapleUser } from '../util/maple_parsing.js';
 
 export const usage = `${client.prefix}프로필 (닉네임)`;

@@ -1,6 +1,6 @@
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { request } from 'undici';
 import renderChart from '../util/chartjs_rendering.js';
-import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
 const serverList = {
     스카니아: 'server1',
     베라: 'server2',

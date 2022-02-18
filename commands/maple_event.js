@@ -1,6 +1,6 @@
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
-import { MessageActionRow, MessageButton, MessageEmbed } from '../util/discord.js-extend.js';
 
 function getEventEmbed(links, names, dates) {
     const embeds = [];

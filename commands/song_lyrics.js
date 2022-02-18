@@ -1,6 +1,6 @@
+import { MessageEmbed, Util } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
-import { MessageEmbed, Util } from '../util/discord.js-extend.js';
 
 async function getLyricsEmbed(search) {
     const lyricsEmbed = new MessageEmbed().setColor('#FF9999');

@@ -1,6 +1,6 @@
+import { MessageAttachment, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
-import { MessageAttachment, MessageActionRow, MessageButton, MessageEmbed } from '../util/discord.js-extend.js';
 
 async function getCoronaEmbed() {
     const { body: countBody } = await request('http://ncov.mohw.go.kr');

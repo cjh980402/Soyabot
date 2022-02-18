@@ -1,4 +1,4 @@
-import { Collection, MessageEmbed } from '../util/discord.js-extend.js';
+import { Collection, MessageEmbed } from 'discord.js';
 import { youtubeSearch } from '../util/song_util.js';
 
 export const usage = `${client.prefix}search (영상 제목)`;
@@ -121,7 +121,7 @@ export async function commandExecute(interaction) {
         const playCommand = client.commands.find((cmd) => cmd.commandData?.name === 'play');
         interaction.options._hoistedOptions.push({ name: '영상_주소_제목', type: 'STRING' });
         for (const song of songChoice) {
-            interaction.options._hoistedOptions[1].value = resultsEmbed.fields[song - 1].value;
+            interaction.options._hoistedOptions.at(-1).value = resultsEmbed.fields[song - 1].value;
             await playCommand.commandExecute(interaction);
         }
 

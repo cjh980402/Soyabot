@@ -1,6 +1,6 @@
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
-import { MessageActionRow, MessageButton, MessageEmbed } from '../util/discord.js-extend.js';
 
 function getHaksikEmbed(date, haksik) {
     const embeds = [];

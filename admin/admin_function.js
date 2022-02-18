@@ -1,3 +1,4 @@
+import { Message } from 'discord.js';
 import { exec as __exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import { botNotice, replyRoomID } from './bot_control.js';
@@ -13,7 +14,6 @@ import {
     startUrus,
     stopUrus
 } from './maple_auto_notice.js';
-import { Message } from '../util/discord.js-extend.js';
 import { MapleProb } from '../util/maple_probtable.js';
 import { ADMIN_ID } from '../soyabot_config.js';
 const _exec = promisify(__exec);

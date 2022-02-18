@@ -1,8 +1,3 @@
-import { request } from 'undici';
-import YouTubeAPI from 'simple-youtube-api';
-import { PARTS, ENDPOINTS } from 'simple-youtube-api/src/util/Constants.js';
-import Video from 'simple-youtube-api/src/structures/Video.js';
-import { entersState, joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
 import {
     Message,
     Util,
@@ -14,51 +9,13 @@ import {
     BaseGuildVoiceChannel,
     Permissions
 } from 'discord.js';
+import { request } from 'undici';
+import YouTubeAPI from 'simple-youtube-api';
+import { PARTS, ENDPOINTS } from 'simple-youtube-api/src/util/Constants.js';
+import Video from 'simple-youtube-api/src/structures/Video.js';
+import { entersState, joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
 import { inspect } from 'node:util';
 const { _patch } = Message.prototype;
-
-export * from 'discord.js';
-
-export const botClientOption = {
-    retryLimit: 3,
-    failIfNotExists: false,
-    partials: ['CHANNEL'],
-    intents: [
-        Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_VOICE_STATES,
-        Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.DIRECT_MESSAGES
-    ],
-    makeCache: Options.cacheWithLimits({
-        BaseGuildEmojiManager: 0,
-        ChannelManager: {
-            maxSize: Infinity,
-            sweepFilter: () => (v) => !v.isText() && !v.isVoice(),
-            sweepInterval: 3600
-        },
-        GuildBanManager: 0,
-        GuildChannelManager: {
-            maxSize: Infinity,
-            sweepFilter: () => (v) => !v.isText() && !v.isVoice(),
-            sweepInterval: 3600
-        },
-        GuildEmojiManager: 0,
-        GuildInviteManager: 0,
-        GuildMemberManager: {
-            maxSize: 1,
-            keepOverLimit: (v) => v.id === client.user.id
-        },
-        GuildStickerManager: 0,
-        MessageManager: 0,
-        PresenceManager: 0,
-        UserManager: 0,
-        VoiceStateManager: {
-            maxSize: Infinity,
-            sweepFilter: () => (v) => v.id !== client.user.id && !v.channelId,
-            sweepInterval: 3600
-        }
-    })
-};
 
 function contentSplitCode(content, options) {
     content ||= '\u200b';
@@ -76,6 +33,51 @@ function contentSplitCode(content, options) {
     }
     return content;
 }
+
+Object.defineProperty(Options, 'createCustom', {
+    value: function () {
+        return {
+            retryLimit: 3,
+            failIfNotExists: false,
+            partials: ['CHANNEL'],
+            intents: [
+                Intents.FLAGS.GUILDS,
+                Intents.FLAGS.GUILD_VOICE_STATES,
+                Intents.FLAGS.GUILD_MESSAGES,
+                Intents.FLAGS.DIRECT_MESSAGES
+            ],
+            makeCache: Options.cacheWithLimits({
+                BaseGuildEmojiManager: 0,
+                ChannelManager: {
+                    maxSize: Infinity,
+                    sweepFilter: () => (v) => !v.isText() && !v.isVoice(),
+                    sweepInterval: 3600
+                },
+                GuildBanManager: 0,
+                GuildChannelManager: {
+                    maxSize: Infinity,
+                    sweepFilter: () => (v) => !v.isText() && !v.isVoice(),
+                    sweepInterval: 3600
+                },
+                GuildEmojiManager: 0,
+                GuildInviteManager: 0,
+                GuildMemberManager: {
+                    maxSize: 1,
+                    keepOverLimit: (v) => v.id === client.user.id
+                },
+                GuildStickerManager: 0,
+                MessageManager: 0,
+                PresenceManager: 0,
+                UserManager: 0,
+                VoiceStateManager: {
+                    maxSize: Infinity,
+                    sweepFilter: () => (v) => v.id !== client.user.id && !v.channelId,
+                    sweepInterval: 3600
+                }
+            })
+        };
+    }
+});
 
 Object.defineProperty(Message.prototype, '_patch', {
     value: function (data) {

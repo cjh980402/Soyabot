@@ -1,5 +1,5 @@
+import { MessageAttachment } from 'discord.js';
 import renderChart from '../util/chartjs_rendering.js';
-import { MessageAttachment } from '../util/discord.js-extend.js';
 import { ADMIN_ID } from '../soyabot_config.js';
 
 async function getMessageCountGraph(targetGuild, option) {

@@ -1,4 +1,4 @@
-import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { MapleUser } from '../util/maple_parsing.js';
 
 export const usage = `${client.prefix}코디 (닉네임)`;

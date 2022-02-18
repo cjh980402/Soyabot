@@ -1,4 +1,4 @@
-import { MessageEmbed } from '../util/discord.js-extend.js';
+import { MessageEmbed } from 'discord.js';
 import { bossData } from '../util/soyabot_const.js';
 
 function getBossEmbed(bossName, bossGrade) {

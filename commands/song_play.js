@@ -1,5 +1,5 @@
+import { Permissions } from 'discord.js';
 import { replyAdmin } from '../admin/bot_control.js';
-import { Permissions } from '../util/discord.js-extend.js';
 import { QueueElement } from '../util/music_play.js';
 import { isValidPlaylist, isValidVideo, getSongInfo } from '../util/song_util.js';
 

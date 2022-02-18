@@ -1,5 +1,5 @@
+import { MessageAttachment, MessageActionRow, MessageButton } from 'discord.js';
 import { exec } from '../admin/admin_function.js';
-import { MessageAttachment, MessageActionRow, MessageButton } from '../util/discord.js-extend.js';
 
 async function getDiceAttachment(nickname) {
     const { stdout: dicePic } = await exec(

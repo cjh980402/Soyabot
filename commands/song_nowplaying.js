@@ -1,5 +1,5 @@
+import { MessageEmbed } from 'discord.js';
 import { splitBar } from 'string-progressbar';
-import { MessageEmbed } from '../util/discord.js-extend.js';
 
 export const usage = `${client.prefix}nowplaying`;
 export const command = ['nowplaying', 'np'];

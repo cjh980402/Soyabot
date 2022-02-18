@@ -1,6 +1,6 @@
+import { MessageActionRow, MessageButton, MessageEmbed, Util } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
-import { MessageActionRow, MessageButton, MessageEmbed, Util } from '../util/discord.js-extend.js';
 
 async function getWeatherEmbed(targetLocal) {
     const targetURL = `https://weather.naver.com/today/${targetLocal[1][0]}`;

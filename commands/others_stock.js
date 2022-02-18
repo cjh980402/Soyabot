@@ -1,6 +1,6 @@
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { request } from 'undici';
 import { exec } from '../admin/admin_function.js';
-import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
 const chartType = {
     '일봉': 'candle/day',
     '주봉': 'candle/week',

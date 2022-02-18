@@ -1,6 +1,6 @@
+import { MessageAttachment } from 'discord.js';
 import { request } from 'undici';
 // import { exec } from '../admin/admin_function.js';
-import { MessageAttachment } from '../util/discord.js-extend.js';
 import { getMessageImage } from '../util/soyabot_util.js';
 import { BOT_SERVER_DOMAIN } from '../soyabot_config.js';
 

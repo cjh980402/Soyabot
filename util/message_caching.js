@@ -1,4 +1,4 @@
-import { CommandInteraction, Message } from './discord.js-extend.js';
+import { CommandInteraction, Message } from 'discord.js';
 
 export default function (messageOrInteraction) {
     if (messageOrInteraction instanceof Message) {

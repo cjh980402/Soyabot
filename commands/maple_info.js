@@ -1,4 +1,4 @@
-import { MessageAttachment, MessageEmbed } from '../util/discord.js-extend.js';
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { MapleUser } from '../util/maple_parsing.js';
 import { levelTable } from '../util/soyabot_const.js';
 

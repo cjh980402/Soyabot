@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton, MessageEmbed } from '../util/discord.js-extend.js';
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 
 function getQueueEmbed(thumbnail, songs) {
     const embeds = [];

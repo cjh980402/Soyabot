@@ -1,4 +1,4 @@
-import { MessageEmbed, Permissions } from '../util/discord.js-extend.js';
+import { MessageEmbed, Permissions } from 'discord.js';
 import { ADMIN_ID, NOTICE_CHANNEL_ID } from '../soyabot_config.js';
 
 export async function botNotice(data, type = null) {

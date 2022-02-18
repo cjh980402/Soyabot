@@ -1,7 +1,8 @@
 /**
  * 모듈 import
  */
-import { Client, Collection, Permissions, botClientOption } from './util/discord.js-extend.js'; // 제일 처음에 import 해야하는 모듈
+import './util/soyabot_setting_polyfill.js'; // 제일 처음에 import 해야하는 폴리필 모듈
+import { Client, Collection, Options, Permissions } from 'discord.js';
 import { readdirSync } from 'node:fs';
 import { setTimeout } from 'node:timers/promises';
 import { TOKEN, PREFIX, ADMIN_ID } from './soyabot_config.js';
@@ -13,7 +14,7 @@ import botChatting from './util/bot_chatting.js';
 import cachingMessage from './util/message_caching.js';
 import sqlite from './util/sqlite-handler.js';
 globalThis.db = new sqlite('./db/soyabot_data.db'); // db와 client는 빈번하게 사용되므로 global 객체에 저장
-globalThis.client = new Client(botClientOption);
+globalThis.client = new Client(Options.createCustom());
 client.commands = []; // 명령어 객체 저장할 배열
 client.queues = new Map(); // 음악기능 정보 저장용
 client.prefix = PREFIX; // 명령어 접두사
