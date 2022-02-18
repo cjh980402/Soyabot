@@ -35,7 +35,11 @@ export async function messageExecute(message, args) {
         return message.channel.send('지원하지 않는 요일입니다.');
     }
 
-    const { body } = await request('https://www.uos.ac.kr/food/placeList.do');
+    const { body } = await request('https://www.uos.ac.kr/food/placeList.do?epTicket=LOG', {
+        headers: {
+            'user-agent': 'undici'
+        }
+    });
     const data = load(await body.text())('#week tr');
     if (data.length > 0) {
         // 하루 이상의 학식 데이터가 존재
