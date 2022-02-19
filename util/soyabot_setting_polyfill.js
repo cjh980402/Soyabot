@@ -36,6 +36,10 @@ function contentSplitCode(content, options) {
 
 function entersState(target, status, timeout) {
     return new Promise((resolve, reject) => {
+        if (target.state.status === status) {
+            return resolve(target);
+        }
+
         let failTimer = null;
         const onStatus = () => {
             clearTimeout(failTimer);
@@ -52,7 +56,7 @@ function entersState(target, status, timeout) {
 }
 
 Object.defineProperty(Options, 'createCustom', {
-    value: function () {
+    value() {
         return {
             retryLimit: 3,
             failIfNotExists: false,
@@ -97,7 +101,7 @@ Object.defineProperty(Options, 'createCustom', {
 });
 
 Object.defineProperty(Message.prototype, '_patch', {
-    value: function (data) {
+    value(data) {
         _patch.call(this, data);
         if (data.member && this.guild && this.author) {
             this._member = this.guild.members._add({ ...data.member, user: this.author }, false); // 임시 멤버 객체 할당
@@ -106,19 +110,19 @@ Object.defineProperty(Message.prototype, '_patch', {
 });
 
 Object.defineProperty(Message.prototype, 'member', {
-    get: function () {
+    get() {
         return this.guild?.members.resolve(this.author) ?? this._member ?? null; // 할당된 임시 멤버 객체 반환
     }
 });
 
 Object.defineProperty(VoiceState.prototype, 'member', {
-    get: function () {
+    get() {
         return this.guild.members.resolve(this.id) ?? this.guild.members._add({ user: { id: this.id } }, false); // 임시 멤버 객체 생성 후 반환
     }
 });
 
 Object.defineProperty(Message.prototype, 'fetchfullContent', {
-    value: async function () {
+    async value() {
         if (this.type === 'DEFAULT' && this.attachments.first()?.name === 'message.txt') {
             const { body } = await request(this.attachments.first().url);
             return body.text();
@@ -129,7 +133,7 @@ Object.defineProperty(Message.prototype, 'fetchfullContent', {
 });
 
 Object.defineProperty(Channel.prototype, 'sendSplitCode', {
-    value: async function (content, options = {}) {
+    async value(content, options = {}) {
         if (this.isText()) {
             for (const c of contentSplitCode(content, options)) {
                 await this.send(c);
@@ -139,7 +143,7 @@ Object.defineProperty(Channel.prototype, 'sendSplitCode', {
 });
 
 Object.defineProperty(CommandInteraction.prototype, 'sendSplitCode', {
-    value: async function (content, options = {}) {
+    async value(content, options = {}) {
         for (const c of contentSplitCode(content, options)) {
             await this.followUp(c);
         }
@@ -147,7 +151,7 @@ Object.defineProperty(CommandInteraction.prototype, 'sendSplitCode', {
 });
 
 Object.defineProperty(BaseGuildVoiceChannel.prototype, 'join', {
-    value: async function () {
+    async value() {
         const connection = joinVoiceChannel({
             channelId: this.id,
             guildId: this.guild.id,
@@ -171,7 +175,7 @@ Object.defineProperty(BaseGuildVoiceChannel.prototype, 'join', {
 });
 
 Object.defineProperty(YouTubeAPI.prototype, 'getVideosByIDs', {
-    value: async function (ids, options = {}) {
+    async value(ids, options = {}) {
         const result = await this.request.make(ENDPOINTS.Videos, { ...options, part: PARTS.Videos, id: ids.join(',') });
         if (result.items.length > 0) {
             return result.items.map((v) => (v ? new Video(this, v) : null));
@@ -183,7 +187,7 @@ Object.defineProperty(YouTubeAPI.prototype, 'getVideosByIDs', {
 
 Object.defineProperty(Array.prototype, 'asyncFilter', {
     // async 함수를 사용 가능한 Array의 filter 메소드 구현
-    value: async function (callback) {
+    async value(callback) {
         const fail = Symbol();
         return (await Promise.all(this.map(async (v) => ((await callback(v)) ? v : fail)))).filter((v) => v !== fail);
     }
@@ -191,13 +195,13 @@ Object.defineProperty(Array.prototype, 'asyncFilter', {
 
 Object.defineProperty(Array.prototype, 'deduplication', {
     // 중복된 배열의 원소를 제거한 배열을 반환
-    value: function () {
+    value() {
         return [...new Set(this)];
     }
 });
 
 Object.defineProperty(Array.prototype, 'shuffle', {
-    value: function (indexStart = 0, indexEnd = this.length) {
+    value(indexStart = 0, indexEnd = this.length) {
         for (let i = indexEnd - 1; i > indexStart; i--) {
             const j = Math.floor(Math.random() * (i - indexStart + 1)) + indexStart;
             [this[i], this[j]] = [this[j], this[i]];
@@ -207,7 +211,7 @@ Object.defineProperty(Array.prototype, 'shuffle', {
 });
 
 Object.defineProperty(Number.prototype, 'toUnitString', {
-    value: function (count = 5) {
+    value(count = 5) {
         // count는 출력할 단위의 개수
         const unitName = ['경', '조', '억', '만', ''];
         const unitStd = 10000;
@@ -228,7 +232,7 @@ Object.defineProperty(Number.prototype, 'toUnitString', {
 });
 
 Object.defineProperty(Number.prototype, 'toDurationString', {
-    value: function () {
+    value() {
         const hours = Math.floor(this / 3600);
         const minutes = Math.floor((this % 3600) / 60);
         const seconds = Math.floor(this % 60);
@@ -242,7 +246,7 @@ Object.defineProperty(Number.prototype, 'toDurationString', {
 });
 
 Object.defineProperty(String.prototype, 'hashCode', {
-    value: function () {
+    value() {
         let h = 0;
         for (const c of this) {
             h = (31 * h + c.codePointAt(0)) | 0; // 연산 후 signed 32-bit 정수로 변환
@@ -253,14 +257,14 @@ Object.defineProperty(String.prototype, 'hashCode', {
 
 Object.defineProperty(Object.prototype, '_i', {
     // util.inspect의 결과 출력
-    value: function (dep = 2) {
+    value(dep = 2) {
         return inspect(this, { depth: dep });
     }
 });
 
 Object.defineProperty(Object.prototype, '_p', {
     // 객체의 키와 값 출력
-    get: function () {
+    get() {
         return Object.getOwnPropertyNames(this)
             .map((v) => {
                 try {
@@ -275,21 +279,21 @@ Object.defineProperty(Object.prototype, '_p', {
 
 Object.defineProperty(Object.prototype, '_k', {
     // 객체의 키만 출력
-    get: function () {
+    get() {
         return Object.getOwnPropertyNames(this).join('\n');
     }
 });
 
 Object.defineProperty(Object.prototype, '__p', {
     // 객체의 프로토타입의 키와 값 출력
-    get: function () {
+    get() {
         return Object.getPrototypeOf(this)._p;
     }
 });
 
 Object.defineProperty(Object.prototype, '__k', {
     // 객체의 프로토타입의 키만 출력
-    get: function () {
+    get() {
         return Object.getPrototypeOf(this)._k;
     }
 });
