@@ -34,8 +34,8 @@ function contentSplitCode(content, options) {
     return content;
 }
 
-async function entersState(target, status, timeout) {
-    return new Promise(async (resolve, reject) => {
+function entersState(target, status, timeout) {
+    return new Promise((resolve, reject) => {
         let failTimer = null;
         const onStatus = () => {
             clearTimeout(failTimer);
@@ -44,7 +44,7 @@ async function entersState(target, status, timeout) {
 
         failTimer = setTimeout(() => {
             target.off(status, onStatus);
-            reject(new Error(`Failed to reach ${status} status`));
+            reject(new Error(`Didn't enter state ${status} within ${timeout}ms`));
         }, timeout);
 
         target.once(status, onStatus);
