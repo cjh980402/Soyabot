@@ -76,16 +76,19 @@ client.on('messageCreate', async (message) => {
         }
         if (
             message.guildId &&
-            !message.channel
+            (!message.channel
                 .permissionsFor(message.guild.me)
                 .has([
                     Permissions.FLAGS.VIEW_CHANNEL,
                     Permissions.FLAGS.SEND_MESSAGES,
                     Permissions.FLAGS.READ_MESSAGE_HISTORY
-                ])
+                ]) ||
+                message.guild.me.isCommunicationDisabled())
         ) {
-            // 기본 권한이 없는 채널이므로 바로 종료
-            return;
+            // 기본 권한이 없는 채널이므로 DM으로 메시지 전송
+            return await message.author.send(
+                '봇에 적절한 권한이 부여되지 않았거나 타임아웃이 적용되어 명령을 수행할 수 없습니다.'
+            );
         }
         if (message.author.id === ADMIN_ID) {
             // 관리자 여부 체크
@@ -155,16 +158,19 @@ client.on('interactionCreate', async (interaction) => {
 
             if (
                 interaction.guildId &&
-                !interaction.channel
+                (!interaction.channel
                     .permissionsFor(interaction.guild.me)
                     .has([
                         Permissions.FLAGS.VIEW_CHANNEL,
                         Permissions.FLAGS.SEND_MESSAGES,
                         Permissions.FLAGS.READ_MESSAGE_HISTORY
-                    ])
+                    ]) ||
+                    interaction.guild.me.isCommunicationDisabled())
             ) {
-                // 기본 권한이 없는 채널이므로 바로 종료
-                return;
+                // 기본 권한이 없는 채널이므로 DM으로 메시지 전송
+                return await interaction.user.send(
+                    '봇에 적절한 권한이 부여되지 않았거나 타임아웃이 적용되어 명령을 수행할 수 없습니다.'
+                );
             }
 
             const nowCommand = client.commands.find((cmd) => cmd.commandData?.name === commandName); // 해당하는 명령어 찾기
