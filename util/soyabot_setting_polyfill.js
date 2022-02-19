@@ -13,7 +13,7 @@ import { request } from 'undici';
 import YouTubeAPI from 'simple-youtube-api';
 import { PARTS, ENDPOINTS } from 'simple-youtube-api/src/util/Constants.js';
 import Video from 'simple-youtube-api/src/structures/Video.js';
-import { entersState, joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
+import { joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
 import { inspect } from 'node:util';
 const { _patch } = Message.prototype;
 
@@ -32,6 +32,23 @@ function contentSplitCode(content, options) {
         content = [content];
     }
     return content;
+}
+
+async function entersState(target, status, timeout) {
+    return new Promise(async (resolve, reject) => {
+        let failTimer = null;
+        const onStatus = () => {
+            clearTimeout(failTimer);
+            resolve(target);
+        };
+
+        failTimer = setTimeout(() => {
+            target.off(status, onStatus);
+            reject(new Error(`Failed to reach ${status} status`));
+        }, timeout);
+
+        target.once(status, onStatus);
+    });
 }
 
 Object.defineProperty(Options, 'createCustom', {

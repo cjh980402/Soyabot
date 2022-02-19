@@ -13,10 +13,10 @@ async function requestJSON(url) {
 }
 
 export class MapleError extends Error {
+    name = 'MapleError';
+    code = 'MAPLE_ERR';
     constructor(message) {
         super(message);
-        this.name = 'MapleError';
-        this.code = 'MAPLE_ERR';
     }
 }
 
