@@ -153,7 +153,7 @@ client.on('interactionCreate', async (interaction) => {
             console.log(
                 `(${new Date().toLocaleString()}) ${interaction.channelId} ${interaction.channel.name ?? 'DM'} ${
                     interaction.user.id
-                } ${interaction.user.username}: /${interaction.commandName}\n${interaction.options._i()}\n`
+                } ${interaction.user.username}: ${interaction.toString()}\n`
             );
 
             if (
@@ -203,9 +203,9 @@ client.on('interactionCreate', async (interaction) => {
                     await interaction.editReply(err.message);
                 } else {
                     replyAdmin(
-                        `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: /${
-                            interaction.commandName
-                        }\n${interaction.options._i()}\n에러 내용: ${err.stack ?? err._p}`
+                        `작성자: ${interaction.user.username}\n방 ID: ${
+                            interaction.channelId
+                        }\n채팅 내용: ${interaction.toString()}\n에러 내용: ${err.stack ?? err._p}`
                     );
                     await interaction.editReply('에러로그가 전송되었습니다.');
                 }

@@ -182,9 +182,9 @@ export async function commandExecute(interaction) {
     } catch (err) {
         client.queues.delete(interaction.guildId);
         replyAdmin(
-            `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: /${
-                interaction.commandName
-            }\n${interaction.options._i()}\n에러 내용: ${err.stack ?? err._p}`
+            `작성자: ${interaction.user.username}\n방 ID: ${
+                interaction.channelId
+            }\n채팅 내용: ${interaction.toString()}\n에러 내용: ${err.stack ?? err._p}`
         );
         return interaction.followUp(`채널에 참가할 수 없습니다: ${err.message ?? err}`);
     }
