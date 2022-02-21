@@ -16,7 +16,10 @@ export async function botNotice(data, type = null) {
                 const guildText = v.channels.cache.filter((v) => v.type === 'GUILD_TEXT');
                 const target = guildText.find((v) => noticeRegex.test(v.name)) ?? guildText.first();
                 if (
-                    target?.permissionsFor(v.me).has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES])
+                    target
+                        ?.permissionsFor(v.me)
+                        .has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]) &&
+                    !v.me.isCommunicationDisabled()
                 ) {
                     await target.send(data);
                 }
@@ -28,7 +31,7 @@ export async function botNotice(data, type = null) {
 export async function replyRoomID(roomID, str) {
     try {
         const target = client.channels._add({ id: roomID, type: 1 }, null, { cache: false }); // 메세지를 보내고 싶은 방 객체 생성
-        await target.sendSplitCode(str, { split: { char: '' } }); // 해당 채널에 메시지 전송
+        await target.send(str); // 해당 채널에 메시지 전송
         return target;
     } catch {
         return null;
@@ -38,7 +41,7 @@ export async function replyRoomID(roomID, str) {
 export async function replyAdmin(str) {
     try {
         const admin = client.users._add({ id: ADMIN_ID }, false); // 관리자 유저 객체 생성
-        await (await admin.createDM()).sendSplitCode(str, { split: { char: '' } }); // 관리자에게 DM으로 보냄
+        await admin.send(str); // 관리자에게 DM 전송
         return admin;
     } catch {
         return null;

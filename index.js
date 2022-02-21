@@ -74,7 +74,8 @@ client.on('messageCreate', async (message) => {
             // 봇 또는 시스템 유저 여부 체크
             return;
         }
-        if (
+
+        const missingPermission =
             message.guildId &&
             (!message.channel
                 .permissionsFor(message.guild.me)
@@ -83,22 +84,19 @@ client.on('messageCreate', async (message) => {
                     Permissions.FLAGS.SEND_MESSAGES,
                     Permissions.FLAGS.READ_MESSAGE_HISTORY
                 ]) ||
-                message.guild.me.isCommunicationDisabled())
-        ) {
-            // 기본 권한이 없는 채널이므로 DM으로 메시지 전송
-            return await message.author.send(
-                '봇에 적절한 권한이 부여되지 않았거나 타임아웃이 적용되어 명령을 수행할 수 없습니다.'
-            );
-        }
-        if (message.author.id === ADMIN_ID) {
-            // 관리자 여부 체크
-            await adminChat(message);
-        }
+                message.guild.me.isCommunicationDisabled());
 
         const [prefixCommand, ...args] = message.content.trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
         if (!prefixCommand.startsWith(client.prefix)) {
             // client.prefix로 시작하지 않는 경우
-            return await botChatting(message); // 잡담 로직
+            if (!missingPermission) {
+                if (message.author.id === ADMIN_ID) {
+                    // 관리자 여부 체크
+                    await adminChat(message);
+                }
+                await botChatting(message); // 잡담 로직
+            }
+            return;
         }
         commandName = prefixCommand.slice(client.prefix.length).toLowerCase(); // commandName은 client.prefix를 제외한 명령어 부분
 
@@ -107,6 +105,12 @@ client.on('messageCreate', async (message) => {
         if (!nowCommand?.messageExecute) {
             // 해당하는 명령어 없으면 종료
             return;
+        }
+        if (missingPermission) {
+            // 기본 권한이 없어서 명령을 수행하지 못하는 채널이므로 DM으로 메시지 전송
+            return await message.author.send(
+                '봇에 적절한 권한이 부여되지 않았거나 타임아웃이 적용되어 명령을 수행할 수 없습니다.'
+            );
         }
 
         commandName = nowCommand.channelCool ? `${nowCommand.command[0]}_${message.channelId}` : nowCommand.command[0];
@@ -156,7 +160,7 @@ client.on('interactionCreate', async (interaction) => {
                 } ${interaction.user.username}: ${interaction.toString()}\n`
             );
 
-            if (
+            const missingPermission =
                 interaction.guildId &&
                 (!interaction.channel
                     .permissionsFor(interaction.guild.me)
@@ -165,19 +169,19 @@ client.on('interactionCreate', async (interaction) => {
                         Permissions.FLAGS.SEND_MESSAGES,
                         Permissions.FLAGS.READ_MESSAGE_HISTORY
                     ]) ||
-                    interaction.guild.me.isCommunicationDisabled())
-            ) {
-                // 기본 권한이 없는 채널이므로 DM으로 메시지 전송
-                return await interaction.user.send(
-                    '봇에 적절한 권한이 부여되지 않았거나 타임아웃이 적용되어 명령을 수행할 수 없습니다.'
-                );
-            }
+                    interaction.guild.me.isCommunicationDisabled());
 
             const nowCommand = client.commands.find((cmd) => cmd.commandData?.name === commandName); // 해당하는 명령어 찾기
 
             if (!nowCommand?.commandExecute) {
                 // 해당하는 명령어 없으면 종료
                 return;
+            }
+            if (missingPermission) {
+                // 기본 권한이 없어서 명령을 수행하지 못하는 채널이므로 DM으로 메시지 전송
+                return await interaction.user.send(
+                    '봇에 적절한 권한이 부여되지 않았거나 타임아웃이 적용되어 명령을 수행할 수 없습니다.'
+                );
             }
 
             commandName = nowCommand.channelCool ? `${commandName}_${interaction.channelId}` : commandName;
