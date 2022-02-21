@@ -8,7 +8,7 @@ export async function messageExecute(message, args) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
-    const igList = args.map((v) => +v);
+    const igList = args.map(Number);
     const monster = igList.shift();
     if (isNaN(monster) || monster < 0) {
         return message.channel.send('입력한 값이 잘못되었습니다.');

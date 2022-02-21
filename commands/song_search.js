@@ -39,10 +39,9 @@ export async function messageExecute(message, args) {
         const rslt = await message.channel.awaitMessages({
             filter: (msg) =>
                 msg.author.id === message.author.id &&
-                (songChoice = msg.content
-                    .split(',')
-                    .map((str) => Math.trunc(str))
-                    .deduplication()).every((v) => !isNaN(v) && 1 <= v && v <= results.length),
+                (songChoice = msg.content.split(',').map(Math.trunc).deduplication()).every(
+                    (v) => !isNaN(v) && 1 <= v && v <= results.length
+                ),
             max: 1,
             time: 20000,
             errors: ['time']
@@ -109,10 +108,9 @@ export async function commandExecute(interaction) {
         const rslt = await interaction.channel.awaitMessages({
             filter: (msg) =>
                 msg.author.id === interaction.user.id &&
-                (songChoice = msg.content
-                    .split(',')
-                    .map((str) => Math.trunc(str))
-                    .deduplication()).every((v) => !isNaN(v) && 1 <= v && v <= results.length),
+                (songChoice = msg.content.split(',').map(Math.trunc).deduplication()).every(
+                    (v) => !isNaN(v) && 1 <= v && v <= results.length
+                ),
             max: 1,
             time: 20000,
             errors: ['time']

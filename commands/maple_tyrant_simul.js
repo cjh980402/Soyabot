@@ -11,7 +11,7 @@ export async function messageExecute(message, args) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
     const result = new SuperialItem();
-    return message.channel.send(result.doingStarforce(args.map((v) => +v)));
+    return message.channel.send(result.doingStarforce(args.map(Number)));
 }
 export const commandData = {
     name: '타일런트시뮬',

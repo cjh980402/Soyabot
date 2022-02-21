@@ -27,7 +27,7 @@ function getScouterEmbed(mapleUserInfo, union) {
         time = 900;
     } else {
         murungfl = +/\d+/.exec(murung[1]);
-        [min, sec] = murung[2].match(/\d+/g).map((v) => +v);
+        [min, sec] = murung[2].match(/\d+/g).map(Number);
         time = min * 60 + sec;
     }
 

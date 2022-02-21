@@ -13,7 +13,7 @@ export async function messageExecute(message, args) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
-    args = args.map((v) => +v);
+    args = args.map(Number);
     const starforce = {
         130: [6, 7, 7, 8, 9],
         140: [7, 8, 8, 9, 10, 11, 12, 30, 31, 32],
