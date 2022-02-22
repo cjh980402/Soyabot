@@ -1,4 +1,4 @@
-import { MessageEmbed, Permissions, Util } from 'discord.js';
+import { MessageEmbed, Util } from 'discord.js';
 import { replyAdmin } from '../admin/bot_control.js';
 import { QueueElement } from '../util/music_play.js';
 import { isValidPlaylist, isValidVideo, getPlaylistInfo } from '../util/song_util.js';
@@ -24,11 +24,10 @@ export async function messageExecute(message, args) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
-    const permissions = channel.permissionsFor(message.guild.me);
-    if (!permissions.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.CONNECT])) {
+    if (!channel.joinable) {
         return message.reply('권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.');
     }
-    if (!permissions.has(Permissions.FLAGS.SPEAK)) {
+    if (channel.type === 'GUILD_VOICE' && !channel.speakable) {
         return message.reply('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
     }
 
@@ -118,11 +117,10 @@ export async function commandExecute(interaction) {
         return interaction.followUp(`${client.user}과 같은 음성 채널에 참가해주세요!`);
     }
 
-    const permissions = channel.permissionsFor(interaction.guild.me);
-    if (!permissions.has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.CONNECT])) {
+    if (!channel.joinable) {
         return interaction.followUp('권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.');
     }
-    if (!permissions.has(Permissions.FLAGS.SPEAK)) {
+    if (channel.type === 'GUILD_VOICE' && !channel.speakable) {
         return interaction.followUp('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
     }
 

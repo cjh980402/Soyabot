@@ -2,7 +2,7 @@
  * 모듈 import
  */
 import './util/soyabot_setting_polyfill.js'; // 제일 처음에 import 해야하는 폴리필 모듈
-import { Client, Collection, Options, Permissions } from 'discord.js';
+import { Client, Collection, Options } from 'discord.js';
 import { readdirSync } from 'node:fs';
 import { setTimeout } from 'node:timers/promises';
 import { TOKEN, PREFIX, ADMIN_ID } from './soyabot_config.js';
@@ -75,15 +75,16 @@ client.on('messageCreate', async (message) => {
             return;
         }
 
+        const botPermissions = [
+            'VIEW_CHANNEL',
+            message.channel.isThread() ? 'SEND_MESSAGES_IN_THREADS' : 'SEND_MESSAGES',
+            'READ_MESSAGE_HISTORY',
+            'EMBED_LINKS',
+            'ATTACH_FILES'
+        ];
         const missingPermission =
             message.guildId &&
-            (!message.channel
-                .permissionsFor(message.guild.me)
-                .has([
-                    Permissions.FLAGS.VIEW_CHANNEL,
-                    Permissions.FLAGS.SEND_MESSAGES,
-                    Permissions.FLAGS.READ_MESSAGE_HISTORY
-                ]) ||
+            (!message.channel.permissionsFor(message.guild.me).has(botPermissions) ||
                 message.guild.me.isCommunicationDisabled());
 
         const [prefixCommand, ...args] = message.content.trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
@@ -109,7 +110,8 @@ client.on('messageCreate', async (message) => {
         if (missingPermission) {
             // 기본 권한이 없어서 명령을 수행하지 못하는 채널이므로 DM으로 메시지 전송
             return await message.author.send(
-                '봇에 적절한 권한이 부여되지 않았거나 타임아웃이 적용되어 명령을 수행할 수 없습니다.'
+                `봇에 적절한 권한이 부여되지 않았거나 타임아웃이 적용되어 명령을 수행할 수 없습니다.
+필요한 권한 종류: ${botPermissions.join(', ')}`
             );
         }
 
@@ -160,15 +162,16 @@ client.on('interactionCreate', async (interaction) => {
                 } ${interaction.user.username}: ${interaction.toString()}\n`
             );
 
+            const botPermissions = [
+                'VIEW_CHANNEL',
+                interaction.channel.isThread() ? 'SEND_MESSAGES_IN_THREADS' : 'SEND_MESSAGES',
+                'READ_MESSAGE_HISTORY',
+                'EMBED_LINKS',
+                'ATTACH_FILES'
+            ];
             const missingPermission =
                 interaction.guildId &&
-                (!interaction.channel
-                    .permissionsFor(interaction.guild.me)
-                    .has([
-                        Permissions.FLAGS.VIEW_CHANNEL,
-                        Permissions.FLAGS.SEND_MESSAGES,
-                        Permissions.FLAGS.READ_MESSAGE_HISTORY
-                    ]) ||
+                (!interaction.channel.permissionsFor(interaction.guild.me).has(botPermissions) ||
                     interaction.guild.me.isCommunicationDisabled());
 
             const nowCommand = client.commands.find((cmd) => cmd.commandData?.name === commandName); // 해당하는 명령어 찾기
@@ -180,7 +183,8 @@ client.on('interactionCreate', async (interaction) => {
             if (missingPermission) {
                 // 기본 권한이 없어서 명령을 수행하지 못하는 채널이므로 DM으로 메시지 전송
                 return await interaction.user.send(
-                    '봇에 적절한 권한이 부여되지 않았거나 타임아웃이 적용되어 명령을 수행할 수 없습니다.'
+                    `봇에 적절한 권한이 부여되지 않았거나 타임아웃이 적용되어 명령을 수행할 수 없습니다.
+필요한 권한 종류: ${botPermissions.join(', ')}`
                 );
             }
 

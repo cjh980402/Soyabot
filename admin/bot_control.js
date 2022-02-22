@@ -1,4 +1,4 @@
-import { MessageEmbed, Permissions } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { ADMIN_ID, NOTICE_CHANNEL_ID } from '../soyabot_config.js';
 
 export async function botNotice(data, type = null) {
@@ -15,14 +15,7 @@ export async function botNotice(data, type = null) {
             try {
                 const guildText = v.channels.cache.filter((v) => v.type === 'GUILD_TEXT');
                 const target = guildText.find((v) => noticeRegex.test(v.name)) ?? guildText.first();
-                if (
-                    target
-                        ?.permissionsFor(v.me)
-                        .has([Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]) &&
-                    !v.me.isCommunicationDisabled()
-                ) {
-                    await target.send(data);
-                }
+                await target.send(data);
             } catch {}
         });
     }
