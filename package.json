@@ -21,7 +21,6 @@
     "pretty": "prettier --config .prettierrc --write '**/*.js'"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.7.0",
     "@discordjs/voice": "^0.8.0",
     "better-sqlite3": "^7.5.0",
     "bufferutil": "^4.0.6",
@@ -34,6 +33,7 @@
     "ffmpeg-static": "^4.4.1",
     "hangul-js": "^0.2.6",
     "mathjs": "^10.1.1",
+    "opusscript": "^0.0.8",
     "simple-youtube-api": "^5.2.1",
     "sodium": "^3.0.2",
     "soundcloud.ts": "^0.4.5",
