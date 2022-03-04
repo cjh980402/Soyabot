@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "soyabot",
-  "version": "7.6.1",
+  "version": "7.6.2",
   "description": "MapleStory, Music Discord Bot",
   "license": "MIT",
   "author": "cjh980402 <9804cjh@naver.com> (https://github.com/cjh980402)",
@@ -32,7 +32,7 @@
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^4.4.1",
     "hangul-js": "^0.2.6",
-    "mathjs": "^10.1.1",
+    "mathjs": "^10.3.0",
     "opusscript": "^0.0.8",
     "simple-youtube-api": "^5.2.1",
     "sodium": "^3.0.2",
