@@ -39,7 +39,7 @@ export function startNotice() {
             } catch (err) {
                 replyAdmin(`자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${err.stack ?? err._p}`);
             }
-        }, 120000);
+        }, 127000);
     }
 }
 
@@ -81,7 +81,7 @@ export function startUpdate() {
             } catch (err) {
                 replyAdmin(`자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${err.stack ?? err._p}`);
             }
-        }, 120000);
+        }, 131000);
     }
 }
 
@@ -131,7 +131,7 @@ export function startTest() {
             } catch (err) {
                 replyAdmin(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${err.stack ?? err._p}`);
             }
-        }, 120000);
+        }, 137000);
     }
 }
 
@@ -168,7 +168,7 @@ export function startTestPatch() {
             } catch (err) {
                 replyAdmin(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${err.stack ?? err._p}`);
             }
-        }, 120000);
+        }, 139000);
     }
 }
 
