@@ -63,7 +63,7 @@ export default class NormalItem {
         }
 
         this.#lev = data[0]; // 아이템 렙제
-        if (this.#lev < 98 || this.#lev > 200) {
+        if (this.#lev < 98 || this.#lev > 250) {
             return '레벨 제한을 다시 입력해주세요.';
         }
         if (this.#lev >= 138) {
