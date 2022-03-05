@@ -17,6 +17,7 @@ export class MapleError extends Error {
     code = 'MAPLE_ERR';
     constructor(message) {
         super(message);
+        this.message ||= '메이플스토리 기능에서 에러가 발생했습니다.';
     }
 }
 

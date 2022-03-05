@@ -154,7 +154,7 @@ Object.defineProperty(BaseGuildVoiceChannel.prototype, 'join', {
     async value() {
         const connection = joinVoiceChannel({
             channelId: this.id,
-            guildId: this.guild.id,
+            guildId: this.guildId,
             adapterCreator: this.guild.voiceAdapterCreator
         });
 
@@ -257,8 +257,8 @@ Object.defineProperty(String.prototype, 'hashCode', {
 
 Object.defineProperty(Object.prototype, '_i', {
     // util.inspect의 결과 출력
-    value(dep = 2) {
-        return inspect(this, { depth: dep });
+    value(depth = 2) {
+        return inspect(this, { depth });
     }
 });
 

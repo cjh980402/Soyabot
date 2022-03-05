@@ -38,9 +38,9 @@
     "sodium": "^3.0.2",
     "soundcloud.ts": "^0.4.5",
     "string-progressbar": "^1.0.4",
-    "undici": "^4.14.1",
+    "undici": "^4.15.0",
     "utf-8-validate": "^5.0.8",
-    "youtube-dlsr": "^2.4.0",
+    "youtube-dlsr": "^2.5.0",
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {

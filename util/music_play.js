@@ -1,6 +1,6 @@
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { AudioPlayerStatus, createAudioPlayer, NoSubscriberBehavior, VoiceConnectionStatus } from '@discordjs/voice';
-import { ErrorCodes } from 'youtube-dlsr';
+import { FormatError } from 'youtube-dlsr';
 import { songDownload } from './song_util.js';
 import { canModifyQueue } from './soyabot_util.js';
 import { replyAdmin } from '../admin/bot_control.js';
@@ -102,7 +102,7 @@ export class QueueElement {
             this.subscription.player.play(await songDownload(song.url));
             // this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
         } catch (err) {
-            if (err.message === ErrorCodes.NO_SUITABLE_FORMAT) {
+            if (err instanceof FormatError) {
                 this.sendMessage('재생할 수 없는 영상입니다.');
             } else {
                 this.sendMessage('노래 시작을 실패했습니다.');
