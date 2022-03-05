@@ -35,7 +35,7 @@ export async function messageExecute(message, args) {
         })
     ).first();
     const time = (Date.now() - start) / 1000;
-    return winMessage.reply(`${winMessage.member?.nickname ?? winMessage.author.username}님이 승리하였습니다!
+    return winMessage.reply(`${winMessage.member?.nickname ?? winMessage.author.username}님이 승리했습니다!
 소요시간: ${time.toFixed(2)}초\n분당타수: ${((choiceLength * 60) / time).toFixed(2)}타`);
 }
 export const commandData = {
@@ -75,6 +75,6 @@ export async function commandExecute(interaction) {
         })
     ).first();
     const time = (Date.now() - start) / 1000;
-    return winMessage.reply(`${winMessage.member?.nickname ?? winMessage.author.username}님이 승리하였습니다!
+    return winMessage.reply(`${winMessage.member?.nickname ?? winMessage.author.username}님이 승리했습니다!
 소요시간: ${time.toFixed(2)}초\n분당타수: ${((choiceLength * 60) / time).toFixed(2)}타`);
 }

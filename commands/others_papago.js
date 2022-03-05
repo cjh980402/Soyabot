@@ -16,7 +16,7 @@ async function tran(source, target, text) {
         body: params.toString()
     });
     const data = await body.json();
-    return data.message?.result.translatedText ?? '번역에 실패하였습니다.';
+    return data.message?.result.translatedText ?? '번역에 실패했습니다.';
 }
 
 function checkLan(src, tar) {

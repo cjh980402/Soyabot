@@ -24,7 +24,7 @@ async function requestCFR(url) {
 async function clova_face(url) {
     const data = await requestCFR(url);
     if (!data.info) {
-        return `사진 분석에 실패하였습니다.\n${data.errorMessage}`;
+        return `사진 분석에 실패했습니다.\n${data.errorMessage}`;
     }
 
     let rslt = `감지된 얼굴 수: ${data.info.faceCount}`;

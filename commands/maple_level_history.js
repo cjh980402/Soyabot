@@ -16,7 +16,7 @@ export async function messageExecute(message, args) {
     if (!(await mapleUserInfo.isLatest())) {
         message.channel.send('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
         if (!(await mapleUserInfo.updateGG())) {
-            message.channel.send('제한시간 내에 갱신 작업을 실패하였습니다.');
+            message.channel.send('제한시간 내에 갱신 작업을 실패했습니다.');
         }
     }
 
@@ -53,7 +53,7 @@ export async function commandExecute(interaction) {
     if (!(await mapleUserInfo.isLatest())) {
         await interaction.editReply('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
         if (!(await mapleUserInfo.updateGG())) {
-            await interaction.editReply('제한시간 내에 갱신 작업을 실패하였습니다.');
+            await interaction.editReply('제한시간 내에 갱신 작업을 실패했습니다.');
         }
     }
 

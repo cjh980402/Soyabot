@@ -61,7 +61,7 @@ async function farm_add(end_date, user, monster) {
         const date = end_date.match(/^(\d{2})(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/);
         // 올바른 YYMMDD 형식인지 확인하는 정규식 → 인덱스 1: 연도, 2: 월, 3: 일
         if (!date) {
-            return '잘못된 형식의 날짜를 입력하였습니다. YYMMDD 형식으로 끝나는 날짜를 입력해주세요.';
+            return '잘못된 형식의 날짜를 입력했습니다. YYMMDD 형식으로 끝나는 날짜를 입력해주세요.';
         }
         const monlife = new Date(+date[1] + 2000, +date[2] - 1, +date[3] + 1); // 하루 유예기간 설정
         if (monlife < Date.now()) {
@@ -92,7 +92,7 @@ async function farm_add(end_date, user, monster) {
         // 오류 발생
         return data.error;
     } else {
-        return `${data.monster} 보유 농장 목록에 ${data.user} 농장을 추가하였습니다.\n기간은 ${
+        return `${data.monster} 보유 농장 목록에 ${data.user} 농장을 추가했습니다.\n기간은 ${
             data.end_date ? `${data.end_date}까지` : '무한'
         }입니다.`;
     }

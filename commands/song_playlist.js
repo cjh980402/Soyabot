@@ -70,7 +70,7 @@ export async function messageExecute(message, args) {
         serverQueue.textChannel = message.channel;
         serverQueue.songs.push(...playlist.songs);
         return message.channel.send({
-            content: `✅ ${message.author}가 재생목록을 추가하였습니다.`,
+            content: `✅ ${message.author}가 재생목록을 추가했습니다.`,
             embeds: [playlistEmbed]
         });
     }
@@ -163,7 +163,7 @@ export async function commandExecute(interaction) {
         serverQueue.textChannel = interaction.channel;
         serverQueue.songs.push(...playlist.songs);
         return interaction.followUp({
-            content: `✅ ${interaction.user}가 재생목록을 추가하였습니다.`,
+            content: `✅ ${interaction.user}가 재생목록을 추가했습니다.`,
             embeds: [playlistEmbed]
         });
     }

@@ -36,7 +36,7 @@ async function tran(source, target, text) {
         body: params.toString()
     });
     const data = await body.json(); // 번역 성공 시 translated_text에 문단(문장의 배열)의 배열이 들어옴
-    return data.translated_text?.map((v) => v.join(' ')).join('\n') || '번역에 실패하였습니다.'; // 빈 문자열 대응
+    return data.translated_text?.map((v) => v.join(' ')).join('\n') || '번역에 실패했습니다.'; // 빈 문자열 대응
 }
 
 function findLangCode(src, tar) {

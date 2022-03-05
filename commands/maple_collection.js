@@ -18,13 +18,13 @@ export async function messageExecute(message, args) {
     if (!(await mapleUserInfo.isLatest())) {
         message.channel.send('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
         if (!(await mapleUserInfo.updateGG())) {
-            message.channel.send('제한시간 내에 갱신 작업을 실패하였습니다.');
+            message.channel.send('제한시간 내에 갱신 작업을 실패했습니다.');
         }
     }
 
     const collection = mapleUserInfo.Collection();
     if (!collection) {
-        return message.channel.send(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못하였습니다.`);
+        return message.channel.send(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못했습니다.`);
     } else {
         const { stdout: collectionPic } = await exec(
             `python3 ./util/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(
@@ -59,13 +59,13 @@ export async function commandExecute(interaction) {
     if (!(await mapleUserInfo.isLatest())) {
         await interaction.editReply('최신 정보가 아니어서 갱신 작업을 먼저 수행하는 중입니다.');
         if (!(await mapleUserInfo.updateGG())) {
-            await interaction.editReply('제한시간 내에 갱신 작업을 실패하였습니다.');
+            await interaction.editReply('제한시간 내에 갱신 작업을 실패했습니다.');
         }
     }
 
     const collection = mapleUserInfo.Collection();
     if (!collection) {
-        return interaction.followUp(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못하였습니다.`);
+        return interaction.followUp(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못했습니다.`);
     } else {
         const { stdout: collectionPic } = await exec(
             `python3 ./util/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(

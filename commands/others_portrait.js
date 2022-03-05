@@ -23,7 +23,7 @@ export async function messageExecute(message) {
             return message.channel.send({ files: [image] });
         } else {
             for await (const _ of body); // 메모리 누수 방지를 위한 force consumption of body
-            return message.channel.send('그림 작업을 실패하였습니다.');
+            return message.channel.send('그림 작업을 실패했습니다.');
         }
     }
 }
