@@ -1,9 +1,13 @@
 import { MessageEmbed } from 'discord.js';
 import { bossData } from '../util/soyabot_const.js';
 
+const bossDifficulty = ['하드', '카오스', '노말', '이지'];
+
 function getBossEmbed(bossName, bossGrade) {
+    if (!bossData[bossName][bossGrade]) {
+        bossGrade = Object.keys(bossData[bossName])[0];
+    }
     const targetBoss = bossData[bossName][bossGrade];
-    targetBoss[0][0] = '결정석 메소: -'; // DB에는 옛날 메소 데이터만 존재하므로 출력하지 않는다.
 
     return new MessageEmbed()
         .setTitle(`**${bossName}(${bossGrade})의 보상 / 정보**`)
@@ -14,23 +18,16 @@ function getBossEmbed(bossName, bossGrade) {
 export const usage = `${client.prefix}보스 (보스 이름) (보스 난이도)`;
 export const command = ['보스', 'ㅂㅅ', 'ㅄ'];
 export const description =
-    '- 해당하는 보스의 보상과 체력, 방어율을 알려줍니다.\n- 난이도를 생략하면 상위 등급의 정보를 보여줍니다.';
+    '- 해당하는 보스의 보상과 체력, 방어율을 알려줍니다.\n- 난이도를 생략하면 최상위 등급의 정보를 보여줍니다.';
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length < 1) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
-    let bossName = args.join(''),
-        bossGrade = Object.keys(bossData[bossName] ?? {})[0];
+    const bossGrade = bossDifficulty.includes(args.at(-1)) ? args.pop() : null;
+    const bossName = args.join('');
     if (!bossData[bossName]) {
-        bossGrade = args.pop();
-        bossName = args.join('');
-        if (!bossData[bossName]) {
-            return message.channel.send('데이터가 없는 보스입니다.');
-        }
-        if (!bossData[bossName][bossGrade]) {
-            bossGrade = Object.keys(bossData[bossName])[0];
-        }
+        return message.channel.send('데이터가 없는 보스입니다.');
     }
 
     return message.channel.send({ embeds: [getBossEmbed(bossName, bossGrade)] });
@@ -49,7 +46,7 @@ export const commandData = {
             name: '보스_난이도',
             type: 'STRING',
             description: '보스 정보를 검색할 보스의 난이도',
-            choices: ['하드', '카오스', '노말', '이지'].map((v) => ({ name: v, value: v }))
+            choices: bossDifficulty.map((v) => ({ name: v, value: v }))
         }
     ]
 };
@@ -60,7 +57,5 @@ export async function commandExecute(interaction) {
     }
     const bossGrade = interaction.options.getString('보스_난이도');
 
-    return interaction.followUp({
-        embeds: [getBossEmbed(bossName, bossData[bossName][bossGrade] ? bossGrade : Object.keys(bossData[bossName])[0])]
-    });
+    return interaction.followUp({ embeds: [getBossEmbed(bossName, bossGrade)] });
 }
