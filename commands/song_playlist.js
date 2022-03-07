@@ -88,7 +88,7 @@ export async function messageExecute(message, args) {
                 message.channelId
             }\n채팅 내용: ${message}\n에러 내용: ${err._i()}`
         );
-        return message.channel.send(`채널에 참가할 수 없습니다: ${err.message ?? err}`);
+        return message.channel.send(`채널에 참가할 수 없습니다: ${err.message}`);
     }
 }
 export const commandData = {
@@ -184,6 +184,6 @@ export async function commandExecute(interaction) {
                 interaction.channelId
             }\n채팅 내용: ${interaction}\n에러 내용: ${err._i()}`
         );
-        return interaction.followUp(`채널에 참가할 수 없습니다: ${err.message ?? err}`);
+        return interaction.followUp(`채널에 참가할 수 없습니다: ${err.message}`);
     }
 }

@@ -136,9 +136,9 @@ client.on('messageCreate', async (message) => {
                 await message.reply(err.message);
             } else {
                 replyAdmin(
-                    `작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${
-                        message.content
-                    }\n에러 내용: ${err._i()}`
+                    `작성자: ${message.author.username}\n방 ID: ${
+                        message.channelId
+                    }\n채팅 내용: ${message}\n에러 내용: ${err._i()}`
                 );
                 await message.reply('에러로그가 전송되었습니다.');
             }
