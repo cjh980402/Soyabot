@@ -24,7 +24,7 @@ export async function messageExecute(message, args) {
     if (args.length < 1) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
-    const bossGrade = bossDifficulty.includes(args.at(-1)) ? args.pop() : null;
+    const bossGrade = args.length > 1 && bossDifficulty.includes(args.at(-1)) ? args.pop() : null;
     const bossName = args.join('');
     if (!bossData[bossName]) {
         return message.channel.send('데이터가 없는 보스입니다.');
