@@ -12,7 +12,7 @@ export async function messageExecute(message, args) {
     return message.reply('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
 
     /*const queue = client.queues.get(message.guildId);
-    if (!queue?.subscription.player.state.resource) {
+    if (!queue?.player.state.resource) {
         return message.reply('재생 중인 노래가 없습니다.');
     }
     if (!canModifyQueue(message.member)) {
@@ -32,7 +32,7 @@ export async function messageExecute(message, args) {
     }
 
     queue.volume = volume;
-    queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
+    queue.player.state.resource.volume.setVolume(queue.volume / 100);
     return message.channel.send(`변경된 음량: **${queue.volume}%**`);*/
 }
 export const commandData = {
@@ -53,7 +53,7 @@ export async function commandExecute(interaction) {
     return interaction.followUp('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
 
     /*const queue = client.queues.get(interaction.guildId);
-    if (!queue?.subscription.player.state.resource) {
+    if (!queue?.player.state.resource) {
         return interaction.followUp('재생 중인 노래가 없습니다.');
     }
     if (!canModifyQueue(interaction.member)) {
@@ -69,6 +69,6 @@ export async function commandExecute(interaction) {
     }
 
     queue.volume = volume;
-    queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
+    queue.player.state.resource.volume.setVolume(queue.volume / 100);
     return interaction.followUp(`변경된 음량: **${queue.volume}%**`);*/
 }

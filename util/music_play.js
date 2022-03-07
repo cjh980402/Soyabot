@@ -7,34 +7,34 @@ import { replyAdmin } from '../admin/bot_control.js';
 import { DEFAULT_VOLUME } from '../soyabot_config.js';
 
 export class QueueElement {
+    #subscription;
     textChannel;
     voiceChannel;
-    subscription;
     songs;
     volume = DEFAULT_VOLUME;
     loop = false;
     playingMessage = null;
 
     constructor(textChannel, voiceChannel, connection, songs) {
-        this.textChannel = textChannel;
-        this.voiceChannel = voiceChannel;
-        this.subscription = connection.subscribe(
+        this.#subscription = connection.subscribe(
             createAudioPlayer({
                 behaviors: { noSubscriber: NoSubscriberBehavior.Stop } // 연결된 음성 채널이 없으면 재생 종료하는 옵션 추가
             })
         );
+        this.textChannel = textChannel;
+        this.voiceChannel = voiceChannel;
         this.songs = songs;
 
-        this.subscription.connection.removeAllListeners(VoiceConnectionStatus.Connecting);
-        this.subscription.connection.removeAllListeners(VoiceConnectionStatus.Disconnected);
-        this.subscription.connection.removeAllListeners('error');
+        this.connection.removeAllListeners(VoiceConnectionStatus.Connecting);
+        this.connection.removeAllListeners(VoiceConnectionStatus.Disconnected);
+        this.connection.removeAllListeners('error');
 
-        this.subscription.connection
+        this.connection
             .once(VoiceConnectionStatus.Connecting, () => this.clearStop())
             .once(VoiceConnectionStatus.Disconnected, () => this.clearStop())
             .once('error', () => this.clearStop());
 
-        this.subscription.player
+        this.player
             .on(AudioPlayerStatus.Idle, async () => {
                 await this.deleteMessage();
                 if (this.songs.length > 0) {
@@ -52,20 +52,28 @@ export class QueueElement {
             });
     }
 
+    get connection() {
+        return this.#subscription.connection;
+    }
+
+    get player() {
+        return this.#subscription.player;
+    }
+
     get playing() {
         return (
-            this.subscription.player.state.status === AudioPlayerStatus.Buffering ||
-            this.subscription.player.state.status === AudioPlayerStatus.Playing
+            this.player.state.status === AudioPlayerStatus.Buffering ||
+            this.player.state.status === AudioPlayerStatus.Playing
         );
     }
 
     clearStop() {
         client.queues.delete(this.voiceChannel.guildId);
         this.songs = [];
-        this.subscription.unsubscribe();
-        this.subscription.player.stop(true);
-        if (this.subscription.connection.state.status !== VoiceConnectionStatus.Destroyed) {
-            this.subscription.connection.destroy();
+        this.#subscription.unsubscribe();
+        this.player.stop(true);
+        if (this.connection.state.status !== VoiceConnectionStatus.Destroyed) {
+            this.connection.destroy();
         }
     }
 
@@ -99,8 +107,8 @@ export class QueueElement {
             );
 
             this.playingMessage = await this.sendMessage({ embeds: [embed], components: [row1, row2] });
-            this.subscription.player.play(await songDownload(song.url));
-            // this.subscription.player.state.resource.volume.setVolume(this.volume / 100);
+            this.player.play(await songDownload(song.url));
+            // this.player.state.resource.volume.setVolume(this.volume / 100);
         } catch (err) {
             if (err instanceof FormatError) {
                 this.sendMessage('재생할 수 없는 영상입니다.');
@@ -143,7 +151,7 @@ export async function musicButtonControl(interaction) {
         await interaction.deferUpdate(); // 버튼이 로딩 상태가 되었다가 원래대로 돌아옴
 
         const queue = client.queues.get(interaction.guildId);
-        if (queue?.playingMessage?.id !== interaction.message.id || !queue.subscription.player.state.resource) {
+        if (queue?.playingMessage?.id !== interaction.message.id || !queue.player.state.resource) {
             return;
         }
 
@@ -158,16 +166,16 @@ export async function musicButtonControl(interaction) {
                 break;
             case 'play_pause':
                 if (queue.playing) {
-                    queue.subscription.player.pause();
+                    queue.player.pause();
                     queue.sendMessage(`${interaction.user} ⏸️ 노래를 일시정지 했습니다.`);
                 } else {
-                    queue.subscription.player.unpause();
+                    queue.player.unpause();
                     queue.sendMessage(`${interaction.user} ▶️ 노래를 다시 틀었습니다.`);
                 }
                 break;
             case 'skip':
                 queue.sendMessage(`${interaction.user} ⏭️ 노래를 건너뛰었습니다.`);
-                queue.subscription.player.stop();
+                queue.player.stop();
                 break;
             case 'loop':
                 queue.loop = !queue.loop;
@@ -185,13 +193,13 @@ export async function musicButtonControl(interaction) {
             case 'volume_down':
                 queue.sendMessage('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
                 /*queue.volume = Math.max(queue.volume - 10, 0);
-                queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
+                queue.player.state.resource.volume.setVolume(queue.volume / 100);
                 queue.sendMessage(`${interaction.user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);*/
                 break;
             case 'volume_up':
                 queue.sendMessage('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
                 /*queue.volume = Math.min(queue.volume + 10, 100);
-                queue.subscription.player.state.resource.volume.setVolume(queue.volume / 100);
+                queue.player.state.resource.volume.setVolume(queue.volume / 100);
                 queue.sendMessage(`${interaction.user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);*/
                 break;
             case 'shuffle':
@@ -212,13 +220,13 @@ export function musicActiveControl(oldState, newState) {
             if (newVoice) {
                 const newQueue = client.queues.get(newVoice.guild.id);
                 if (
-                    newQueue?.subscription.player.state.resource &&
+                    newQueue?.player.state.resource &&
                     !newQueue.playing &&
                     newVoice.id === newQueue.voiceChannel.id &&
                     newVoice.members.size === 2 &&
                     newVoice.members.has(client.user.id)
                 ) {
-                    newQueue.subscription.player.unpause();
+                    newQueue.player.unpause();
                     newQueue.sendMessage('대기열을 다시 재생합니다.');
                 }
             }
@@ -226,20 +234,20 @@ export function musicActiveControl(oldState, newState) {
             if (oldVoice) {
                 const oldQueue = client.queues.get(oldVoice.guild.id);
                 if (
-                    oldQueue?.subscription.player.state.resource &&
+                    oldQueue?.player.state.resource &&
                     oldVoice.id === oldQueue.voiceChannel.id &&
                     oldVoice.members.size === 1 &&
                     oldVoice.members.has(client.user.id)
                 ) {
                     // 봇만 음성 채널에 있는 경우
                     if (oldQueue.playing) {
-                        oldQueue.subscription.player.pause();
+                        oldQueue.player.pause();
                         oldQueue.sendMessage('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
                     }
                     setTimeout(() => {
                         const queue = client.queues.get(oldVoice.guild.id);
                         if (
-                            queue?.subscription.player.state.resource &&
+                            queue?.player.state.resource &&
                             oldVoice.id === queue.voiceChannel.id &&
                             oldVoice.members.size === 1 &&
                             oldVoice.members.has(client.user.id)

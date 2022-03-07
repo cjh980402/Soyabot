@@ -121,7 +121,7 @@ Object.defineProperty(VoiceState.prototype, 'member', {
     }
 });
 
-Object.defineProperty(Message.prototype, 'fetchfullContent', {
+Object.defineProperty(Message.prototype, 'fetchFullContent', {
     async value() {
         if (this.type === 'DEFAULT' && this.attachments.first()?.name === 'message.txt') {
             const { body } = await request(this.attachments.first().url);

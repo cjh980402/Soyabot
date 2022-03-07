@@ -19,7 +19,7 @@ import { ADMIN_ID } from '../soyabot_config.js';
 const _exec = promisify(__exec);
 
 export async function adminChat(message) {
-    const fullContent = await message.fetchfullContent();
+    const fullContent = await message.fetchFullContent();
     const room = /^\*(.+)\*\s/.exec(fullContent)?.[1];
     if (fullContent.startsWith('>')) {
         // 노드 코드 실행 후 출력

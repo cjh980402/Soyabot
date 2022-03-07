@@ -10,7 +10,7 @@ export async function messageExecute(message) {
     }
 
     const queue = client.queues.get(message.guildId);
-    if (!queue?.subscription.player.state.resource) {
+    if (!queue?.player.state.resource) {
         return message.reply('재생 중인 노래가 없습니다.');
     }
     if (!canModifyQueue(message.member)) {
@@ -18,7 +18,7 @@ export async function messageExecute(message) {
     }
 
     message.channel.send(`${message.author} ⏭️ 노래를 건너뛰었습니다.`);
-    queue.subscription.player.stop();
+    queue.player.stop();
 }
 export const commandData = {
     name: 'skip',
@@ -30,7 +30,7 @@ export async function commandExecute(interaction) {
     }
 
     const queue = client.queues.get(interaction.guildId);
-    if (!queue?.subscription.player.state.resource) {
+    if (!queue?.player.state.resource) {
         return interaction.followUp('재생 중인 노래가 없습니다.');
     }
     if (!canModifyQueue(interaction.member)) {
@@ -38,5 +38,5 @@ export async function commandExecute(interaction) {
     }
 
     interaction.followUp(`${interaction.user} ⏭️ 노래를 건너뛰었습니다.`);
-    queue.subscription.player.stop();
+    queue.player.stop();
 }
