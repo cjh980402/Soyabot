@@ -269,8 +269,8 @@ Object.defineProperty(Object.prototype, '_p', {
             .map((v) => {
                 try {
                     return `${v}: ${this[v]}`;
-                } catch {
-                    return `${v}: error`;
+                } catch (err) {
+                    return `${v}: '${err}'`;
                 }
             })
             .join('\n');

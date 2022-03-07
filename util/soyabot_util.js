@@ -10,5 +10,5 @@ export async function getMessageImage(message) {
     if (message.reference) {
         message = await message.fetchReference();
     }
-    return message?.attachments.first()?.height ? message.attachments.first().url : null;
+    return message.attachments.first()?.height ? message.attachments.first().url : null;
 }

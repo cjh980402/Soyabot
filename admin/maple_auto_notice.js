@@ -37,7 +37,7 @@ export function startNotice() {
                     botNotice(noticeEmbed, 'notice');
                 }
             } catch (err) {
-                replyAdmin(`자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${err.stack ?? err._p}`);
+                replyAdmin(`자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${err._i()}`);
             }
         }, 127000);
     }
@@ -79,7 +79,7 @@ export function startUpdate() {
                     botNotice(noticeEmbed, 'update');
                 }
             } catch (err) {
-                replyAdmin(`자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${err.stack ?? err._p}`);
+                replyAdmin(`자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${err._i()}`);
             }
         }, 131000);
     }
@@ -129,7 +129,7 @@ export function startTest() {
                     botNotice(noticeEmbed, 'test');
                 }
             } catch (err) {
-                replyAdmin(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${err.stack ?? err._p}`);
+                replyAdmin(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${err._i()}`);
             }
         }, 137000);
     }
@@ -166,7 +166,7 @@ export function startTestPatch() {
                 }
                 for await (const _ of body); // 메모리 누수 방지를 위한 force consumption of body
             } catch (err) {
-                replyAdmin(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${err.stack ?? err._p}`);
+                replyAdmin(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${err._i()}`);
             }
         }, 139000);
     }

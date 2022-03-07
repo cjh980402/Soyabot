@@ -84,9 +84,9 @@ export async function messageExecute(message, args) {
     } catch (err) {
         client.queues.delete(message.guildId);
         replyAdmin(
-            `작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${
-                message.content
-            }\n에러 내용: ${err.stack ?? err._p}`
+            `작성자: ${message.author.username}\n방 ID: ${
+                message.channelId
+            }\n채팅 내용: ${message}\n에러 내용: ${err._i()}`
         );
         return message.channel.send(`채널에 참가할 수 없습니다: ${err.message ?? err}`);
     }
@@ -182,7 +182,7 @@ export async function commandExecute(interaction) {
         replyAdmin(
             `작성자: ${interaction.user.username}\n방 ID: ${
                 interaction.channelId
-            }\n채팅 내용: ${interaction.toString()}\n에러 내용: ${err.stack ?? err._p}`
+            }\n채팅 내용: ${interaction}\n에러 내용: ${err._i()}`
         );
         return interaction.followUp(`채널에 참가할 수 없습니다: ${err.message ?? err}`);
     }

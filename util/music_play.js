@@ -48,7 +48,7 @@ export class QueueElement {
             })
             .on('error', (err) => {
                 this.sendMessage('노래 재생을 실패했습니다.');
-                replyAdmin(`노래 재생 에러\n노래 주소: ${err.resource.metadata}\n에러 내용: ${err.stack ?? err._p}`);
+                replyAdmin(`노래 재생 에러\n노래 주소: ${err.resource.metadata}\n에러 내용: ${err._i()}`);
             });
     }
 
@@ -114,7 +114,7 @@ export class QueueElement {
                 this.sendMessage('재생할 수 없는 영상입니다.');
             } else {
                 this.sendMessage('노래 시작을 실패했습니다.');
-                replyAdmin(`노래 시작 에러\nsong 객체: ${song._p}\n에러 내용: ${err.stack ?? err._p}`);
+                replyAdmin(`노래 시작 에러\nsong 객체: ${song._p}\n에러 내용: ${err._i()}`);
             }
             await this.deleteMessage();
             this.songs.shift();
@@ -261,6 +261,6 @@ export function musicActiveControl(oldState, newState) {
             }
         }
     } catch (err) {
-        replyAdmin(`[oldState]\n${oldState._p}\n[newState]\n${newState._p}\n에러 내용: ${err.stack ?? err._p}`);
+        replyAdmin(`[oldState]\n${oldState._p}\n[newState]\n${newState._p}\n에러 내용: ${err._i()}`);
     }
 }

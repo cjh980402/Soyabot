@@ -138,7 +138,7 @@ client.on('messageCreate', async (message) => {
                 replyAdmin(
                     `작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${
                         message.content
-                    }\n에러 내용: ${err.stack ?? err._p}`
+                    }\n에러 내용: ${err._i()}`
                 );
                 await message.reply('에러로그가 전송되었습니다.');
             }
@@ -159,7 +159,7 @@ client.on('interactionCreate', async (interaction) => {
             console.log(
                 `(${new Date().toLocaleString()}) ${interaction.channelId} ${interaction.channel.name ?? 'DM'} ${
                     interaction.user.id
-                } ${interaction.user.username}: ${interaction.toString()}\n`
+                } ${interaction.user.username}: ${interaction}\n`
             );
 
             const botPermissions = [
@@ -213,7 +213,7 @@ client.on('interactionCreate', async (interaction) => {
                     replyAdmin(
                         `작성자: ${interaction.user.username}\n방 ID: ${
                             interaction.channelId
-                        }\n채팅 내용: ${interaction.toString()}\n에러 내용: ${err.stack ?? err._p}`
+                        }\n채팅 내용: ${interaction}\n에러 내용: ${err._i()}`
                     );
                     await interaction.editReply('에러로그가 전송되었습니다.');
                 }
