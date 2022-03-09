@@ -67,32 +67,38 @@ Object.defineProperty(Options, 'createCustom', {
                 Intents.FLAGS.GUILD_MESSAGES,
                 Intents.FLAGS.DIRECT_MESSAGES
             ],
+            presence: { activities: [{ name: '/도움말', type: 'LISTENING' }] },
             makeCache: Options.cacheWithLimits({
+                ApplicationCommandManager: 0,
                 BaseGuildEmojiManager: 0,
+                GuildEmojiManager: 0,
                 ChannelManager: {
                     maxSize: Infinity,
                     sweepFilter: () => (v) => !v.isText() && !v.isVoice(),
                     sweepInterval: 3600
                 },
-                GuildBanManager: 0,
                 GuildChannelManager: {
                     maxSize: Infinity,
                     sweepFilter: () => (v) => !v.isText() && !v.isVoice(),
                     sweepInterval: 3600
                 },
-                GuildEmojiManager: 0,
-                GuildInviteManager: 0,
                 GuildMemberManager: {
                     maxSize: 1,
-                    keepOverLimit: (v) => v.id === client.user.id
+                    keepOverLimit: (v) => v.id === v.client.user.id
                 },
+                GuildBanManager: 0,
+                GuildInviteManager: 0,
+                GuildScheduledEventManager: 0,
                 GuildStickerManager: 0,
                 MessageManager: 0,
                 PresenceManager: 0,
+                StageInstanceManager: 0,
+                ThreadManager: 0,
+                ThreadMemberManager: 0,
                 UserManager: 0,
                 VoiceStateManager: {
                     maxSize: Infinity,
-                    sweepFilter: () => (v) => v.id !== client.user.id && !v.channelId,
+                    sweepFilter: () => (v) => v.id !== v.client.user.id && !v.channelId,
                     sweepInterval: 3600
                 }
             })

@@ -42,7 +42,6 @@ try {
         }
     }
     // await client.application.commands.set(datas); // 인터랙션 데이터 변경 시에만 활성화하기
-    client.user.setActivity(`${client.prefix}help and ${client.prefix}play`, { type: 'LISTENING' });
     replyAdmin(`${client.user.tag}이 작동 중입니다.`);
 } catch (err) {
     console.error('로그인 에러 발생:', err);
