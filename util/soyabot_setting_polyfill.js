@@ -67,20 +67,24 @@ Object.defineProperty(Options, 'createCustom', {
                 Intents.FLAGS.GUILD_MESSAGES,
                 Intents.FLAGS.DIRECT_MESSAGES
             ],
-            presence: { activities: [{ name: '/도움말', type: 'LISTENING' }] },
+            presence: { activities: [{ name: '/help', type: 'LISTENING' }] },
+            sweepers: {
+                voiceStates: {
+                    interval: 3600,
+                    filter: () => (v) => v.id !== v.client.user.id && !v.channelId
+                }
+            },
             makeCache: Options.cacheWithLimits({
                 ApplicationCommandManager: 0,
                 BaseGuildEmojiManager: 0,
                 GuildEmojiManager: 0,
                 ChannelManager: {
-                    maxSize: Infinity,
-                    sweepFilter: () => (v) => !v.isText() && !v.isVoice(),
-                    sweepInterval: 3600
+                    maxSize: 1,
+                    keepOverLimit: (v) => v.isText() || v.isVoice()
                 },
                 GuildChannelManager: {
-                    maxSize: Infinity,
-                    sweepFilter: () => (v) => !v.isText() && !v.isVoice(),
-                    sweepInterval: 3600
+                    maxSize: 1,
+                    keepOverLimit: (v) => v.isText() || v.isVoice()
                 },
                 GuildMemberManager: {
                     maxSize: 1,
@@ -92,15 +96,12 @@ Object.defineProperty(Options, 'createCustom', {
                 GuildStickerManager: 0,
                 MessageManager: 0,
                 PresenceManager: 0,
+                ReactionManager: 0,
+                ReactionUserManager: 0,
                 StageInstanceManager: 0,
                 ThreadManager: 0,
                 ThreadMemberManager: 0,
-                UserManager: 0,
-                VoiceStateManager: {
-                    maxSize: Infinity,
-                    sweepFilter: () => (v) => v.id !== v.client.user.id && !v.channelId,
-                    sweepInterval: 3600
-                }
+                UserManager: 0
             })
         };
     }

@@ -25,10 +25,6 @@ export class QueueElement {
         this.voiceChannel = voiceChannel;
         this.songs = songs;
 
-        this.connection.removeAllListeners(VoiceConnectionStatus.Connecting);
-        this.connection.removeAllListeners(VoiceConnectionStatus.Disconnected);
-        this.connection.removeAllListeners('error');
-
         this.connection
             .once(VoiceConnectionStatus.Connecting, () => this.clearStop())
             .once(VoiceConnectionStatus.Disconnected, () => this.clearStop())
@@ -72,6 +68,10 @@ export class QueueElement {
         this.songs = [];
         this.#subscription.unsubscribe();
         this.player.stop(true);
+        this.connection
+            .removeAllListeners(VoiceConnectionStatus.Connecting)
+            .removeAllListeners(VoiceConnectionStatus.Disconnected)
+            .removeAllListeners('error');
         if (this.connection.state.status !== VoiceConnectionStatus.Destroyed) {
             this.connection.destroy();
         }

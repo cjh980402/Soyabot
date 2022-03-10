@@ -50,8 +50,6 @@ try {
 /**
  * 클라이언트 이벤트
  */
-client.on('warn', console.log);
-
 client.on('error', async (err) => {
     console.error('클라이언트 에러 발생:', err);
     await setTimeout(30000); // 30초 대기
