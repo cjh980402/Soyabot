@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { exec as __exec } from 'node:child_process';
+import { exec as _exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import { botNotice, replyRoomID } from './bot_control.js';
 import {
@@ -16,7 +16,8 @@ import {
 } from './maple_auto_notice.js';
 import { MapleProb } from '../util/maple_probtable.js';
 import { ADMIN_ID } from '../soyabot_config.js';
-const _exec = promisify(__exec);
+
+export const exec = promisify(_exec);
 
 export async function adminChat(message) {
     const fullContent = await message.fetchFullContent();
@@ -29,11 +30,11 @@ export async function adminChat(message) {
             code: 'js',
             split: { char: '' }
         });
-        // eval의 내부가 async 함수의 리턴값이므로 await까지 해준다. js의 코드 스타일을 적용해서 출력한다.
+        // eval의 내부가 async 함수의 리턴값이므로 await까지 해준다.
     } else if (fullContent.startsWith(')')) {
         // 콘솔 명령 실행 후 출력
-        return message.channel.sendSplitCode((await exec(fullContent.slice(1).trim(), { removeEscape: true })).stdout, {
-            code: 'shell',
+        return message.channel.sendSplitCode((await exec(fullContent.slice(1).trim())).stdout, {
+            code: 'ansi',
             split: { char: '' }
         });
     } else if (room) {
@@ -50,23 +51,6 @@ export async function adminChat(message) {
         } catch {
             return message.channel.send('해당하는 건의의 정보가 존재하지 않습니다.');
         }
-    }
-}
-
-export async function exec(command, { removeEscape = false, ...options } = {}) {
-    const promiseResult = _exec(command, options);
-    if (removeEscape) {
-        // 제어 문자와 맨 끝 개행 제거
-        try {
-            const result = await promiseResult;
-            result.stdout = result.stdout.replace(/\u001b\[.*?[@-~]|\n$/g, '');
-            result.stderr = result.stderr.replace(/\u001b\[.*?[@-~]|\n$/g, '');
-            return result;
-        } catch (err) {
-            return { stdout: String(err).replace(/\n$/, ''), stderr: '' };
-        }
-    } else {
-        return promiseResult;
     }
 }
 

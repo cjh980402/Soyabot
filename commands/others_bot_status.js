@@ -26,10 +26,10 @@ export const type = ['기타'];
 export async function messageExecute(message) {
     let memory;
     if (process.platform === 'linux') {
-        const freeExec = (await exec('free', { removeEscape: true })).stdout.split(/\s+/);
-        memory = 100 - Math.round((freeExec[13] / freeExec[8]) * 100);
+        const freeExec = (await exec('free')).stdout.split(/\s+/);
+        memory = (100 * (1 - +freeExec[13] / +freeExec[8])).toFixed(2);
     } else {
-        memory = 100 - Math.round((freemem() / totalmem()) * 100);
+        memory = (100 * (1 - freemem() / totalmem())).toFixed(2);
     }
 
     return message.channel.send(
@@ -43,10 +43,10 @@ export const commandData = {
 export async function commandExecute(interaction) {
     let memory;
     if (process.platform === 'linux') {
-        const freeExec = (await exec('free', { removeEscape: true })).stdout.split(/\s+/);
-        memory = 100 - Math.round((freeExec[13] / freeExec[8]) * 100);
+        const freeExec = (await exec('free')).stdout.split(/\s+/);
+        memory = (100 * (1 - +freeExec[13] / +freeExec[8])).toFixed(2);
     } else {
-        memory = 100 - Math.round((freemem() / totalmem()) * 100);
+        memory = (100 * (1 - freemem() / totalmem())).toFixed(2);
     }
 
     return interaction.followUp(
