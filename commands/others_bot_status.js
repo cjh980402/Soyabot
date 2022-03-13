@@ -21,7 +21,7 @@ function timeKoreanUnit(num) {
 
 export const usage = `${client.prefix}상태`;
 export const command = ['상태', 'ㅅㅌ'];
-export const description = `- ${client.user.username}의 작동 상태를 알려줍니다.`;
+export const description = '- 봇의 작동 상태를 알려줍니다.';
 export const type = ['기타'];
 export async function messageExecute(message) {
     let memory;
@@ -38,7 +38,7 @@ export async function messageExecute(message) {
 }
 export const commandData = {
     name: '상태',
-    description: `${client.user.username}의 작동 상태를 알려줍니다.`
+    description: '봇의 작동 상태를 알려줍니다.'
 };
 export async function commandExecute(interaction) {
     let memory;

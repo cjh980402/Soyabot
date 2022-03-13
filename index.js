@@ -10,8 +10,8 @@ import { adminChat, initClient, exec } from './admin/admin_function.js';
 import { replyAdmin } from './admin/bot_control.js';
 import { MapleError } from './util/maple_parsing.js';
 import { musicActiveControl, musicButtonControl } from './util/music_play.js';
+import { commandCount } from './util/soyabot_util.js';
 import botChatting from './util/bot_chatting.js';
-import cachingMessage from './util/message_caching.js';
 import sqlite from './util/sqlite-handler.js';
 globalThis.db = new sqlite('./db/soyabot_data.db'); // db와 client는 빈번하게 사용되므로 global 객체에 저장
 globalThis.client = new Client(Options.createCustom());
@@ -60,7 +60,7 @@ client.on('voiceStateUpdate', musicActiveControl); // 유저 음성채팅 상태
 
 client.on('messageCreate', async (message) => {
     // 각 메시지에 반응, 디스코드는 봇의 메시지도 이 이벤트에 들어옴
-    let commandName;
+    let commandName, originCommandName;
     try {
         console.log(
             `(${new Date().toLocaleString()}) ${message.channelId} ${message.channel.name ?? 'DM'} ${
@@ -112,13 +112,15 @@ client.on('messageCreate', async (message) => {
             );
         }
 
-        commandName = nowCommand.channelCool ? `${nowCommand.command[0]}_${message.channelId}` : nowCommand.command[0];
+        originCommandName = nowCommand.command[0];
+        commandName = nowCommand.channelCool ? `${originCommandName}_${message.channelId}` : originCommandName;
 
         if (cooldowns.has(commandName)) {
             // 명령이 수행 중인 경우
-            return await message.channel.send(`'${nowCommand.command[0]}' 명령을 사용하기 위해 잠시 기다려야합니다.`);
+            return await message.channel.send(`'${originCommandName}' 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
+        commandCount(originCommandName);
         await (nowCommand.channelCool
             ? nowCommand.messageExecute(message, args)
             : promiseTimeout(nowCommand.messageExecute(message, args), 300000)); // 명령어 수행 부분
@@ -128,7 +130,7 @@ client.on('messageCreate', async (message) => {
         try {
             if (err instanceof Collection) {
                 // awaitMessages에서 시간초과한 경우
-                await message.channel.send(`'${commandName.split('_')[0]}'의 입력 대기 시간이 초과되었습니다.`);
+                await message.channel.send(`'${originCommandName}'의 입력 대기 시간이 초과되었습니다.`);
             } else if (err instanceof MapleError) {
                 await message.reply(err.message);
             } else {
@@ -138,8 +140,6 @@ client.on('messageCreate', async (message) => {
                 await message.reply('에러로그가 전송되었습니다.');
             }
         } catch {}
-    } finally {
-        cachingMessage(message); // 들어오는 채팅 항상 캐싱
     }
 });
 
@@ -149,6 +149,7 @@ client.on('interactionCreate', async (interaction) => {
         musicButtonControl(interaction);
     } else if (interaction.isCommand()) {
         let { commandName } = interaction;
+        const originCommandName = commandName;
         try {
             await interaction.deferReply(); // deferReply를 하지 않으면 3초 내로 슬래시 커맨드 응답을 해야함
             console.log(
@@ -183,15 +184,14 @@ client.on('interactionCreate', async (interaction) => {
                 );
             }
 
-            commandName = nowCommand.channelCool ? `${commandName}_${interaction.channelId}` : commandName;
+            commandName = nowCommand.channelCool ? `${originCommandName}_${interaction.channelId}` : originCommandName;
 
             if (cooldowns.has(commandName)) {
                 // 명령이 수행 중인 경우
-                return await interaction.followUp(
-                    `'${nowCommand.commandData.name}' 명령을 사용하기 위해 잠시 기다려야합니다.`
-                );
+                return await interaction.followUp(`'${originCommandName}' 명령을 사용하기 위해 잠시 기다려야합니다.`);
             }
             cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
+            commandCount(originCommandName);
             await (nowCommand.channelCool
                 ? nowCommand.commandExecute(interaction)
                 : promiseTimeout(nowCommand.commandExecute(interaction), 300000)); // 명령어 수행 부분
@@ -201,7 +201,7 @@ client.on('interactionCreate', async (interaction) => {
             try {
                 if (err instanceof Collection) {
                     // awaitMessages에서 시간초과한 경우
-                    await interaction.followUp(`'${commandName.split('_')[0]}'의 입력 대기 시간이 초과되었습니다.`);
+                    await interaction.followUp(`'${originCommandName}'의 입력 대기 시간이 초과되었습니다.`);
                 } else if (err instanceof MapleError) {
                     await interaction.editReply(err.message);
                 } else {
@@ -211,8 +211,6 @@ client.on('interactionCreate', async (interaction) => {
                     await interaction.editReply('에러로그가 전송되었습니다.');
                 }
             } catch {}
-        } finally {
-            cachingMessage(interaction); // 들어오는 슬래시 커맨드 항상 캐싱
         }
     }
 });

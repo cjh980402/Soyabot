@@ -59,15 +59,13 @@ export async function initClient(TOKEN) {
     db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
     db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');
     db.run('CREATE TABLE IF NOT EXISTS testpatch(version integer primary key, url text not null)');
-    db.run('CREATE TABLE IF NOT EXISTS noticeskip(channelid text primary key, name text not null)');
+    /*db.run('CREATE TABLE IF NOT EXISTS noticeskip(channelid text primary key, name text not null)');
     db.run('CREATE TABLE IF NOT EXISTS updateskip(channelid text primary key, name text not null)');
     db.run('CREATE TABLE IF NOT EXISTS urusskip(channelid text primary key, name text not null)');
     db.run('CREATE TABLE IF NOT EXISTS testskip(channelid text primary key, name text not null)');
-    db.run('CREATE TABLE IF NOT EXISTS testpatchskip(channelid text primary key, name text not null)');
+    db.run('CREATE TABLE IF NOT EXISTS testpatchskip(channelid text primary key, name text not null)');*/
     db.run('CREATE TABLE IF NOT EXISTS pruningskip(channelid text primary key, name text not null)');
-    db.run(
-        "CREATE TABLE IF NOT EXISTS messagedb(channelsenderid text primary key, messagecnt integer default 0, lettercnt integer default 0, lastmessage text default '', lasttime datetime default (datetime('now', 'localtime')))"
-    );
+    db.run('CREATE TABLE IF NOT EXISTS commanddb(commandname text primary key, count integer default 0)');
 
     await MapleProb.fetchAllProb();
     await client.login(TOKEN);

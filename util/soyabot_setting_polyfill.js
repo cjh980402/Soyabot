@@ -192,14 +192,6 @@ Object.defineProperty(YouTubeAPI.prototype, 'getVideosByIDs', {
     }
 });
 
-Object.defineProperty(Array.prototype, 'asyncFilter', {
-    // async 함수를 사용 가능한 Array의 filter 메소드 구현
-    async value(callback) {
-        const fail = Symbol();
-        return (await Promise.all(this.map(async (v) => ((await callback(v)) ? v : fail)))).filter((v) => v !== fail);
-    }
-});
-
 Object.defineProperty(Array.prototype, 'deduplication', {
     // 중복된 배열의 원소를 제거한 배열을 반환
     value() {
@@ -249,16 +241,6 @@ Object.defineProperty(Number.prototype, 'toDurationString', {
         } else {
             return `${minutes}:${String(seconds).padStart(2, '0')}`;
         }
-    }
-});
-
-Object.defineProperty(String.prototype, 'hashCode', {
-    value() {
-        let h = 0;
-        for (const c of this) {
-            h = (31 * h + c.codePointAt(0)) | 0; // 연산 후 signed 32-bit 정수로 변환
-        }
-        return h;
     }
 });
 

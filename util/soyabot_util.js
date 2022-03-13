@@ -1,3 +1,15 @@
+export function commandCount(commandName) {
+    try {
+        const data = db.get('SELECT * FROM commanddb WHERE commandname = ?', [commandName]);
+        db.replace('commanddb', {
+            commandname: commandName,
+            count: (data?.count ?? 0) + 1
+        });
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 export function canModifyQueue(member) {
     const botChannelId = member.guild.me.voice.channelId;
     if (!botChannelId) {
