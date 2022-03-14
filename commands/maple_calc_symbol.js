@@ -1,4 +1,6 @@
-export const usage = `${client.prefix}심볼 (시작 레벨) (목표 레벨)`;
+import { PREFIX } from '../soyabot_config.js';
+
+export const usage = `${PREFIX}심볼 (시작 레벨) (목표 레벨)`;
 export const command = ['심볼', 'ㅅㅂ'];
 export const description = `- 시작 레벨부터 목표 레벨까지의 심볼 요구갯수, 강화비용을 계산합니다.
 - 현재심볼의 성장치는 고려하지 않습니다.

@@ -1,3 +1,4 @@
+import { PREFIX } from '../soyabot_config.js';
 const noticematch = {
     공지: 'notice',
     업데이트: 'update',
@@ -6,7 +7,7 @@ const noticematch = {
     테섭파일: 'testpatch'
 };
 
-export const usage = `${client.prefix}자동알림 (카테고리)`;
+export const usage = `${PREFIX}자동알림 (카테고리)`;
 export const command = ['자동알림', 'ㅈㄷㅇㄹ'];
 export const description = `- 입력한 카테고리(${Object.keys(noticematch).join(
     ', '
@@ -22,7 +23,7 @@ export async function messageExecute(message, args) {
     /*if (!noticematch[args[0]]) {
         const notice = [];
         for (const key in noticematch) {
-            if (db.get(`SELECT * FROM ${noticematch[key]}skip WHERE channelid = ?`, [message.guildId])) {
+            if (message.client.db.get(`SELECT * FROM ${noticematch[key]}skip WHERE channelid = ?`, [message.guildId])) {
                 // 현재 꺼짐
                 notice.push(`${key} 자동알림: OFF`);
             } else {
@@ -31,13 +32,16 @@ export async function messageExecute(message, args) {
         }
         return message.channel.send(notice.join('\n'));
     }
-    if (db.get(`SELECT * FROM ${noticematch[args[0]]}skip WHERE channelid = ?`, [message.guildId])) {
+    if (message.client.db.get(`SELECT * FROM ${noticematch[args[0]]}skip WHERE channelid = ?`, [message.guildId])) {
         // 기존상태: OFF
-        db.run(`DELETE FROM ${noticematch[args[0]]}skip WHERE channelid = ?`, [message.guildId]);
+        message.client.db.run(`DELETE FROM ${noticematch[args[0]]}skip WHERE channelid = ?`, [message.guildId]);
         return message.channel.send(`${args[0]} 자동알림: **OFF → ON**`);
     } else {
         // 기존상태: ON
-        db.insert(`${noticematch[args[0]]}skip`, { channelid: message.guildId, name: message.guild.name });
+        message.client.db.insert(`${noticematch[args[0]]}skip`, {
+            channelid: message.guildId,
+            name: message.guild.name
+        });
         return message.channel.send(`${args[0]} 자동알림: **ON → OFF**`);
     }*/
 }
@@ -65,7 +69,11 @@ export async function commandExecute(interaction) {
     if (!category) {
         const notice = [];
         for (const key in noticematch) {
-            if (db.get(`SELECT * FROM ${noticematch[key]}skip WHERE channelid = ?`, [interaction.guildId])) {
+            if (
+                interaction.client.db.get(`SELECT * FROM ${noticematch[key]}skip WHERE channelid = ?`, [
+                    interaction.guildId
+                ])
+            ) {
                 // 현재 꺼짐
                 notice.push(`${key} 자동알림: OFF`);
             } else {
@@ -74,13 +82,22 @@ export async function commandExecute(interaction) {
         }
         return interaction.followUp(notice.join('\n'));
     }
-    if (db.get(`SELECT * FROM ${noticematch[category]}skip WHERE channelid = ?`, [interaction.guildId])) {
+    if (
+        interaction.client.db.get(`SELECT * FROM ${noticematch[category]}skip WHERE channelid = ?`, [
+            interaction.guildId
+        ])
+    ) {
         // 기존상태: OFF
-        db.run(`DELETE FROM ${noticematch[category]}skip WHERE channelid = ?`, [interaction.guildId]);
+        interaction.client.db.run(`DELETE FROM ${noticematch[category]}skip WHERE channelid = ?`, [
+            interaction.guildId
+        ]);
         return interaction.followUp(`${category} 자동알림: **OFF → ON**`);
     } else {
         // 기존상태: ON
-        db.insert(`${noticematch[category]}skip`, { channelid: interaction.guildId, name: interaction.guild.name });
+        interaction.client.db.insert(`${noticematch[category]}skip`, {
+            channelid: interaction.guildId,
+            name: interaction.guild.name
+        });
         return interaction.followUp(`${category} 자동알림: **ON → OFF**`);
     }*/
 }

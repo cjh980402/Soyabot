@@ -1,3 +1,4 @@
+import { PREFIX } from '../soyabot_config.js';
 const picmatch = {
     앗볶음: 'AtFried',
     헉튀김: 'HeokFried',
@@ -17,7 +18,7 @@ const picmatch = {
     흑흑화채: 'HeukheukHwachae'
 };
 
-export const usage = `${client.prefix}무토 (요리 이름)`;
+export const usage = `${PREFIX}무토 (요리 이름)`;
 export const command = ['무토', 'ㅁㅌ'];
 export const description = `- 해당하는 요리의 레시피를 출력합니다.
 - (요리 이름): ${Object.keys(picmatch).join(', ')} 입력가능`;

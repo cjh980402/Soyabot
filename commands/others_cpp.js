@@ -1,10 +1,10 @@
 import { spawn } from 'node:child_process';
 import { writeFile } from 'node:fs/promises';
 import { exec } from '../admin/admin_function.js';
-import { ADMIN_ID } from '../soyabot_config.js';
+import { ADMIN_ID, PREFIX } from '../soyabot_config.js';
 let cppProcess = null;
 
-export const usage = `${client.prefix}cpp (소스코드)`;
+export const usage = `${PREFIX}cpp (소스코드)`;
 export const command = ['cpp'];
 export const type = ['기타'];
 export async function messageExecute(message, args) {

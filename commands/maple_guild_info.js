@@ -1,5 +1,5 @@
 import { request } from 'undici';
-import { BOT_SERVER_DOMAIN } from '../soyabot_config.js';
+import { BOT_SERVER_DOMAIN, PREFIX } from '../soyabot_config.js';
 // import { MapleGuild } from '../util/maple_parsing.js';
 const serverEngName = {
     스카니아: 'scania',
@@ -18,7 +18,7 @@ const serverEngName = {
     리부트2: 'reboot2'
 };
 
-export const usage = `${client.prefix}길드 (서버 이름) (길드 이름)`;
+export const usage = `${PREFIX}길드 (서버 이름) (길드 이름)`;
 export const command = ['길드', 'ㄱㄷ'];
 export const description = '- 입력한 내용에 해당하는 길드의 길드원 정보(직위, 직업, 레벨, 유니온, 무릉)를 보여줍니다.';
 export const type = ['메이플'];

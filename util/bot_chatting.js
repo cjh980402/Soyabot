@@ -1,4 +1,4 @@
-function recommendWork() {
+function recommendWork(name) {
     const worklist = [
         '메이플스토리',
         '제로 육성',
@@ -18,7 +18,7 @@ function recommendWork() {
         '코펙업',
         '젬펙업',
         '마을에서 점프하기',
-        `${client.user.username}과 놀기`,
+        `${name}과 놀기`,
         '시험 공부',
         '코딩',
         '과제',
@@ -150,10 +150,10 @@ export default function (message) {
     } else if (message.content.endsWith('확률')) {
         return message.reply(`확률: ${Math.floor(Math.random() * 101)}%`);
     } else if (/뭐하지|ㅁㅎㅈ/.test(message.content)) {
-        return message.reply(recommendWork());
+        return message.reply(recommendWork(message.client.user.username));
     } else if (/뭐먹지|ㅁㅁㅈ/.test(message.content)) {
         return message.reply(recommendFood());
-    } else if (message.content.includes(client.user.username)) {
+    } else if (message.content.includes(message.client.user.username)) {
         if (/바\s*보|멍\s*청\s*이/.test(message.content)) {
             return message.channel.send('🤔');
         }
@@ -168,7 +168,9 @@ export default function (message) {
             return message.channel.send('이노시스 조아');
         } else {
             return message.channel.send(
-                `'${message.member?.nickname ?? message.author.username}'님이 ${client.user.username}을 불렀습니다.`
+                `'${message.member?.nickname ?? message.author.username}'님이 ${
+                    message.client.user.username
+                }을 불렀습니다.`
             );
         }
     } else if (message.content.includes('ㅊㅊㅊㅊ')) {

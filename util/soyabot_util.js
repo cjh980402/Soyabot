@@ -1,4 +1,4 @@
-export function commandCount(commandName) {
+export function commandCount(db, commandName) {
     try {
         const data = db.get('SELECT * FROM commanddb WHERE commandname = ?', [commandName]);
         db.replace('commanddb', {

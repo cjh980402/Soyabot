@@ -8,7 +8,7 @@ let testTimer = null;
 let testPatchTimer = null;
 let urusTimer = null;
 
-export function startNotice() {
+export function startNotice(client) {
     if (!noticeTimer) {
         noticeTimer = setInterval(async () => {
             try {
@@ -17,11 +17,11 @@ export function startNotice() {
 
                 const notice = [];
                 for (let i = 0; i < data.length; i++) {
-                    const rslt = db.get('SELECT * FROM maplenotice WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
+                    const rslt = client.db.get('SELECT * FROM maplenotice WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                     if (!rslt || +/\d+/.exec(rslt.url) < +/\d+/.exec(url)) {
                         // 제목이 다르거나, 같은 경우는 최신 공지인 경우
-                        db.replace('maplenotice', { title: data.eq(i).text().trim(), url: url }); // 제목이 겹치는 경우 때문에 replace를 이용
+                        client.db.replace('maplenotice', { title: data.eq(i).text().trim(), url: url }); // 제목이 겹치는 경우 때문에 replace를 이용
                         // 중복방지 위해 db에 삽입
                         notice.push(`${data.eq(i).find('img').attr('alt')} [${data.eq(i).text().trim()}](${url})`);
                     }
@@ -34,10 +34,10 @@ export function startNotice() {
                         .setDescription(notice.join('\n\n'))
                         .setTimestamp();
 
-                    botNotice(noticeEmbed, 'notice');
+                    botNotice(client, noticeEmbed, 'notice');
                 }
             } catch (err) {
-                replyAdmin(`자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
+                replyAdmin(client.users, `자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
             }
         }, 127000);
     }
@@ -50,7 +50,7 @@ export function stopNotice() {
     }
 }
 
-export function startUpdate() {
+export function startUpdate(client) {
     if (!updateTimer) {
         updateTimer = setInterval(async () => {
             try {
@@ -59,11 +59,11 @@ export function startUpdate() {
 
                 const update = [];
                 for (let i = 0; i < data.length; i++) {
-                    const rslt = db.get('SELECT * FROM mapleupdate WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
+                    const rslt = client.db.get('SELECT * FROM mapleupdate WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                     if (!rslt || +/\d+/.exec(rslt.url) < +/\d+/.exec(url)) {
                         // 제목이 다르거나, 같은 경우는 최신 공지인 경우
-                        db.replace('mapleupdate', { title: data.eq(i).text().trim(), url: url });
+                        client.db.replace('mapleupdate', { title: data.eq(i).text().trim(), url: url });
                         // 중복방지 위해 db에 삽입
                         update.push(`[패치] [${data.eq(i).text().trim()}](${url})`);
                     }
@@ -76,10 +76,10 @@ export function startUpdate() {
                         .setDescription(update.join('\n\n'))
                         .setTimestamp();
 
-                    botNotice(noticeEmbed, 'update');
+                    botNotice(client, noticeEmbed, 'update');
                 }
             } catch (err) {
-                replyAdmin(`자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
+                replyAdmin(client.users, `자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
             }
         }, 131000);
     }
@@ -92,7 +92,7 @@ export function stopUpdate() {
     }
 }
 
-export function startTest() {
+export function startTest(client) {
     if (!testTimer) {
         testTimer = setInterval(async () => {
             try {
@@ -101,11 +101,11 @@ export function startTest() {
 
                 const test = [];
                 for (let i = 0; i < data.length; i++) {
-                    const rslt = db.get('SELECT * FROM mapletest WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
+                    const rslt = client.db.get('SELECT * FROM mapletest WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                     if (!rslt || +/\d+/.exec(rslt.url) < +/\d+/.exec(url)) {
                         // 제목이 다르거나, 같은 경우는 최신 공지인 경우
-                        db.replace('mapletest', { title: data.eq(i).text().trim(), url: url });
+                        client.db.replace('mapletest', { title: data.eq(i).text().trim(), url: url });
                         // 중복방지 위해 db에 삽입
                         const picurl = data.eq(i).find('img').attr('src');
                         const type = picurl.endsWith('1.png')
@@ -126,10 +126,10 @@ export function startTest() {
                         .setDescription(test.join('\n\n'))
                         .setTimestamp();
 
-                    botNotice(noticeEmbed, 'test');
+                    botNotice(client, noticeEmbed, 'test');
                 }
             } catch (err) {
-                replyAdmin(`자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
+                replyAdmin(client.users, `자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
             }
         }, 137000);
     }
@@ -142,11 +142,11 @@ export function stopTest() {
     }
 }
 
-export function startTestPatch() {
+export function startTestPatch(client) {
     if (!testPatchTimer) {
         testPatchTimer = setInterval(async () => {
             try {
-                const lastPatch = db.get('SELECT * FROM testpatch ORDER BY version DESC LIMIT 1');
+                const lastPatch = client.db.get('SELECT * FROM testpatch ORDER BY version DESC LIMIT 1');
                 const patchVersion = lastPatch.version + 1; // 새로 가져올 패치의 버전
                 const patchURL = `http://maplestory.dn.nexoncdn.co.kr/PatchT/01${patchVersion}/01${
                     patchVersion - 1
@@ -156,8 +156,9 @@ export function startTestPatch() {
                 if (headers['content-type'] === 'application/octet-stream') {
                     // 파일이 감지된 경우
                     const fileSize = +headers['content-length'] / 1024 / 1024;
-                    db.insert('testpatch', { version: patchVersion, url: patchURL });
+                    client.db.insert('testpatch', { version: patchVersion, url: patchURL });
                     botNotice(
+                        client,
                         `[Tver 1.2.${patchVersion}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기: ${fileSize.toFixed(
                             2
                         )}MB\n패치파일 주소: ${patchURL}`,
@@ -166,7 +167,7 @@ export function startTestPatch() {
                 }
                 for await (const _ of body); // 메모리 누수 방지를 위한 force consumption of body
             } catch (err) {
-                replyAdmin(`자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
+                replyAdmin(client.users, `자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
             }
         }, 139000);
     }
@@ -179,7 +180,7 @@ export function stopTestPatch() {
     }
 }
 
-export function startUrus() {
+export function startUrus(client) {
     if (!urusTimer) {
         const now = new Date();
         const urusDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 22, 30); // 우르스 알림 시간 객체 저장
@@ -187,9 +188,9 @@ export function startUrus() {
             urusDate.setDate(now.getDate() + 1); // 우르스 알림 시간 지났으면 다음 날로 알림 설정
         }
         urusTimer = setTimeout(() => {
-            botNotice('우르스 메소 2배 종료까지 30분 남았습니다!', 'urus'); // 그룹챗에만 공지
+            botNotice(client, '우르스 메소 2배 종료까지 30분 남았습니다!', 'urus'); // 그룹챗에만 공지
             // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
-            urusTimer = setInterval(botNotice, 86400000, '우르스 메소 2배 종료까지 30분 남았습니다!', 'urus'); // 24시간 주기
+            urusTimer = setInterval(botNotice, 86400000, client, '우르스 메소 2배 종료까지 30분 남았습니다!', 'urus'); // 24시간 주기
         }, urusDate - now);
     }
 }

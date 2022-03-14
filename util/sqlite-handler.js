@@ -3,8 +3,8 @@ import Database from 'better-sqlite3';
 export default class SQLiteHandler {
     #db;
 
-    constructor(db) {
-        this.#db = new Database(db);
+    constructor(dbPath) {
+        this.#db = new Database(dbPath);
     }
 
     get tableList() {

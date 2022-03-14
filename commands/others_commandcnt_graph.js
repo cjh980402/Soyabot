@@ -1,8 +1,9 @@
 import { MessageAttachment } from 'discord.js';
+import { PREFIX } from '../soyabot_config.js';
 import renderChart from '../util/chartjs_rendering.js';
 
-async function getCommandCountGraph() {
-    const data = db.all('SELECT * FROM commanddb ORDER BY count DESC'); // 내림차순
+async function getCommandCountGraph(client) {
+    const data = client.db.all('SELECT * FROM commanddb ORDER BY count DESC'); // 내림차순
     const cmdColor = (a) =>
         data.map((v) => {
             const hash = [...v.commandname].reduce((acc, cur) => (31 * acc + cur.codePointAt(0)) | 0, 0); // 각 연산 후 signed 32-bit 정수로 변환
@@ -71,17 +72,17 @@ async function getCommandCountGraph() {
     return new MessageAttachment(await renderChart(config, 2000, height), 'chart.png');
 }
 
-export const usage = `${client.prefix}통계`;
+export const usage = `${PREFIX}통계`;
 export const command = ['통계', 'ㅌㄱ'];
 export const description = '- 봇의 명령어 사용량 통계를 그래프로 보여줍니다.';
 export const type = ['기타'];
 export async function messageExecute(message) {
-    return message.channel.send({ files: [await getCommandCountGraph()] });
+    return message.channel.send({ files: [await getCommandCountGraph(message.client)] });
 }
 export const commandData = {
     name: '통계',
     description: '봇의 명령어 사용량 통계를 그래프로 보여줍니다.'
 };
 export async function commandExecute(interaction) {
-    return interaction.followUp({ files: [await getCommandCountGraph()] });
+    return interaction.followUp({ files: [await getCommandCountGraph(interaction.client)] });
 }

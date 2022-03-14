@@ -1,5 +1,6 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { request } from 'undici';
+import { PREFIX } from '../soyabot_config.js';
 import renderChart from '../util/chartjs_rendering.js';
 const serverList = {
     스카니아: 'server1',
@@ -102,7 +103,7 @@ async function getMesoEmbed(server) {
     return { embeds: [mesoEmbed], files: [image] };
 }
 
-export const usage = `${client.prefix}메소 (서버)`;
+export const usage = `${PREFIX}메소 (서버)`;
 export const command = ['메소', 'ㅁㅅ'];
 export const description = '- 해당 서버의 메소 시세를 알려줍니다. 서버 이름은 정확히 입력해야 합니다.';
 export const type = ['메이플'];

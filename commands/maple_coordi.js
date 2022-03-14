@@ -1,7 +1,8 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../util/maple_parsing.js';
 
-export const usage = `${client.prefix}코디 (닉네임)`;
+export const usage = `${PREFIX}코디 (닉네임)`;
 export const command = ['코디', 'ㅋㄷ'];
 export const description = '- 해당 캐릭터가 착용한 코디템과 헤어, 성형을 출력합니다.';
 export const type = ['메이플'];

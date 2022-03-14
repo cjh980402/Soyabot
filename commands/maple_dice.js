@@ -1,4 +1,5 @@
 import { MessageAttachment, MessageActionRow, MessageButton } from 'discord.js';
+import { PREFIX } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
 
 async function getDiceAttachment(nickname) {
@@ -11,7 +12,7 @@ async function getDiceAttachment(nickname) {
     return new MessageAttachment(dicePic, 'dice.png');
 }
 
-export const usage = `${client.prefix}데굴데굴`;
+export const usage = `${PREFIX}데굴데굴`;
 export const command = ['데굴데굴', 'ㄷㄱㄷㄱ'];
 export const description = '- 추억의 메이플스토리 주사위!';
 export const type = ['메이플'];

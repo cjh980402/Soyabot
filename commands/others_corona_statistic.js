@@ -1,6 +1,7 @@
 import { MessageAttachment, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
+import { PREFIX } from '../soyabot_config.js';
 
 async function getCoronaEmbed() {
     const { body: countBody } = await request('http://ncov.mohw.go.kr');
@@ -42,7 +43,7 @@ async function getCoronaEmbed() {
     return [corona1, corona2];
 }
 
-export const usage = `${client.prefix}코로나`;
+export const usage = `${PREFIX}코로나`;
 export const command = ['코로나', 'ㅋㄹㄴ'];
 export const description = '- 최신 기준 코로나 국내 현황 통계를 알려줍니다.';
 export const type = ['기타'];

@@ -1,7 +1,9 @@
-export const usage = `${client.prefix}방무 (몬스터의 방어율) (현재 방무) (추가 방무1) (추가 방무2) ...`;
+import { PREFIX } from '../soyabot_config.js';
+
+export const usage = `${PREFIX}방무 (몬스터의 방어율) (현재 방무) (추가 방무1) (추가 방무2) ...`;
 export const command = ['방무', 'ㅂㅁ'];
 export const description = `- 실방무와 딜량을 계산합니다. 추가 방무가 음수면 해당 수치를 원래 방무에서 제거합니다.
-예) 방어율 250% 몬스터에게 현재 방무 90%, 추가 방무 20%, 제거할 방무 10% → ${client.prefix}방무 250 90 20 -10`;
+예) 방어율 250% 몬스터에게 현재 방무 90%, 추가 방무 20%, 제거할 방무 10% → ${PREFIX}방무 250 90 20 -10`;
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length < 2) {

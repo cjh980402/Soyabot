@@ -1,6 +1,7 @@
+import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../util/maple_parsing.js';
 
-export const usage = `${client.prefix}유니온 (닉네임)`;
+export const usage = `${PREFIX}유니온 (닉네임)`;
 export const command = ['유니온', 'ㅇㄴㅇ'];
 export const description = '- 캐릭터의 유니온 정보와 일일 코인 수급량을 출력합니다.';
 export const type = ['메이플'];

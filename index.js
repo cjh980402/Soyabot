@@ -13,11 +13,10 @@ import { musicActiveControl, musicButtonControl } from './util/music_play.js';
 import { commandCount } from './util/soyabot_util.js';
 import botChatting from './util/bot_chatting.js';
 import sqlite from './util/sqlite-handler.js';
-globalThis.db = new sqlite('./db/soyabot_data.db'); // db와 client는 빈번하게 사용되므로 global 객체에 저장
-globalThis.client = new Client(Options.createCustom());
+const client = new Client(Options.createCustom());
+client.db = new sqlite('./db/soyabot_data.db');
 client.commands = []; // 명령어 객체 저장할 배열
 client.queues = new Map(); // 음악기능 정보 저장용
-client.prefix = PREFIX; // 명령어 접두사
 const cooldowns = new Set(); // 중복 명령 방지용
 const promiseTimeout = (promise, ms) => Promise.race([promise, setTimeout(ms)]);
 
@@ -27,7 +26,7 @@ process.on('unhandledRejection', (err) => {
 });
 
 try {
-    await initClient(TOKEN); // 클라이언트 초기 세팅 함수
+    await initClient(client, TOKEN); // 클라이언트 초기 세팅 함수
     /**
      * 모든 명령 import
      */
@@ -42,7 +41,7 @@ try {
         }
     }
     // await client.application.commands.set(datas); // 인터랙션 데이터 변경 시에만 활성화하기
-    replyAdmin(`${client.user.tag}이 작동 중입니다.`);
+    replyAdmin(client.users, `${client.user.tag}이 작동 중입니다.`);
 } catch (err) {
     console.error('로그인 에러 발생:', err);
     await exec('npm stop');
@@ -85,8 +84,8 @@ client.on('messageCreate', async (message) => {
                 message.guild.me.isCommunicationDisabled());
 
         const [prefixCommand, ...args] = message.content.trim().split(/\s+/); // 공백류 문자로 메시지 텍스트 분할
-        if (!prefixCommand.startsWith(client.prefix)) {
-            // client.prefix로 시작하지 않는 경우
+        if (!prefixCommand.startsWith(PREFIX)) {
+            // PREFIX로 시작하지 않는 경우
             if (!missingPermission) {
                 if (message.author.id === ADMIN_ID) {
                     // 관리자 여부 체크
@@ -96,7 +95,7 @@ client.on('messageCreate', async (message) => {
             }
             return;
         }
-        commandName = prefixCommand.slice(client.prefix.length).toLowerCase(); // commandName은 client.prefix를 제외한 명령어 부분
+        commandName = prefixCommand.slice(PREFIX.length).toLowerCase(); // commandName은 PREFIX를 제외한 명령어 부분
 
         const nowCommand = client.commands.find((cmd) => cmd.command.includes(commandName)); // 해당하는 명령어 찾기
 
@@ -120,7 +119,7 @@ client.on('messageCreate', async (message) => {
             return await message.channel.send(`'${originCommandName}' 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
-        commandCount(originCommandName);
+        commandCount(client.db, originCommandName);
         await (nowCommand.channelCool
             ? nowCommand.messageExecute(message, args)
             : promiseTimeout(nowCommand.messageExecute(message, args), 300000)); // 명령어 수행 부분
@@ -135,6 +134,7 @@ client.on('messageCreate', async (message) => {
                 await message.reply(err.message);
             } else {
                 replyAdmin(
+                    client.users,
                     `작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${message}\n에러 내용: ${err.stack}`
                 );
                 await message.reply('에러로그가 전송되었습니다.');
@@ -191,7 +191,7 @@ client.on('interactionCreate', async (interaction) => {
                 return await interaction.followUp(`'${originCommandName}' 명령을 사용하기 위해 잠시 기다려야합니다.`);
             }
             cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
-            commandCount(originCommandName);
+            commandCount(client.db, originCommandName);
             await (nowCommand.channelCool
                 ? nowCommand.commandExecute(interaction)
                 : promiseTimeout(nowCommand.commandExecute(interaction), 300000)); // 명령어 수행 부분
@@ -206,6 +206,7 @@ client.on('interactionCreate', async (interaction) => {
                     await interaction.editReply(err.message);
                 } else {
                     replyAdmin(
+                        client.users,
                         `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction}\n에러 내용: ${err.stack}`
                     );
                     await interaction.editReply('에러로그가 전송되었습니다.');

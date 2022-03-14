@@ -1,9 +1,10 @@
 import { MessageEmbed, Util } from 'discord.js';
+import { PREFIX } from '../soyabot_config.js';
 import { replyAdmin } from '../admin/bot_control.js';
 import { QueueElement } from '../util/music_play.js';
 import { isValidPlaylist, isValidVideo, getPlaylistInfo } from '../util/song_util.js';
 
-export const usage = `${client.prefix}playlist (재생목록 주소│재생목록 제목)`;
+export const usage = `${PREFIX}playlist (재생목록 주소│재생목록 제목)`;
 export const command = ['playlist', 'pl', '재생목록'];
 export const description = '- YouTube나 Soundcloud의 재생목록을 재생합니다.';
 export const type = ['음악'];
@@ -13,12 +14,12 @@ export async function messageExecute(message, args) {
     }
 
     const { channel } = message.member.voice;
-    const serverQueue = client.queues.get(message.guildId);
+    const serverQueue = message.client.queues.get(message.guildId);
     if (!channel) {
         return message.reply('음성 채널에 먼저 참가해주세요!');
     }
     if (serverQueue && channel.id !== message.guild.me.voice.channelId) {
-        return message.reply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
+        return message.reply(`${message.client.user}과 같은 음성 채널에 참가해주세요!`);
     }
     if (args.length < 1) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
@@ -35,7 +36,7 @@ export async function messageExecute(message, args) {
     const search = args.join(' ');
     // 영상 주소가 주어진 경우는 play 기능을 실행
     if (isValidVideo(url) && !isValidPlaylist(url)) {
-        return client.commands.find((cmd) => cmd.command.includes('play')).messageExecute(message, args);
+        return message.client.commands.find((cmd) => cmd.command.includes('play')).messageExecute(message, args);
     }
 
     let playlist = null;
@@ -79,11 +80,12 @@ export async function messageExecute(message, args) {
 
     try {
         const newQueue = new QueueElement(message.channel, channel, await channel.join(), playlist.songs);
-        client.queues.set(message.guildId, newQueue);
+        message.client.queues.set(message.guildId, newQueue);
         newQueue.playSong();
     } catch (err) {
-        client.queues.delete(message.guildId);
+        message.client.queues.delete(message.guildId);
         replyAdmin(
+            message.client.users,
             `작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${message}\n에러 내용: ${err.stack}`
         );
         return message.channel.send(`채널에 참가할 수 없습니다: ${err.message}`);
@@ -107,12 +109,12 @@ export async function commandExecute(interaction) {
     }
 
     const { channel } = interaction.member.voice;
-    const serverQueue = client.queues.get(interaction.guildId);
+    const serverQueue = interaction.client.queues.get(interaction.guildId);
     if (!channel) {
         return interaction.followUp('음성 채널에 먼저 참가해주세요!');
     }
     if (serverQueue && channel.id !== interaction.guild.me.voice.channelId) {
-        return interaction.followUp(`${client.user}과 같은 음성 채널에 참가해주세요!`);
+        return interaction.followUp(`${interaction.client.user}과 같은 음성 채널에 참가해주세요!`);
     }
 
     if (!channel.joinable) {
@@ -126,7 +128,7 @@ export async function commandExecute(interaction) {
     // 영상 주소가 주어진 경우는 play 기능을 실행
     if (isValidVideo(urlOrSearch) && !isValidPlaylist(urlOrSearch)) {
         interaction.options._hoistedOptions[0].name = '영상_주소_제목';
-        return client.commands.find((cmd) => cmd.commandData?.name === 'play').commandExecute(interaction);
+        return interaction.client.commands.find((cmd) => cmd.commandData?.name === 'play').commandExecute(interaction);
     }
 
     let playlist = null;
@@ -173,11 +175,12 @@ export async function commandExecute(interaction) {
 
     try {
         const newQueue = new QueueElement(interaction.channel, channel, await channel.join(), playlist.songs);
-        client.queues.set(interaction.guildId, newQueue);
+        interaction.client.queues.set(interaction.guildId, newQueue);
         newQueue.playSong();
     } catch (err) {
-        client.queues.delete(interaction.guildId);
+        interaction.client.queues.delete(interaction.guildId);
         replyAdmin(
+            interaction.client.users,
             `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction}\n에러 내용: ${err.stack}`
         );
         return interaction.followUp(`채널에 참가할 수 없습니다: ${err.message}`);

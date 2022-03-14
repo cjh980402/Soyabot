@@ -1,8 +1,9 @@
 import { MessageAttachment } from 'discord.js';
+import { PREFIX } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
 import { MapleUser } from '../util/maple_parsing.js';
 
-export const usage = `${client.prefix}컬렉션 (닉네임)`;
+export const usage = `${PREFIX}컬렉션 (닉네임)`;
 export const command = ['컬렉션', 'ㅋㄹㅅ', 'ㅋㄽ'];
 export const description = '- 캐릭터의 maple.GG 코디 컬렉션을 출력합니다.';
 export const type = ['메이플'];

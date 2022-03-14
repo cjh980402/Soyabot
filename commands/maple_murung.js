@@ -1,6 +1,7 @@
+import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../util/maple_parsing.js';
 
-export const usage = `${client.prefix}무릉 (닉네임)`;
+export const usage = `${PREFIX}무릉 (닉네임)`;
 export const command = ['무릉', 'ㅁㄹ'];
 export const description = '- 캐릭터의 직업, 무릉 최고기록, 시간을 출력합니다.';
 export const type = ['메이플'];

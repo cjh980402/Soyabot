@@ -1,4 +1,6 @@
-export const usage = `${client.prefix}수로휴가`;
+import { PREFIX } from '../soyabot_config.js';
+
+export const usage = `${PREFIX}수로휴가`;
 export const command = ['수로휴가', 'ㅅㄹㅎㄱ', 'ㅅㅀㄱ'];
 export const description = '- 길드 지하수로 휴가 신청서를 보여줍니다.';
 export const type = ['메이플'];

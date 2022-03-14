@@ -1,10 +1,11 @@
+import { PREFIX } from '../soyabot_config.js';
 import { MapleProb } from '../util/maple_probtable.js';
 
-export const usage = `${client.prefix}성형 (성별) (목표 성형 이름)`;
+export const usage = `${PREFIX}성형 (성별) (목표 성형 이름)`;
 export const command = ['성형', 'ㅅㅎ'];
 export const description = `- 해당 성별의 목표 성형을 얻을 때까지 로얄 성형 시뮬을 수행합니다.
 - 적용 중인 성형이 목록에 존재할 경우 나머지 성형만 뜹니다.(처음 성형은 목록에 없다 가정)
-- 참고. ${client.prefix}성형 확률`;
+- 참고. ${PREFIX}성형 확률`;
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length === 1 && (args[0] === '확률' || args[0] === 'ㅎㄹ')) {

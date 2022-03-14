@@ -1,4 +1,6 @@
-export const usage = `${client.prefix}놀장강`;
+import { PREFIX } from '../soyabot_config.js';
+
+export const usage = `${PREFIX}놀장강`;
 export const command = ['놀장강', 'ㄴㅈㄱ', 'ㄵㄱ'];
 export const description = '- 일반 장비의 놀장강 강화 능력치를 출력합니다.';
 export const type = ['메이플'];

@@ -1,4 +1,5 @@
 import { request } from 'undici';
+import { PREFIX } from '../soyabot_config.js';
 
 async function farm_monster(monster) {
     // 몬스터 이름
@@ -161,13 +162,13 @@ async function farm_info(user) {
     }
 }
 
-export const usage = `${client.prefix}농장 ...`;
+export const usage = `${PREFIX}농장 ...`;
 export const command = ['농장', 'ㄴㅈ', 'ㄵ'];
 export const description = `- 몬스터라이프 관련 기능을 수행합니다.
-- ${client.prefix}농장 목록 (몬스터 이름)
-- ${client.prefix}농장 조합식 (몬스터 이름)
-- ${client.prefix}농장 정보 (농장 이름)
-- ${client.prefix}농장 추가 (끝나는 날짜) (농장 이름) (몬스터 이름)
+- ${PREFIX}농장 목록 (몬스터 이름)
+- ${PREFIX}농장 조합식 (몬스터 이름)
+- ${PREFIX}농장 정보 (농장 이름)
+- ${PREFIX}농장 추가 (끝나는 날짜) (농장 이름) (몬스터 이름)
 - 참고. 끝나는 날짜의 형식은 YYMMDD 형식입니다. (무한유지를 하는 몬스터는 '무한유지')`;
 export const type = ['메이플'];
 export async function messageExecute(message, args) {

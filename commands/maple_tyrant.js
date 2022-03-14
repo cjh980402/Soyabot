@@ -1,4 +1,6 @@
-export const usage = `${client.prefix}타일런트`;
+import { PREFIX } from '../soyabot_config.js';
+
+export const usage = `${PREFIX}타일런트`;
 export const command = ['타일런트', 'ㅌㅇㄹㅌ', 'ㅌㅇㄾ'];
 export const description = '- 타일런트 장비의 스타포스 강화 능력치를 출력합니다.';
 export const type = ['메이플'];

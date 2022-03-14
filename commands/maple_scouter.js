@@ -1,4 +1,5 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../util/maple_parsing.js';
 const scoreGrade = [
     [0, '메린이'],
@@ -57,7 +58,7 @@ function getScouterEmbed(mapleUserInfo, union) {
         .addField('**측정 결과**', `${grade}! (${score}점)`);
 }
 
-export const usage = `${client.prefix}스카우터 (닉네임)`;
+export const usage = `${PREFIX}스카우터 (닉네임)`;
 export const command = ['스카우터', 'ㅅㅋㅇㅌ'];
 export const description =
     '- 정해진 조건으로 해당 캐릭터의 점수를 평가합니다. 닉네임을 생략시에는 기준 점수표를 보여줍니다.';

@@ -1,6 +1,7 @@
+import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../util/maple_parsing.js';
 
-export const usage = `${client.prefix}이미지 (닉네임)`;
+export const usage = `${PREFIX}이미지 (닉네임)`;
 export const command = ['이미지', 'ㅇㅁㅈ'];
 export const description = '- 해당 캐릭터의 배경 없는 이미지를 출력합니다.';
 export const type = ['메이플'];

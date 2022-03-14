@@ -1,6 +1,7 @@
 import { request } from 'undici';
+import { PREFIX } from '../soyabot_config.js';
 
-export const usage = `${client.prefix}한강`;
+export const usage = `${PREFIX}한강`;
 export const command = ['한강', 'ㅎㄱ'];
 export const description = '- 현재 한강의 수온을 알려줍니다.';
 export const type = ['기타'];

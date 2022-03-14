@@ -1,6 +1,7 @@
+import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../util/maple_parsing.js';
 
-export const usage = `${client.prefix}갱신 (닉네임)`;
+export const usage = `${PREFIX}갱신 (닉네임)`;
 export const command = ['갱신', 'ㄱㅅ', 'ㄳ'];
 export const description = '- 캐릭터의 maple.GG 정보를 갱신합니다.';
 export const type = ['메이플'];

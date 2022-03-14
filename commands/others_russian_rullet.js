@@ -1,9 +1,11 @@
+import { PREFIX } from '../soyabot_config.js';
+
 function findGameCommandType(str) {
     const [prefixCommand] = str.trim().split(/\s+/);
-    if (!prefixCommand.startsWith(client.prefix)) {
+    if (!prefixCommand.startsWith(PREFIX)) {
         return -1;
     }
-    const command = prefixCommand.slice(client.prefix.length);
+    const command = prefixCommand.slice(PREFIX.length);
     if (command === '참가' || command === 'ㅊㄱ') {
         return 1;
     }
@@ -18,27 +20,29 @@ function findGameCommandType(str) {
     }
 }
 
-export const usage = `${client.prefix}러시안룰렛 (탄환 수)`;
+export const usage = `${PREFIX}러시안룰렛 (탄환 수)`;
 export const command = ['러시안룰렛', 'ㄹㅅㅇㄹㄹ', 'ㄽㅇㄹㄹ'];
 export const description = `- 러시안룰렛 게임을 수행합니다.
 - 탄환 수가 2 ~ 20 범위가 아니거나 생략된 경우 자동으로 6발이 됩니다.
-- ${client.prefix}참가: 게임에 참가를 합니다.
-- ${client.prefix}시작: 참가자가 2명 이상일 때 게임을 시작합니다.
-- ${client.prefix}종료: 인원을 모집 중인 게임을 종료합니다.
-- ${client.prefix}빵: 본인의 차례를 수행합니다.`;
+- ${PREFIX}참가: 게임에 참가를 합니다.
+- ${PREFIX}시작: 참가자가 2명 이상일 때 게임을 시작합니다.
+- ${PREFIX}종료: 인원을 모집 중인 게임을 종료합니다.
+- ${PREFIX}빵: 본인의 차례를 수행합니다.`;
 export const channelCool = true;
 export const type = ['기타'];
 export async function messageExecute(message, args) {
     if (!message.guildId) {
         return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     } else if (message.guild.memberCount < 3) {
-        return message.reply(`${client.user.username}을 제외한 방의 인원이 2명 이상일 때 게임을 이용할 수 있습니다.`);
+        return message.reply(
+            `${message.client.user.username}을 제외한 방의 인원이 2명 이상일 때 게임을 이용할 수 있습니다.`
+        );
     }
     const count = Math.trunc(args[0]);
     const bullet = isNaN(count) || count < 2 || count > 20 ? 6 : count; // 탄환 수 지정
     const gameUser = [message.member]; // 참가자 객체 배열
     message.channel.send(
-        `게임을 시작하셨습니다.\n${client.prefix}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${
+        `게임을 시작하셨습니다.\n${PREFIX}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${
             gameUser[0].nickname ?? gameUser[0].user.username
         }`
     );
@@ -100,7 +104,7 @@ export async function messageExecute(message, args) {
     }
     // 게임을 진행할 때는 멘션으로 해당하는 사람에게 알려준다.
     await message.channel.send(
-        `탄환 ${bullet}발이 장전되었습니다. 첫 시작은 ${gameUser[0]}님입니다.\n${client.prefix}빵 명령어로 방아쇠를 당겨주세요.`
+        `탄환 ${bullet}발이 장전되었습니다. 첫 시작은 ${gameUser[0]}님입니다.\n${PREFIX}빵 명령어로 방아쇠를 당겨주세요.`
     );
     const die = Math.floor(Math.random() * bullet); // 0번째 ~ (bullet - 1)번째 탄환 중에서 선택
     for (let i = 0; i < bullet; i++) {
@@ -154,13 +158,13 @@ export async function commandExecute(interaction) {
         return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     } else if (interaction.guild.memberCount < 3) {
         return interaction.followUp(
-            `${client.user.username}을 제외한 방의 인원이 2명 이상일 때 게임을 이용할 수 있습니다.`
+            `${interaction.client.user.username}을 제외한 방의 인원이 2명 이상일 때 게임을 이용할 수 있습니다.`
         );
     }
     const bullet = interaction.options.getInteger('탄환_수') ?? 6; // 탄환 수 지정
     const gameUser = [interaction.member]; // 참가자 객체 배열
     await interaction.editReply(
-        `게임을 시작하셨습니다.\n${client.prefix}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${
+        `게임을 시작하셨습니다.\n${PREFIX}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${
             gameUser[0].nickname ?? gameUser[0].user.username
         }`
     );
@@ -222,7 +226,7 @@ export async function commandExecute(interaction) {
     }
     // 게임을 진행할 때는 멘션으로 해당하는 사람에게 알려준다.
     await interaction.followUp(
-        `탄환 ${bullet}발이 장전되었습니다. 첫 시작은 ${gameUser[0]}님입니다.\n${client.prefix}빵 명령어로 방아쇠를 당겨주세요.`
+        `탄환 ${bullet}발이 장전되었습니다. 첫 시작은 ${gameUser[0]}님입니다.\n${PREFIX}빵 명령어로 방아쇠를 당겨주세요.`
     );
     const die = Math.floor(Math.random() * bullet); // 0번째 ~ (bullet - 1)번째 탄환 중에서 선택
     for (let i = 0; i < bullet; i++) {

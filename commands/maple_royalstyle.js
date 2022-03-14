@@ -1,8 +1,9 @@
+import { PREFIX } from '../soyabot_config.js';
 import { MapleProb } from '../util/maple_probtable.js';
 
-export const usage = `${client.prefix}로얄 (횟수)`;
+export const usage = `${PREFIX}로얄 (횟수)`;
 export const command = ['로얄', 'ㄹㅇ'];
-export const description = `- 1 ~ 20000 범위의 횟수를 입력하면 그만큼의 로얄스타일 시뮬을 수행합니다.\n- 참고. ${client.prefix}로얄 확률`;
+export const description = `- 1 ~ 20000 범위의 횟수를 입력하면 그만큼의 로얄스타일 시뮬을 수행합니다.\n- 참고. ${PREFIX}로얄 확률`;
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length > 1) {
@@ -48,7 +49,7 @@ export async function messageExecute(message, args) {
 }
 export const commandData = {
     name: '로얄',
-    description: `1 ~ 20000 범위의 횟수를 입력하면 그만큼의 로얄스타일 시뮬을 수행합니다.(참고. ${client.prefix}로얄 확률)`,
+    description: `1 ~ 20000 범위의 횟수를 입력하면 그만큼의 로얄스타일 시뮬을 수행합니다.(참고. ${PREFIX}로얄 확률)`,
     options: [
         {
             name: '횟수',

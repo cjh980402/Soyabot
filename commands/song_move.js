@@ -1,6 +1,7 @@
+import { PREFIX } from '../soyabot_config.js';
 import { canModifyQueue } from '../util/soyabot_util.js';
 
-export const usage = `${client.prefix}move (대기열 번호) (이동할 위치)`;
+export const usage = `${PREFIX}move (대기열 번호) (이동할 위치)`;
 export const command = ['move', 'mv'];
 export const description = '- 번호로 선택한 대기열의 노래를 원하는 위치로 이동합니다.';
 export const type = ['음악'];
@@ -12,12 +13,12 @@ export async function messageExecute(message, args) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
-    const queue = client.queues.get(message.guildId);
+    const queue = message.client.queues.get(message.guildId);
     if (!queue?.player.state.resource) {
         return message.reply('재생 중인 노래가 없습니다.');
     }
     if (!canModifyQueue(message.member)) {
-        return message.reply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
+        return message.reply(`${message.client.user}과 같은 음성 채널에 참가해주세요!`);
     }
     if (queue.songs.length < 2) {
         return message.reply('현재 대기열에서 이동이 가능한 노래가 없습니다.');
@@ -63,12 +64,12 @@ export async function commandExecute(interaction) {
         return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
 
-    const queue = client.queues.get(interaction.guildId);
+    const queue = interaction.client.queues.get(interaction.guildId);
     if (!queue?.player.state.resource) {
         return interaction.followUp('재생 중인 노래가 없습니다.');
     }
     if (!canModifyQueue(interaction.member)) {
-        return interaction.followUp(`${client.user}과 같은 음성 채널에 참가해주세요!`);
+        return interaction.followUp(`${interaction.client.user}과 같은 음성 채널에 참가해주세요!`);
     }
     if (queue.songs.length < 2) {
         return interaction.followUp('현재 대기열에서 이동이 가능한 노래가 없습니다.');

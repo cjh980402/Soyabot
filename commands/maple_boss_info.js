@@ -1,4 +1,5 @@
 import { MessageEmbed } from 'discord.js';
+import { PREFIX } from '../soyabot_config.js';
 import { bossData } from '../util/soyabot_const.js';
 
 const bossDifficulty = ['하드', '카오스', '노말', '이지'];
@@ -15,7 +16,7 @@ function getBossEmbed(bossName, bossGrade) {
         .setDescription(`**보상**\n${targetBoss[0].join('\n\n')}\n\n**정보**\n${targetBoss[1].join('\n\n')}`);
 }
 
-export const usage = `${client.prefix}보스 (보스 이름) (보스 난이도)`;
+export const usage = `${PREFIX}보스 (보스 이름) (보스 난이도)`;
 export const command = ['보스', 'ㅂㅅ', 'ㅄ'];
 export const description =
     '- 해당하는 보스의 보상과 체력, 방어율을 알려줍니다.\n- 난이도를 생략하면 최상위 등급의 정보를 보여줍니다.';

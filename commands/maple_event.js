@@ -1,6 +1,7 @@
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
+import { PREFIX } from '../soyabot_config.js';
 
 function getEventEmbed(links, names, dates) {
     const embeds = [];
@@ -24,7 +25,7 @@ function getEventEmbed(links, names, dates) {
     return embeds;
 }
 
-export const usage = `${client.prefix}이벤트`;
+export const usage = `${PREFIX}이벤트`;
 export const command = ['이벤트', 'ㅇㅂㅌ'];
 export const description = '- 현재 진행 중인 이벤트를 알려줍니다.';
 export const type = ['메이플'];

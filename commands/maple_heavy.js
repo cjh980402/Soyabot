@@ -1,6 +1,7 @@
+import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../util/maple_parsing.js';
 
-export const usage = `${client.prefix}헤비 (닉네임)`;
+export const usage = `${PREFIX}헤비 (닉네임)`;
 export const command = ['헤비', 'ㅎㅂ', '라이트', 'ㄹㅇㅌ'];
 export const description = `- 헤비...`;
 export const type = ['메이플'];

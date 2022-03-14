@@ -1,6 +1,7 @@
+import { PREFIX } from '../soyabot_config.js';
 import NormalItem from '../util/normal_starforce.js';
 
-export const usage = `${client.prefix}스타포스시뮬 A B C D E F`;
+export const usage = `${PREFIX}스타포스시뮬 A B C D E F`;
 export const command = ['스타포스시뮬', 'ㅅㅌㅍㅅㅅㅁ'];
 export const description = `- A: 아이템 레벨 제한 (98 ~ 250)
 - B: 시작 스타포스 개수

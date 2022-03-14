@@ -1,10 +1,10 @@
 import { MessageAttachment } from 'discord.js';
 import { request } from 'undici';
+import { BOT_SERVER_DOMAIN, PREFIX } from '../soyabot_config.js';
 // import { exec } from '../admin/admin_function.js';
 import { getMessageImage } from '../util/soyabot_util.js';
-import { BOT_SERVER_DOMAIN } from '../soyabot_config.js';
 
-export const usage = `${client.prefix}그림`;
+export const usage = `${PREFIX}그림`;
 export const command = ['그림', 'ㄱㄹ'];
 export const description = '- 사진을 흑백 스케치화 해줍니다.';
 export const type = ['기타'];

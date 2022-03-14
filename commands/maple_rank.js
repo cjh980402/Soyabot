@@ -1,6 +1,7 @@
+import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../util/maple_parsing.js';
 
-export const usage = `${client.prefix}랭킹 (닉네임)`;
+export const usage = `${PREFIX}랭킹 (닉네임)`;
 export const command = ['랭킹', 'ㄹㅋ'];
 export const description = '- 캐릭터의 랭킹을 출력합니다.';
 export const type = ['메이플'];

@@ -1,4 +1,6 @@
-export const usage = `${client.prefix}어빌리티`;
+import { PREFIX } from '../soyabot_config.js';
+
+export const usage = `${PREFIX}어빌리티`;
 export const command = ['어빌리티', 'ㅇㅂㄹㅌ', 'ㅇㅂㄾ'];
 export const description = '- 레어 ~ 레전드리 어빌리티의 능력치를 표로 보여줍니다.';
 export const type = ['메이플'];

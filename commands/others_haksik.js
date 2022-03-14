@@ -1,6 +1,7 @@
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
+import { PREFIX } from '../soyabot_config.js';
 
 function getHaksikEmbed(date, haksik) {
     const embeds = [];
@@ -22,7 +23,7 @@ function getHaksikEmbed(date, haksik) {
     return embeds;
 }
 
-export const usage = `${client.prefix}학식 (요일)`;
+export const usage = `${PREFIX}학식 (요일)`;
 export const command = ['학식', 'ㅎㅅ'];
 export const type = ['기타'];
 export async function messageExecute(message, args) {

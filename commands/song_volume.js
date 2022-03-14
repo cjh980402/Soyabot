@@ -1,6 +1,7 @@
+import { PREFIX } from '../soyabot_config.js';
 // import { canModifyQueue } from '../util/soyabot_util.js';
 
-export const usage = `${client.prefix}volume (변경할 음량)`;
+export const usage = `${PREFIX}volume (변경할 음량)`;
 export const command = ['volume', 'v'];
 export const description =
     '- 지금 재생 중인 노래의 음량(0 ~ 100 범위)을 변경합니다. 음량을 생략 시 현재 음량을 알려줍니다.';
@@ -11,12 +12,12 @@ export async function messageExecute(message, args) {
     }
     return message.reply('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
 
-    /*const queue = client.queues.get(message.guildId);
+    /*const queue = message.client.queues.get(message.guildId);
     if (!queue?.player.state.resource) {
         return message.reply('재생 중인 노래가 없습니다.');
     }
     if (!canModifyQueue(message.member)) {
-        return message.reply(`${client.user}과 같은 음성 채널에 참가해주세요!`);
+        return message.reply(`${message.client.user}과 같은 음성 채널에 참가해주세요!`);
     }
 
     if (!args[0]) {
@@ -52,12 +53,12 @@ export async function commandExecute(interaction) {
     }
     return interaction.followUp('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
 
-    /*const queue = client.queues.get(interaction.guildId);
+    /*const queue = interaction.client.queues.get(interaction.guildId);
     if (!queue?.player.state.resource) {
         return interaction.followUp('재생 중인 노래가 없습니다.');
     }
     if (!canModifyQueue(interaction.member)) {
-        return interaction.followUp(`${client.user}과 같은 음성 채널에 참가해주세요!`);
+        return interaction.followUp(`${interaction.client.user}과 같은 음성 채널에 참가해주세요!`);
     }
 
     const volume = interaction.options.getNumber('변경할_음량');

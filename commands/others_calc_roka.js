@@ -1,4 +1,6 @@
-export const usage = `${client.prefix}입대 (입대일)`;
+import { PREFIX } from '../soyabot_config.js';
+
+export const usage = `${PREFIX}입대 (입대일)`;
 export const command = ['입대', 'ㅇㄷ'];
 export const description = '- YYMMDD 형식으로 입력한 입대일을 기준으로 전역일을 계산해줍니다. (육군 기준)';
 export const type = ['기타'];

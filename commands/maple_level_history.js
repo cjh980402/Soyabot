@@ -1,6 +1,7 @@
+import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../util/maple_parsing.js';
 
-export const usage = `${client.prefix}히스토리 (닉네임)`;
+export const usage = `${PREFIX}히스토리 (닉네임)`;
 export const command = ['히스토리', 'ㅎㅅㅌㄹ', '레벨히스토리', 'ㄹㅂㅎㅅㅌㄹ', 'ㄼㅎㅅㅌㄹ'];
 export const description = '- 캐릭터의 레벨업 내역을 보여줍니다.';
 export const type = ['메이플'];

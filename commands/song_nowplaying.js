@@ -1,7 +1,8 @@
 import { MessageEmbed } from 'discord.js';
 import { splitBar } from 'string-progressbar';
+import { PREFIX } from '../soyabot_config.js';
 
-export const usage = `${client.prefix}nowplaying`;
+export const usage = `${PREFIX}nowplaying`;
 export const command = ['nowplaying', 'np'];
 export const description = '- 지금 재생 중인 노래를 보여줍니다.';
 export const type = ['음악'];
@@ -10,7 +11,7 @@ export async function messageExecute(message) {
         return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
 
-    const queue = client.queues.get(message.guildId);
+    const queue = message.client.queues.get(message.guildId);
     if (!queue?.player.state.resource) {
         return message.reply('재생 중인 노래가 없습니다.');
     }
@@ -22,7 +23,7 @@ export async function messageExecute(message) {
         .setTitle('**현재 재생 중인 노래**')
         .setColor('#FF9999')
         .setDescription(`${song.title}\n${song.url}`)
-        .setAuthor({ name: client.user.username })
+        .setAuthor({ name: message.client.user.username })
         .addField(
             '\u200b',
             `${seek.toDurationString()} [${splitBar(song.duration || seek, seek, 20)[0]}] ${
@@ -45,7 +46,7 @@ export async function commandExecute(interaction) {
         return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
 
-    const queue = client.queues.get(interaction.guildId);
+    const queue = interaction.client.queues.get(interaction.guildId);
     if (!queue?.player.state.resource) {
         return interaction.followUp('재생 중인 노래가 없습니다.');
     }
@@ -57,7 +58,7 @@ export async function commandExecute(interaction) {
         .setTitle('**현재 재생 중인 노래**')
         .setColor('#FF9999')
         .setDescription(`${song.title}\n${song.url}`)
-        .setAuthor({ name: client.user.username })
+        .setAuthor({ name: interaction.client.user.username })
         .addField(
             '\u200b',
             `${seek.toDurationString()} [${splitBar(song.duration || seek, seek, 20)[0]}] ${

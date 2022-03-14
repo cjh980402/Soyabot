@@ -1,7 +1,8 @@
+import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../util/maple_parsing.js';
 import { levelTable } from '../util/soyabot_const.js';
 
-export const usage = `${client.prefix}레벨 (닉네임)`;
+export const usage = `${PREFIX}레벨 (닉네임)`;
 export const command = ['레벨', 'ㄹㅂ', 'ㄼ'];
 export const description = `- 캐릭터의 공식 홈페이지의 레벨과 경험치를 기준으로 250, 275, 300까지 남은 경험치량을 계산합니다.
 - 이미 달성한 레벨에 대한 계산은 수행하지 않습니다.`;

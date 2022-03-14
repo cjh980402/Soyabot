@@ -1,9 +1,11 @@
-export const usage = `${client.prefix}스타버블`;
+import { PREFIX } from '../soyabot_config.js';
+
+export const usage = `${PREFIX}스타버블`;
 export const command = ['스타버블', 'ㅅㅌㅂㅂ'];
 export const description = '- 엔젤릭버스터의 2번째 노래';
 export const type = ['메이플'];
 export async function messageExecute(message) {
-    return client.commands
+    return message.client.commands
         .find((cmd) => cmd.command.includes('play'))
         .messageExecute(message, ['https://youtu.be/ixww1OHztbs']);
 }
@@ -17,5 +19,5 @@ export async function commandExecute(interaction) {
         type: 'STRING',
         value: 'https://youtu.be/ixww1OHztbs'
     });
-    return client.commands.find((cmd) => cmd.command.includes('play')).commandExecute(interaction);
+    return interaction.client.commands.find((cmd) => cmd.commandData?.name === 'play').commandExecute(interaction);
 }

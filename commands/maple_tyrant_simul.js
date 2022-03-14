@@ -1,6 +1,7 @@
+import { PREFIX } from '../soyabot_config.js';
 import SuperialItem from '../util/superial_starforce.js';
 
-export const usage = `${client.prefix}타일런트시뮬 A B C`;
+export const usage = `${PREFIX}타일런트시뮬 A B C`;
 export const command = ['타일런트시뮬', 'ㅌㅇㄹㅌㅅㅁ', 'ㅌㅇㄾㅅㅁ'];
 export const description = `- A: 시작 스타포스 개수
 - B: 목표 스타포스 개수

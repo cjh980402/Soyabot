@@ -1,6 +1,7 @@
+import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../util/maple_parsing.js';
 
-export const usage = `${client.prefix}무릉히스토리 (닉네임)`;
+export const usage = `${PREFIX}무릉히스토리 (닉네임)`;
 export const command = ['무릉히스토리', 'ㅁㄹㅎㅅㅌㄹ', 'ㅁㅀㅅㅌㄹ'];
 export const description = '- 캐릭터의 무릉도장 클리어 내역을 보여줍니다.';
 export const type = ['메이플'];

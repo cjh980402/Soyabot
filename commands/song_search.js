@@ -1,7 +1,8 @@
 import { Collection, MessageEmbed } from 'discord.js';
+import { PREFIX } from '../soyabot_config.js';
 import { youtubeSearch } from '../util/song_util.js';
 
-export const usage = `${client.prefix}search (영상 제목)`;
+export const usage = `${PREFIX}search (영상 제목)`;
 export const command = ['search', 's'];
 export const description = '- 재생할 노래를 검색하고 선택합니다. (,로 구분하여 여러 노래 선택 가능)';
 export const type = ['음악'];
@@ -47,7 +48,7 @@ export async function messageExecute(message, args) {
             errors: ['time']
         });
 
-        const playCommand = client.commands.find((cmd) => cmd.command.includes('play'));
+        const playCommand = message.client.commands.find((cmd) => cmd.command.includes('play'));
         for (const song of songChoice) {
             await playCommand.messageExecute(message, [resultsEmbed.fields[song - 1].value]);
         }
@@ -116,7 +117,7 @@ export async function commandExecute(interaction) {
             errors: ['time']
         });
 
-        const playCommand = client.commands.find((cmd) => cmd.commandData?.name === 'play');
+        const playCommand = interaction.client.commands.find((cmd) => cmd.commandData?.name === 'play');
         interaction.options._hoistedOptions.push({ name: '영상_주소_제목', type: 'STRING' });
         for (const song of songChoice) {
             interaction.options._hoistedOptions.at(-1).value = resultsEmbed.fields[song - 1].value;

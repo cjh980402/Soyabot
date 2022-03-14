@@ -1,6 +1,7 @@
+import { PREFIX } from '../soyabot_config.js';
 import { levelTable } from '../util/soyabot_const.js';
 
-export const usage = `${client.prefix}경험치 (시작 레벨) (끝 레벨)`;
+export const usage = `${PREFIX}경험치 (시작 레벨) (끝 레벨)`;
 export const command = ['경험치', 'ㄱㅎㅊ'];
 export const description = `- 시작 레벨에서 끝 레벨을 달성할 때까지의 경험치통과 끝 레벨 기준 누적 경험치 비율을 계산합니다.
 - 끝 레벨을 생략 시 시작 레벨의 경험치통과 누적 경험치 비율을 계산합니다.`;

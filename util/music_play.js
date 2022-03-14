@@ -44,7 +44,10 @@ export class QueueElement {
             })
             .on('error', (err) => {
                 this.sendMessage('노래 재생을 실패했습니다.');
-                replyAdmin(`노래 재생 에러\n노래 주소: ${err.resource.metadata}\n에러 내용: ${err.stack}`);
+                replyAdmin(
+                    this.voiceChannel.client.users,
+                    `노래 재생 에러\n노래 주소: ${err.resource.metadata}\n에러 내용: ${err.stack}`
+                );
             });
     }
 
@@ -64,7 +67,7 @@ export class QueueElement {
     }
 
     clearStop() {
-        client.queues.delete(this.voiceChannel.guildId);
+        this.voiceChannel.client.queues.delete(this.voiceChannel.guildId);
         this.songs = [];
         this.#subscription.unsubscribe();
         this.player.stop(true);
@@ -114,7 +117,10 @@ export class QueueElement {
                 this.sendMessage('재생할 수 없는 영상입니다.');
             } else {
                 this.sendMessage('노래 시작을 실패했습니다.');
-                replyAdmin(`노래 시작 에러\nsong 객체: ${song._p}\n에러 내용: ${err.stack}`);
+                replyAdmin(
+                    this.voiceChannel.client.users,
+                    `노래 시작 에러\nsong 객체: ${song._p}\n에러 내용: ${err.stack}`
+                );
             }
             await this.deleteMessage();
             this.songs.shift();
@@ -137,7 +143,11 @@ export class QueueElement {
     }
 
     async deleteMessage() {
-        if (!db.get('SELECT * FROM pruningskip WHERE channelid = ?', [this.playingMessage?.guildId])) {
+        if (
+            !this.voiceChannel.client.db.get('SELECT * FROM pruningskip WHERE channelid = ?', [
+                this.playingMessage?.guildId
+            ])
+        ) {
             try {
                 await this.playingMessage?.delete();
             } catch {}
@@ -150,13 +160,13 @@ export async function musicButtonControl(interaction) {
     try {
         await interaction.deferUpdate(); // 버튼이 로딩 상태가 되었다가 원래대로 돌아옴
 
-        const queue = client.queues.get(interaction.guildId);
+        const queue = interaction.client.queues.get(interaction.guildId);
         if (queue?.playingMessage?.id !== interaction.message.id || !queue.player.state.resource) {
             return;
         }
 
         if (!canModifyQueue(interaction.member)) {
-            return queue.sendMessage(`${client.user}과 같은 음성 채널에 참가해주세요!`);
+            return queue.sendMessage(`${interaction.client.user}과 같은 음성 채널에 참가해주세요!`);
         }
 
         switch (interaction.customId) {
@@ -218,13 +228,13 @@ export function musicActiveControl(oldState, newState) {
             console.log(!oldVoice ? 'User joined!' : !newVoice ? 'User left!' : 'User switched channels!');
 
             if (newVoice) {
-                const newQueue = client.queues.get(newVoice.guild.id);
+                const newQueue = newVoice.client.queues.get(newVoice.guild.id);
                 if (
                     newQueue?.player.state.resource &&
                     !newQueue.playing &&
                     newVoice.id === newQueue.voiceChannel.id &&
                     newVoice.members.size === 2 &&
-                    newVoice.members.has(client.user.id)
+                    newVoice.members.has(newVoice.client.user.id)
                 ) {
                     newQueue.player.unpause();
                     newQueue.sendMessage('대기열을 다시 재생합니다.');
@@ -232,12 +242,12 @@ export function musicActiveControl(oldState, newState) {
             }
 
             if (oldVoice) {
-                const oldQueue = client.queues.get(oldVoice.guild.id);
+                const oldQueue = oldVoice.client.queues.get(oldVoice.guild.id);
                 if (
                     oldQueue?.player.state.resource &&
                     oldVoice.id === oldQueue.voiceChannel.id &&
                     oldVoice.members.size === 1 &&
-                    oldVoice.members.has(client.user.id)
+                    oldVoice.members.has(oldVoice.client.user.id)
                 ) {
                     // 봇만 음성 채널에 있는 경우
                     if (oldQueue.playing) {
@@ -245,22 +255,22 @@ export function musicActiveControl(oldState, newState) {
                         oldQueue.sendMessage('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
                     }
                     setTimeout(() => {
-                        const queue = client.queues.get(oldVoice.guild.id);
+                        const queue = oldVoice.client.queues.get(oldVoice.guild.id);
                         if (
                             queue?.player.state.resource &&
                             oldVoice.id === queue.voiceChannel.id &&
                             oldVoice.members.size === 1 &&
-                            oldVoice.members.has(client.user.id)
+                            oldVoice.members.has(oldVoice.client.user.id)
                         ) {
                             // 5분이 지나도 봇만 음성 채널에 있는 경우
-                            queue.sendMessage(`5분 동안 ${client.user.username}이 비활성화 되어 대기열을 끝냅니다.`);
+                            queue.sendMessage(
+                                `5분 동안 ${oldVoice.client.user.username}이 비활성화 되어 대기열을 끝냅니다.`
+                            );
                             queue.clearStop();
                         }
                     }, 300000);
                 }
             }
         }
-    } catch (err) {
-        replyAdmin(`[oldState]\n${oldState._p}\n[newState]\n${newState._p}\n에러 내용: ${err.stack}`);
-    }
+    } catch {}
 }

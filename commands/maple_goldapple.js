@@ -1,8 +1,9 @@
+import { PREFIX } from '../soyabot_config.js';
 import { MapleProb } from '../util/maple_probtable.js';
 
-export const usage = `${client.prefix}골드애플 (횟수)`;
+export const usage = `${PREFIX}골드애플 (횟수)`;
 export const command = ['골드애플', 'ㄱㄷㅇㅍ', '독사과', 'ㄷㅅㄱ'];
-export const description = `- 1 ~ 20000 범위의 횟수를 입력하면 그만큼의 골드애플 시뮬을 수행합니다.\n- 참고. ${client.prefix}골드애플 확률`;
+export const description = `- 1 ~ 20000 범위의 횟수를 입력하면 그만큼의 골드애플 시뮬을 수행합니다.\n- 참고. ${PREFIX}골드애플 확률`;
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length > 1) {
@@ -48,7 +49,7 @@ export async function messageExecute(message, args) {
 }
 export const commandData = {
     name: '골드애플',
-    description: `1 ~ 20000 범위의 횟수를 입력하면 그만큼의 골드애플 시뮬을 수행합니다.(참고. ${client.prefix}골드애플 확률)`,
+    description: `1 ~ 20000 범위의 횟수를 입력하면 그만큼의 골드애플 시뮬을 수행합니다.(참고. ${PREFIX}골드애플 확률)`,
     options: [
         {
             name: '횟수',

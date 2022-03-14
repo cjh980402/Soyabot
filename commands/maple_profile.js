@@ -1,8 +1,9 @@
 import { MessageAttachment } from 'discord.js';
+import { PREFIX } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
 import { MapleUser } from '../util/maple_parsing.js';
 
-export const usage = `${client.prefix}프로필 (닉네임)`;
+export const usage = `${PREFIX}프로필 (닉네임)`;
 export const command = ['프로필', 'ㅍㄹㅍ', 'ㅍㄿ'];
 export const description = '- 캐릭터의 maple.GG 프로필을 출력합니다.';
 export const type = ['메이플'];

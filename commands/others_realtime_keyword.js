@@ -1,6 +1,7 @@
 import { request } from 'undici';
+import { PREFIX } from '../soyabot_config.js';
 
-export const usage = `${client.prefix}실검`;
+export const usage = `${PREFIX}실검`;
 export const command = ['실검', 'ㅅㄱ'];
 export const description = '- https://www.signal.bz 기준 실시간 검색어를 보여줍니다.';
 export const type = ['기타'];

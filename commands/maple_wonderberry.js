@@ -1,8 +1,9 @@
+import { PREFIX } from '../soyabot_config.js';
 import { MapleProb } from '../util/maple_probtable.js';
 
-export const usage = `${client.prefix}원더베리 (횟수)`;
+export const usage = `${PREFIX}원더베리 (횟수)`;
 export const command = ['원더베리', 'ㅇㄷㅂㄹ', '원기베리', 'ㅇㄱㅂㄹ'];
-export const description = `- 1 ~ 20000 범위의 횟수를 입력하면 그만큼의 원더베리 시뮬을 수행합니다.\n- 참고. ${client.prefix}원더베리 확률`;
+export const description = `- 1 ~ 20000 범위의 횟수를 입력하면 그만큼의 원더베리 시뮬을 수행합니다.\n- 참고. ${PREFIX}원더베리 확률`;
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length > 1) {
@@ -48,7 +49,7 @@ export async function messageExecute(message, args) {
 }
 export const commandData = {
     name: '원더베리',
-    description: `1 ~ 20000 범위의 횟수를 입력하면 그만큼의 원더베리 시뮬을 수행합니다.(참고. ${client.prefix}원더베리 확률)`,
+    description: `1 ~ 20000 범위의 횟수를 입력하면 그만큼의 원더베리 시뮬을 수행합니다.(참고. ${PREFIX}원더베리 확률)`,
     options: [
         {
             name: '횟수',

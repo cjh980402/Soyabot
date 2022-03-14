@@ -1,4 +1,5 @@
 import { create, all } from 'mathjs';
+import { PREFIX } from '../soyabot_config.js';
 const math = create(all);
 const originEvaluate = math.evaluate; // 오버라이드 전에 원래 evaluate 함수를 가져옴
 
@@ -36,7 +37,7 @@ function inputExpression(str) {
         .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (all) => `^(${[...all].map((v) => '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(v)).join('')})`);
 }
 
-export const usage = `${client.prefix}ev (계산식)`;
+export const usage = `${PREFIX}ev (계산식)`;
 export const command = ['ev', '계산기', 'ㄱㅅㄱ', 'ㄳㄱ'];
 export const description = '- 계산식에 해당하는 결과값을 보여줍니다.';
 export const type = ['기타'];

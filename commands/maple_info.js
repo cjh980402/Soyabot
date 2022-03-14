@@ -1,4 +1,5 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../util/maple_parsing.js';
 import { levelTable } from '../util/soyabot_const.js';
 
@@ -38,7 +39,7 @@ async function getInfoEmbed(mapleUserInfo, level) {
         .addField('**직업 랭킹**', char_rank ? `전체: ${char_rank[3]}\n월드: ${char_rank[2]}` : '-', true);
 }
 
-export const usage = `${client.prefix}정보 (닉네임)`;
+export const usage = `${PREFIX}정보 (닉네임)`;
 export const command = ['정보', 'ㅈㅂ'];
 export const description = '- 해당 캐릭터의 전체적인 정보를 출력합니다.';
 export const type = ['메이플'];

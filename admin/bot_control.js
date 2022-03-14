@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { ADMIN_ID, NOTICE_CHANNEL_ID } from '../soyabot_config.js';
 
-export async function botNotice(data, type = null) {
+export async function botNotice(client, data, type = null) {
     data = data instanceof MessageEmbed ? { embeds: [data] } : String(data);
     if (type) {
         // 메이플 공지는 공지용 채널에만 전송 (트래픽 감소 목적)
@@ -21,9 +21,9 @@ export async function botNotice(data, type = null) {
     }
 }
 
-export async function replyRoomID(roomID, str) {
+export async function replyRoomID(channels, roomID, str) {
     try {
-        const target = client.channels._add({ id: roomID, type: 1 }, null, { cache: false }); // 메세지를 보내고 싶은 방 객체 생성
+        const target = channels._add({ id: roomID, type: 1 }, null, { cache: false }); // 메세지를 보내고 싶은 방 객체 생성
         await target.send(str); // 해당 채널에 메시지 전송
         return target;
     } catch {
@@ -31,9 +31,9 @@ export async function replyRoomID(roomID, str) {
     }
 }
 
-export async function replyAdmin(str) {
+export async function replyAdmin(users, str) {
     try {
-        const admin = client.users._add({ id: ADMIN_ID }, false); // 관리자 유저 객체 생성
+        const admin = users._add({ id: ADMIN_ID }, false); // 관리자 유저 객체 생성
         await admin.send(str); // 관리자에게 DM 전송
         return admin;
     } catch {

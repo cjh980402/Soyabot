@@ -1,8 +1,8 @@
 import { request } from 'undici';
 import { getMessageImage } from '../util/soyabot_util.js';
-import { DEEP_API_KEY } from '../soyabot_config.js';
+import { DEEP_API_KEY, PREFIX } from '../soyabot_config.js';
 
-export const usage = `${client.prefix}채색`;
+export const usage = `${PREFIX}채색`;
 export const command = ['채색', 'ㅊㅅ'];
 export const description = '- 원하는 흑백 사진과 함께 명령어를 사용하면 사진을 채색한 결과를 보여줍니다.';
 export const type = ['기타'];

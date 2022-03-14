@@ -39,14 +39,16 @@ export async function adminChat(message) {
         });
     } else if (room) {
         // 원하는 방에 봇으로 채팅 전송 (텍스트 채널 ID 이용)
-        const rslt = await replyRoomID(room, fullContent.slice(room.length + 3));
+        const rslt = await replyRoomID(message.client.channels, room, fullContent.slice(room.length + 3));
         return message.channel.send(rslt ? '채팅이 전송되었습니다.' : '존재하지 않는 방입니다.');
     } else if (message.channel.recipient?.id === ADMIN_ID && message.reference) {
         // 건의 답변 기능
         try {
             const suggestRefer = await message.fetchReference();
             const [channelId, messageId] = suggestRefer.content.split(/\s/);
-            await new Message(client, { id: messageId, channel_id: channelId }).reply(`[건의 답변]\n${fullContent}`);
+            await new Message(message.client, { id: messageId, channel_id: channelId }).reply(
+                `[건의 답변]\n${fullContent}`
+            );
             return message.channel.send('건의 답변을 보냈습니다.');
         } catch {
             return message.channel.send('해당하는 건의의 정보가 존재하지 않습니다.');
@@ -54,27 +56,27 @@ export async function adminChat(message) {
     }
 }
 
-export async function initClient(TOKEN) {
-    db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
-    db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
-    db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');
-    db.run('CREATE TABLE IF NOT EXISTS testpatch(version integer primary key, url text not null)');
-    /*db.run('CREATE TABLE IF NOT EXISTS noticeskip(channelid text primary key, name text not null)');
-    db.run('CREATE TABLE IF NOT EXISTS updateskip(channelid text primary key, name text not null)');
-    db.run('CREATE TABLE IF NOT EXISTS urusskip(channelid text primary key, name text not null)');
-    db.run('CREATE TABLE IF NOT EXISTS testskip(channelid text primary key, name text not null)');
-    db.run('CREATE TABLE IF NOT EXISTS testpatchskip(channelid text primary key, name text not null)');*/
-    db.run('CREATE TABLE IF NOT EXISTS pruningskip(channelid text primary key, name text not null)');
-    db.run('CREATE TABLE IF NOT EXISTS commanddb(commandname text primary key, count integer default 0)');
+export async function initClient(client, TOKEN) {
+    client.db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
+    client.db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
+    client.db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');
+    client.db.run('CREATE TABLE IF NOT EXISTS testpatch(version integer primary key, url text not null)');
+    /*client.db.run('CREATE TABLE IF NOT EXISTS noticeskip(channelid text primary key, name text not null)');
+    client.db.run('CREATE TABLE IF NOT EXISTS updateskip(channelid text primary key, name text not null)');
+    client.db.run('CREATE TABLE IF NOT EXISTS urusskip(channelid text primary key, name text not null)');
+    client.db.run('CREATE TABLE IF NOT EXISTS testskip(channelid text primary key, name text not null)');
+    client.db.run('CREATE TABLE IF NOT EXISTS testpatchskip(channelid text primary key, name text not null)');*/
+    client.db.run('CREATE TABLE IF NOT EXISTS pruningskip(channelid text primary key, name text not null)');
+    client.db.run('CREATE TABLE IF NOT EXISTS commanddb(commandname text primary key, count integer default 0)');
 
     await MapleProb.fetchAllProb();
     await client.login(TOKEN);
     await client.application.fetch();
 
     client.setMaxListeners(20); // 이벤트 개수 제한 증가
-    startNotice(); // 공지 자동 알림 기능
-    startUpdate(); // 업데이트 자동 알림 기능
-    startTest(); // 테섭 자동 알림 기능
-    startTestPatch(); // 테섭 패치 감지 기능
-    startUrus(); // 우르스 2배 종료 30분 전 알림
+    startNotice(client); // 공지 자동 알림 기능
+    startUpdate(client); // 업데이트 자동 알림 기능
+    startTest(client); // 테섭 자동 알림 기능
+    startTestPatch(client); // 테섭 패치 감지 기능
+    startUrus(client); // 우르스 2배 종료 30분 전 알림
 }

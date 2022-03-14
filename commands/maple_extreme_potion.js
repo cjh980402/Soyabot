@@ -1,3 +1,4 @@
+import { PREFIX } from '../soyabot_config.js';
 import { levelTable } from '../util/soyabot_const.js';
 const probTable = [
     [5, 5, 5, 5, 5, 5, 10, 20, 20, 20],
@@ -80,11 +81,11 @@ function extremePotion(startlev, endlev) {
     return `${rslt}총 ${cnt}개의 익성비를 소모`;
 }
 
-export const usage = `${client.prefix}익성비 (시작 레벨) (목표 레벨)`;
+export const usage = `${PREFIX}익성비 (시작 레벨) (목표 레벨)`;
 export const command = ['익성비', 'ㅇㅅㅂ', '풀장', 'ㅍㅈ'];
 export const description = `- 시작 레벨 ~ 목표 레벨의 익성비 시뮬레이션을 수행합니다.
 - 200레벨 이상의 경우 시작 레벨만 입력해주세요.
-- 참고. ${client.prefix}익성비 확률 (시작 레벨)`;
+- 참고. ${PREFIX}익성비 확률 (시작 레벨)`;
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length !== 1 && args.length !== 2) {
@@ -124,7 +125,7 @@ export async function messageExecute(message, args) {
 }
 export const commandData = {
     name: '익성비',
-    description: `시작 레벨 ~ 목표 레벨의 익성비 시뮬레이션을 수행, 200레벨 이상의 경우 시작 레벨만 입력해야합니다. 참고. ${client.prefix}익성비 확률 (시작 레벨)`,
+    description: `시작 레벨 ~ 목표 레벨의 익성비 시뮬레이션을 수행, 200레벨 이상의 경우 시작 레벨만 입력해야합니다. 참고. ${PREFIX}익성비 확률 (시작 레벨)`,
     options: [
         {
             name: '시작_레벨',

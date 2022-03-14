@@ -1,4 +1,6 @@
-export const usage = `${client.prefix}작분석 (총 공격력) (기본공) (레벨 제한) (강화 단계) (추가 옵션)`;
+import { PREFIX } from '../soyabot_config.js';
+
+export const usage = `${PREFIX}작분석 (총 공격력) (기본공) (레벨 제한) (강화 단계) (추가 옵션)`;
 export const command = ['작분석', 'ㅈㅂㅅ', 'ㅈㅄ'];
 export const description = `- 무기의 작으로 상승한 공격력을 계산합니다.
 - 총 공격력: 무기의 총 공격력을 넣습니다. (기본공+파란색글씨+초록글씨)

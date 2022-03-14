@@ -1,8 +1,9 @@
+import { PREFIX } from '../soyabot_config.js';
 import { MapleProb } from '../util/maple_probtable.js';
 
-export const usage = `${client.prefix}루나크리스탈 (카테고리) (횟수)`;
+export const usage = `${PREFIX}루나크리스탈 (카테고리) (횟수)`;
 export const command = ['루나크리스탈', 'ㄹㄴㅋㄹㅅㅌ', 'ㄹㄴㅋㄽㅌ'];
-export const description = `- 카테고리(스윗, 드림)와 1 ~ 20000 범위의 횟수를 입력하면 그만큼의 루나크리스탈 시뮬을 수행합니다.\n- 참고. ${client.prefix}루나크리스탈 (카테고리) 확률`;
+export const description = `- 카테고리(스윗, 드림)와 1 ~ 20000 범위의 횟수를 입력하면 그만큼의 루나크리스탈 시뮬을 수행합니다.\n- 참고. ${PREFIX}루나크리스탈 (카테고리) 확률`;
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (args.length > 2 || !MapleProb.LUNACRYSTAL_PROBTABLE[args[0]]) {
@@ -50,7 +51,7 @@ export async function messageExecute(message, args) {
 }
 export const commandData = {
     name: '루나크리스탈',
-    description: `카테고리(스윗, 드림)와 1 ~ 20000 범위의 횟수를 입력하면 그만큼의 루나크리스탈 시뮬을 수행합니다.(참고. ${client.prefix}루나크리스탈 (카테고리) 확률)`,
+    description: `카테고리(스윗, 드림)와 1 ~ 20000 범위의 횟수를 입력하면 그만큼의 루나크리스탈 시뮬을 수행합니다.(참고. ${PREFIX}루나크리스탈 (카테고리) 확률)`,
     options: [
         {
             name: '카테고리',

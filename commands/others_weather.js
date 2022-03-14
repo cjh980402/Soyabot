@@ -1,6 +1,7 @@
 import { MessageActionRow, MessageButton, MessageEmbed, Util } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
+import { PREFIX } from '../soyabot_config.js';
 
 async function getWeatherEmbed(targetLocal) {
     const targetURL = `https://weather.naver.com/today/${targetLocal[1][0]}`;
@@ -73,7 +74,7 @@ async function getWeatherEmbed(targetLocal) {
     return embeds;
 }
 
-export const usage = `${client.prefix}날씨 (지역)`;
+export const usage = `${PREFIX}날씨 (지역)`;
 export const command = ['날씨', 'ㄴㅆ'];
 export const description = '- 입력한 지역의 날씨를 알려줍니다.';
 export const channelCool = true;

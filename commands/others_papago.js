@@ -1,5 +1,5 @@
 import { request } from 'undici';
-import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '../soyabot_config.js';
+import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET, PREFIX } from '../soyabot_config.js';
 
 async function tran(source, target, text) {
     const params = new URLSearchParams();
@@ -43,10 +43,10 @@ function checkLan(src, tar) {
     );
 }
 
-export const usage = `${client.prefix}파파고 (번역 대상 언어) (번역 결과 언어) (내용)`;
+export const usage = `${PREFIX}파파고 (번역 대상 언어) (번역 결과 언어) (내용)`;
 export const command = ['파파고', 'ㅍㅍㄱ'];
 export const description = `- 파파고를 이용한 언어 번역을 수행합니다.
-- 참고. ${client.prefix}파파고 목록`;
+- 참고. ${PREFIX}파파고 목록`;
 export const type = ['기타'];
 export async function messageExecute(message, args) {
     if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
@@ -60,7 +60,7 @@ export async function messageExecute(message, args) {
 
     if (!checkLan(args[0], args[1]) && !checkLan(args[1], args[0])) {
         return message.channel.send(
-            `형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 '${usage}'입니다.\n언어의 형식은 ${client.prefix}파파고 목록을 확인해주세요.`
+            `형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 '${usage}'입니다.\n언어의 형식은 ${PREFIX}파파고 목록을 확인해주세요.`
         );
     }
 

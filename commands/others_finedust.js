@@ -1,7 +1,8 @@
 import { request } from 'undici';
 import { load } from 'cheerio';
+import { PREFIX } from '../soyabot_config.js';
 
-export const usage = `${client.prefix}미세먼지`;
+export const usage = `${PREFIX}미세먼지`;
 export const command = ['미세먼지', 'ㅁㅅㅁㅈ', '초미세먼지', 'ㅊㅁㅅㅁㅈ'];
 export const description = '- 현재 한국의 미세먼지(초미세먼지) 현황을 보여줍니다.';
 export const type = ['기타'];

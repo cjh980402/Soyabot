@@ -1,5 +1,6 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { request } from 'undici';
+import { PREFIX } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
 const chartType = {
     '일봉': 'candle/day',
@@ -225,7 +226,7 @@ async function getStockEmbed(search, searchRslt, type) {
     return { embeds: [stockEmbed], files: [image] };
 }
 
-export const usage = `${client.prefix}주식정보 (검색 내용) (차트 종류)`;
+export const usage = `${PREFIX}주식정보 (검색 내용) (차트 종류)`;
 export const command = ['주식정보', 'ㅈㅅㅈㅂ'];
 export const description = `- 검색 내용에 해당하는 주식의 정보를 보여줍니다.
 - (차트 종류): ${Object.keys(chartType).join(', ')} 입력가능 (생략 시 일봉으로 적용)`;

@@ -1,7 +1,8 @@
 import { request } from 'undici';
 import { load } from 'cheerio';
+import { PREFIX } from '../soyabot_config.js';
 
-export const usage = `${client.prefix}썬데이`;
+export const usage = `${PREFIX}썬데이`;
 export const command = ['썬데이', 'ㅆㄷㅇ'];
 export const description = '- 현재 진행 (예정) 중인 썬데이 메이플을 공지합니다.';
 export const type = ['메이플'];

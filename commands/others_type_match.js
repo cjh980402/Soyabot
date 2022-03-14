@@ -1,8 +1,9 @@
 import Hangul from 'hangul-js';
 import { setTimeout } from 'node:timers/promises';
+import { PREFIX } from '../soyabot_config.js';
 import { matchString } from '../util/soyabot_const.js';
 
-export const usage = `${client.prefix}타자대결 (옵션)`;
+export const usage = `${PREFIX}타자대결 (옵션)`;
 export const command = ['타자대결', 'ㅌㅈㄷㄱ'];
 export const description = `- 임의의 문장을 빨리 치는 사람이 승리하는 타자 대결을 수행합니다.
 - 옵션에 한을 입력 시 한글, 영을 입력 시 영어, 생략 시 둘 다 나옵니다.`;
