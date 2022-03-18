@@ -228,26 +228,29 @@ export function musicActiveControl(oldState, newState) {
             console.log(!oldVoice ? 'User joined!' : !newVoice ? 'User left!' : 'User switched channels!');
 
             if (newVoice) {
-                const newQueue = newVoice.client.queues.get(newVoice.guild.id);
+                const newQueue = newVoice.client.queues.get(newVoice.guildId);
+                const newMembers = newVoice.members;
                 if (
                     newQueue?.player.state.resource &&
                     !newQueue.playing &&
                     newVoice.id === newQueue.voiceChannel.id &&
-                    newVoice.members.size === 2 &&
-                    newVoice.members.has(newVoice.client.user.id)
+                    newMembers.size === 2 &&
+                    newMembers.has(newVoice.client.user.id)
                 ) {
+                    // 봇만 있던 음성 채널에 1명이 새로 들어온 경우
                     newQueue.player.unpause();
                     newQueue.sendMessage('대기열을 다시 재생합니다.');
                 }
             }
 
             if (oldVoice) {
-                const oldQueue = oldVoice.client.queues.get(oldVoice.guild.id);
+                const oldQueue = oldVoice.client.queues.get(oldVoice.guildId);
+                const oldMembers = oldVoice.members;
                 if (
                     oldQueue?.player.state.resource &&
                     oldVoice.id === oldQueue.voiceChannel.id &&
-                    oldVoice.members.size === 1 &&
-                    oldVoice.members.has(oldVoice.client.user.id)
+                    oldMembers.size === 1 &&
+                    oldMembers.has(oldVoice.client.user.id)
                 ) {
                     // 봇만 음성 채널에 있는 경우
                     if (oldQueue.playing) {
@@ -255,12 +258,13 @@ export function musicActiveControl(oldState, newState) {
                         oldQueue.sendMessage('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
                     }
                     setTimeout(() => {
-                        const queue = oldVoice.client.queues.get(oldVoice.guild.id);
+                        const queue = oldVoice.client.queues.get(oldVoice.guildId);
+                        const { members } = oldVoice;
                         if (
                             queue?.player.state.resource &&
                             oldVoice.id === queue.voiceChannel.id &&
-                            oldVoice.members.size === 1 &&
-                            oldVoice.members.has(oldVoice.client.user.id)
+                            members.size === 1 &&
+                            members.has(oldVoice.client.user.id)
                         ) {
                             // 5분이 지나도 봇만 음성 채널에 있는 경우
                             queue.sendMessage(

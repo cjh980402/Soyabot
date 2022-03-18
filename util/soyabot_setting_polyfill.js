@@ -3,7 +3,6 @@ import {
     Util,
     Intents,
     Options,
-    VoiceState,
     Channel,
     CommandInteraction,
     BaseGuildVoiceChannel,
@@ -15,7 +14,6 @@ import { PARTS, ENDPOINTS } from 'simple-youtube-api/src/util/Constants.js';
 import Video from 'simple-youtube-api/src/structures/Video.js';
 import { joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
 import { inspect } from 'node:util';
-const { _patch } = Message.prototype;
 
 function contentSplitCode(content, options) {
     content ||= '\u200b';
@@ -69,6 +67,10 @@ Object.defineProperty(Options, 'createCustom', {
             ],
             presence: { activities: [{ name: '/help', type: 'LISTENING' }] },
             sweepers: {
+                guildMembers: {
+                    interval: 3600,
+                    filter: () => (v) => v.id !== v.client.user.id && !v.voice.channelId
+                },
                 voiceStates: {
                     interval: 3600,
                     filter: () => (v) => v.id !== v.client.user.id && !v.channelId
@@ -86,10 +88,6 @@ Object.defineProperty(Options, 'createCustom', {
                     maxSize: 1,
                     keepOverLimit: (v) => v.isText() || v.isVoice()
                 },
-                GuildMemberManager: {
-                    maxSize: 1,
-                    keepOverLimit: (v) => v.id === v.client.user.id
-                },
                 GuildBanManager: 0,
                 GuildInviteManager: 0,
                 GuildScheduledEventManager: 0,
@@ -104,27 +102,6 @@ Object.defineProperty(Options, 'createCustom', {
                 UserManager: 0
             })
         };
-    }
-});
-
-Object.defineProperty(Message.prototype, '_patch', {
-    value(data) {
-        _patch.call(this, data);
-        if (data.member && this.guild && this.author) {
-            this._member = this.guild.members._add({ ...data.member, user: this.author }, false); // 임시 멤버 객체 할당
-        }
-    }
-});
-
-Object.defineProperty(Message.prototype, 'member', {
-    get() {
-        return this.guild?.members.resolve(this.author) ?? this._member ?? null; // 할당된 임시 멤버 객체 반환
-    }
-});
-
-Object.defineProperty(VoiceState.prototype, 'member', {
-    get() {
-        return this.guild.members.resolve(this.id) ?? this.guild.members._add({ user: { id: this.id } }, false); // 임시 멤버 객체 생성 후 반환
     }
 });
 

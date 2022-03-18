@@ -44,7 +44,7 @@
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {
-    "prettier": "^2.5.1"
+    "prettier": "^2.6.0"
   },
   "keywords": [
     "Discord",
