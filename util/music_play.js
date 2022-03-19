@@ -14,6 +14,7 @@ export class QueueElement {
     volume = DEFAULT_VOLUME;
     loop = false;
     playingMessage = null;
+    leaveTimer = null;
 
     constructor(textChannel, voiceChannel, connection, songs) {
         this.#subscription = connection.subscribe(
@@ -67,6 +68,7 @@ export class QueueElement {
     }
 
     clearStop() {
+        clearTimeout(this.leaveTimer);
         this.voiceChannel.client.queues.delete(this.voiceChannel.guildId);
         this.songs = [];
         this.#subscription.unsubscribe();
@@ -234,6 +236,7 @@ export function musicActiveControl(oldState, newState) {
                     members.has(newState.client.user.id)
                 ) {
                     // 봇만 있던 음성 채널에 1명이 새로 들어온 경우
+                    clearTimeout(queue.leaveTimer);
                     queue.player.unpause();
                     queue.sendMessage('대기열을 다시 재생합니다.');
                 }
@@ -253,7 +256,7 @@ export function musicActiveControl(oldState, newState) {
                         queue.player.pause();
                         queue.sendMessage('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
                     }
-                    setTimeout(() => {
+                    queue.leaveTimer = setTimeout(() => {
                         const afterQueue = oldState.client.queues.get(oldState.guild.id);
                         const { members: afterMembers } = oldState.channel;
                         if (
