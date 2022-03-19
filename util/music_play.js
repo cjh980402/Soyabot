@@ -222,55 +222,51 @@ export async function musicButtonControl(interaction) {
 
 export function musicActiveControl(oldState, newState) {
     try {
-        const oldVoice = oldState.channel;
-        const newVoice = newState.channel;
-        if (oldVoice?.id !== newVoice?.id) {
-            console.log(!oldVoice ? 'User joined!' : !newVoice ? 'User left!' : 'User switched channels!');
-
-            if (newVoice) {
-                const newQueue = newVoice.client.queues.get(newVoice.guildId);
-                const newMembers = newVoice.members;
+        if (oldState.channelId !== newState.channelId) {
+            if (newState.channelId) {
+                const queue = newState.client.queues.get(newState.guild.id);
+                const { members } = newState.channel;
                 if (
-                    newQueue?.player.state.resource &&
-                    !newQueue.playing &&
-                    newVoice.id === newQueue.voiceChannel.id &&
-                    newMembers.size === 2 &&
-                    newMembers.has(newVoice.client.user.id)
+                    queue?.player.state.resource &&
+                    !queue.playing &&
+                    newState.channelId === queue.voiceChannel.id &&
+                    members.size === 2 &&
+                    members.has(newState.client.user.id)
                 ) {
                     // 봇만 있던 음성 채널에 1명이 새로 들어온 경우
-                    newQueue.player.unpause();
-                    newQueue.sendMessage('대기열을 다시 재생합니다.');
+                    queue.player.unpause();
+                    queue.sendMessage('대기열을 다시 재생합니다.');
                 }
             }
 
-            if (oldVoice) {
-                const oldQueue = oldVoice.client.queues.get(oldVoice.guildId);
-                const oldMembers = oldVoice.members;
+            if (oldState.channelId) {
+                const queue = oldState.client.queues.get(oldState.guild.id);
+                const { members } = oldState.channel;
                 if (
-                    oldQueue?.player.state.resource &&
-                    oldVoice.id === oldQueue.voiceChannel.id &&
-                    oldMembers.size === 1 &&
-                    oldMembers.has(oldVoice.client.user.id)
+                    queue?.player.state.resource &&
+                    oldState.channelId === queue.voiceChannel.id &&
+                    members.size === 1 &&
+                    members.has(oldState.client.user.id)
                 ) {
                     // 봇만 음성 채널에 있는 경우
-                    if (oldQueue.playing) {
-                        oldQueue.player.pause();
-                        oldQueue.sendMessage('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
+                    if (queue.playing) {
+                        queue.player.pause();
+                        queue.sendMessage('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
                     }
                     setTimeout(() => {
-                        const queue = oldVoice.client.queues.get(oldVoice.guildId);
-                        const { members } = oldVoice;
+                        const afterQueue = oldState.client.queues.get(oldState.guild.id);
+                        const { members: afterMembers } = oldState.channel;
                         if (
-                            queue?.player.state.resource &&
-                            oldVoice.id === queue.voiceChannel.id &&
-                            members.size === 1 &&
-                            members.has(oldVoice.client.user.id)
+                            afterQueue?.player.state.resource &&
+                            oldState.channelId === afterQueue.voiceChannel.id &&
+                            afterMembers.size === 1 &&
+                            afterMembers.has(oldState.client.user.id)
                         ) {
                             // 5분이 지나도 봇만 음성 채널에 있는 경우
-                            queue.sendMessage(
-                                `5분 동안 ${oldVoice.client.user.username}이 비활성화 되어 대기열을 끝냅니다.`
+                            afterQueue.sendMessage(
+                                `5분 동안 ${oldState.client.user.username}이 비활성화 되어 대기열을 끝냅니다.`
                             );
-                            queue.clearStop();
+                            afterQueue.clearStop();
                         }
                     }, 300000);
                 }
