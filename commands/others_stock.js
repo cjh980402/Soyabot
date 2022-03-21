@@ -127,9 +127,9 @@ async function getStockEmbed(search, searchRslt, type) {
 
         const chartURL = getChartImage(identifer, type);
         const nowPrice = nowData.result.areas[0].datas[0].nv;
-        const changeAmount =
-            (nowData.result.areas[0].datas[0].rf !== '5' ? 1 : -1) * nowData.result.areas[0].datas[0].cv;
-        const changeRate = (nowData.result.areas[0].datas[0].rf !== '5' ? 1 : -1) * nowData.result.areas[0].datas[0].cr;
+        const isFall = nowData.result.areas[0].datas[0].rf === '4' || nowData.result.areas[0].datas[0].rf === '5';
+        const changeAmount = (isFall ? -1 : 1) * nowData.result.areas[0].datas[0].cv;
+        const changeRate = (isFall ? -1 : 1) * nowData.result.areas[0].datas[0].cr;
 
         data.totalInfos = getTotalInfoObj(data.totalInfos);
         const minPrice = data.totalInfos['저가'];
