@@ -126,6 +126,8 @@ export class MapleUser {
     }
 
     async isLatest() {
+        const updateResult = await this.#updateUser();
+
         this.#ggData = await requestCheerio(this.#ggURL); // this.#ggData는 함수
         if (this.#ggData('img[alt="검색결과 없음"]').length !== 0) {
             throw new MapleError('maple.GG에서 캐릭터 정보를 가져올 수 없습니다.');
@@ -138,23 +140,24 @@ export class MapleUser {
             throw new MapleError('maple.GG 서버에 에러가 발생했습니다.');
         }
 
-        return this.#ggData('.d-block.font-weight-light').text().includes('오늘');
+        return updateResult;
     }
 
-    async updateGG() {
+    async #updateUser() {
         const start = Date.now();
         while (1) {
             try {
                 const rslt = await requestJSON(`${this.#ggURL}/sync`);
-                if (!rslt.error && rslt.done) {
-                    this.#ggData = await requestCheerio(this.#ggURL);
+                if (rslt.error) {
+                    return false; // 갱신실패
+                } else if (rslt.done) {
                     return true; // 갱신성공
                 }
             } catch {
                 return false; // 갱신실패
             }
-            if (Date.now() - start >= 20000) {
-                return false; // 20초가 지나도 갱신 못했으면 갱신실패 판정
+            if (Date.now() - start >= 10000) {
+                return false; // 10초가 지나도 갱신 못했으면 갱신실패 판정
             }
             await setTimeout(500);
         }
@@ -374,6 +377,7 @@ export class MapleGuild {
     // 메소드
     async isLatest() {
         const updateResult = await this.#updateGuild();
+
         this.#ggData = await requestCheerio(`${this.#ggURL}/members?sort=level`); // this.#ggData는 함수
         if (this.#ggData('img[alt="404 ERROR"]').length !== 0) {
             throw new MapleError('maple.GG에서 길드 정보를 가져올 수 없습니다.');
@@ -393,9 +397,7 @@ export class MapleGuild {
     async memberDataList() {
         const rslt = [];
         const memberList = this.#memberData.map((_, v) => new MapleUser(this.#ggData(v).find('.mb-2 a').eq(1).text()));
-        const updateRslt = await Promise.all(
-            memberList.map(async (_, v) => (await v.isLatest()) || (await v.updateGG()))
-        );
+        const updateRslt = await Promise.all(memberList.map((_, v) => v.isLatest()));
         for (let i = 0; i < this.MemberCount; i++) {
             rslt.push(
                 `[갱신 ${updateRslt[i] ? '성공' : '실패'}] ${
@@ -414,16 +416,16 @@ export class MapleGuild {
         while (1) {
             try {
                 const rslt = await requestJSON(`${this.#ggURL}/sync`);
-                if (rslt.done) {
-                    return true; // 갱신성공
-                } else if (rslt.error) {
+                if (rslt.error) {
                     return false; // 갱신실패
+                } else if (rslt.done) {
+                    return true; // 갱신성공
                 }
             } catch {
                 return false; // 갱신실패
             }
-            if (Date.now() - start >= 20000) {
-                return false; // 20초가 지나도 갱신 못했으면 갱신실패 판정
+            if (Date.now() - start >= 10000) {
+                return false; // 10초가 지나도 갱신 못했으면 갱신실패 판정
             }
             await setTimeout(500);
         }
