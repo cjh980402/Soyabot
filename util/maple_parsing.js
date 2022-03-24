@@ -138,14 +138,7 @@ export class MapleUser {
             throw new MapleError('maple.GG 서버에 에러가 발생했습니다.');
         }
 
-        if (
-            this.#ggData('.d-block.font-weight-light').text().replace(/\s+/g, '') !== '마지막업데이트:오늘' ||
-            this.#ggData('.container.mt-5.text-center > h3').text() === '검색결과가 없습니다.'
-        ) {
-            return false;
-        } else {
-            return true;
-        }
+        return this.#ggData('.d-block.font-weight-light').text().includes('오늘');
     }
 
     async updateGG() {
