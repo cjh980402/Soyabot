@@ -26,10 +26,7 @@ export class QueueElement {
         this.voiceChannel = voiceChannel;
         this.songs = songs;
 
-        this.connection
-            .once(VoiceConnectionStatus.Connecting, () => this.clearStop())
-            .once(VoiceConnectionStatus.Disconnected, () => this.clearStop())
-            .once('error', () => this.clearStop());
+        this.connection.once('error', () => this.clearStop());
 
         this.player
             .on(AudioPlayerStatus.Idle, async () => {
@@ -73,10 +70,7 @@ export class QueueElement {
         this.songs = [];
         this.#subscription.unsubscribe();
         this.player.stop(true);
-        this.connection
-            .removeAllListeners(VoiceConnectionStatus.Connecting)
-            .removeAllListeners(VoiceConnectionStatus.Disconnected)
-            .removeAllListeners('error');
+        this.connection.removeAllListeners('error');
         if (this.connection.state.status !== VoiceConnectionStatus.Destroyed) {
             this.connection.destroy();
         }
@@ -227,13 +221,11 @@ export function musicActiveControl(oldState, newState) {
         if (oldState.channelId !== newState.channelId) {
             if (newState.channelId) {
                 const queue = newState.client.queues.get(newState.guild.id);
-                const { members } = newState.channel;
                 if (
                     queue?.player.state.resource &&
                     !queue.playing &&
                     newState.channelId === queue.voiceChannel.id &&
-                    members.size === 2 &&
-                    members.has(newState.client.user.id)
+                    newState.channel.members.filter((v) => !v.user.bot).size === 1
                 ) {
                     // 봇만 있던 음성 채널에 1명이 새로 들어온 경우
                     clearTimeout(queue.leaveTimer);
@@ -244,12 +236,12 @@ export function musicActiveControl(oldState, newState) {
 
             if (oldState.channelId) {
                 const queue = oldState.client.queues.get(oldState.guild.id);
-                const { members } = oldState.channel;
-                if (
+                if (oldState.id === oldState.client.user.id) {
+                    queue?.clearStop(); // 봇의 음성 채널에 변동이 있는 경우 바로 종료
+                } else if (
                     queue?.player.state.resource &&
                     oldState.channelId === queue.voiceChannel.id &&
-                    members.size === 1 &&
-                    members.has(oldState.client.user.id)
+                    oldState.channel.members.filter((v) => !v.user.bot).size === 0
                 ) {
                     // 봇만 음성 채널에 있는 경우
                     if (queue.playing) {
@@ -258,12 +250,10 @@ export function musicActiveControl(oldState, newState) {
                     }
                     queue.leaveTimer = setTimeout(() => {
                         const afterQueue = oldState.client.queues.get(oldState.guild.id);
-                        const { members: afterMembers } = oldState.channel;
                         if (
                             afterQueue?.player.state.resource &&
                             oldState.channelId === afterQueue.voiceChannel.id &&
-                            afterMembers.size === 1 &&
-                            afterMembers.has(oldState.client.user.id)
+                            oldState.channel.members.filter((v) => !v.user.bot).size === 0
                         ) {
                             // 5분이 지나도 봇만 음성 채널에 있는 경우
                             afterQueue.sendMessage(
