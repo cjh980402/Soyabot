@@ -11,9 +11,9 @@ export async function botNotice(client, data, isMaple = false) {
         await client.shard.broadcastEval(
             async (c, { data }) => {
                 const noticeRegex = new RegExp(`${c.user.username}.*(공지|알림)`, 'i');
-                c.guilds.cache.forEach(async (v) => {
+                c.guilds.cache.forEach(async (g) => {
                     try {
-                        const guildText = v.channels.cache.filter((v) => v.type === 'GUILD_TEXT');
+                        const guildText = g.channels.cache.filter((v) => v.type === 'GUILD_TEXT');
                         const target = guildText.find((v) => noticeRegex.test(v.name)) ?? guildText.first();
                         await target.send(data);
                     } catch {}

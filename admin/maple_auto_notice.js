@@ -188,7 +188,7 @@ export function startUrus(client) {
             urusDate.setDate(now.getDate() + 1); // 우르스 알림 시간 지났으면 다음 날로 알림 설정
         }
         urusTimer = setTimeout(() => {
-            botNotice(client, '우르스 메소 2배 종료까지 30분 남았습니다!', true); // 그룹챗에만 공지
+            botNotice(client, '우르스 메소 2배 종료까지 30분 남았습니다!', true);
             // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
             urusTimer = setInterval(botNotice, 86400000, client, '우르스 메소 2배 종료까지 30분 남았습니다!', true); // 24시간 주기
         }, urusDate - now);
