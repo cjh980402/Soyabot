@@ -34,7 +34,7 @@ export function startNotice(client) {
                         .setDescription(notice.join('\n\n'))
                         .setTimestamp();
 
-                    botNotice(client, noticeEmbed, 'notice');
+                    botNotice(client, noticeEmbed, true);
                 }
             } catch (err) {
                 replyAdmin(client.users, `자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
@@ -76,7 +76,7 @@ export function startUpdate(client) {
                         .setDescription(update.join('\n\n'))
                         .setTimestamp();
 
-                    botNotice(client, noticeEmbed, 'update');
+                    botNotice(client, noticeEmbed, true);
                 }
             } catch (err) {
                 replyAdmin(client.users, `자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
@@ -126,7 +126,7 @@ export function startTest(client) {
                         .setDescription(test.join('\n\n'))
                         .setTimestamp();
 
-                    botNotice(client, noticeEmbed, 'test');
+                    botNotice(client, noticeEmbed, true);
                 }
             } catch (err) {
                 replyAdmin(client.users, `자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
@@ -162,7 +162,7 @@ export function startTestPatch(client) {
                         `[Tver 1.2.${patchVersion}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기: ${fileSize.toFixed(
                             2
                         )}MB\n패치파일 주소: ${patchURL}`,
-                        'testpatch'
+                        true
                     );
                 }
                 for await (const _ of body); // 메모리 누수 방지를 위한 force consumption of body
@@ -188,9 +188,9 @@ export function startUrus(client) {
             urusDate.setDate(now.getDate() + 1); // 우르스 알림 시간 지났으면 다음 날로 알림 설정
         }
         urusTimer = setTimeout(() => {
-            botNotice(client, '우르스 메소 2배 종료까지 30분 남았습니다!', 'urus'); // 그룹챗에만 공지
+            botNotice(client, '우르스 메소 2배 종료까지 30분 남았습니다!', true); // 그룹챗에만 공지
             // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
-            urusTimer = setInterval(botNotice, 86400000, client, '우르스 메소 2배 종료까지 30분 남았습니다!', 'urus'); // 24시간 주기
+            urusTimer = setInterval(botNotice, 86400000, client, '우르스 메소 2배 종료까지 30분 남았습니다!', true); // 24시간 주기
         }, urusDate - now);
     }
 }

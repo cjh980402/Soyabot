@@ -1,42 +1,43 @@
 import { MessageEmbed } from 'discord.js';
 import { ADMIN_ID, NOTICE_CHANNEL_ID } from '../soyabot_config.js';
 
-export async function botNotice(client, data, type = null) {
+export async function botNotice(client, data, isMaple = false) {
     data = data instanceof MessageEmbed ? { embeds: [data] } : String(data);
-    if (type) {
+    if (isMaple) {
         // 메이플 공지는 공지용 채널에만 전송 (트래픽 감소 목적)
-        try {
-            await client.channels.cache.get(NOTICE_CHANNEL_ID).send(data);
-        } catch {}
+        replyChannelID(client.channels, NOTICE_CHANNEL_ID, data);
     } else {
         // 일반 공지는 전체 전송
-        const noticeRegex = new RegExp(`${client.user.username}.*(공지|알림)`, 'i');
-        client.guilds.cache.forEach(async (v) => {
-            try {
-                const guildText = v.channels.cache.filter((v) => v.type === 'GUILD_TEXT');
-                const target = guildText.find((v) => noticeRegex.test(v.name)) ?? guildText.first();
-                await target.send(data);
-            } catch {}
-        });
+        await client.shard.broadcastEval(
+            async (c, { data }) => {
+                const noticeRegex = new RegExp(`${c.user.username}.*(공지|알림)`, 'i');
+                c.guilds.cache.forEach(async (v) => {
+                    try {
+                        const guildText = v.channels.cache.filter((v) => v.type === 'GUILD_TEXT');
+                        const target = guildText.find((v) => noticeRegex.test(v.name)) ?? guildText.first();
+                        await target.send(data);
+                    } catch {}
+                });
+            },
+            { context: { data } }
+        );
     }
 }
 
-export async function replyRoomID(channels, roomID, str) {
+export async function replyChannelID(channels, id, data) {
     try {
-        const target = channels._add({ id: roomID, type: 1 }, null, { cache: false }); // 메세지를 보내고 싶은 방 객체 생성
-        await target.send(str); // 해당 채널에 메시지 전송
-        return target;
+        await channels._add({ id, type: 1 }, null, { cache: false }).send(data); // 채널 객체 생성 후 메시지 전송
+        return true;
     } catch {
-        return null;
+        return false;
     }
 }
 
-export async function replyAdmin(users, str) {
+export async function replyAdmin(users, data) {
     try {
-        const admin = users._add({ id: ADMIN_ID }, false); // 관리자 유저 객체 생성
-        await admin.send(str); // 관리자에게 DM 전송
-        return admin;
+        await users._add({ id: ADMIN_ID }, false).send(data); // 관리자 유저 객체 생성 후 DM 전송
+        return true;
     } catch {
-        return null;
+        return false;
     }
 }
