@@ -2,18 +2,7 @@ import { Message } from 'discord.js';
 import { exec as _exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import { botNotice, replyChannelID } from './bot_control.js';
-import {
-    startNotice,
-    stopNotice,
-    startUpdate,
-    stopUpdate,
-    startTest,
-    stopTest,
-    startTestPatch,
-    stopTestPatch,
-    startUrus,
-    stopUrus
-} from './maple_auto_notice.js';
+import { startNotice, startUpdate, startTest, startTestPatch, startUrus } from './maple_auto_notice.js';
 import { MapleProb } from '../util/maple_probtable.js';
 import { ADMIN_ID } from '../soyabot_config.js';
 

@@ -69,7 +69,13 @@ export async function messageExecute(message, args) {
         for (let i = 0; i < scoreGrade.length - 2; i++) {
             rslt += `\n${scoreGrade[i][0]} ~ ${scoreGrade[i + 1][0] - 1}점: ${scoreGrade[i][1]}`;
         }
-        rslt += `\n${scoreGrade.at(-2)[0]}점 이상: ${scoreGrade.at(-2)[1]}`;
+        rslt += `\n${scoreGrade.at(-2)[0]}점 이상: ${scoreGrade.at(-2)[1]}
+
+점수 공식
+(레벨 - 100) + (무릉 층수 * 3) + (유니온 / 40)
+※ 레벨 275 이상: (레벨 - 50)
+※ 무릉 45층 이상: (무릉 층수 * 4)
+※ 유니온 8000 이상: (유니온 / 32)`;
         return message.channel.send(rslt);
     }
 
@@ -104,7 +110,13 @@ export async function commandExecute(interaction) {
         for (let i = 0; i < scoreGrade.length - 2; i++) {
             rslt += `\n${scoreGrade[i][0]} ~ ${scoreGrade[i + 1][0] - 1}점: ${scoreGrade[i][1]}`;
         }
-        rslt += `\n${scoreGrade.at(-2)[0]}점 이상: ${scoreGrade.at(-2)[1]}`;
+        rslt += `\n${scoreGrade.at(-2)[0]}점 이상: ${scoreGrade.at(-2)[1]}
+
+점수 공식
+(레벨 - 100) + (무릉 층수 * 3) + (유니온 / 40)
+※ 레벨 275 이상: (레벨 - 50)
+※ 무릉 45층 이상: (무릉 층수 * 4)
+※ 유니온 8000 이상: (유니온 / 32)`;
         return interaction.followUp(rslt);
     }
 
