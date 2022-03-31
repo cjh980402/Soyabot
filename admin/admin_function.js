@@ -62,8 +62,6 @@ export async function initClient(client, TOKEN) {
     await client.login(TOKEN);
     await client.application.fetch();
 
-    client.setMaxListeners(20); // 이벤트 개수 제한 증가
-
     if (client.shard.ids.includes(0)) {
         // 첫번째 샤드에서만 공지 기능 활성화
         startNotice(client); // 공지 자동 알림 기능

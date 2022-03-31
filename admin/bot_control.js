@@ -9,7 +9,7 @@ export async function botNotice(client, data, isMaple = false) {
     } else {
         // 일반 공지는 전체 전송
         await client.shard.broadcastEval(
-            async (c, { data }) => {
+            (c, { data }) => {
                 const noticeRegex = new RegExp(`${c.user.username}.*(공지|알림)`, 'i');
                 c.guilds.cache.forEach(async (g) => {
                     try {

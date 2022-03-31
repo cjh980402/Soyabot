@@ -20,10 +20,8 @@ client.queues = new Map(); // 음악기능 정보 저장용
 const cooldowns = new Set(); // 중복 명령 방지용
 const promiseTimeout = (promise, ms) => Promise.race([promise, setTimeout(ms)]);
 
-process.on('unhandledRejection', (err) => {
-    // node.js v15부터 Unhandled promise rejection이 발생하면 프로세스를 비정상 종료시키므로 처리를 해야함
-    console.error('Unhandled promise rejection:', err);
-});
+// node.js v15부터 Unhandled promise rejection이 발생하면 프로세스를 비정상 종료시키므로 처리를 해야함
+process.on('unhandledRejection', (err) => console.error('Unhandled promise rejection:', err));
 
 try {
     await initClient(client, TOKEN); // 클라이언트 초기 세팅 함수
@@ -41,7 +39,7 @@ try {
         }
     }
     // await client.application.commands.set(datas); // 인터랙션 데이터 변경 시에만 활성화하기
-    replyAdmin(client.users, `${client.user.tag}이 작동 중입니다.`);
+    replyAdmin(client.users, `${client.shard.ids[0]}번째 샤드에서 ${client.user.tag}이 작동 중입니다.`);
 } catch (err) {
     console.error('로그인 에러 발생:', err);
     await exec('npm stop');
