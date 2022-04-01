@@ -2,6 +2,7 @@ import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
+import { makePageMessage } from '../util/soyabot_util.js';
 
 function getHaksikEmbed(date, haksik) {
     const embeds = [];
@@ -50,44 +51,19 @@ export async function messageExecute(message, args) {
             if (date.includes(day)) {
                 const embeds = getHaksikEmbed([`${date}의 점심`, `${date}의 저녁`], nowData);
 
-                let currentPage = 0;
                 const row = new MessageActionRow().addComponents(
                     new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
                     new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
                     new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
                 );
                 const haksikEmbed = await message.channel.send({
-                    content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                    embeds: [embeds[currentPage]],
+                    content: `**현재 페이지 - 1/${embeds.length}**`,
+                    embeds: [embeds[0]],
                     components: [row]
                 });
 
                 const filter = (itr) => message.author.id === itr.user.id;
-                const collector = haksikEmbed.createMessageComponentCollector({ filter, time: 120000 });
-
-                return collector.on('collect', async (itr) => {
-                    try {
-                        switch (itr.customId) {
-                            case 'next':
-                                currentPage = (currentPage + 1) % embeds.length;
-                                await haksikEmbed.edit({
-                                    content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                                    embeds: [embeds[currentPage]]
-                                });
-                                break;
-                            case 'prev':
-                                currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                                await haksikEmbed.edit({
-                                    content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                                    embeds: [embeds[currentPage]]
-                                });
-                                break;
-                            case 'stop':
-                                collector.stop();
-                                break;
-                        }
-                    } catch {}
-                });
+                return makePageMessage(haksikEmbed, embeds, { filter, time: 120000 });
             }
         }
         return message.channel.send(`${day}요일은 학식이 제공되지 않습니다.`);

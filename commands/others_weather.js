@@ -2,6 +2,7 @@ import { MessageActionRow, MessageButton, MessageEmbed, Util } from 'discord.js'
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
+import { makePageMessage } from '../util/soyabot_util.js';
 
 async function getWeatherEmbed(targetLocal) {
     const targetURL = `https://weather.naver.com/today/${targetLocal[1][0]}`;
@@ -113,7 +114,6 @@ export async function messageExecute(message, args) {
         targetLocal = searchRslt[Math.trunc(rslt.first().content) - 1];
     }
 
-    let currentPage = 0;
     const embeds = await getWeatherEmbed(targetLocal);
     const row = new MessageActionRow().addComponents(
         new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
@@ -121,37 +121,13 @@ export async function messageExecute(message, args) {
         new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
     );
     const weatherEmbed = await message.channel.send({
-        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-        embeds: [embeds[currentPage]],
+        content: `**현재 페이지 - 1/${embeds.length}**`,
+        embeds: [embeds[0]],
         components: [row]
     });
 
     const filter = (itr) => message.author.id === itr.user.id;
-    const collector = weatherEmbed.createMessageComponentCollector({ filter, time: 120000 });
-
-    collector.on('collect', async (itr) => {
-        try {
-            switch (itr.customId) {
-                case 'next':
-                    currentPage = (currentPage + 1) % embeds.length;
-                    await weatherEmbed.edit({
-                        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                        embeds: [embeds[currentPage]]
-                    });
-                    break;
-                case 'prev':
-                    currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                    await weatherEmbed.edit({
-                        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                        embeds: [embeds[currentPage]]
-                    });
-                    break;
-                case 'stop':
-                    collector.stop();
-                    break;
-            }
-        } catch {}
-    });
+    makePageMessage(weatherEmbed, embeds, { filter, time: 120000 });
 }
 export const commandData = {
     name: '날씨',
@@ -198,7 +174,6 @@ export async function commandExecute(interaction) {
         targetLocal = searchRslt[Math.trunc(rslt.first().content) - 1];
     }
 
-    let currentPage = 0;
     const embeds = await getWeatherEmbed(targetLocal);
     const row = new MessageActionRow().addComponents(
         new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
@@ -206,35 +181,11 @@ export async function commandExecute(interaction) {
         new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
     );
     const weatherEmbed = await interaction.followUp({
-        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-        embeds: [embeds[currentPage]],
+        content: `**현재 페이지 - 1/${embeds.length}**`,
+        embeds: [embeds[0]],
         components: [row]
     });
 
     const filter = (itr) => interaction.user.id === itr.user.id;
-    const collector = weatherEmbed.createMessageComponentCollector({ filter, time: 120000 });
-
-    collector.on('collect', async (itr) => {
-        try {
-            switch (itr.customId) {
-                case 'next':
-                    currentPage = (currentPage + 1) % embeds.length;
-                    await weatherEmbed.edit({
-                        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                        embeds: [embeds[currentPage]]
-                    });
-                    break;
-                case 'prev':
-                    currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                    await weatherEmbed.edit({
-                        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                        embeds: [embeds[currentPage]]
-                    });
-                    break;
-                case 'stop':
-                    collector.stop();
-                    break;
-            }
-        } catch {}
-    });
+    makePageMessage(weatherEmbed, embeds, { filter, time: 120000 });
 }

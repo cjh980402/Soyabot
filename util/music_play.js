@@ -139,15 +139,22 @@ export class QueueElement {
     }
 
     async deleteMessage() {
-        if (
-            !this.voiceChannel.client.db.get('SELECT * FROM pruningskip WHERE channelid = ?', [
-                this.playingMessage?.guildId
-            ])
-        ) {
-            try {
+        try {
+            if (
+                this.voiceChannel.client.db.get('SELECT * FROM pruningskip WHERE channelid = ?', [
+                    this.playingMessage?.guildId
+                ])
+            ) {
+                await this.playingMessage?.edit({
+                    components: this.playingMessage.components.map((row) => {
+                        row.components.forEach((v) => v.setDisabled(true));
+                        return row;
+                    })
+                });
+            } else {
                 await this.playingMessage?.delete();
-            } catch {}
-        }
+            }
+        } catch {}
         this.playingMessage = null;
     }
 }

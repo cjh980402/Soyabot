@@ -2,6 +2,7 @@ import { MessageAttachment, MessageActionRow, MessageButton, MessageEmbed } from
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
+import { makePageMessage } from '../util/soyabot_util.js';
 
 async function getCoronaEmbed() {
     const { body: countBody } = await request('http://ncov.mohw.go.kr');
@@ -48,7 +49,6 @@ export const command = ['코로나', 'ㅋㄹㄴ'];
 export const description = '- 최신 기준 코로나 국내 현황 통계를 알려줍니다.';
 export const type = ['기타'];
 export async function messageExecute(message) {
-    let currentPage = 0;
     const thumbnail = new MessageAttachment('./pictures/mohw.png');
     const embeds = await getCoronaEmbed();
     const row = new MessageActionRow().addComponents(
@@ -57,45 +57,20 @@ export async function messageExecute(message) {
         new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
     );
     const coronaEmbed = await message.channel.send({
-        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-        embeds: [embeds[currentPage]],
+        content: `**현재 페이지 - 1/${embeds.length}**`,
+        embeds: [embeds[0]],
         files: [thumbnail],
         components: [row]
     });
 
     const filter = (itr) => message.author.id === itr.user.id;
-    const collector = coronaEmbed.createMessageComponentCollector({ filter, time: 120000 });
-
-    collector.on('collect', async (itr) => {
-        try {
-            switch (itr.customId) {
-                case 'next':
-                    currentPage = (currentPage + 1) % embeds.length;
-                    await coronaEmbed.edit({
-                        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                        embeds: [embeds[currentPage]]
-                    });
-                    break;
-                case 'prev':
-                    currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                    await coronaEmbed.edit({
-                        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                        embeds: [embeds[currentPage]]
-                    });
-                    break;
-                case 'stop':
-                    collector.stop();
-                    break;
-            }
-        } catch {}
-    });
+    makePageMessage(coronaEmbed, embeds, { filter, time: 120000 });
 }
 export const commandData = {
     name: '코로나',
     description: '최신 기준 코로나 국내 현황 통계를 알려줍니다.'
 };
 export async function commandExecute(interaction) {
-    let currentPage = 0;
     const thumbnail = new MessageAttachment('./pictures/mohw.png');
     const embeds = await getCoronaEmbed();
     const row = new MessageActionRow().addComponents(
@@ -104,36 +79,12 @@ export async function commandExecute(interaction) {
         new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
     );
     const coronaEmbed = await interaction.editReply({
-        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-        embeds: [embeds[currentPage]],
+        content: `**현재 페이지 - 1/${embeds.length}**`,
+        embeds: [embeds[0]],
         files: [thumbnail],
         components: [row]
     });
 
     const filter = (itr) => interaction.user.id === itr.user.id;
-    const collector = coronaEmbed.createMessageComponentCollector({ filter, time: 120000 });
-
-    collector.on('collect', async (itr) => {
-        try {
-            switch (itr.customId) {
-                case 'next':
-                    currentPage = (currentPage + 1) % embeds.length;
-                    await coronaEmbed.edit({
-                        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                        embeds: [embeds[currentPage]]
-                    });
-                    break;
-                case 'prev':
-                    currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                    await coronaEmbed.edit({
-                        content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                        embeds: [embeds[currentPage]]
-                    });
-                    break;
-                case 'stop':
-                    collector.stop();
-                    break;
-            }
-        } catch {}
-    });
+    makePageMessage(coronaEmbed, embeds, { filter, time: 120000 });
 }

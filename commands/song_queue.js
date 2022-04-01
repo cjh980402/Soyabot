@@ -1,5 +1,6 @@
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
+import { makePageMessage } from '../util/soyabot_util.js';
 
 function getQueueEmbed(songs, thumbnail, name) {
     const embeds = [];
@@ -35,44 +36,19 @@ export async function messageExecute(message) {
 
     const embeds = getQueueEmbed(queue.songs, message.guild.iconURL(), message.client.user.username);
     if (embeds.length > 1) {
-        let currentPage = 0;
         const row = new MessageActionRow().addComponents(
             new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
             new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
             new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
         );
         const queueEmbed = await message.channel.send({
-            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-            embeds: [embeds[currentPage]],
+            content: `**현재 페이지 - 1/${embeds.length}**`,
+            embeds: [embeds[0]],
             components: [row]
         });
 
         const filter = (itr) => message.author.id === itr.user.id;
-        const collector = queueEmbed.createMessageComponentCollector({ filter, time: 120000 });
-
-        collector.on('collect', async (itr) => {
-            try {
-                switch (itr.customId) {
-                    case 'next':
-                        currentPage = (currentPage + 1) % embeds.length;
-                        await queueEmbed.edit({
-                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                            embeds: [embeds[currentPage]]
-                        });
-                        break;
-                    case 'prev':
-                        currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        await queueEmbed.edit({
-                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                            embeds: [embeds[currentPage]]
-                        });
-                        break;
-                    case 'stop':
-                        collector.stop();
-                        break;
-                }
-            } catch {}
-        });
+        makePageMessage(queueEmbed, embeds, { filter, time: 120000 });
     } else {
         await message.channel.send({ embeds: [embeds[0]] });
     }
@@ -93,44 +69,19 @@ export async function commandExecute(interaction) {
 
     const embeds = getQueueEmbed(queue.songs, interaction.guild.iconURL(), interaction.client.user.username);
     if (embeds.length > 1) {
-        let currentPage = 0;
         const row = new MessageActionRow().addComponents(
             new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
             new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
             new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
         );
         const queueEmbed = await interaction.editReply({
-            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-            embeds: [embeds[currentPage]],
+            content: `**현재 페이지 - 1/${embeds.length}**`,
+            embeds: [embeds[0]],
             components: [row]
         });
 
         const filter = (itr) => interaction.user.id === itr.user.id;
-        const collector = queueEmbed.createMessageComponentCollector({ filter, time: 120000 });
-
-        collector.on('collect', async (itr) => {
-            try {
-                switch (itr.customId) {
-                    case 'next':
-                        currentPage = (currentPage + 1) % embeds.length;
-                        await queueEmbed.edit({
-                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                            embeds: [embeds[currentPage]]
-                        });
-                        break;
-                    case 'prev':
-                        currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        await queueEmbed.edit({
-                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                            embeds: [embeds[currentPage]]
-                        });
-                        break;
-                    case 'stop':
-                        collector.stop();
-                        break;
-                }
-            } catch {}
-        });
+        makePageMessage(queueEmbed, embeds, { filter, time: 120000 });
     } else {
         await interaction.editReply({ embeds: [embeds[0]] });
     }
