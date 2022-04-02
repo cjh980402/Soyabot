@@ -5,7 +5,7 @@ export async function botNotice(client, data, isMaple = false) {
     data = data instanceof MessageEmbed ? { embeds: [data] } : String(data);
     try {
         if (isMaple) {
-            // 메이플 공지는 공지용 채널에만 전송 (트래픽 감소 목적)
+            // 메이플 공지는 공지용 채널에만 전송
             const message = await replyChannelID(client.channels, NOTICE_CHANNEL_ID, data);
             await message?.crosspost(); // 커뮤니티 서버의 공지 채널인 경우 발행 기능을 사용 가능
         } else {
