@@ -2,7 +2,7 @@ import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
-import { makePageMessage } from '../util/soyabot_util.js';
+import { makePageCollector } from '../util/soyabot_util.js';
 
 function getHaksikEmbed(date, haksik) {
     const embeds = [];
@@ -63,7 +63,7 @@ export async function messageExecute(message, args) {
                 });
 
                 const filter = (itr) => message.author.id === itr.user.id;
-                return makePageMessage(haksikEmbed, embeds, { filter, time: 120000 });
+                return makePageCollector(haksikEmbed, embeds, { filter, time: 120000 });
             }
         }
         return message.channel.send(`${day}요일은 학식이 제공되지 않습니다.`);

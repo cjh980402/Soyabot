@@ -2,7 +2,7 @@ import { MessageAttachment, MessageActionRow, MessageButton, MessageEmbed } from
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
-import { makePageMessage } from '../util/soyabot_util.js';
+import { makePageCollector } from '../util/soyabot_util.js';
 
 async function getCoronaEmbed() {
     const { body: countBody } = await request('http://ncov.mohw.go.kr');
@@ -64,7 +64,7 @@ export async function messageExecute(message) {
     });
 
     const filter = (itr) => message.author.id === itr.user.id;
-    makePageMessage(coronaEmbed, embeds, { filter, time: 120000 });
+    makePageCollector(coronaEmbed, embeds, { filter, time: 120000 });
 }
 export const commandData = {
     name: '코로나',
@@ -86,5 +86,5 @@ export async function commandExecute(interaction) {
     });
 
     const filter = (itr) => interaction.user.id === itr.user.id;
-    makePageMessage(coronaEmbed, embeds, { filter, time: 120000 });
+    makePageCollector(coronaEmbed, embeds, { filter, time: 120000 });
 }

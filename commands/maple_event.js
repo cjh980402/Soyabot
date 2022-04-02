@@ -2,7 +2,7 @@ import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
-import { makePageMessage } from '../util/soyabot_util.js';
+import { makePageCollector } from '../util/soyabot_util.js';
 
 function getEventEmbed(links, names, dates) {
     const embeds = [];
@@ -55,7 +55,7 @@ export async function messageExecute(message) {
             });
 
             const filter = (itr) => message.author.id === itr.user.id;
-            makePageMessage(eventEmbed, embeds, { filter, time: 120000 });
+            makePageCollector(eventEmbed, embeds, { filter, time: 120000 });
         } else {
             await message.channel.send({ embeds: [embeds[0]] });
         }
@@ -90,7 +90,7 @@ export async function commandExecute(interaction) {
             });
 
             const filter = (itr) => interaction.user.id === itr.user.id;
-            makePageMessage(eventEmbed, embeds, { filter, time: 120000 });
+            makePageCollector(eventEmbed, embeds, { filter, time: 120000 });
         } else {
             await interaction.editReply({ embeds: [embeds[0]] });
         }

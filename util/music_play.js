@@ -145,6 +145,7 @@ export class QueueElement {
                     this.playingMessage?.guildId
                 ])
             ) {
+                // 음악 메시지의 버튼 비활성화
                 await this.playingMessage?.edit({
                     components: this.playingMessage.components.map((row) => {
                         row.components.forEach((v) => v.setDisabled(true));

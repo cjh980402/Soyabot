@@ -18,12 +18,12 @@ export function canModifyQueue(member) {
     return botChannelId === member.voice.channelId; // 봇이 참가한 음성채널과 다른 경우 false 반환
 }
 
-export function makePageMessage(target, embeds, options) {
+export function makePageCollector(target, embeds, options) {
     let currentPage = 0;
     const row = target.components[0];
     const collector = target.createMessageComponentCollector(options);
 
-    collector
+    return collector
         .on('collect', async (itr) => {
             try {
                 switch (itr.customId) {
@@ -49,6 +49,7 @@ export function makePageMessage(target, embeds, options) {
         })
         .once('end', async () => {
             try {
+                // 페이지 메시지의 버튼 비활성화
                 row.components.forEach((v) => v.setDisabled(true));
                 await target.edit({
                     components: [row]
