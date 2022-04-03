@@ -49,15 +49,15 @@ export async function initClient(client, TOKEN) {
     client.db.run(
         'CREATE TABLE IF NOT EXISTS maple_notice(id integer primary key autoincrement, title text, url text, notice_number integer)'
     );
-    client.db.run('CREATE INDEX IF NOT EXISTS title_and_number ON maple_notice(title, notice_number)');
+    client.db.run('CREATE INDEX IF NOT EXISTS notice_index ON maple_notice(title, notice_number)');
     client.db.run(
         'CREATE TABLE IF NOT EXISTS maple_update(id integer primary key autoincrement, title text, url text, notice_number integer)'
     );
-    client.db.run('CREATE INDEX IF NOT EXISTS title_and_number ON maple_update(title, notice_number)');
+    client.db.run('CREATE INDEX IF NOT EXISTS update_index ON maple_update(title, notice_number)');
     client.db.run(
         'CREATE TABLE IF NOT EXISTS maple_test(id integer primary key autoincrement, title text, url text, notice_number integer)'
     );
-    client.db.run('CREATE INDEX IF NOT EXISTS title_and_number ON maple_test(title, notice_number)');
+    client.db.run('CREATE INDEX IF NOT EXISTS test_index ON maple_test(title, notice_number)');
     client.db.run(
         'CREATE TABLE IF NOT EXISTS test_patch(id integer primary key autoincrement, version integer, url text)'
     );
