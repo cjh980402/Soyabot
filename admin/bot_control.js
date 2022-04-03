@@ -6,6 +6,7 @@ export async function botNotice(client, data, isMaple = false) {
     try {
         if (isMaple) {
             // 메이플 공지는 공지용 채널에만 전송
+            await client.channels.fetch(NOTICE_CHANNEL_ID); // 공지용 채널을 현재 클라이언트에 추가
             const message = await replyChannelID(client.channels, NOTICE_CHANNEL_ID, data, true);
             await message?.crosspost(); // 커뮤니티 서버의 공지 채널인 경우 발행 기능을 사용 가능
         } else {
@@ -27,17 +28,17 @@ export async function botNotice(client, data, isMaple = false) {
     } catch {}
 }
 
-export async function replyChannelID(channels, id, data, cache = false) {
+export async function replyChannelID(channels, id, data) {
     try {
-        return await channels._add({ id, type: 1 }, null, { cache }).send(data); // 채널 객체 생성 후 메시지 전송
+        return await channels._add({ id, type: 1 }, null, { cache: false }).send(data); // 채널 객체 생성 후 메시지 전송
     } catch {
         return null;
     }
 }
 
-export async function replyAdmin(users, data, cache = false) {
+export async function replyAdmin(users, data) {
     try {
-        return await users._add({ id: ADMIN_ID }, cache).send(data); // 관리자 유저 객체 생성 후 DM 전송
+        return await users._add({ id: ADMIN_ID }, false).send(data); // 관리자 유저 객체 생성 후 DM 전송
     } catch {
         return null;
     }
