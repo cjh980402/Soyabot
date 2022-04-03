@@ -7,7 +7,7 @@ export async function botNotice(client, data, isMaple = false) {
         if (isMaple) {
             // 메이플 공지는 공지용 채널에만 전송
             await client.channels.fetch(NOTICE_CHANNEL_ID); // 공지용 채널을 현재 클라이언트에 추가
-            const message = await replyChannelID(client.channels, NOTICE_CHANNEL_ID, data, true);
+            const message = await replyChannelID(client.channels, NOTICE_CHANNEL_ID, data);
             await message?.crosspost(); // 커뮤니티 서버의 공지 채널인 경우 발행 기능을 사용 가능
         } else {
             // 일반 공지는 전체 전송

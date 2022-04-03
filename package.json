@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "soyabot",
-  "version": "7.8.0",
+  "version": "7.8.1",
   "description": "MapleStory, Music Discord Bot",
   "license": "MIT",
   "author": "cjh980402 <9804cjh@naver.com> (https://github.com/cjh980402)",
@@ -28,7 +28,7 @@
     "chartjs-plugin-datalabels": "^2.0.0",
     "cheerio": "^1.0.0-rc.10",
     "discord.js": "^13.6.0",
-    "entities": "^3.0.1",
+    "entities": "^4.1.1",
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^4.4.1",
     "hangul-js": "^0.2.6",
@@ -38,13 +38,13 @@
     "sodium": "^3.0.2",
     "soundcloud.ts": "^0.4.5",
     "string-progressbar": "^1.0.4",
-    "undici": "^4.16.0",
+    "undici": "^5.0.0",
     "utf-8-validate": "^5.0.9",
-    "youtube-dlsr": "^2.6.1",
+    "youtube-dlsr": "^2.6.2",
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {
-    "prettier": "^2.6.1"
+    "prettier": "^2.6.2"
   },
   "keywords": [
     "Discord",
