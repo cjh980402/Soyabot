@@ -1,10 +1,12 @@
 export function commandCount(db, commandName) {
     try {
-        const data = db.get('SELECT * FROM commanddb WHERE commandname = ?', [commandName]);
-        db.replace('commanddb', {
-            commandname: commandName,
-            count: (data?.count ?? 0) + 1
-        });
+        const existing = db.get('SELECT * FROM command_db WHERE name = ?', [commandName]);
+
+        if (existing) {
+            db.run(`UPDATE command_db SET count = ? WHERE name = ?`, [existing.count + 1, commandName]);
+        } else {
+            db.insert('command_db', { name: commandName, count: 1 });
+        }
     } catch (err) {
         console.error(err);
     }

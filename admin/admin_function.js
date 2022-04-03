@@ -46,17 +46,27 @@ export async function adminChat(message) {
 }
 
 export async function initClient(client, TOKEN) {
-    client.db.run('CREATE TABLE IF NOT EXISTS maplenotice(title text primary key, url text not null)');
-    client.db.run('CREATE TABLE IF NOT EXISTS mapleupdate(title text primary key, url text not null)');
-    client.db.run('CREATE TABLE IF NOT EXISTS mapletest(title text primary key, url text not null)');
-    client.db.run('CREATE TABLE IF NOT EXISTS testpatch(version integer primary key, url text not null)');
-    /*client.db.run('CREATE TABLE IF NOT EXISTS noticeskip(channelid text primary key, name text not null)');
-    client.db.run('CREATE TABLE IF NOT EXISTS updateskip(channelid text primary key, name text not null)');
-    client.db.run('CREATE TABLE IF NOT EXISTS urusskip(channelid text primary key, name text not null)');
-    client.db.run('CREATE TABLE IF NOT EXISTS testskip(channelid text primary key, name text not null)');
-    client.db.run('CREATE TABLE IF NOT EXISTS testpatchskip(channelid text primary key, name text not null)');*/
-    client.db.run('CREATE TABLE IF NOT EXISTS pruningskip(channelid text primary key, name text not null)');
-    client.db.run('CREATE TABLE IF NOT EXISTS commanddb(commandname text primary key, count integer default 0)');
+    client.db.run(
+        'CREATE TABLE IF NOT EXISTS maple_notice(id integer primary key autoincrement, title text, url text, notice_number integer)'
+    );
+    client.db.run('CREATE INDEX IF NOT EXISTS title_and_number ON maple_notice(title, notice_number)');
+    client.db.run(
+        'CREATE TABLE IF NOT EXISTS maple_update(id integer primary key autoincrement, title text, url text, notice_number integer)'
+    );
+    client.db.run('CREATE INDEX IF NOT EXISTS title_and_number ON maple_update(title, notice_number)');
+    client.db.run(
+        'CREATE TABLE IF NOT EXISTS maple_test(id integer primary key autoincrement, title text, url text, notice_number integer)'
+    );
+    client.db.run('CREATE INDEX IF NOT EXISTS title_and_number ON maple_test(title, notice_number)');
+    client.db.run(
+        'CREATE TABLE IF NOT EXISTS test_patch(id integer primary key autoincrement, version integer, url text)'
+    );
+    client.db.run(
+        'CREATE TABLE IF NOT EXISTS pruning_skip(id integer primary key autoincrement, guild_id text, name text)'
+    );
+    client.db.run(
+        'CREATE TABLE IF NOT EXISTS command_db(id integer primary key autoincrement, name text, count integer)'
+    );
 
     await MapleProb.fetchAllProb();
     await client.login(TOKEN);

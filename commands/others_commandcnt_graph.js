@@ -3,10 +3,10 @@ import { PREFIX } from '../soyabot_config.js';
 import renderChart from '../util/chartjs_rendering.js';
 
 async function getCommandCountGraph(client) {
-    const data = client.db.all('SELECT * FROM commanddb ORDER BY count DESC'); // 내림차순
+    const data = client.db.all('SELECT * FROM command_db ORDER BY count DESC'); // 내림차순
     const cmdColor = (a) =>
         data.map((v) => {
-            const hash = [...v.commandname].reduce((acc, cur) => (31 * acc + cur.codePointAt(0)) | 0, 0); // 각 연산 후 signed 32-bit 정수로 변환
+            const hash = [...v.name].reduce((acc, cur) => (31 * acc + cur.codePointAt(0)) | 0, 0); // 각 연산 후 signed 32-bit 정수로 변환
             let r = (hash >> 16) & 0xff;
             let g = (hash >> 8) & 0xff;
             let b = hash & 0xff;
@@ -23,7 +23,7 @@ async function getCommandCountGraph(client) {
     const config = {
         type: 'bar',
         data: {
-            labels: data.map((v) => v.commandname),
+            labels: data.map((v) => v.name),
             datasets: [
                 {
                     label: '사용량',

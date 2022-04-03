@@ -141,7 +141,7 @@ export class QueueElement {
     async deleteMessage() {
         try {
             if (
-                this.voiceChannel.client.db.get('SELECT * FROM pruningskip WHERE channelid = ?', [
+                this.voiceChannel.client.db.get('SELECT * FROM pruning_skip WHERE guild_id = ?', [
                     this.playingMessage?.guildId
                 ])
             ) {

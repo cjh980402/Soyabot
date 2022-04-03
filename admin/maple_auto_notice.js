@@ -17,13 +17,17 @@ export function startNotice(client) {
 
                 const notice = [];
                 for (let i = 0; i < data.length; i++) {
-                    const rslt = client.db.get('SELECT * FROM maplenotice WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
+                    const title = data.eq(i).text().trim();
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
-                    if (!rslt || +/\d+/.exec(rslt.url) < +/\d+/.exec(url)) {
-                        // 제목이 다르거나, 같은 경우는 최신 공지인 경우
-                        client.db.replace('maplenotice', { title: data.eq(i).text().trim(), url: url }); // 제목이 겹치는 경우 때문에 replace를 이용
-                        // 중복방지 위해 db에 삽입
-                        notice.push(`${data.eq(i).find('img').attr('alt')} [${data.eq(i).text().trim()}](${url})`);
+                    const number = +/\d+$/.exec(url);
+                    const existing = client.db.get('SELECT * FROM maple_notice WHERE title = ? AND notice_number = ?', [
+                        title,
+                        number
+                    ]); // 제목과 번호로 검색을 하므로 검색되지 않은 공지는 전송대상
+
+                    if (!existing) {
+                        client.db.insert('maple_notice', { title, url, notice_number: number }); // 중복방지 위해 db에 삽입
+                        notice.push(`${data.eq(i).find('img').attr('alt')} [${title}](${url})`);
                     }
                 }
 
@@ -59,13 +63,17 @@ export function startUpdate(client) {
 
                 const update = [];
                 for (let i = 0; i < data.length; i++) {
-                    const rslt = client.db.get('SELECT * FROM mapleupdate WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
+                    const title = data.eq(i).text().trim();
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
-                    if (!rslt || +/\d+/.exec(rslt.url) < +/\d+/.exec(url)) {
-                        // 제목이 다르거나, 같은 경우는 최신 공지인 경우
-                        client.db.replace('mapleupdate', { title: data.eq(i).text().trim(), url: url });
-                        // 중복방지 위해 db에 삽입
-                        update.push(`[패치] [${data.eq(i).text().trim()}](${url})`);
+                    const number = +/\d+$/.exec(url);
+                    const existing = client.db.get('SELECT * FROM maple_update WHERE title = ? AND notice_number = ?', [
+                        title,
+                        number
+                    ]); // 제목과 번호로 검색을 하므로 검색되지 않은 공지는 전송대상
+
+                    if (!existing) {
+                        client.db.insert('maple_update', { title, url, notice_number: number }); // 중복방지 위해 db에 삽입
+                        update.push(`[패치] [${title}](${url})`);
                     }
                 }
 
@@ -101,12 +109,16 @@ export function startTest(client) {
 
                 const test = [];
                 for (let i = 0; i < data.length; i++) {
-                    const rslt = client.db.get('SELECT * FROM mapletest WHERE title = ?', [data.eq(i).text().trim()]); // 제목으로 걸러내므로 수정된 공지도 전송하게 된다.
+                    const title = data.eq(i).text().trim();
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
-                    if (!rslt || +/\d+/.exec(rslt.url) < +/\d+/.exec(url)) {
-                        // 제목이 다르거나, 같은 경우는 최신 공지인 경우
-                        client.db.replace('mapletest', { title: data.eq(i).text().trim(), url: url });
-                        // 중복방지 위해 db에 삽입
+                    const number = +/\d+$/.exec(url);
+                    const existing = client.db.get('SELECT * FROM maple_test WHERE title = ? AND notice_number = ?', [
+                        title,
+                        number
+                    ]); // 제목과 번호로 검색을 하므로 검색되지 않은 공지는 전송대상
+
+                    if (!existing) {
+                        client.db.insert('maple_test', { title, url, notice_number: number }); // 중복방지 위해 db에 삽입
                         const picurl = data.eq(i).find('img').attr('src');
                         const type = picurl.endsWith('1.png')
                             ? '[공지]'
@@ -115,7 +127,7 @@ export function startTest(client) {
                             : picurl.endsWith('3.png')
                             ? '[점검]'
                             : '[패치]';
-                        test.push(`${type} [${data.eq(i).text().trim()}](${url})`);
+                        test.push(`${type} [${title}](${url})`);
                     }
                 }
 
@@ -146,8 +158,8 @@ export function startTestPatch(client) {
     if (!testPatchTimer) {
         testPatchTimer = setInterval(async () => {
             try {
-                const lastPatch = client.db.get('SELECT * FROM testpatch ORDER BY version DESC LIMIT 1');
-                const patchVersion = lastPatch.version + 1; // 새로 가져올 패치의 버전
+                const lastPatch = client.db.get('SELECT * FROM test_patch ORDER BY version DESC LIMIT 1');
+                const patchVersion = (lastPatch?.version ?? 139) + 1; // 새로 가져올 패치의 버전
                 const patchURL = `http://maplestory.dn.nexoncdn.co.kr/PatchT/01${patchVersion}/01${
                     patchVersion - 1
                 }to01${patchVersion}.patch`;
@@ -156,7 +168,7 @@ export function startTestPatch(client) {
                 if (headers['content-type'] === 'application/octet-stream') {
                     // 파일이 감지된 경우
                     const fileSize = +headers['content-length'] / 1024 / 1024;
-                    client.db.insert('testpatch', { version: patchVersion, url: patchURL });
+                    client.db.insert('test_patch', { version: patchVersion, url: patchURL });
                     botNotice(
                         client,
                         `[Tver 1.2.${patchVersion}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기: ${fileSize.toFixed(
