@@ -3,7 +3,7 @@ export function commandCount(db, commandName) {
         const existing = db.get('SELECT * FROM command_db WHERE name = ?', [commandName]);
 
         if (existing) {
-            db.run(`UPDATE command_db SET count = count + 1 WHERE name = ?`, [commandName]);
+            db.run('UPDATE command_db SET count = count + 1 WHERE name = ?', [commandName]);
         } else {
             db.insert('command_db', { name: commandName, count: 1 });
         }

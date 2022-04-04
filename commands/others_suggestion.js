@@ -5,12 +5,12 @@ export const usage = `${PREFIX}건의 (건의 사항)`;
 export const command = ['건의', 'ㄱㅇ'];
 export const description = '- 개발자에게 건의 사항을 전송합니다.';
 export const type = ['기타'];
-export function messageExecute(message, args) {
+export async function messageExecute(message, args) {
     if (args.length < 1) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
-    const rslt = replyAdmin(
+    const rslt = await replyAdmin(
         message.client.users,
         `${message.channelId} ${message.id}\n작성자: ${message.author.username}\n건의 내용: ${args.join(' ')}`
     );
@@ -29,7 +29,7 @@ export const commandData = {
     ]
 };
 export async function commandExecute(interaction) {
-    const rslt = replyAdmin(
+    const rslt = await replyAdmin(
         interaction.client.users,
         `${interaction.channelId} ${interaction.id}\n작성자: ${
             interaction.user.username
