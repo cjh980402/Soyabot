@@ -36,7 +36,7 @@ export async function messageExecute(message) {
         try {
             const nickname = message.member?.nickname ?? message.author.username;
             const image = await getDiceAttachment(nickname);
-            dice.edit({ content: `${nickname}님의 ${++count}번째 스탯 주사위`, files: [image] });
+            await dice.edit({ content: `${nickname}님의 ${++count}번째 스탯 주사위`, files: [image] });
         } catch {}
     });
 }
@@ -64,7 +64,7 @@ export async function commandExecute(interaction) {
         try {
             const nickname = interaction.member?.nickname ?? interaction.user.username;
             const image = await getDiceAttachment(nickname);
-            dice.edit({ content: `${nickname}님의 ${++count}번째 스탯 주사위`, files: [image] });
+            await dice.edit({ content: `${nickname}님의 ${++count}번째 스탯 주사위`, files: [image] });
         } catch {}
     });
 }

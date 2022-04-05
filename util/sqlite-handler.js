@@ -11,16 +11,16 @@ export default class SQLiteHandler {
         return this.all("SELECT name, sql FROM sqlite_master WHERE type='table'");
     }
 
-    insert(table, obj) {
-        const k = Object.keys(obj);
-        const v = Object.values(obj);
+    insert(table, data) {
+        const k = Object.keys(data);
+        const v = Object.values(data);
         const sql = `INSERT INTO ${table} (${k.join(', ')}) VALUES (${[...'?'.repeat(v.length)].join(', ')})`;
         return this.run(sql, v);
     }
 
-    replace(table, obj) {
-        const k = Object.keys(obj);
-        const v = Object.values(obj);
+    replace(table, data) {
+        const k = Object.keys(data);
+        const v = Object.values(data);
         const sql = `REPLACE INTO ${table} (${k.join(', ')}) VALUES (${[...'?'.repeat(v.length)].join(', ')})`;
         return this.run(sql, v);
     }
