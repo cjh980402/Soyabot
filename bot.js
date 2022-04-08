@@ -5,9 +5,10 @@ import './util/soyabot_setting_polyfill.js'; // 제일 처음에 import 해야�
 import { Client, Collection, Options } from 'discord.js';
 import { readdirSync } from 'node:fs';
 import { setTimeout } from 'node:timers/promises';
-import { TOKEN, PREFIX, ADMIN_ID } from './soyabot_config.js';
+import { TOKEN, PREFIX, ADMIN_ID, NOTICE_CHANNEL_ID } from './soyabot_config.js';
 import { adminChat, initClient, exec } from './admin/admin_function.js';
 import { replyAdmin } from './admin/bot_control.js';
+import { startNotice, startUpdate, startTest, startTestPatch, startUrus } from './admin/maple_auto_notice.js';
 import { MapleError } from './util/maple_parsing.js';
 import { musicActiveControl, musicButtonControl } from './util/music_play.js';
 import { commandCount } from './util/soyabot_util.js';
@@ -23,27 +24,6 @@ const promiseTimeout = (promise, ms) => Promise.race([promise, setTimeout(ms)]);
 // node.js v15부터 Unhandled promise rejection이 발생하면 프로세스를 비정상 종료시키므로 처리를 해야함
 process.on('unhandledRejection', (err) => console.error('Unhandled promise rejection:', err));
 
-try {
-    await initClient(client, TOKEN); // 클라이언트 초기 세팅 함수
-    /**
-     * 모든 명령 import
-     */
-    const datas = [];
-    for (const file of readdirSync('./commands')) {
-        if (file.endsWith('.js')) {
-            const cmd = await import(`./commands/${file}`);
-            client.commands.push(cmd); // js파일의 명령 객체를 배열에 push
-            if (cmd.commandData) {
-                datas.push(cmd.commandData);
-            }
-        }
-    }
-    // await client.application.commands.set(datas); // 인터랙션 데이터 변경 시에만 활성화하기
-    replyAdmin(client.users, `${client.shard.ids[0]}번째 샤드에서 ${client.user.tag}이 작동 중입니다.`);
-} catch (err) {
-    console.error('로그인 에러 발생:', err);
-    await exec('npm stop');
-}
 /**
  * 클라이언트 이벤트
  */
@@ -51,6 +31,19 @@ client.on('error', async (err) => {
     console.error('클라이언트 에러 발생:', err);
     await setTimeout(30000); // 30초 대기
     await exec('npm restart'); // 재시작
+});
+
+client.on('ready', () => {
+    if (client.channels.cache.has(NOTICE_CHANNEL_ID)) {
+        // 공지용 채널이 존재하는 클라이언트에서 공지 기능 활성화
+        startNotice(client); // 공지 자동 알림 기능
+        startUpdate(client); // 업데이트 자동 알림 기능
+        startTest(client); // 테섭 자동 알림 기능
+        startTestPatch(client); // 테섭 패치 감지 기능
+        startUrus(client); // 우르스 2배 종료 30분 전 알림
+    }
+
+    replyAdmin(client.users, `${client.shard.ids[0]}번째 샤드에서 ${client.user.tag}이 작동 중입니다.`);
 });
 
 client.on('voiceStateUpdate', musicActiveControl); // 유저 음성채팅 상태 변경 이벤트
@@ -213,3 +206,24 @@ client.on('interactionCreate', async (interaction) => {
         }
     }
 });
+
+try {
+    await initClient(client, TOKEN); // 클라이언트 초기 세팅 함수
+    /**
+     * 모든 명령 import
+     */
+    const datas = [];
+    for (const file of readdirSync('./commands')) {
+        if (file.endsWith('.js')) {
+            const cmd = await import(`./commands/${file}`);
+            client.commands.push(cmd); // js파일의 명령 객체를 배열에 push
+            if (cmd.commandData) {
+                datas.push(cmd.commandData);
+            }
+        }
+    }
+    // await client.application.commands.set(datas); // 인터랙션 데이터 변경 시에만 활성화하기
+} catch (err) {
+    console.error('로그인 에러 발생:', err);
+    await exec('npm stop');
+}

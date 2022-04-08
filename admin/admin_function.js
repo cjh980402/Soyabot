@@ -2,9 +2,7 @@ import { Message } from 'discord.js';
 import { exec as _exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import { botNotice, replyChannelID } from './bot_control.js';
-import { startNotice, startUpdate, startTest, startTestPatch, startUrus } from './maple_auto_notice.js';
 import { MapleProb } from '../util/maple_probtable.js';
-import { ADMIN_ID } from '../soyabot_config.js';
 
 export const exec = promisify(_exec);
 
@@ -30,7 +28,7 @@ export async function adminChat(message) {
         // 원하는 방에 봇으로 채팅 전송 (텍스트 채널 ID 이용)
         const rslt = await replyChannelID(message.client.channels, targetId, fullContent.slice(targetId.length + 3));
         return message.channel.send(rslt ? '채팅이 전송되었습니다.' : '존재하지 않는 방입니다.');
-    } else if (message.channel.recipient?.id === ADMIN_ID && message.reference) {
+    } else if (message.channel.type === 'DM' && message.reference) {
         // 건의 답변 기능
         try {
             const suggestRefer = await message.fetchReference();
@@ -71,13 +69,4 @@ export async function initClient(client, TOKEN) {
     await MapleProb.fetchAllProb();
     await client.login(TOKEN);
     await client.application.fetch();
-
-    if (client.shard.ids.includes(0)) {
-        // 첫번째 샤드에서만 공지 기능 활성화
-        startNotice(client); // 공지 자동 알림 기능
-        startUpdate(client); // 업데이트 자동 알림 기능
-        startTest(client); // 테섭 자동 알림 기능
-        startTestPatch(client); // 테섭 패치 감지 기능
-        startUrus(client); // 우르스 2배 종료 30분 전 알림
-    }
 }
