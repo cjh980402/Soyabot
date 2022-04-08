@@ -25,15 +25,15 @@ export default class SQLiteHandler {
         return this.run(sql, v);
     }
 
-    run(sql, params = []) {
+    run(sql, ...params) {
         return this.#db.prepare(sql).run(...params);
     }
 
-    get(sql, params = []) {
+    get(sql, ...params) {
         return this.#db.prepare(sql).get(...params);
     }
 
-    all(sql, params = []) {
+    all(sql, ...params) {
         return this.#db.prepare(sql).all(...params);
     }
 }
