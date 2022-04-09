@@ -1,6 +1,6 @@
 import { request } from 'undici';
+// import { MapleGuild } from '../classes/MapleParser.js'
 import { BOT_SERVER_DOMAIN, PREFIX } from '../soyabot_config.js';
-// import { MapleGuild } from '../util/maple_parsing.js';
 const serverEngName = {
     스카니아: 'scania',
     베라: 'bera',

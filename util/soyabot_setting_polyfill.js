@@ -1,17 +1,5 @@
-import {
-    Message,
-    Util,
-    Intents,
-    Options,
-    Channel,
-    CommandInteraction,
-    BaseGuildVoiceChannel,
-    Permissions
-} from 'discord.js';
+import { Message, Util, Channel, CommandInteraction, BaseGuildVoiceChannel, Permissions } from 'discord.js';
 import { request } from 'undici';
-import YouTubeAPI from 'simple-youtube-api';
-import { PARTS, ENDPOINTS } from 'simple-youtube-api/src/util/Constants.js';
-import Video from 'simple-youtube-api/src/structures/Video.js';
 import { joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
 import { inspect } from 'node:util';
 
@@ -52,58 +40,6 @@ function entersState(target, status, timeout) {
         target.once(status, onStatus);
     });
 }
-
-Object.defineProperty(Options, 'createCustom', {
-    value() {
-        return {
-            retryLimit: 3,
-            failIfNotExists: false,
-            partials: ['CHANNEL'],
-            intents: [
-                Intents.FLAGS.GUILDS,
-                Intents.FLAGS.GUILD_VOICE_STATES,
-                Intents.FLAGS.GUILD_MESSAGES,
-                Intents.FLAGS.DIRECT_MESSAGES
-            ],
-            presence: { activities: [{ name: '/help', type: 'LISTENING' }] },
-            sweepers: {
-                guildMembers: {
-                    interval: 3600,
-                    filter: () => (v) => v.id !== v.client.user.id && !v.voice.channelId
-                },
-                voiceStates: {
-                    interval: 3600,
-                    filter: () => (v) => v.id !== v.client.user.id && !v.channelId
-                }
-            },
-            makeCache: Options.cacheWithLimits({
-                ApplicationCommandManager: 0,
-                BaseGuildEmojiManager: 0,
-                GuildEmojiManager: 0,
-                ChannelManager: {
-                    maxSize: 1,
-                    keepOverLimit: (v) => v.isText() || v.isVoice()
-                },
-                GuildChannelManager: {
-                    maxSize: 1,
-                    keepOverLimit: (v) => v.isText() || v.isVoice()
-                },
-                GuildBanManager: 0,
-                GuildInviteManager: 0,
-                GuildScheduledEventManager: 0,
-                GuildStickerManager: 0,
-                MessageManager: 0,
-                PresenceManager: 0,
-                ReactionManager: 0,
-                ReactionUserManager: 0,
-                StageInstanceManager: 0,
-                ThreadManager: 0,
-                ThreadMemberManager: 0,
-                UserManager: 0
-            })
-        };
-    }
-});
 
 Object.defineProperty(Message.prototype, 'fetchFullContent', {
     async value() {
@@ -154,17 +90,6 @@ Object.defineProperty(BaseGuildVoiceChannel.prototype, 'join', {
         } catch (err) {
             connection.destroy(); // 에러 발생 시 연결 취소
             throw err;
-        }
-    }
-});
-
-Object.defineProperty(YouTubeAPI.prototype, 'getVideosByIDs', {
-    async value(ids, options = {}) {
-        const result = await this.request.make(ENDPOINTS.Videos, { ...options, part: PARTS.Videos, id: ids.join(',') });
-        if (result.items.length > 0) {
-            return result.items.map((v) => (v ? new Video(this, v) : null));
-        } else {
-            throw new Error(`resource ${result.kind} not found`);
         }
     }
 });

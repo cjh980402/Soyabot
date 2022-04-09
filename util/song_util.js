@@ -1,8 +1,8 @@
 import SoundcloudAPI from 'soundcloud.ts';
-import YouTubeAPI from 'simple-youtube-api';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { decodeHTML } from 'entities';
 import { download as ytdl, search as ytsr, Util } from 'youtube-dlsr';
+import { YouTubeAPI } from '../classes/YoutubeAPI.js';
 import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } from '../soyabot_config.js';
 const scTrackRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/[\w-]+\/?$/;
 const scSetRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/sets\/[\w-]+\/?$/;

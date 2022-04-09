@@ -1,7 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
-import { MapleUser } from '../util/maple_parsing.js';
+import { MapleUser } from '../classes/MapleParser.js';
 
 export const usage = `${PREFIX}컬렉션 (닉네임)`;
 export const command = ['컬렉션', 'ㅋㄹㅅ', 'ㅋㄽ'];
@@ -25,7 +25,7 @@ export async function messageExecute(message, args) {
         return message.channel.send(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못했습니다.`);
     } else {
         const { stdout: collectionPic } = await exec(
-            `python3 ./util/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(
+            `python3 ./util/python/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(
                 ' '
             )} ${collection[1].join(' ')}`,
             {
@@ -63,7 +63,7 @@ export async function commandExecute(interaction) {
         return interaction.followUp(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못했습니다.`);
     } else {
         const { stdout: collectionPic } = await exec(
-            `python3 ./util/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(
+            `python3 ./util/python/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(
                 ' '
             )} ${collection[1].join(' ')}`,
             {

@@ -71,7 +71,7 @@ async function getStockEmbed(search, searchRslt, type) {
         const max_52weeks = data.totalInfos['52주 최고'];
 
         const { stdout: stockPic } = await exec(
-            `python3 ./util/make_stock_info.py ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`,
+            `python3 ./util/python/make_stock_info.py ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`,
             { encoding: 'buffer' }
         );
         // 파이썬 스크립트 실행
@@ -108,7 +108,7 @@ async function getStockEmbed(search, searchRslt, type) {
         const max_52weeks = data.stockItemTotalInfos['52주 최고'];
 
         const { stdout: stockPic } = await exec(
-            `python3 ./util/make_stock_info.py ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`,
+            `python3 ./util/python/make_stock_info.py ${chartURL} '${name} (${code}) ${type}' '' ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`,
             { encoding: 'buffer' }
         );
         // 파이썬 스크립트 실행
@@ -138,7 +138,7 @@ async function getStockEmbed(search, searchRslt, type) {
         const max_52weeks = data.totalInfos['52주 최고'];
 
         const { stdout: stockPic } = await exec(
-            `python3 ./util/make_stock_info.py ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`,
+            `python3 ./util/python/make_stock_info.py ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`,
             { encoding: 'buffer' }
         );
         // 파이썬 스크립트 실행
@@ -186,7 +186,7 @@ async function getStockEmbed(search, searchRslt, type) {
         const max_52weeks = data.stockItemTotalInfos['52주 최고'];
 
         const { stdout: stockPic } = await exec(
-            `python3 ./util/make_stock_info.py ${chartURL} '${name} (${code}) ${type}' ${
+            `python3 ./util/python/make_stock_info.py ${chartURL} '${name} (${code}) ${type}' ${
                 data.currencyType.name
             } ${nowPrice.toLocaleString()} ${changeAmount} ${changeRate} ${minPrice} ${maxPrice} ${max_52weeks} ${min_52weeks}`,
             { encoding: 'buffer' }

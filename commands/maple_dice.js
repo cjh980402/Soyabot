@@ -4,7 +4,7 @@ import { exec } from '../admin/admin_function.js';
 
 async function getDiceAttachment(nickname) {
     const { stdout: dicePic } = await exec(
-        `python3 ./util/maple_stats_drawer.py '${nickname.replace(/'/g, '$&"$&"$&')}'`,
+        `python3 ./util/python/maple_stat_dice.py '${nickname.replace(/'/g, '$&"$&"$&')}'`,
         { encoding: 'buffer' }
     );
     // 파이썬 스크립트 실행, 쉘에서 작은 따옴표로 감싸서 쉘 특수문자 이스케이핑, 닉네임의 작은 따옴표는 별도로 이스케이핑

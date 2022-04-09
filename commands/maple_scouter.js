@@ -1,6 +1,6 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
-import { MapleUser } from '../util/maple_parsing.js';
+import { MapleUser } from '../classes/MapleParser.js';
 const scoreGrade = [
     [0, '메린이'],
     [300, '무자본 평균'],

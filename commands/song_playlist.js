@@ -1,7 +1,7 @@
 import { MessageEmbed, Util } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { replyAdmin } from '../admin/bot_control.js';
-import { QueueElement } from '../util/music_play.js';
+import { QueueElement } from '../classes/QueueElement.js';
 import { isValidPlaylist, isValidVideo, getPlaylistInfo } from '../util/song_util.js';
 
 export const usage = `${PREFIX}playlist (재생목록 주소│재생목록 제목)`;

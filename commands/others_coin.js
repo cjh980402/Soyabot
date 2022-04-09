@@ -50,7 +50,7 @@ async function getCoinEmbed(searchRslt, type) {
     const amount = todayData.acc_trade_price_24h.toUnitString(2);
 
     const { stdout: coinPic } = await exec(
-        `python3 ./util/make_coin_info.py ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice} ${changeType} '${changeString}' ${minPrice} ${maxPrice}`,
+        `python3 ./util/python/make_coin_info.py ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice} ${changeType} '${changeString}' ${minPrice} ${maxPrice}`,
         {
             encoding: 'buffer'
         }

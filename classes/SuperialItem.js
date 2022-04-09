@@ -21,7 +21,7 @@ function meso(lev) {
     return Math.round(Math.pow(lev, 3.56) / 100) * 100; // 십의자리에서 반올림
 }
 
-export default class SuperialItem {
+export class SuperialItem {
     #goal = 0;
     #star = 0;
     #sum = 0;

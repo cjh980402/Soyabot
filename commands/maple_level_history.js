@@ -1,5 +1,5 @@
 import { PREFIX } from '../soyabot_config.js';
-import { MapleUser } from '../util/maple_parsing.js';
+import { MapleUser } from '../classes/MapleParser.js';
 
 export const usage = `${PREFIX}히스토리 (닉네임)`;
 export const command = ['히스토리', 'ㅎㅅㅌㄹ', '레벨히스토리', 'ㄹㅂㅎㅅㅌㄹ', 'ㄼㅎㅅㅌㄹ'];

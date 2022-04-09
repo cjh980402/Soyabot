@@ -19,7 +19,7 @@ img = (img - 128) / 64  # [0, 255] -> [-2, 2]
 # print(np.min(img), np.max(img), img.shape) # Check [-2, 2], Shape
 
 # Load the TFLite model and allocate tensors.
-interpreter = tflite.Interpreter(model_path='./util/model_float32.tflite')
+interpreter = tflite.Interpreter(model_path='./util/python/model_float32.tflite')
 interpreter.allocate_tensors()
 
 # Get input and output tensors.

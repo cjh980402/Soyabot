@@ -1,5 +1,5 @@
 import { PREFIX } from '../soyabot_config.js';
-import NormalItem from '../util/normal_starforce.js';
+import { NormalItem } from '../classes/NormalItem.js';
 
 export const usage = `${PREFIX}스타포스시뮬 A B C D E F`;
 export const command = ['스타포스시뮬', 'ㅅㅌㅍㅅㅅㅁ'];

@@ -1,6 +1,6 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
-import { MapleUser } from '../util/maple_parsing.js';
+import { MapleUser } from '../classes/MapleParser.js';
 
 export const usage = `${PREFIX}코디 (닉네임)`;
 export const command = ['코디', 'ㅋㄷ'];

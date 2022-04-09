@@ -1,7 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
-import { MapleUser } from '../util/maple_parsing.js';
+import { MapleUser } from '../classes/MapleParser.js';
 
 export const usage = `${PREFIX}프로필 (닉네임)`;
 export const command = ['프로필', 'ㅍㄹㅍ', 'ㅍㄿ'];
@@ -28,7 +28,7 @@ export async function messageExecute(message, args) {
     const seed = mapleUserInfo.Seed();
 
     const { stdout: profilePic } = await exec(
-        `python3 ./util/maple_gg_profile.py ${mapleUserInfo.userImg(false)} ${
+        `python3 ./util/python/maple_gg_profile.py ${mapleUserInfo.userImg(false)} ${
             mapleUserInfo.Name
         } ${mapleUserInfo.serverName()} ${level[0]} '${
             level[4]
@@ -72,7 +72,7 @@ export async function commandExecute(interaction) {
     const seed = mapleUserInfo.Seed();
 
     const { stdout: profilePic } = await exec(
-        `python3 ./util/maple_gg_profile.py ${mapleUserInfo.userImg(false)} ${
+        `python3 ./util/python/maple_gg_profile.py ${mapleUserInfo.userImg(false)} ${
             mapleUserInfo.Name
         } ${mapleUserInfo.serverName()} ${level[0]} '${
             level[4]

@@ -1,6 +1,6 @@
 import { PREFIX } from '../soyabot_config.js';
 import { replyAdmin } from '../admin/bot_control.js';
-import { QueueElement } from '../util/music_play.js';
+import { QueueElement } from '../classes/QueueElement.js';
 import { isValidPlaylist, isValidVideo, getSongInfo } from '../util/song_util.js';
 
 export const usage = `${PREFIX}play (영상 주소│영상 제목)`;
