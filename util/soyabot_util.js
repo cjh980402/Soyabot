@@ -52,11 +52,11 @@ export async function fetchFullContent(message) {
 export async function sendSplitCode(target, content, options) {
     if (target instanceof Channel && target.isText()) {
         for (const c of contentSplitCode(content, options)) {
-            await this.send(c);
+            await target.send(c);
         }
     } else if (target instanceof CommandInteraction) {
         for (const c of contentSplitCode(content, options)) {
-            await this.followUp(c);
+            await target.followUp(c);
         }
     }
 }
