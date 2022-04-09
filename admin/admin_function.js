@@ -1,4 +1,3 @@
-import { Message } from 'discord.js';
 import { exec as _exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import { botNotice, replyChannelID } from './bot_control.js';
@@ -31,16 +30,10 @@ export async function adminChat(message) {
         return message.channel.send(rslt ? '채팅이 전송되었습니다.' : '존재하지 않는 방입니다.');
     } else if (message.channel.type === 'DM' && message.reference) {
         // 건의 답변 기능
-        try {
-            const suggestRefer = await message.fetchReference();
-            const [channelId, messageId] = suggestRefer.content.split(/\s/);
-            await new Message(message.client, { id: messageId, channel_id: channelId }).reply(
-                `[건의 답변]\n${fullContent}`
-            );
-            return message.channel.send('건의 답변을 보냈습니다.');
-        } catch {
-            return message.channel.send('해당하는 건의의 정보가 존재하지 않습니다.');
-        }
+        const suggestRefer = await message.fetchReference();
+        const [channelId] = suggestRefer.content.split(/\s/);
+        const rslt = await replyChannelID(message.client.channels, channelId, `[건의 답변]\n${fullContent}`);
+        return message.channel.send(rslt ? '건의 답변을 보냈습니다.' : '해당하는 건의의 정보가 존재하지 않습니다.');
     }
 }
 
