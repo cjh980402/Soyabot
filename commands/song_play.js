@@ -2,6 +2,8 @@ import { PREFIX } from '../soyabot_config.js';
 import { replyAdmin } from '../admin/bot_control.js';
 import { QueueElement } from '../classes/QueueElement.js';
 import { isValidPlaylist, isValidVideo, getSongInfo } from '../util/song_util.js';
+import { joinVoice } from '../util/soyabot_util.js';
+import { Util } from '../util/Util.js';
 
 export const usage = `${PREFIX}play (영상 주소│영상 제목)`;
 export const command = ['play', 'p', '노래'];
@@ -53,13 +55,13 @@ export async function messageExecute(message, args) {
         serverQueue.songs.push(song);
         return message.channel.send(
             `✅ ${message.author}가 **${song.title}** \`[${
-                song.duration === 0 ? '⊚ LIVE' : song.duration.toDurationString()
+                song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
             }]\`를 대기열에 추가했습니다.`
         );
     }
 
     try {
-        const newQueue = new QueueElement(message.channel, channel, await channel.join(), [song]);
+        const newQueue = new QueueElement(message.channel, channel, await joinVoice(channel), [song]);
         message.client.queues.set(message.guildId, newQueue);
         newQueue.playSong();
     } catch (err) {
@@ -133,13 +135,13 @@ export async function commandExecute(interaction) {
         serverQueue.songs.push(song);
         return interaction.channel.send(
             `✅ ${interaction.user}가 **${song.title}** \`[${
-                song.duration === 0 ? '⊚ LIVE' : song.duration.toDurationString()
+                song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
             }]\`를 대기열에 추가했습니다.`
         );
     }
 
     try {
-        const newQueue = new QueueElement(interaction.channel, channel, await channel.join(), [song]);
+        const newQueue = new QueueElement(interaction.channel, channel, await joinVoice(channel), [song]);
         interaction.client.queues.set(interaction.guildId, newQueue);
         newQueue.playSong();
     } catch (err) {

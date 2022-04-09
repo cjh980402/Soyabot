@@ -1,5 +1,6 @@
 import { request } from 'undici';
 import { PREFIX } from '../soyabot_config.js';
+import { sendSplitCode } from '../util/soyabot_util.js';
 
 async function farm_monster(monster) {
     // 몬스터 이름
@@ -178,11 +179,11 @@ export async function messageExecute(message, args) {
 
     try {
         if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
-            return message.channel.sendSplitCode(await farm_read(args.slice(1).join('')), { split: { char: '\n' } });
+            return sendSplitCode(message.channel, await farm_read(args.slice(1).join('')), { split: { char: '\n' } });
         } else if (args[0] === '조합식' || args[0] === 'ㅈㅎㅅ') {
             return message.channel.send(await farm_sex(args.slice(1).join('')));
         } else if (args[0] === '정보' || args[0] === 'ㅈㅂ') {
-            return message.channel.sendSplitCode(await farm_info(args.slice(1).join('')), { split: { char: '\n' } });
+            return sendSplitCode(message.channel, await farm_info(args.slice(1).join('')), { split: { char: '\n' } });
         } else if (args[0] === '추가' || args[0] === 'ㅊㄱ') {
             if (args.length < 4) {
                 return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
@@ -270,7 +271,8 @@ export async function commandExecute(interaction) {
 
     try {
         if (subcommand === '목록') {
-            return interaction.sendSplitCode(
+            return sendSplitCode(
+                interaction,
                 await farm_read(interaction.options.getString('몬스터_이름').replace(/\s+/g, '')),
                 { split: { char: '\n' } }
             );
@@ -279,7 +281,8 @@ export async function commandExecute(interaction) {
                 await farm_sex(interaction.options.getString('몬스터_이름').replace(/\s+/g, ''))
             );
         } else if (subcommand === '정보') {
-            return interaction.sendSplitCode(
+            return sendSplitCode(
+                interaction,
                 await farm_info(interaction.options.getString('농장_이름').replace(/\s+/g, '')),
                 { split: { char: '\n' } }
             );

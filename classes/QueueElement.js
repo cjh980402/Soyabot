@@ -3,6 +3,7 @@ import { AudioPlayerStatus, createAudioPlayer, NoSubscriberBehavior, VoiceConnec
 import { FormatError } from 'youtube-dlsr';
 import { replyAdmin } from '../admin/bot_control.js';
 import { songDownload } from '../util/song_util.js';
+import { Util } from '../util/Util.js';
 import { DEFAULT_VOLUME } from '../soyabot_config.js';
 
 export class QueueElement {
@@ -89,7 +90,10 @@ export class QueueElement {
                 .setImage(song.thumbnail)
                 .setDescription(`**${song.title}**\n${song.url}`)
                 .setFooter({
-                    text: song.duration === 0 ? '⊚ 실시간 방송' : `전체 재생 시간: ${song.duration.toDurationString()}`
+                    text:
+                        song.duration === 0
+                            ? '⊚ 실시간 방송'
+                            : `전체 재생 시간: ${Util.toDurationString(song.duration)}`
                 });
             const row1 = new MessageActionRow().addComponents(
                 new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),

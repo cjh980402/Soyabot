@@ -1,5 +1,6 @@
 import { PREFIX } from '../soyabot_config.js';
 import { MapleProb } from '../util/maple_probtable.js';
+import { sendSplitCode } from '../util/soyabot_util.js';
 
 export const usage = `${PREFIX}골드애플 (횟수)`;
 export const command = ['골드애플', 'ㄱㄷㅇㅍ', '독사과', 'ㄷㅅㄱ'];
@@ -14,7 +15,7 @@ export async function messageExecute(message, args) {
         for (const key in MapleProb.GOLDAPPLE_PROBTABLE) {
             rslt += `\n${key}: ${MapleProb.GOLDAPPLE_PROBTABLE[key] / 100000}%`;
         }
-        return message.channel.sendSplitCode(rslt, { split: { char: '\n' } });
+        return sendSplitCode(message.channel, rslt, { split: { char: '\n' } });
     }
 
     const count = Math.trunc(args[0] ?? 1);
@@ -45,7 +46,7 @@ export async function messageExecute(message, args) {
             rslt += `\n${key}: ${list[key]}회`;
         }
     }
-    return message.channel.sendSplitCode(rslt, { split: { char: '\n' } });
+    return sendSplitCode(message.channel, rslt, { split: { char: '\n' } });
 }
 export const commandData = {
     name: '골드애플',
@@ -66,7 +67,7 @@ export async function commandExecute(interaction) {
         for (const key in MapleProb.GOLDAPPLE_PROBTABLE) {
             rslt += `\n${key}: ${MapleProb.GOLDAPPLE_PROBTABLE[key] / 100000}%`;
         }
-        return interaction.sendSplitCode(rslt, { split: { char: '\n' } });
+        return sendSplitCode(interaction, rslt, { split: { char: '\n' } });
     }
 
     const count = Math.trunc(countString ?? 1);
@@ -97,5 +98,5 @@ export async function commandExecute(interaction) {
             rslt += `\n${key}: ${list[key]}회`;
         }
     }
-    return interaction.sendSplitCode(rslt, { split: { char: '\n' } });
+    return sendSplitCode(interaction, rslt, { split: { char: '\n' } });
 }

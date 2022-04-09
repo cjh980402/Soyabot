@@ -1,6 +1,6 @@
 import { FormData, request } from 'undici';
 import { safelyExtractBody } from 'undici/lib/fetch/body.js';
-import { getMessageImage } from '../util/soyabot_util.js';
+import { getMessageImage, sendSplitCode } from '../util/soyabot_util.js';
 import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET, PREFIX } from '../soyabot_config.js';
 
 async function requestCFR(url) {
@@ -51,6 +51,6 @@ export async function messageExecute(message) {
     if (!imageURL) {
         return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
     } else {
-        return message.channel.sendSplitCode(await clova_face(imageURL), { split: { char: '\n' } });
+        return sendSplitCode(message.channel, await clova_face(imageURL), { split: { char: '\n' } });
     }
 }

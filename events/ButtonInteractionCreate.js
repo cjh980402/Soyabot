@@ -1,4 +1,5 @@
 import { canModifyQueue } from '../util/soyabot_util.js';
+import { Util } from '../util/Util.js';
 
 export const name = 'interactionCreate';
 export async function listener(interaction) {
@@ -59,7 +60,7 @@ export async function listener(interaction) {
                     queue.sendMessage(`${interaction.user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);*/
                     break;
                 case 'shuffle':
-                    queue.songs.shuffle(1); // 첫번째 노래를 제외하고 섞기
+                    Util.shuffle(queue.songs, 1); // 첫번째 노래를 제외하고 섞기
                     queue.sendMessage(`${interaction.user} 🔀 대기열을 섞었습니다.`);
                     break;
             }

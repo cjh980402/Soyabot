@@ -1,8 +1,10 @@
-import { MessageEmbed, Util } from 'discord.js';
+import { MessageEmbed, Util as DjsUtil } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { replyAdmin } from '../admin/bot_control.js';
 import { QueueElement } from '../classes/QueueElement.js';
 import { isValidPlaylist, isValidVideo, getPlaylistInfo } from '../util/song_util.js';
+import { joinVoice } from '../util/soyabot_util.js';
+import { Util } from '../util/Util.js';
 
 export const usage = `${PREFIX}playlist (재생목록 주소│재생목록 제목)`;
 export const command = ['playlist', 'pl', '재생목록'];
@@ -54,12 +56,12 @@ export async function messageExecute(message, args) {
         .setColor('#FF9999')
         .setURL(playlist.url)
         .setDescription(
-            Util.splitMessage(
+            DjsUtil.splitMessage(
                 playlist.songs
                     .map(
                         (song, index) =>
                             `${index + 1}. ${song.title} \`[${
-                                song.duration === 0 ? '⊚ LIVE' : song.duration.toDurationString()
+                                song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
                             }]\``
                     )
                     .join('\n'),
@@ -79,7 +81,7 @@ export async function messageExecute(message, args) {
     message.channel.send({ content: `✅ ${message.author}가 재생목록을 시작했습니다.`, embeds: [playlistEmbed] });
 
     try {
-        const newQueue = new QueueElement(message.channel, channel, await channel.join(), playlist.songs);
+        const newQueue = new QueueElement(message.channel, channel, await joinVoice(channel), playlist.songs);
         message.client.queues.set(message.guildId, newQueue);
         newQueue.playSong();
     } catch (err) {
@@ -146,12 +148,12 @@ export async function commandExecute(interaction) {
         .setColor('#FF9999')
         .setURL(playlist.url)
         .setDescription(
-            Util.splitMessage(
+            DjsUtil.splitMessage(
                 playlist.songs
                     .map(
                         (song, index) =>
                             `${index + 1}. ${song.title} \`[${
-                                song.duration === 0 ? '⊚ LIVE' : song.duration.toDurationString()
+                                song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
                             }]\``
                     )
                     .join('\n'),
@@ -174,7 +176,7 @@ export async function commandExecute(interaction) {
     });
 
     try {
-        const newQueue = new QueueElement(interaction.channel, channel, await channel.join(), playlist.songs);
+        const newQueue = new QueueElement(interaction.channel, channel, await joinVoice(channel), playlist.songs);
         interaction.client.queues.set(interaction.guildId, newQueue);
         newQueue.playSong();
     } catch (err) {

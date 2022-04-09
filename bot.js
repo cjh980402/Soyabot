@@ -1,4 +1,3 @@
-import './util/soyabot_setting_polyfill.js'; // 제일 처음에 import 해야하는 폴리필 모듈
 import { SoyaClient } from './classes/SoyaClient.js';
 import { readdirSync } from 'node:fs';
 import { TOKEN } from './soyabot_config.js';

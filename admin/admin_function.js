@@ -3,24 +3,25 @@ import { exec as _exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import { botNotice, replyChannelID } from './bot_control.js';
 import { MapleProb } from '../util/maple_probtable.js';
+import { fetchFullContent, sendSplitCode } from '../util/soyabot_util.js';
 
 export const exec = promisify(_exec);
 
 export async function adminChat(message) {
-    const fullContent = await message.fetchFullContent();
+    const fullContent = await fetchFullContent(message);
     const targetId = /^\^(\d+)\^\s/.exec(fullContent)?.[1];
     if (fullContent.startsWith('>')) {
         // 노드 코드 실행 후 출력
         const funcBody = fullContent.slice(1).trim().split('\n'); // 긴 코드 테스트를 위해 fullContent 이용
         funcBody.push(`return ${funcBody.pop()};`); // 함수의 마지막 줄 내용은 자동으로 반환
-        return message.channel.sendSplitCode(String(await eval(`(async () => {\n${funcBody.join('\n')}\n})()`)), {
+        return sendSplitCode(message.channel, String(await eval(`(async () => {\n${funcBody.join('\n')}\n})()`)), {
             code: 'js',
             split: { char: '' }
         });
         // eval의 내부가 async 함수의 리턴값이므로 await까지 해준다.
     } else if (fullContent.startsWith(')')) {
         // 콘솔 명령 실행 후 출력
-        return message.channel.sendSplitCode((await exec(fullContent.slice(1).trim())).stdout, {
+        return sendSplitCode(message.channel, (await exec(fullContent.slice(1).trim())).stdout, {
             code: 'ansi',
             split: { char: '' }
         });

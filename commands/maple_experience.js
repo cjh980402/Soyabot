@@ -1,5 +1,6 @@
 import { PREFIX } from '../soyabot_config.js';
 import { levelTable } from '../util/soyabot_const.js';
+import { Util } from '../util/Util.js';
 
 export const usage = `${PREFIX}경험치 (시작 레벨) (끝 레벨)`;
 export const command = ['경험치', 'ㄱㅎㅊ'];
@@ -24,7 +25,7 @@ export async function messageExecute(message, args) {
         const rslt = `Lv.${startlev} → Lv.${endlev} 경험치통: ${(
             levelTable[endlev - 1] - levelTable[startlev - 1]
         ).toLocaleString()}
-(${(levelTable[endlev - 1] - levelTable[startlev - 1]).toUnitString()})
+(${Util.toUnitString(levelTable[endlev - 1] - levelTable[startlev - 1])})
 진행률 (~250): ${(Math.min(levelTable[endlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
 진행률 (~275): ${(Math.min(levelTable[endlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
 진행률 (~300): ${((levelTable[endlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
@@ -35,7 +36,7 @@ export async function messageExecute(message, args) {
         }
 
         const rslt = `Lv.${startlev} 경험치통: ${(levelTable[startlev] - levelTable[startlev - 1]).toLocaleString()}
-(${(levelTable[startlev] - levelTable[startlev - 1]).toUnitString()})
+(${Util.toUnitString(levelTable[startlev] - levelTable[startlev - 1])})
 진행률 (~250): ${(Math.min(levelTable[startlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
 진행률 (~275): ${(Math.min(levelTable[startlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
 진행률 (~300): ${((levelTable[startlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
@@ -75,7 +76,7 @@ export async function commandExecute(interaction) {
         const rslt = `Lv.${startlev} → Lv.${endlev} 경험치통: ${(
             levelTable[endlev - 1] - levelTable[startlev - 1]
         ).toLocaleString()}
-(${(levelTable[endlev - 1] - levelTable[startlev - 1]).toUnitString()})
+(${Util.toUnitString(levelTable[endlev - 1] - levelTable[startlev - 1])})
 진행률 (~250): ${(Math.min(levelTable[endlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
 진행률 (~275): ${(Math.min(levelTable[endlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
 진행률 (~300): ${((levelTable[endlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
@@ -86,7 +87,7 @@ export async function commandExecute(interaction) {
         }
 
         const rslt = `Lv.${startlev} 경험치통: ${(levelTable[startlev] - levelTable[startlev - 1]).toLocaleString()}
-(${(levelTable[startlev] - levelTable[startlev - 1]).toUnitString()})
+(${Util.toUnitString(levelTable[startlev] - levelTable[startlev - 1])})
 진행률 (~250): ${(Math.min(levelTable[startlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
 진행률 (~275): ${(Math.min(levelTable[startlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
 진행률 (~300): ${((levelTable[startlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;

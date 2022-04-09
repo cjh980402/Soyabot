@@ -1,6 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { splitBar } from 'string-progressbar';
 import { PREFIX } from '../soyabot_config.js';
+import { Util } from '../util/Util.js';
 
 export const usage = `${PREFIX}nowplaying`;
 export const command = ['nowplaying', 'np'];
@@ -26,13 +27,13 @@ export async function messageExecute(message) {
         .setAuthor({ name: message.client.user.username })
         .addField(
             '\u200b',
-            `${seek.toDurationString()} [${splitBar(song.duration || seek, seek, 20)[0]}] ${
-                song.duration === 0 ? '⊚ LIVE' : song.duration.toDurationString()
+            `${Util.toDurationString(seek)} [${splitBar(song.duration || seek, seek, 20)[0]}] ${
+                song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
             }`
         );
 
     if (song.duration > 0) {
-        nowPlaying.setFooter({ text: `남은 재생 시간: ${(song.duration - seek).toDurationString()}` });
+        nowPlaying.setFooter({ text: `남은 재생 시간: ${Util.toDurationString(song.duration - seek)}` });
     }
 
     return message.channel.send({ embeds: [nowPlaying] });
@@ -61,13 +62,13 @@ export async function commandExecute(interaction) {
         .setAuthor({ name: interaction.client.user.username })
         .addField(
             '\u200b',
-            `${seek.toDurationString()} [${splitBar(song.duration || seek, seek, 20)[0]}] ${
-                song.duration === 0 ? '⊚ LIVE' : song.duration.toDurationString()
+            `${Util.toDurationString(seek)} [${splitBar(song.duration || seek, seek, 20)[0]}] ${
+                song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
             }`
         );
 
     if (song.duration > 0) {
-        nowPlaying.setFooter({ text: `남은 재생 시간: ${(song.duration - seek).toDurationString()}` });
+        nowPlaying.setFooter({ text: `남은 재생 시간: ${Util.toDurationString(song.duration - seek)}` });
     }
 
     return interaction.followUp({ embeds: [nowPlaying] });

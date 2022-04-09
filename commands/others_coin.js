@@ -2,6 +2,7 @@ import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { request } from 'undici';
 import { PREFIX } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
+import { Util } from '../util/Util.js';
 const chartType = {
     '1일': 'd',
     '1주': 'w',
@@ -47,7 +48,7 @@ async function getCoinEmbed(searchRslt, type) {
 
     const minPrice = todayData.low_price.toLocaleString();
     const maxPrice = todayData.high_price.toLocaleString();
-    const amount = todayData.acc_trade_price_24h.toUnitString(2);
+    const amount = Util.toUnitString(todayData.acc_trade_price_24h, 2);
 
     const { stdout: coinPic } = await exec(
         `python3 ./util/python/make_coin_info.py ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice} ${changeType} '${changeString}' ${minPrice} ${maxPrice}`,

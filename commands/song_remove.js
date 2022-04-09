@@ -1,5 +1,6 @@
 import { PREFIX } from '../soyabot_config.js';
 import { canModifyQueue } from '../util/soyabot_util.js';
+import { Util } from '../util/Util.js';
 
 export const usage = `${PREFIX}remove (대기열 번호)`;
 export const command = ['remove', 'rm'];
@@ -24,7 +25,7 @@ export async function messageExecute(message, args) {
         return message.reply('현재 대기열에서 삭제할 수 있는 노래가 없습니다.');
     }
 
-    const songRemove = args.join('').split(',').map(Math.trunc).deduplication();
+    const songRemove = Util.deduplication(args.join('').split(',').map(Math.trunc));
     const removed = [];
     if (songRemove.every((v) => !isNaN(v) && 2 <= v && v <= queue.songs.length)) {
         queue.songs = queue.songs.filter((v, i) => {
@@ -73,7 +74,7 @@ export async function commandExecute(interaction) {
         return interaction.followUp('현재 대기열에서 삭제할 수 있는 노래가 없습니다.');
     }
 
-    const songRemove = interaction.options.getString('대기열_번호').split(',').map(Math.trunc).deduplication();
+    const songRemove = Util.deduplication(interaction.options.getString('대기열_번호').split(',').map(Math.trunc));
     const removed = [];
     if (songRemove.every((v) => !isNaN(v) && 2 <= v && v <= queue.songs.length)) {
         queue.songs = queue.songs.filter((v, i) => {

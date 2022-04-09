@@ -1,6 +1,7 @@
 import { Collection, MessageEmbed } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { youtubeSearch } from '../util/song_util.js';
+import { Util } from '../util/Util.js';
 
 export const usage = `${PREFIX}search (영상 제목)`;
 export const command = ['search', 's'];
@@ -40,7 +41,7 @@ export async function messageExecute(message, args) {
         const rslt = await message.channel.awaitMessages({
             filter: (msg) =>
                 msg.author.id === message.author.id &&
-                (songChoice = msg.content.split(',').map(Math.trunc).deduplication()).every(
+                (songChoice = Util.deduplication(msg.content.split(',').map(Math.trunc))).every(
                     (v) => !isNaN(v) && 1 <= v && v <= results.length
                 ),
             max: 1,
@@ -109,7 +110,7 @@ export async function commandExecute(interaction) {
         const rslt = await interaction.channel.awaitMessages({
             filter: (msg) =>
                 msg.author.id === interaction.user.id &&
-                (songChoice = msg.content.split(',').map(Math.trunc).deduplication()).every(
+                (songChoice = Util.deduplication(msg.content.split(',').map(Math.trunc))).every(
                     (v) => !isNaN(v) && 1 <= v && v <= results.length
                 ),
             max: 1,

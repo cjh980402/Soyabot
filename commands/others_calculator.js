@@ -1,5 +1,6 @@
 import { create, all } from 'mathjs';
 import { PREFIX } from '../soyabot_config.js';
+import { sendSplitCode } from '../util/soyabot_util.js';
 const math = create(all);
 const originEvaluate = math.evaluate; // 오버라이드 전에 원래 evaluate 함수를 가져옴
 
@@ -47,7 +48,7 @@ export async function messageExecute(message, args) {
     }
 
     try {
-        return message.channel.sendSplitCode(String(originEvaluate(inputExpression(args.join(' ')))), { code: 'js' });
+        return sendSplitCode(message.channel, String(originEvaluate(inputExpression(args.join(' ')))), { code: 'js' });
     } catch {
         return message.channel.send('올바르지 않은 수식입니다.');
     }
@@ -66,7 +67,8 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     try {
-        return interaction.sendSplitCode(
+        return sendSplitCode(
+            interaction,
             String(originEvaluate(inputExpression(interaction.options.getString('계산식')))),
             { code: 'js' }
         );

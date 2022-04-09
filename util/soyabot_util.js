@@ -1,3 +1,88 @@
+import { Util, Channel, CommandInteraction, Permissions } from 'discord.js';
+import { request } from 'undici';
+import { joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
+
+function contentSplitCode(content, options) {
+    content ||= '\u200b';
+    if (options.code) {
+        content = `\`\`\`${options.code}\n${Util.cleanCodeBlockContent(content)}\n\`\`\``;
+        if (options.split) {
+            options.split.prepend = `${options.split.prepend ?? ''}\`\`\`${options.code}\n`;
+            options.split.append = `\n\`\`\`${options.split.append ?? ''}`;
+        }
+    }
+    if (options.split) {
+        content = Util.splitMessage(content, options.split);
+    } else {
+        content = [content];
+    }
+    return content;
+}
+
+function entersState(target, status, timeout) {
+    return new Promise((resolve, reject) => {
+        if (target.state.status === status) {
+            return resolve(target);
+        }
+
+        let failTimer = null;
+        const onStatus = () => {
+            clearTimeout(failTimer);
+            resolve(target);
+        };
+
+        failTimer = setTimeout(() => {
+            target.off(status, onStatus);
+            reject(new Error(`Didn't enter state ${status} within ${timeout}ms`));
+        }, timeout);
+
+        target.once(status, onStatus);
+    });
+}
+
+export async function fetchFullContent(message) {
+    if (message.type === 'DEFAULT' && message.attachments.first()?.name === 'message.txt') {
+        const { body } = await request(message.attachments.first().url);
+        return body.text();
+    } else {
+        return message.content;
+    }
+}
+
+export async function sendSplitCode(target, content, options) {
+    if (target instanceof Channel && target.isText()) {
+        for (const c of contentSplitCode(content, options)) {
+            await this.send(c);
+        }
+    } else if (target instanceof CommandInteraction) {
+        for (const c of contentSplitCode(content, options)) {
+            await this.followUp(c);
+        }
+    }
+}
+
+export async function joinVoice(channel) {
+    const connection = joinVoiceChannel({
+        channelId: channel.id,
+        guildId: channel.guildId,
+        adapterCreator: channel.guild.voiceAdapterCreator
+    });
+
+    try {
+        await entersState(connection, VoiceConnectionStatus.Ready, 30000); // 연결될 때까지 최대 30초 대기
+        if (
+            channel.type === 'GUILD_STAGE_VOICE' &&
+            channel.permissionsFor(channel.guild.me).has(Permissions.STAGE_MODERATOR)
+        ) {
+            await channel.guild.me.voice.setSuppressed(false); // 스테이지 채널이면서 관리 권한이 있으면 봇을 speaker로 설정
+        }
+        return connection;
+    } catch (err) {
+        connection.destroy(); // 에러 발생 시 연결 취소
+        throw err;
+    }
+}
+
 export function commandCount(db, commandName) {
     try {
         const existing = db.get('SELECT * FROM command_db WHERE name = ?', [commandName]);

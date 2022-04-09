@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 import { writeFile } from 'node:fs/promises';
 import { exec } from '../admin/admin_function.js';
 import { ADMIN_ID, PREFIX } from '../soyabot_config.js';
+import { sendSplitCode } from '../util/soyabot_util.js';
 let cppProcess = null;
 
 export const usage = `${PREFIX}cpp (소스코드)`;
@@ -22,10 +23,10 @@ export async function messageExecute(message, args) {
             }
             cppProcess = spawn('./other_source/cpp_result.out');
             cppProcess.stderr.on('data', (data) => {
-                message.channel.sendSplitCode(String(data), { split: { char: '' } });
+                sendSplitCode(message.channel, String(data), { split: { char: '' } });
             });
             cppProcess.stdout.on('data', (data) => {
-                message.channel.sendSplitCode(String(data), { split: { char: '' } });
+                sendSplitCode(message.channel, String(data), { split: { char: '' } });
             });
             cppProcess.on('error', (err) => {
                 message.channel.send(`Process throws an error (${err})`);

@@ -1,5 +1,6 @@
 import { PREFIX } from '../soyabot_config.js';
 import { canModifyQueue } from '../util/soyabot_util.js';
+import { Util } from '../util/Util.js';
 
 export const usage = `${PREFIX}shuffle`;
 export const command = ['shuffle', 'shf'];
@@ -18,7 +19,7 @@ export async function messageExecute(message) {
         return message.reply(`${message.client.user}과 같은 음성 채널에 참가해주세요!`);
     }
 
-    queue.songs.shuffle(1); // 첫번째 노래를 제외하고 섞기
+    Util.shuffle(queue.songs, 1); // 첫번째 노래를 제외하고 섞기
     return message.channel.send(`${message.author} 🔀 대기열을 섞었습니다.`);
 }
 export const commandData = {
@@ -38,6 +39,6 @@ export async function commandExecute(interaction) {
         return interaction.followUp(`${interaction.client.user}과 같은 음성 채널에 참가해주세요!`);
     }
 
-    queue.songs.shuffle(1); // 첫번째 노래를 제외하고 섞기
+    Util.shuffle(queue.songs, 1); // 첫번째 노래를 제외하고 섞기
     return interaction.followUp(`${interaction.user} 🔀 대기열을 섞었습니다.`);
 }
