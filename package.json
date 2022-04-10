@@ -28,7 +28,7 @@
     "chartjs-plugin-datalabels": "^2.0.0",
     "cheerio": "^1.0.0-rc.10",
     "discord.js": "^13.6.0",
-    "entities": "^4.2.0",
+    "entities": "^4.3.0",
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^4.4.1",
     "hangul-js": "^0.2.6",

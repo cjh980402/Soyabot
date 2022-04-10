@@ -16,8 +16,11 @@ export async function messageExecute(message) {
         /*const { stdout: portraitPic } = await exec(`python3 ./util/python/gl2face_portrait.py ${imageURL}`, { encoding: 'buffer' }); // 파이썬 스크립트 실행
         const image = new MessageAttachment(portraitPic, 'portrait.png');*/
         const { statusCode, body } = await request(
-            `http://${BOT_SERVER_DOMAIN}/portrait/${encodeURIComponent(imageURL)}`
-        );
+            `http://${BOT_SERVER_DOMAIN}/portrait/${encodeURIComponent(imageURL)}`,
+            {
+                headersTimeout: 240000
+            }
+        ); // 그림 작업은 오래걸리므로 시간 제한을 4분으로 변경
         if (200 <= statusCode && statusCode <= 299) {
             const image = new MessageAttachment(Buffer.from(await body.arrayBuffer()), 'portrait.png');
             return message.channel.send({ files: [image] });
