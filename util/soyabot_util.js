@@ -4,15 +4,17 @@ import { joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
 
 function contentSplitCode(content, options) {
     content ||= '\u200b';
+    const splitOptions = options.split ? { ...options.split } : null; // 옵션을 수정할 수도 있기 때문에 복사본 생성
+
     if (options.code) {
         content = `\`\`\`${options.code}\n${Util.cleanCodeBlockContent(content)}\n\`\`\``;
-        if (options.split) {
-            options.split.prepend = `${options.split.prepend ?? ''}\`\`\`${options.code}\n`;
-            options.split.append = `\n\`\`\`${options.split.append ?? ''}`;
+        if (splitOptions) {
+            splitOptions.prepend = `${splitOptions.prepend ?? ''}\`\`\`${options.code}\n`;
+            splitOptions.append = `\n\`\`\`${splitOptions.append ?? ''}`;
         }
     }
-    if (options.split) {
-        content = Util.splitMessage(content, options.split);
+    if (splitOptions) {
+        content = Util.splitMessage(content, splitOptions);
     } else {
         content = [content];
     }
@@ -50,12 +52,10 @@ export async function fetchFullContent(message) {
 }
 
 export async function sendSplitCode(target, content, options) {
-    if (target instanceof Channel && target.isText()) {
-        for (const c of contentSplitCode(content, options)) {
+    for (const c of contentSplitCode(content, options)) {
+        if (target instanceof Channel && target.isText()) {
             await target.send(c);
-        }
-    } else if (target instanceof CommandInteraction) {
-        for (const c of contentSplitCode(content, options)) {
+        } else if (target instanceof CommandInteraction) {
             await target.followUp(c);
         }
     }

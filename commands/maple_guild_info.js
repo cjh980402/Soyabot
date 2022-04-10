@@ -34,7 +34,7 @@ export async function messageExecute(message, args) {
     message.channel.send('정보 가져오는 중...');
     const rslt = `${args[0]} ${args[1]} 길드 (${mapleGuildInfo.MemberCount}명)\n길드원 목록 갱신 ${isLatest ? '성공' : '실패'}\n\n${(await mapleGuildInfo.memberDataList()).join('\n\n')}`;
 
-    return sendSplitCode(message.channel, rslt, { split: { char: '\n' } });*/
+    return sendSplitCode(message.channel, rslt, { split: true });*/
     const { statusCode, body } = await request(
         `http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(args[0])}/${encodeURIComponent(args[1])}`,
         {
@@ -42,7 +42,7 @@ export async function messageExecute(message, args) {
         }
     ); // 길드 작업은 오래걸리므로 시간 제한을 4분으로 변경
     if (200 <= statusCode && statusCode <= 299) {
-        return sendSplitCode(message.channel, await body.text(), { split: { char: '\n' } });
+        return sendSplitCode(message.channel, await body.text(), { split: true });
     } else {
         for await (const _ of body); // 메모리 누수 방지를 위한 force consumption of body
         return message.channel.send('길드 정보를 가져올 수 없습니다.');
@@ -77,7 +77,7 @@ export async function commandExecute(interaction) {
     await interaction.editReply('정보 가져오는 중...');
     const rslt = `${serverName} ${guildName} 길드 (${mapleGuildInfo.MemberCount}명)\n길드원 목록 갱신 ${isLatest ? '성공' : '실패'}\n\n${(await mapleGuildInfo.memberDataList()).join('\n\n')}`;
 
-    return sendSplitCode(interaction, rslt, { split: { char: '\n' } });*/
+    return sendSplitCode(interaction, rslt, { split: true });*/
     const { statusCode, body } = await request(
         `http://${BOT_SERVER_DOMAIN}/guild/${encodeURIComponent(serverName)}/${encodeURIComponent(guildName)}`,
         {
@@ -85,7 +85,7 @@ export async function commandExecute(interaction) {
         }
     ); // 길드 작업은 오래걸리므로 시간 제한을 4분으로 변경
     if (200 <= statusCode && statusCode <= 299) {
-        return sendSplitCode(interaction, await body.text(), { split: { char: '\n' } });
+        return sendSplitCode(interaction, await body.text(), { split: true });
     } else {
         for await (const _ of body); // 메모리 누수 방지를 위한 force consumption of body
         return interaction.followUp('길드 정보를 가져올 수 없습니다.');

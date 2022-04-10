@@ -1,6 +1,6 @@
 import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../classes/MapleParser.js';
-import { levelTable } from '../util/soyabot_const.js';
+import { levelTable } from '../util/Constant.js';
 import { Util } from '../util/Util.js';
 
 export const usage = `${PREFIX}레벨 (닉네임)`;

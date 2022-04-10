@@ -15,7 +15,7 @@ export async function messageExecute(message, args) {
         for (const key in MapleProb.GOLDAPPLE_PROBTABLE) {
             rslt += `\n${key}: ${MapleProb.GOLDAPPLE_PROBTABLE[key] / 100000}%`;
         }
-        return sendSplitCode(message.channel, rslt, { split: { char: '\n' } });
+        return sendSplitCode(message.channel, rslt, { split: true });
     }
 
     const count = Math.trunc(args[0] ?? 1);
@@ -46,7 +46,7 @@ export async function messageExecute(message, args) {
             rslt += `\n${key}: ${list[key]}회`;
         }
     }
-    return sendSplitCode(message.channel, rslt, { split: { char: '\n' } });
+    return sendSplitCode(message.channel, rslt, { split: true });
 }
 export const commandData = {
     name: '골드애플',
@@ -67,7 +67,7 @@ export async function commandExecute(interaction) {
         for (const key in MapleProb.GOLDAPPLE_PROBTABLE) {
             rslt += `\n${key}: ${MapleProb.GOLDAPPLE_PROBTABLE[key] / 100000}%`;
         }
-        return sendSplitCode(interaction, rslt, { split: { char: '\n' } });
+        return sendSplitCode(interaction, rslt, { split: true });
     }
 
     const count = Math.trunc(countString ?? 1);
@@ -98,5 +98,5 @@ export async function commandExecute(interaction) {
             rslt += `\n${key}: ${list[key]}회`;
         }
     }
-    return sendSplitCode(interaction, rslt, { split: { char: '\n' } });
+    return sendSplitCode(interaction, rslt, { split: true });
 }

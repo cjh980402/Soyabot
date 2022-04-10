@@ -1,7 +1,7 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../classes/MapleParser.js';
-import { levelTable } from '../util/soyabot_const.js';
+import { levelTable } from '../util/Constant.js';
 
 async function getInfoEmbed(mapleUserInfo, level) {
     const char_union = await mapleUserInfo.homeUnion(); // 유니온 레벨, 전투력, 수급량

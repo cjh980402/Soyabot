@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
-import { bossData } from '../util/soyabot_const.js';
+import { bossData } from '../util/Constant.js';
 
 const bossDifficulty = ['하드', '카오스', '노말', '이지'];
 

@@ -31,8 +31,7 @@ async function getLyricsEmbed(search) {
         lyricsEmbed
             .setTitle(`**'${title} - ${artist}'의 가사**`)
             .setDescription(
-                Util.splitMessage(lyrics, { char: '\n' })[0] ||
-                    `${is19 ? '연령 제한이 있는' : '등록된 가사가 없는'} 콘텐츠입니다.`
+                Util.splitMessage(lyrics)[0] || `${is19 ? '연령 제한이 있는' : '등록된 가사가 없는'} 콘텐츠입니다.`
             );
     } else {
         lyricsEmbed.setTitle(`**'${search}'의 가사**`).setDescription('검색된 노래가 없습니다.');

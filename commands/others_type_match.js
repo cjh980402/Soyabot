@@ -1,7 +1,7 @@
 import Hangul from 'hangul-js';
 import { setTimeout } from 'node:timers/promises';
 import { PREFIX } from '../soyabot_config.js';
-import { matchString } from '../util/soyabot_const.js';
+import { matchString } from '../util/Constant.js';
 
 export const usage = `${PREFIX}타자대결 (옵션)`;
 export const command = ['타자대결', 'ㅌㅈㄷㄱ'];

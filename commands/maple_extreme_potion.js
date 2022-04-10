@@ -1,5 +1,5 @@
 import { PREFIX } from '../soyabot_config.js';
-import { levelTable } from '../util/soyabot_const.js';
+import { levelTable } from '../util/Constant.js';
 const probTable = [
     [5, 5, 5, 5, 5, 5, 10, 20, 20, 20],
     [5, 5, 5, 5, 5, 10, 10, 20, 20, 15],

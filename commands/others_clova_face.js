@@ -51,6 +51,6 @@ export async function messageExecute(message) {
     if (!imageURL) {
         return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
     } else {
-        return sendSplitCode(message.channel, await clova_face(imageURL), { split: { char: '\n' } });
+        return sendSplitCode(message.channel, await clova_face(imageURL), { split: true });
     }
 }

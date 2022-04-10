@@ -1,5 +1,5 @@
 import { PREFIX } from '../soyabot_config.js';
-import { levelTable } from '../util/soyabot_const.js';
+import { levelTable } from '../util/Constant.js';
 import { Util } from '../util/Util.js';
 
 export const usage = `${PREFIX}경험치 (시작 레벨) (끝 레벨)`;

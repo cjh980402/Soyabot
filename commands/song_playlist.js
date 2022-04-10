@@ -64,8 +64,7 @@ export async function messageExecute(message, args) {
                                 song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
                             }]\``
                     )
-                    .join('\n'),
-                { char: '\n' }
+                    .join('\n')
             )[0]
         );
 
@@ -156,8 +155,7 @@ export async function commandExecute(interaction) {
                                 song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
                             }]\``
                     )
-                    .join('\n'),
-                { char: '\n' }
+                    .join('\n')
             )[0]
         );
 

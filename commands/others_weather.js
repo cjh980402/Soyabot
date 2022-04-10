@@ -68,7 +68,7 @@ async function getWeatherEmbed(targetLocal) {
             .setTitle(`**${targetLocal[0][0]}**`)
             .setColor('#FF9999')
             .setURL(targetURL)
-            .setDescription(Util.splitMessage(desc, { char: '\n' })[0])
+            .setDescription(Util.splitMessage(desc)[0])
             .setTimestamp();
         embeds.push(embed);
     }

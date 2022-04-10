@@ -1,6 +1,6 @@
 import { exec as _exec } from 'node:child_process';
 import { promisify } from 'node:util';
-import { botNotice, replyChannelID } from './bot_control.js';
+import { replyChannelID } from './bot_control.js';
 import { MapleProb } from '../util/maple_probtable.js';
 import { fetchFullContent, sendSplitCode } from '../util/soyabot_util.js';
 
