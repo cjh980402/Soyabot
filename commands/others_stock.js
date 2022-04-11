@@ -77,16 +77,26 @@ async function getStockEmbed(search, searchRslt, type) {
         // 파이썬 스크립트 실행
         image = new MessageAttachment(stockPic, `${code}.png`);
 
-        stockEmbed
-            .addField('**거래량**', data.totalInfos['거래량'], true)
-            .addField('**거래대금**', data.totalInfos['대금'], true)
-            .addField('**개인**', data.dealTrendInfo.personalValue, true)
-            .addField('**외국인**', data.dealTrendInfo.foreignValue, true)
-            .addField('**기관**', data.dealTrendInfo.institutionalValue, true);
+        stockEmbed.addFields(
+            { name: '**거래량**', value: data.totalInfos['거래량'], inline: true },
+            { name: '**거래대금**', value: data.totalInfos['대금'], inline: true },
+            { name: '**개인**', value: data.dealTrendInfo.personalValue, inline: true },
+            { name: '**외국인**', value: data.dealTrendInfo.foreignValue, inline: true },
+            { name: '**기관**', value: data.dealTrendInfo.institutionalValue, inline: true }
+        );
         if (data.upDownStockInfo) {
-            stockEmbed
-                .addField('**상승**', `${data.upDownStockInfo.riseCount} (${data.upDownStockInfo.upperCount})`, true)
-                .addField('**하락**', `${data.upDownStockInfo.fallCount} (${data.upDownStockInfo.lowerCount})`, true);
+            stockEmbed.addFields(
+                {
+                    name: '**상승**',
+                    value: `${data.upDownStockInfo.riseCount} (${data.upDownStockInfo.upperCount})`,
+                    inline: true
+                },
+                {
+                    name: '**하락**',
+                    value: `${data.upDownStockInfo.fallCount} (${data.upDownStockInfo.lowerCount})`,
+                    inline: true
+                }
+            );
         }
     } else if (stockfind[2][0] === '해외지수') {
         // 해외 지수
@@ -144,27 +154,30 @@ async function getStockEmbed(search, searchRslt, type) {
         // 파이썬 스크립트 실행
         image = new MessageAttachment(stockPic, `${code}.png`);
 
-        stockEmbed
-            .addField('**거래량**', data.totalInfos['거래량'], true)
-            .addField('**거래대금**', `${data.totalInfos['대금']}원`, true);
+        stockEmbed.addFields(
+            { name: '**거래량**', value: data.totalInfos['거래량'], inline: true },
+            { name: '**거래대금**', value: `${data.totalInfos['대금']}원`, inline: true }
+        );
         if (data.stockEndType === 'etf') {
-            stockEmbed
-                .addField('**최근 1개월 수익률**', data.totalInfos['최근 1개월 수익률'], true)
-                .addField('**최근 3개월 수익률**', data.totalInfos['최근 3개월 수익률'], true)
-                .addField('**최근 6개월 수익률**', data.totalInfos['최근 6개월 수익률'], true)
-                .addField('**최근 1년 수익률**', data.totalInfos['최근 1년 수익률'], true)
-                .addField('**NAV**', data.totalInfos['NAV'], true)
-                .addField('**펀드보수**', data.totalInfos['펀드보수'], true);
+            stockEmbed.addFields(
+                { name: '**최근 1개월 수익률**', value: data.totalInfos['최근 1개월 수익률'], inline: true },
+                { name: '**최근 3개월 수익률**', value: data.totalInfos['최근 3개월 수익률'], inline: true },
+                { name: '**최근 6개월 수익률**', value: data.totalInfos['최근 6개월 수익률'], inline: true },
+                { name: '**최근 1년 수익률**', value: data.totalInfos['최근 1년 수익률'], inline: true },
+                { name: '**NAV**', value: data.totalInfos['NAV'], inline: true },
+                { name: '**펀드보수**', value: data.totalInfos['펀드보수'], inline: true }
+            );
         } else {
-            stockEmbed
-                .addField('**시가총액**', `${data.totalInfos['시총']}원`, true)
-                .addField('**외인소진율**', data.totalInfos['외인소진율'], true)
-                .addField('**PER**', data.totalInfos['PER'], true)
-                .addField('**EPS**', data.totalInfos['EPS'], true)
-                .addField('**PBR**', data.totalInfos['PBR'], true)
-                .addField('**BPS**', data.totalInfos['BPS'], true)
-                .addField('**배당률**', data.totalInfos['배당수익률'], true)
-                .addField('**배당금**', data.totalInfos['주당배당금'], true);
+            stockEmbed.addFields(
+                { name: '**시가총액**', value: `${data.totalInfos['시총']}원`, inline: true },
+                { name: '**외인소진율**', value: data.totalInfos['외인소진율'], inline: true },
+                { name: '**PER**', value: data.totalInfos['PER'], inline: true },
+                { name: '**EPS**', value: data.totalInfos['EPS'], inline: true },
+                { name: '**PBR**', value: data.totalInfos['PBR'], inline: true },
+                { name: '**BPS**', value: data.totalInfos['BPS'], inline: true },
+                { name: '**배당률**', value: data.totalInfos['배당수익률'], inline: true },
+                { name: '**배당금**', value: data.totalInfos['주당배당금'], inline: true }
+            );
         }
     } else {
         // 해외 주식
@@ -194,30 +207,53 @@ async function getStockEmbed(search, searchRslt, type) {
         // 파이썬 스크립트 실행
         image = new MessageAttachment(stockPic, `${code}.png`);
 
-        stockEmbed
-            .addField('**거래량**', data.stockItemTotalInfos['거래량'], true)
-            .addField('**거래대금**', `${data.stockItemTotalInfos['대금']}${data.currencyType.name}`, true)
-            .addField('**시가총액**', `${data.stockItemTotalInfos['시총']}${data.currencyType.name}`, true);
+        stockEmbed.addFields(
+            { name: '**거래량**', value: data.stockItemTotalInfos['거래량'], inline: true },
+            {
+                name: '**거래대금**',
+                value: `${data.stockItemTotalInfos['대금']}${data.currencyType.name}`,
+                inline: true
+            },
+            {
+                name: '**시가총액**',
+                value: `${data.stockItemTotalInfos['시총']}${data.currencyType.name}`,
+                inline: true
+            }
+        );
         if (data.stockEndType === 'etf') {
             const { body: etfBody } = await request(`https://api.stock.naver.com/etf/${identifer}/basic`);
             const etfData = await etfBody.json();
             etfData.stockItemTotalInfos = getTotalInfoObj(etfData.stockItemTotalInfos);
-            stockEmbed
-                .addField('**최근 1개월 수익률**', etfData.stockItemTotalInfos['최근 1개월 수익률'], true)
-                .addField('**최근 3개월 수익률**', etfData.stockItemTotalInfos['최근 3개월 수익률'], true)
-                .addField('**최근 6개월 수익률**', etfData.stockItemTotalInfos['최근 6개월 수익률'], true)
-                .addField('**최근 1년 수익률**', etfData.stockItemTotalInfos['최근 1년 수익률'], true)
-                .addField('**NAV**', etfData.stockItemTotalInfos['NAV'], true)
-                .addField('**배당금**', etfData.stockItemTotalInfos['배당금'], true);
+            stockEmbed.addFields(
+                {
+                    name: '**최근 1개월 수익률**',
+                    value: etfData.stockItemTotalInfos['최근 1개월 수익률'],
+                    inline: true
+                },
+                {
+                    name: '**최근 3개월 수익률**',
+                    value: etfData.stockItemTotalInfos['최근 3개월 수익률'],
+                    inline: true
+                },
+                {
+                    name: '**최근 6개월 수익률**',
+                    value: etfData.stockItemTotalInfos['최근 6개월 수익률'],
+                    inline: true
+                },
+                { name: '**최근 1년 수익률**', value: etfData.stockItemTotalInfos['최근 1년 수익률'], inline: true },
+                { name: '**NAV**', value: etfData.stockItemTotalInfos['NAV'], inline: true },
+                { name: '**배당금**', value: etfData.stockItemTotalInfos['배당금'], inline: true }
+            );
         } else {
-            stockEmbed
-                .addField('**업종**', data.stockItemTotalInfos['업종'], true)
-                .addField('**PER**', data.stockItemTotalInfos['PER'], true)
-                .addField('**EPS**', data.stockItemTotalInfos['EPS'], true)
-                .addField('**PBR**', data.stockItemTotalInfos['PBR'], true)
-                .addField('**BPS**', data.stockItemTotalInfos['BPS'], true)
-                .addField('**배당률**', data.stockItemTotalInfos['배당수익률'], true)
-                .addField('**배당금**', data.stockItemTotalInfos['주당배당금'], true);
+            stockEmbed.addFields(
+                { name: '**업종**', value: data.stockItemTotalInfos['업종'], inline: true },
+                { name: '**PER**', value: data.stockItemTotalInfos['PER'], inline: true },
+                { name: '**EPS**', value: data.stockItemTotalInfos['EPS'], inline: true },
+                { name: '**PBR**', value: data.stockItemTotalInfos['PBR'], inline: true },
+                { name: '**BPS**', value: data.stockItemTotalInfos['BPS'], inline: true },
+                { name: '**배당률**', value: data.stockItemTotalInfos['배당수익률'], inline: true },
+                { name: '**배당금**', value: data.stockItemTotalInfos['주당배당금'], inline: true }
+            );
         }
     }
 

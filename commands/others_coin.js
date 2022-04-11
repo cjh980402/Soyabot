@@ -64,16 +64,21 @@ async function getCoinEmbed(searchRslt, type) {
         .setColor('#FF9999')
         .setURL(`https://upbit.com/exchange?code=CRIX.UPBIT.KRW-${code}&tab=chart`)
         .setImage(`attachment://${code}.png`)
-        .addField('**거래대금**', `${amount}원`, true);
+        .addFields({ name: '**거래대금**', value: `${amount}원`, inline: true });
 
     const binancePrice = await getCoinBinancePrice(code);
     if (binancePrice !== -1) {
         const binanceKRW = await usdToKRW(binancePrice);
         const kimPre = todayData.trade_price - binanceKRW;
         const kimPrePercent = 100 * (kimPre / binanceKRW);
-        coinEmbed
-            .addField('**바이낸스**', `${binancePrice.toLocaleString()}$\n${binanceKRW.toLocaleString()}원`, true)
-            .addField('**김프**', ` ${kimPre.toLocaleString()}원 (${kimPrePercent.toFixed(2)}%)`, true);
+        coinEmbed.addFields(
+            {
+                name: '**바이낸스**',
+                value: `${binancePrice.toLocaleString()}$\n${binanceKRW.toLocaleString()}원`,
+                inline: true
+            },
+            { name: '**김프**', value: `${kimPre.toLocaleString()}원 (${kimPrePercent.toFixed(2)}%)`, inline: true }
+        );
     }
 
     return { embeds: [coinEmbed], files: [image] };

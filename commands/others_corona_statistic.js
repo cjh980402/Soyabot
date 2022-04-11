@@ -15,10 +15,12 @@ async function getCoronaEmbed() {
         .setThumbnail('attachment://mohw.png')
         .setColor('#FF9999')
         .setURL('http://ncov.mohw.go.kr')
-        .addField('**확진 환자**', `${accumulated.eq(1).contents().eq(1).text()} (⬆️ ${today.eq(4).text()})`)
-        .addField('**사망자**', `${accumulated.eq(0).contents().eq(1).text()} (⬆️ ${today.eq(1).text()})`)
-        .addField('**신규 입원**', `${today.eq(3).text()}`)
-        .addField('**재원 위중증**', `${today.eq(2).text()}`)
+        .addFields(
+            { name: '**확진 환자**', value: `${accumulated.eq(1).contents().eq(1).text()} (⬆️ ${today.eq(4).text()})` },
+            { name: '**사망자**', value: `${accumulated.eq(0).contents().eq(1).text()} (⬆️ ${today.eq(1).text()})` },
+            { name: '**신규 입원**', value: `${today.eq(3).text()}` },
+            { name: '**재원 위중증**', value: `${today.eq(2).text()}` }
+        )
         .setTimestamp();
 
     const { body: countryBody } = await request('http://ncov.mohw.go.kr/bdBoardList_Real.do?brdId=1&brdGubun=13');

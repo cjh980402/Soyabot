@@ -51,11 +51,13 @@ function getScouterEmbed(mapleUserInfo, union) {
         .setColor('#FF9999')
         .setURL(mapleUserInfo.GGURL)
         .setImage('attachment://character.png')
-        .addField('**직업**', job, true)
-        .addField('**레벨**', String(level), true)
-        .addField('**유니온**', union.toLocaleString(), true)
-        .addField('**무릉 기록**', murung ? `${murungfl}층 (${min}분 ${sec}초)` : '-', true)
-        .addField('**측정 결과**', `${grade}! (${score}점)`);
+        .addFields(
+            { name: '**직업**', value: job, inline: true },
+            { name: '**레벨**', value: String(level), inline: true },
+            { name: '**유니온**', value: union.toLocaleString(), inline: true },
+            { name: '**무릉 기록**', value: murung ? `${murungfl}층 (${min}분 ${sec}초)` : '-', inline: true },
+            { name: '**측정 결과**', value: `${grade}! (${score}점)` }
+        );
 }
 
 export const usage = `${PREFIX}스카우터 (닉네임)`;

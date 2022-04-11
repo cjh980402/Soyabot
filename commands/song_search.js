@@ -28,11 +28,11 @@ export async function messageExecute(message, args) {
         .setTitle('**재생할 노래의 번호를 알려주세요.**')
         .setColor('#FF9999')
         .setDescription(`${search}의 검색 결과`);
-    results.forEach((video, index) =>
-        resultsEmbed.addField(
-            `**${index + 1}. ${video.title}** \`[${video.duration === 0 ? '⊚ LIVE' : video.durationText}]\``,
-            `https://youtu.be/${video.id}`
-        )
+    resultsEmbed.addFields(
+        ...results.map((video, index) => ({
+            name: `**${index + 1}. ${video.title}** \`[${video.duration === 0 ? '⊚ LIVE' : video.durationText}]\``,
+            value: `https://youtu.be/${video.id}`
+        }))
     );
     const resultsMessage = await message.channel.send({ embeds: [resultsEmbed] });
 
@@ -97,11 +97,11 @@ export async function commandExecute(interaction) {
         .setTitle('**재생할 노래의 번호를 알려주세요.**')
         .setColor('#FF9999')
         .setDescription(`${search}의 검색 결과`);
-    results.forEach((video, index) =>
-        resultsEmbed.addField(
-            `**${index + 1}. ${video.title}** \`[${video.duration === 0 ? '⊚ LIVE' : video.durationText}]\``,
-            `https://youtu.be/${video.id}`
-        )
+    resultsEmbed.addFields(
+        ...results.map((video, index) => ({
+            name: `**${index + 1}. ${video.title}** \`[${video.duration === 0 ? '⊚ LIVE' : video.durationText}]\``,
+            value: `https://youtu.be/${video.id}`
+        }))
     );
     const resultsMessage = await interaction.editReply({ embeds: [resultsEmbed] });
 

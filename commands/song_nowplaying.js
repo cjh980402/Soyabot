@@ -25,12 +25,12 @@ export async function messageExecute(message) {
         .setColor('#FF9999')
         .setDescription(`${song.title}\n${song.url}`)
         .setAuthor({ name: message.client.user.username })
-        .addField(
-            '\u200b',
-            `${Util.toDurationString(seek)} [${splitBar(song.duration || seek, seek, 20)[0]}] ${
+        .addFields({
+            name: '\u200b',
+            value: `${Util.toDurationString(seek)} [${splitBar(song.duration || seek, seek, 20)[0]}] ${
                 song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
             }`
-        );
+        });
 
     if (song.duration > 0) {
         nowPlaying.setFooter({ text: `남은 재생 시간: ${Util.toDurationString(song.duration - seek)}` });
@@ -60,12 +60,12 @@ export async function commandExecute(interaction) {
         .setColor('#FF9999')
         .setDescription(`${song.title}\n${song.url}`)
         .setAuthor({ name: interaction.client.user.username })
-        .addField(
-            '\u200b',
-            `${Util.toDurationString(seek)} [${splitBar(song.duration || seek, seek, 20)[0]}] ${
+        .addFields({
+            name: '\u200b',
+            value: `${Util.toDurationString(seek)} [${splitBar(song.duration || seek, seek, 20)[0]}] ${
                 song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
             }`
-        );
+        });
 
     if (song.duration > 0) {
         nowPlaying.setFooter({ text: `남은 재생 시간: ${Util.toDurationString(song.duration - seek)}` });

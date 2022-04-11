@@ -8,7 +8,7 @@ export class SQLiteHandler {
     }
 
     get tableList() {
-        return this.all("SELECT name, sql FROM sqlite_master WHERE type='table'");
+        return this.all("SELECT name, sql FROM sqlite_master WHERE type = 'table'");
     }
 
     insert(table, data) {

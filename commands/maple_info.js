@@ -20,23 +20,33 @@ async function getInfoEmbed(mapleUserInfo, level) {
         .setColor('#FF9999')
         .setURL(mapleUserInfo.GGURL)
         .setImage('attachment://character.png')
-        .addField('**레벨**', char_lv < 300 ? `${char_lv} (${char_percent}%)` : char_lv, true)
-        .addField('**직업**', char_job, true)
-        .addField('**길드**', char_guild || '-', true)
-        .addField('**인기도**', char_popul.toLocaleString(), true)
-        .addField(
-            '**유니온 정보**',
-            char_union
-                ? `레벨: ${char_union[0].toLocaleString()} (코인 1일 ${
-                      char_union[2]
-                  }개)\n전투력: ${char_union[1].toLocaleString()}`
-                : '-',
-            true
-        )
-        .addField('**무릉 기록**', char_murung ? `${char_murung[1]} (${char_murung[2]})` : '-', true)
-        .addField('**시드 기록**', char_seed ? `${char_seed[1]} (${char_seed[2]})` : '-', true)
-        .addField('**종합 랭킹**', char_rank ? `전체: ${char_rank[0]}\n월드: ${char_rank[1]}` : '-', true)
-        .addField('**직업 랭킹**', char_rank ? `전체: ${char_rank[3]}\n월드: ${char_rank[2]}` : '-', true);
+        .addFields(
+            { name: '**레벨**', value: char_lv < 300 ? `${char_lv} (${char_percent}%)` : char_lv, inline: true },
+            { name: '**직업**', value: char_job, inline: true },
+            { name: '**길드**', value: char_guild || '-', inline: true },
+            { name: '**인기도**', value: char_popul.toLocaleString(), inline: true },
+            {
+                name: '**유니온 정보**',
+                value: char_union
+                    ? `레벨: ${char_union[0].toLocaleString()} (코인 1일 ${
+                          char_union[2]
+                      }개)\n전투력: ${char_union[1].toLocaleString()}`
+                    : '-',
+                inline: true
+            },
+            { name: '**무릉 기록**', value: char_murung ? `${char_murung[1]} (${char_murung[2]})` : '-', inline: true },
+            { name: '**시드 기록**', value: char_seed ? `${char_seed[1]} (${char_seed[2]})` : '-', inline: true },
+            {
+                name: '**종합 랭킹**',
+                value: char_rank ? `전체: ${char_rank[0]}\n월드: ${char_rank[1]}` : '-',
+                inline: true
+            },
+            {
+                name: '**직업 랭킹**',
+                value: char_rank ? `전체: ${char_rank[3]}\n월드: ${char_rank[2]}` : '-',
+                inline: true
+            }
+        );
 }
 
 export const usage = `${PREFIX}정보 (닉네임)`;

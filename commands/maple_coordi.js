@@ -29,13 +29,15 @@ export async function messageExecute(message, args) {
             .setColor('#FF9999')
             .setURL(mapleUserInfo.GGURL)
             .setImage('attachment://character.png')
-            .addField('**헤어**', coordi[1], true)
-            .addField('**성형**', coordi[2], true)
-            .addField('**모자**', coordi[0], true)
-            .addField('**상의**', coordi[3], true)
-            .addField('**하의**', coordi[4], true)
-            .addField('**신발**', coordi[5], true)
-            .addField('**무기**', coordi[6], true);
+            .addFields(
+                { name: '**헤어**', value: coordi[1], inline: true },
+                { name: '**성형**', value: coordi[2], inline: true },
+                { name: '**모자**', value: coordi[0], inline: true },
+                { name: '**상의**', value: coordi[3], inline: true },
+                { name: '**하의**', value: coordi[4], inline: true },
+                { name: '**신발**', value: coordi[5], inline: true },
+                { name: '**무기**', value: coordi[6], inline: true }
+            );
 
         return message.channel.send({ embeds: [coordiEmbed], files: [image] });
     }
@@ -72,13 +74,15 @@ export async function commandExecute(interaction) {
             .setColor('#FF9999')
             .setURL(mapleUserInfo.GGURL)
             .setImage('attachment://character.png')
-            .addField('**헤어**', coordi[1], true)
-            .addField('**성형**', coordi[2], true)
-            .addField('**모자**', coordi[0], true)
-            .addField('**상의**', coordi[3], true)
-            .addField('**하의**', coordi[4], true)
-            .addField('**신발**', coordi[5], true)
-            .addField('**무기**', coordi[6], true);
+            .addFields(
+                { name: '**헤어**', value: coordi[1], inline: true },
+                { name: '**성형**', value: coordi[2], inline: true },
+                { name: '**모자**', value: coordi[0], inline: true },
+                { name: '**상의**', value: coordi[3], inline: true },
+                { name: '**하의**', value: coordi[4], inline: true },
+                { name: '**신발**', value: coordi[5], inline: true },
+                { name: '**무기**', value: coordi[6], inline: true }
+            );
 
         return interaction.followUp({ embeds: [coordiEmbed], files: [image] });
     }
