@@ -1,8 +1,8 @@
-import BaseYouTubeAPI from 'simple-youtube-api';
+import BaseYoutubeAPI from 'simple-youtube-api';
 import { PARTS, ENDPOINTS } from 'simple-youtube-api/src/util/Constants.js';
 import Video from 'simple-youtube-api/src/structures/Video.js';
 
-export class YouTubeAPI extends BaseYouTubeAPI {
+export class YoutubeAPI extends BaseYoutubeAPI {
     async getVideosByIDs(ids, options = {}) {
         const result = await this.request.make(ENDPOINTS.Videos, { ...options, part: PARTS.Videos, id: ids.join(',') });
         if (result.items.length > 0) {

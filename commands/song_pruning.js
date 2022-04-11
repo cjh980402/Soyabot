@@ -9,9 +9,9 @@ export async function messageExecute(message) {
         return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
 
-    if (message.client.db.get('SELECT * FROM pruning_skip WHERE guild_id = ?', [message.guildId])) {
+    if (message.client.db.get('SELECT * FROM pruning_skip WHERE guild_id = ?', message.guildId)) {
         // 기존상태: OFF
-        message.client.db.run('DELETE FROM pruning_skip WHERE guild_id = ?', [message.guildId]);
+        message.client.db.run('DELETE FROM pruning_skip WHERE guild_id = ?', message.guildId);
         return message.channel.send('현재 메시지 자동정리: **OFF → ON**');
     } else {
         // 기존상태: ON
@@ -28,9 +28,9 @@ export async function commandExecute(interaction) {
         return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
 
-    if (interaction.client.db.get('SELECT * FROM pruning_skip WHERE guild_id = ?', [interaction.guildId])) {
+    if (interaction.client.db.get('SELECT * FROM pruning_skip WHERE guild_id = ?', interaction.guildId)) {
         // 기존상태: OFF
-        interaction.client.db.run('DELETE FROM pruning_skip WHERE guild_id = ?', [interaction.guildId]);
+        interaction.client.db.run('DELETE FROM pruning_skip WHERE guild_id = ?', interaction.guildId);
         return interaction.followUp('현재 메시지 자동정리: **OFF → ON**');
     } else {
         // 기존상태: ON

@@ -12,17 +12,19 @@ export class SQLiteHandler {
     }
 
     insert(table, data) {
-        const k = Object.keys(data);
-        const v = Object.values(data);
-        const sql = `INSERT INTO ${table} (${k.join(', ')}) VALUES (${[...'?'.repeat(v.length)].join(', ')})`;
-        return this.run(sql, v);
+        const keys = Object.keys(data);
+        return this.run(
+            `INSERT INTO ${table} (${keys.join(', ')}) VALUES (${keys.map((_) => '?').join(', ')})`,
+            Object.values(data)
+        );
     }
 
     replace(table, data) {
-        const k = Object.keys(data);
-        const v = Object.values(data);
-        const sql = `REPLACE INTO ${table} (${k.join(', ')}) VALUES (${[...'?'.repeat(v.length)].join(', ')})`;
-        return this.run(sql, v);
+        const keys = Object.keys(data);
+        return this.run(
+            `REPLACE INTO ${table} (${keys.join(', ')}) VALUES (${keys.map((_) => '?').join(', ')})`,
+            Object.values(data)
+        );
     }
 
     run(sql, ...params) {

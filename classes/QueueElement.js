@@ -144,9 +144,10 @@ export class QueueElement {
     async deleteMessage() {
         try {
             if (
-                this.voiceChannel.client.db.get('SELECT * FROM pruning_skip WHERE guild_id = ?', [
+                this.voiceChannel.client.db.get(
+                    'SELECT * FROM pruning_skip WHERE guild_id = ?',
                     this.playingMessage?.guildId
-                ])
+                )
             ) {
                 // 음악 메시지의 버튼 비활성화
                 this.playingMessage?.components.forEach((row) => row.components.forEach((v) => v.setDisabled(true)));

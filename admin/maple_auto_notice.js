@@ -20,10 +20,11 @@ export function startNotice(client) {
                     const title = data.eq(i).text().trim();
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                     const number = +/\d+$/.exec(url);
-                    const existing = client.db.get('SELECT * FROM maple_notice WHERE title = ? AND notice_number = ?', [
+                    const existing = client.db.get(
+                        'SELECT * FROM maple_notice WHERE title = ? AND notice_number = ?',
                         title,
                         number
-                    ]); // 제목과 번호로 검색을 하므로 검색되지 않은 공지는 전송대상
+                    ); // 제목과 번호로 검색을 하므로 검색되지 않은 공지는 전송대상
 
                     if (!existing) {
                         client.db.insert('maple_notice', { title, url, notice_number: number }); // 중복방지 위해 db에 삽입
@@ -66,10 +67,11 @@ export function startUpdate(client) {
                     const title = data.eq(i).text().trim();
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                     const number = +/\d+$/.exec(url);
-                    const existing = client.db.get('SELECT * FROM maple_update WHERE title = ? AND notice_number = ?', [
+                    const existing = client.db.get(
+                        'SELECT * FROM maple_update WHERE title = ? AND notice_number = ?',
                         title,
                         number
-                    ]); // 제목과 번호로 검색을 하므로 검색되지 않은 공지는 전송대상
+                    ); // 제목과 번호로 검색을 하므로 검색되지 않은 공지는 전송대상
 
                     if (!existing) {
                         client.db.insert('maple_update', { title, url, notice_number: number }); // 중복방지 위해 db에 삽입
@@ -112,10 +114,11 @@ export function startTest(client) {
                     const title = data.eq(i).text().trim();
                     const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                     const number = +/\d+$/.exec(url);
-                    const existing = client.db.get('SELECT * FROM maple_test WHERE title = ? AND notice_number = ?', [
+                    const existing = client.db.get(
+                        'SELECT * FROM maple_test WHERE title = ? AND notice_number = ?',
                         title,
                         number
-                    ]); // 제목과 번호로 검색을 하므로 검색되지 않은 공지는 전송대상
+                    ); // 제목과 번호로 검색을 하므로 검색되지 않은 공지는 전송대상
 
                     if (!existing) {
                         client.db.insert('maple_test', { title, url, notice_number: number }); // 중복방지 위해 db에 삽입
