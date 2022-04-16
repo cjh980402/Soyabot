@@ -37,7 +37,7 @@ export async function adminChat(message) {
     }
 }
 
-export async function initClient(client, TOKEN) {
+export async function initClient(client) {
     client.db.run(
         'CREATE TABLE IF NOT EXISTS maple_notice(id integer primary key autoincrement, title text, url text, notice_number integer)'
     );
@@ -61,6 +61,6 @@ export async function initClient(client, TOKEN) {
     );
 
     await MapleProb.fetchAllProb();
-    await client.login(TOKEN);
+    await client.login();
     await client.application.fetch();
 }
