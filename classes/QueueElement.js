@@ -118,7 +118,7 @@ export class QueueElement {
                 this.sendMessage('노래 시작을 실패했습니다.');
                 replyAdmin(
                     this.voiceChannel.client.users,
-                    `노래 시작 에러\nsong 객체: ${song._p}\n에러 내용: ${err.stack}`
+                    `노래 시작 에러\nsong 객체: ${JSON.stringify(song, null, 4)}\n에러 내용: ${err.stack}`
                 );
             }
             await this.deleteMessage();
