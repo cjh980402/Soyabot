@@ -1,5 +1,6 @@
 import { Client, Intents, Options } from 'discord.js';
 import { SQLiteHandler } from './SQLiteHandler.js';
+import { MapleProb } from '../util/maple_probtable.js';
 
 export class SoyaClient extends Client {
     db; // 봇의 데이터베이스
@@ -57,5 +58,33 @@ export class SoyaClient extends Client {
         });
 
         this.db = new SQLiteHandler(dbPath);
+    }
+
+    async start() {
+        this.db.run(
+            'CREATE TABLE IF NOT EXISTS maple_notice(id integer primary key autoincrement, title text, url text, notice_number integer)'
+        );
+        this.db.run('CREATE INDEX IF NOT EXISTS notice_index ON maple_notice(title, notice_number)');
+        this.db.run(
+            'CREATE TABLE IF NOT EXISTS maple_update(id integer primary key autoincrement, title text, url text, notice_number integer)'
+        );
+        this.db.run('CREATE INDEX IF NOT EXISTS update_index ON maple_update(title, notice_number)');
+        this.db.run(
+            'CREATE TABLE IF NOT EXISTS maple_test(id integer primary key autoincrement, title text, url text, notice_number integer)'
+        );
+        this.db.run('CREATE INDEX IF NOT EXISTS test_index ON maple_test(title, notice_number)');
+        this.db.run(
+            'CREATE TABLE IF NOT EXISTS test_patch(id integer primary key autoincrement, version integer, url text)'
+        );
+        this.db.run(
+            'CREATE TABLE IF NOT EXISTS pruning_skip(id integer primary key autoincrement, guild_id text, name text)'
+        );
+        this.db.run(
+            'CREATE TABLE IF NOT EXISTS command_db(id integer primary key autoincrement, name text, count integer)'
+        );
+
+        await MapleProb.fetchAllProb();
+        await this.login();
+        await this.application.fetch();
     }
 }

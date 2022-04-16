@@ -1,7 +1,6 @@
 import { exec as _exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import { replyChannelID } from './bot_control.js';
-import { MapleProb } from '../util/maple_probtable.js';
 import { fetchFullContent, sendSplitCode } from '../util/soyabot_util.js';
 
 export const exec = promisify(_exec);
@@ -35,32 +34,4 @@ export async function adminChat(message) {
         const rslt = await replyChannelID(message.client.channels, channelId, `[건의 답변]\n${fullContent}`);
         return message.channel.send(rslt ? '건의 답변을 보냈습니다.' : '해당하는 건의의 정보가 존재하지 않습니다.');
     }
-}
-
-export async function initClient(client) {
-    client.db.run(
-        'CREATE TABLE IF NOT EXISTS maple_notice(id integer primary key autoincrement, title text, url text, notice_number integer)'
-    );
-    client.db.run('CREATE INDEX IF NOT EXISTS notice_index ON maple_notice(title, notice_number)');
-    client.db.run(
-        'CREATE TABLE IF NOT EXISTS maple_update(id integer primary key autoincrement, title text, url text, notice_number integer)'
-    );
-    client.db.run('CREATE INDEX IF NOT EXISTS update_index ON maple_update(title, notice_number)');
-    client.db.run(
-        'CREATE TABLE IF NOT EXISTS maple_test(id integer primary key autoincrement, title text, url text, notice_number integer)'
-    );
-    client.db.run('CREATE INDEX IF NOT EXISTS test_index ON maple_test(title, notice_number)');
-    client.db.run(
-        'CREATE TABLE IF NOT EXISTS test_patch(id integer primary key autoincrement, version integer, url text)'
-    );
-    client.db.run(
-        'CREATE TABLE IF NOT EXISTS pruning_skip(id integer primary key autoincrement, guild_id text, name text)'
-    );
-    client.db.run(
-        'CREATE TABLE IF NOT EXISTS command_db(id integer primary key autoincrement, name text, count integer)'
-    );
-
-    await MapleProb.fetchAllProb();
-    await client.login();
-    await client.application.fetch();
 }
