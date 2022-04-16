@@ -35,7 +35,7 @@ async function clova_face(url) {
 성별: ${person.gender.value} (신뢰도: ${(person.gender.confidence * 100).toFixed(2)}%)
 나이: ${person.age.value} (신뢰도: ${(person.age.confidence * 100).toFixed(2)}%)
 감정: ${person.emotion.value} (신뢰도: ${(person.emotion.confidence * 100).toFixed(2)}%)
-포즈 : ${person.pose.value} (신뢰도: ${(person.pose.confidence * 100).toFixed(2)}%)`
+포즈: ${person.pose.value} (신뢰도: ${(person.pose.confidence * 100).toFixed(2)}%)`
             )
             .join('\n\n')}\n\n위치 기준점(X = 0, Y = 0): 좌측상단`;
     }
