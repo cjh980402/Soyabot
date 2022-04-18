@@ -32,13 +32,21 @@ export async function messageExecute(message) {
     const filter = (itr) => itr.customId === 'repeat' && message.author.id === itr.user.id;
     const collector = dice.createMessageComponentCollector({ filter, time: 120000 });
 
-    collector.on('collect', async () => {
-        try {
-            const nickname = message.member?.nickname ?? message.author.username;
-            const image = await getDiceAttachment(nickname);
-            await dice.edit({ content: `${nickname}님의 ${++count}번째 스탯 주사위`, files: [image] });
-        } catch {}
-    });
+    collector
+        .on('collect', async () => {
+            try {
+                const nickname = message.member?.nickname ?? message.author.username;
+                const image = await getDiceAttachment(nickname);
+                await dice.edit({ content: `${nickname}님의 ${++count}번째 스탯 주사위`, files: [image] });
+            } catch {}
+        })
+        .once('end', async () => {
+            try {
+                // 주사위 메시지의 버튼 비활성화
+                row.components.forEach((v) => v.setDisabled(true));
+                await dice.edit({ components: [row] });
+            } catch {}
+        });
 }
 export const commandData = {
     name: '데굴데굴',
@@ -60,11 +68,19 @@ export async function commandExecute(interaction) {
     const filter = (itr) => itr.customId === 'repeat' && interaction.user.id === itr.user.id;
     const collector = dice.createMessageComponentCollector({ filter, time: 120000 });
 
-    collector.on('collect', async () => {
-        try {
-            const nickname = interaction.member?.nickname ?? interaction.user.username;
-            const image = await getDiceAttachment(nickname);
-            await dice.edit({ content: `${nickname}님의 ${++count}번째 스탯 주사위`, files: [image] });
-        } catch {}
-    });
+    collector
+        .on('collect', async () => {
+            try {
+                const nickname = interaction.member?.nickname ?? interaction.user.username;
+                const image = await getDiceAttachment(nickname);
+                await dice.edit({ content: `${nickname}님의 ${++count}번째 스탯 주사위`, files: [image] });
+            } catch {}
+        })
+        .once('end', async () => {
+            try {
+                // 주사위 메시지의 버튼 비활성화
+                row.components.forEach((v) => v.setDisabled(true));
+                await dice.edit({ components: [row] });
+            } catch {}
+        });
 }

@@ -138,9 +138,7 @@ export function makePageCollector(target, embeds, options) {
             try {
                 // 페이지 메시지의 버튼 비활성화
                 row.components.forEach((v) => v.setDisabled(true));
-                await target.edit({
-                    components: [row]
-                });
+                await target.edit({ components: [row] });
             } catch {}
         });
 }
