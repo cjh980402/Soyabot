@@ -42,7 +42,7 @@ function entersState(target, status, timeout) {
     });
 }
 
-export async function fetchFullContent(message) {
+export async function getFullContent(message) {
     if (message.type === 'DEFAULT' && message.attachments.first()?.name === 'message.txt') {
         const { body } = await request(message.attachments.first().url);
         return body.text();
@@ -51,14 +51,11 @@ export async function fetchFullContent(message) {
     }
 }
 
-export async function sendSplitCode(target, content, options) {
-    for (const c of contentSplitCode(content, options)) {
-        if (target instanceof Channel && target.isText()) {
-            await target.send(c);
-        } else if (target instanceof CommandInteraction) {
-            await target.followUp(c);
-        }
+export async function getMessageImage(message) {
+    if (message.reference) {
+        message = await message.fetchReference();
     }
+    return message.attachments.first()?.height ? message.attachments.first().url : null;
 }
 
 export async function joinVoice(channel) {
@@ -83,6 +80,14 @@ export async function joinVoice(channel) {
     }
 }
 
+export function canModifyQueue(member) {
+    const botChannelId = member.guild.me.voice.channelId;
+    if (!botChannelId) {
+        throw new Error('봇이 음성채널에 참가하지 않은 상태입니다.');
+    }
+    return botChannelId === member.voice.channelId; // 봇이 참가한 음성채널과 다른 경우 false 반환
+}
+
 export function commandCount(db, commandName) {
     try {
         const existing = db.get('SELECT * FROM command_db WHERE name = ?', commandName);
@@ -97,12 +102,14 @@ export function commandCount(db, commandName) {
     }
 }
 
-export function canModifyQueue(member) {
-    const botChannelId = member.guild.me.voice.channelId;
-    if (!botChannelId) {
-        throw new Error('봇이 음성채널에 참가하지 않은 상태입니다.');
+export async function sendSplitCode(target, content, options) {
+    for (const c of contentSplitCode(content, options)) {
+        if (target instanceof Channel && target.isText()) {
+            await target.send(c);
+        } else if (target instanceof CommandInteraction) {
+            await target.followUp(c);
+        }
     }
-    return botChannelId === member.voice.channelId; // 봇이 참가한 음성채널과 다른 경우 false 반환
 }
 
 export async function sendPageMessage(messageOrCommand, embeds, options = {}) {
@@ -122,9 +129,8 @@ export async function sendPageMessage(messageOrCommand, embeds, options = {}) {
             ? await messageOrCommand.editReply(data)
             : await messageOrCommand.channel.send(data);
 
-    const filter = (itr) => (messageOrCommand.author ?? messageOrCommand.user).id === itr.user.id;
-
     let currentPage = 0;
+    const filter = (itr) => (messageOrCommand.author ?? messageOrCommand.user).id === itr.user.id;
     const collector = page.createMessageComponentCollector({ filter, time: 120000 });
 
     collector
@@ -158,11 +164,4 @@ export async function sendPageMessage(messageOrCommand, embeds, options = {}) {
                 await page.edit({ components: [row] });
             } catch {}
         });
-}
-
-export async function getMessageImage(message) {
-    if (message.reference) {
-        message = await message.fetchReference();
-    }
-    return message.attachments.first()?.height ? message.attachments.first().url : null;
 }

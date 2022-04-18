@@ -1,12 +1,12 @@
 import { MessageEmbed } from 'discord.js';
 import { ADMIN_ID, NOTICE_CHANNEL_ID } from '../soyabot_config.js';
 
-export async function botNotice(client, data, isMaple = false) {
+export async function sendBotNotice(client, data, isMaple = false) {
     data = data instanceof MessageEmbed ? { embeds: [data] } : String(data);
     try {
         if (isMaple) {
             // 메이플 공지는 공지용 채널에만 전송
-            const message = await replyChannelID(client.channels, NOTICE_CHANNEL_ID, data);
+            const message = await sendChannelID(client.channels, NOTICE_CHANNEL_ID, data);
             await message?.crosspost(); // 커뮤니티 서버의 공지 채널인 경우 발행 기능을 사용 가능
         } else {
             // 일반 공지는 전체 전송
@@ -27,7 +27,7 @@ export async function botNotice(client, data, isMaple = false) {
     } catch {}
 }
 
-export async function replyChannelID(channels, id, data) {
+export async function sendChannelID(channels, id, data) {
     try {
         return await channels._add({ id, type: 1 }, null, { cache: false }).send(data); // 임시 채널 객체 생성 후 메시지 전송
     } catch {
@@ -35,7 +35,7 @@ export async function replyChannelID(channels, id, data) {
     }
 }
 
-export async function replyAdmin(users, data) {
+export async function sendAdmin(users, data) {
     try {
         return await users._add({ id: ADMIN_ID }, false).send(data); // 임시 관리자 유저 객체 생성 후 DM 전송
     } catch {

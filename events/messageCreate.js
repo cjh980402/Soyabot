@@ -1,7 +1,7 @@
 import { Collection } from 'discord.js';
 import { setTimeout } from 'node:timers/promises';
 import { adminChat } from '../admin/admin_function.js';
-import { replyAdmin } from '../admin/bot_control.js';
+import { sendAdmin } from '../admin/bot_message.js';
 import { MapleError } from '../classes/MapleParser.js';
 import { commandCount } from '../util/soyabot_util.js';
 import botChatting from '../util/bot_chatting.js';
@@ -84,7 +84,7 @@ export async function listener(message) {
             } else if (err instanceof MapleError) {
                 await message.reply(err.message);
             } else {
-                replyAdmin(
+                sendAdmin(
                     message.client.users,
                     `작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${message}\n에러 내용: ${err.stack}`
                 );

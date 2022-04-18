@@ -1,4 +1,4 @@
-import { replyAdmin } from '../admin/bot_control.js';
+import { sendAdmin } from '../admin/bot_message.js';
 import { startNotice, startUpdate, startTest, startTestPatch, startUrus } from '../admin/maple_auto_notice.js';
 import { NOTICE_CHANNEL_ID } from '../soyabot_config.js';
 
@@ -13,5 +13,5 @@ export function listener(client) {
         startUrus(client); // 우르스 2배 종료 30분 전 알림
     }
 
-    replyAdmin(client.users, `${client.shard.ids[0]}번째 샤드에서 ${client.user.tag}이 작동 중입니다.`);
+    sendAdmin(client.users, `${client.shard.ids[0]}번째 샤드에서 ${client.user.tag}이 작동 중입니다.`);
 }

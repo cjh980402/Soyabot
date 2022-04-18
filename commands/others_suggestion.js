@@ -1,5 +1,5 @@
 import { PREFIX } from '../soyabot_config.js';
-import { replyAdmin } from '../admin/bot_control.js';
+import { sendAdmin } from '../admin/bot_message.js';
 
 export const usage = `${PREFIX}건의 (건의 사항)`;
 export const command = ['건의', 'ㄱㅇ'];
@@ -10,7 +10,7 @@ export async function messageExecute(message, args) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
-    const rslt = await replyAdmin(
+    const rslt = await sendAdmin(
         message.client.users,
         `${message.channelId} ${message.id}\n작성자: ${message.author.username}\n건의 내용: ${args.join(' ')}`
     );
@@ -29,7 +29,7 @@ export const commandData = {
     ]
 };
 export async function commandExecute(interaction) {
-    const rslt = await replyAdmin(
+    const rslt = await sendAdmin(
         interaction.client.users,
         `${interaction.channelId} ${interaction.id}\n작성자: ${
             interaction.user.username

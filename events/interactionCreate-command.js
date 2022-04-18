@@ -1,6 +1,6 @@
 import { Collection } from 'discord.js';
 import { setTimeout } from 'node:timers/promises';
-import { replyAdmin } from '../admin/bot_control.js';
+import { sendAdmin } from '../admin/bot_message.js';
 import { MapleError } from '../classes/MapleParser.js';
 import { commandCount } from '../util/soyabot_util.js';
 const promiseTimeout = (promise, ms) => Promise.race([promise, setTimeout(ms)]);
@@ -65,7 +65,7 @@ export async function listener(interaction) {
                 } else if (err instanceof MapleError) {
                     await interaction.editReply(err.message);
                 } else {
-                    replyAdmin(
+                    sendAdmin(
                         interaction.client.users,
                         `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction}\n에러 내용: ${err.stack}`
                     );

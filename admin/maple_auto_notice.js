@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
-import { botNotice, replyAdmin } from './bot_control.js';
+import { sendBotNotice, sendAdmin } from './bot_message.js';
 let noticeTimer = null;
 let updateTimer = null;
 let testTimer = null;
@@ -39,10 +39,10 @@ export function startNotice(client) {
                         .setDescription(notice.join('\n\n'))
                         .setTimestamp();
 
-                    botNotice(client, noticeEmbed, true);
+                    sendBotNotice(client, noticeEmbed, true);
                 }
             } catch (err) {
-                replyAdmin(client.users, `자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
+                sendAdmin(client.users, `자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
             }
         }, 127000);
     }
@@ -86,10 +86,10 @@ export function startUpdate(client) {
                         .setDescription(update.join('\n\n'))
                         .setTimestamp();
 
-                    botNotice(client, noticeEmbed, true);
+                    sendBotNotice(client, noticeEmbed, true);
                 }
             } catch (err) {
-                replyAdmin(client.users, `자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
+                sendAdmin(client.users, `자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
             }
         }, 131000);
     }
@@ -141,10 +141,10 @@ export function startTest(client) {
                         .setDescription(test.join('\n\n'))
                         .setTimestamp();
 
-                    botNotice(client, noticeEmbed, true);
+                    sendBotNotice(client, noticeEmbed, true);
                 }
             } catch (err) {
-                replyAdmin(client.users, `자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
+                sendAdmin(client.users, `자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
             }
         }, 137000);
     }
@@ -172,7 +172,7 @@ export function startTestPatch(client) {
                     // 파일이 감지된 경우
                     const fileSize = +headers['content-length'] / 1024 / 1024;
                     client.db.insert('test_patch', { version: patchVersion, url: patchURL });
-                    botNotice(
+                    sendBotNotice(
                         client,
                         `[Tver 1.2.${patchVersion}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기: ${fileSize.toFixed(
                             2
@@ -182,7 +182,7 @@ export function startTestPatch(client) {
                 }
                 for await (const _ of body); // 메모리 누수 방지를 위한 force consumption of body
             } catch (err) {
-                replyAdmin(client.users, `자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
+                sendAdmin(client.users, `자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
             }
         }, 139000);
     }
@@ -203,9 +203,9 @@ export function startUrus(client) {
             urusDate.setDate(now.getDate() + 1); // 우르스 알림 시간 지났으면 다음 날로 알림 설정
         }
         urusTimer = setTimeout(() => {
-            botNotice(client, '우르스 메소 2배 종료까지 30분 남았습니다!', true);
+            sendBotNotice(client, '우르스 메소 2배 종료까지 30분 남았습니다!', true);
             // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
-            urusTimer = setInterval(botNotice, 86400000, client, '우르스 메소 2배 종료까지 30분 남았습니다!', true); // 24시간 주기
+            urusTimer = setInterval(sendBotNotice, 86400000, client, '우르스 메소 2배 종료까지 30분 남았습니다!', true); // 24시간 주기
         }, urusDate - now);
     }
 }

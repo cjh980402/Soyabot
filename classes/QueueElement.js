@@ -1,7 +1,7 @@
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { AudioPlayerStatus, createAudioPlayer, NoSubscriberBehavior, VoiceConnectionStatus } from '@discordjs/voice';
 import { FormatError } from 'youtube-dlsr';
-import { replyAdmin } from '../admin/bot_control.js';
+import { sendAdmin } from '../admin/bot_message.js';
 import { songDownload } from '../util/song_util.js';
 import { Util } from '../util/Util.js';
 import { DEFAULT_VOLUME } from '../soyabot_config.js';
@@ -42,7 +42,7 @@ export class QueueElement {
             })
             .on('error', (err) => {
                 this.sendMessage('노래 재생을 실패했습니다.');
-                replyAdmin(
+                sendAdmin(
                     this.voiceChannel.client.users,
                     `노래 재생 에러\n노래 주소: ${err.resource.metadata}\n에러 내용: ${err.stack}`
                 );
@@ -116,7 +116,7 @@ export class QueueElement {
                 this.sendMessage('재생할 수 없는 영상입니다.');
             } else {
                 this.sendMessage('노래 시작을 실패했습니다.');
-                replyAdmin(
+                sendAdmin(
                     this.voiceChannel.client.users,
                     `노래 시작 에러\nsong 객체: ${JSON.stringify(song, null, 4)}\n에러 내용: ${err.stack}`
                 );

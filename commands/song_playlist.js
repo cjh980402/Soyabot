@@ -1,6 +1,6 @@
 import { MessageEmbed, Util as DjsUtil } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
-import { replyAdmin } from '../admin/bot_control.js';
+import { sendAdmin } from '../admin/bot_message.js';
 import { QueueElement } from '../classes/QueueElement.js';
 import { isValidPlaylist, isValidVideo, getPlaylistInfo } from '../util/song_util.js';
 import { joinVoice } from '../util/soyabot_util.js';
@@ -85,7 +85,7 @@ export async function messageExecute(message, args) {
         newQueue.playSong();
     } catch (err) {
         message.client.queues.delete(message.guildId);
-        replyAdmin(
+        sendAdmin(
             message.client.users,
             `작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${message}\n에러 내용: ${err.stack}`
         );
@@ -179,7 +179,7 @@ export async function commandExecute(interaction) {
         newQueue.playSong();
     } catch (err) {
         interaction.client.queues.delete(interaction.guildId);
-        replyAdmin(
+        sendAdmin(
             interaction.client.users,
             `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction}\n에러 내용: ${err.stack}`
         );
