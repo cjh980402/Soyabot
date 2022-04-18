@@ -1,8 +1,8 @@
-import { MessageActionRow, MessageButton, MessageEmbed, Util } from 'discord.js';
+import { MessageEmbed, Util } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
-import { makePageCollector } from '../util/soyabot_util.js';
+import { sendPageMessage } from '../util/soyabot_util.js';
 
 async function getWeatherEmbed(targetLocal) {
     const targetURL = `https://weather.naver.com/today/${targetLocal[1][0]}`;
@@ -115,19 +115,7 @@ export async function messageExecute(message, args) {
     }
 
     const embeds = await getWeatherEmbed(targetLocal);
-    const row = new MessageActionRow().addComponents(
-        new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
-        new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
-        new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
-    );
-    const weatherEmbed = await message.channel.send({
-        content: `**현재 페이지 - 1/${embeds.length}**`,
-        embeds: [embeds[0]],
-        components: [row]
-    });
-
-    const filter = (itr) => message.author.id === itr.user.id;
-    makePageCollector(weatherEmbed, embeds, { filter, time: 120000 });
+    await sendPageMessage(message, embeds);
 }
 export const commandData = {
     name: '날씨',
@@ -175,17 +163,5 @@ export async function commandExecute(interaction) {
     }
 
     const embeds = await getWeatherEmbed(targetLocal);
-    const row = new MessageActionRow().addComponents(
-        new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
-        new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
-        new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
-    );
-    const weatherEmbed = await interaction.followUp({
-        content: `**현재 페이지 - 1/${embeds.length}**`,
-        embeds: [embeds[0]],
-        components: [row]
-    });
-
-    const filter = (itr) => interaction.user.id === itr.user.id;
-    makePageCollector(weatherEmbed, embeds, { filter, time: 120000 });
+    await sendPageMessage(interaction, embeds);
 }

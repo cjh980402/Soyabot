@@ -1,4 +1,4 @@
-import { Util, Channel, CommandInteraction, Permissions } from 'discord.js';
+import { Util, Channel, CommandInteraction, MessageActionRow, MessageButton, Permissions } from 'discord.js';
 import { request } from 'undici';
 import { joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
 
@@ -105,30 +105,47 @@ export function canModifyQueue(member) {
     return botChannelId === member.voice.channelId; // 봇이 참가한 음성채널과 다른 경우 false 반환
 }
 
-export function makePageCollector(target, embeds, options) {
-    let currentPage = 0;
-    const row = target.components[0];
-    const collector = target.createMessageComponentCollector(options);
+export async function sendPageMessage(messageOrCommand, embeds, options = {}) {
+    const row = new MessageActionRow().addComponents(
+        new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
+        new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
+        new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
+    );
+    const data = {
+        content: `**현재 페이지 - 1/${embeds.length}**`,
+        embeds: [embeds[0]],
+        components: [row],
+        ...options
+    };
+    const page =
+        messageOrCommand instanceof CommandInteraction
+            ? await messageOrCommand.editReply(data)
+            : await messageOrCommand.channel.send(data);
 
-    return collector
+    const filter = (itr) => (messageOrCommand.author ?? messageOrCommand.user).id === itr.user.id;
+
+    let currentPage = 0;
+    const collector = page.createMessageComponentCollector({ filter, time: 120000 });
+
+    collector
         .on('collect', async (itr) => {
             try {
                 switch (itr.customId) {
-                    case row.components[2].customId:
+                    case 'next':
                         currentPage = (currentPage + 1) % embeds.length;
-                        await target.edit({
+                        await page.edit({
                             content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
                             embeds: [embeds[currentPage]]
                         });
                         break;
-                    case row.components[0].customId:
+                    case 'prev':
                         currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        await target.edit({
+                        await page.edit({
                             content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
                             embeds: [embeds[currentPage]]
                         });
                         break;
-                    case row.components[1].customId:
+                    case 'stop':
                         collector.stop();
                         break;
                 }
@@ -138,7 +155,7 @@ export function makePageCollector(target, embeds, options) {
             try {
                 // 페이지 메시지의 버튼 비활성화
                 row.components.forEach((v) => v.setDisabled(true));
-                await target.edit({ components: [row] });
+                await page.edit({ components: [row] });
             } catch {}
         });
 }

@@ -43,7 +43,7 @@ export async function messageExecute(message) {
         .once('end', async () => {
             try {
                 // 주사위 메시지의 버튼 비활성화
-                row.components.forEach((v) => v.setDisabled(true));
+                row.components[0].setDisabled(true);
                 await dice.edit({ components: [row] });
             } catch {}
         });
@@ -79,7 +79,7 @@ export async function commandExecute(interaction) {
         .once('end', async () => {
             try {
                 // 주사위 메시지의 버튼 비활성화
-                row.components.forEach((v) => v.setDisabled(true));
+                row.components[0].setDisabled(true);
                 await dice.edit({ components: [row] });
             } catch {}
         });

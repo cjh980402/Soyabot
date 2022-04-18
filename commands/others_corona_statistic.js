@@ -1,8 +1,8 @@
-import { MessageAttachment, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
-import { makePageCollector } from '../util/soyabot_util.js';
+import { sendPageMessage } from '../util/soyabot_util.js';
 
 async function getCoronaEmbed() {
     const { body: countBody } = await request('http://ncov.mohw.go.kr');
@@ -53,20 +53,7 @@ export const type = ['기타'];
 export async function messageExecute(message) {
     const thumbnail = new MessageAttachment('./pictures/mohw.png');
     const embeds = await getCoronaEmbed();
-    const row = new MessageActionRow().addComponents(
-        new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
-        new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
-        new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
-    );
-    const coronaEmbed = await message.channel.send({
-        content: `**현재 페이지 - 1/${embeds.length}**`,
-        embeds: [embeds[0]],
-        files: [thumbnail],
-        components: [row]
-    });
-
-    const filter = (itr) => message.author.id === itr.user.id;
-    makePageCollector(coronaEmbed, embeds, { filter, time: 120000 });
+    await sendPageMessage(message, embeds, { files: [thumbnail] });
 }
 export const commandData = {
     name: '코로나',
@@ -75,18 +62,5 @@ export const commandData = {
 export async function commandExecute(interaction) {
     const thumbnail = new MessageAttachment('./pictures/mohw.png');
     const embeds = await getCoronaEmbed();
-    const row = new MessageActionRow().addComponents(
-        new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
-        new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
-        new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
-    );
-    const coronaEmbed = await interaction.editReply({
-        content: `**현재 페이지 - 1/${embeds.length}**`,
-        embeds: [embeds[0]],
-        files: [thumbnail],
-        components: [row]
-    });
-
-    const filter = (itr) => interaction.user.id === itr.user.id;
-    makePageCollector(coronaEmbed, embeds, { filter, time: 120000 });
+    await sendPageMessage(interaction, embeds, { files: [thumbnail] });
 }

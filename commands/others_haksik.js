@@ -1,8 +1,8 @@
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
-import { makePageCollector } from '../util/soyabot_util.js';
+import { sendPageMessage } from '../util/soyabot_util.js';
 
 function getHaksikEmbed(date, haksik) {
     const embeds = [];
@@ -50,20 +50,7 @@ export async function messageExecute(message, args) {
             const date = nowData.find('th[scope="row"]').eq(0).text();
             if (date.includes(day)) {
                 const embeds = getHaksikEmbed([`${date}의 점심`, `${date}의 저녁`], nowData);
-
-                const row = new MessageActionRow().addComponents(
-                    new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
-                    new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
-                    new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
-                );
-                const haksikEmbed = await message.channel.send({
-                    content: `**현재 페이지 - 1/${embeds.length}**`,
-                    embeds: [embeds[0]],
-                    components: [row]
-                });
-
-                const filter = (itr) => message.author.id === itr.user.id;
-                return makePageCollector(haksikEmbed, embeds, { filter, time: 120000 });
+                return sendPageMessage(message, embeds);
             }
         }
         return message.channel.send(`${day}요일은 학식이 제공되지 않습니다.`);

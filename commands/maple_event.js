@@ -1,8 +1,8 @@
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
-import { makePageCollector } from '../util/soyabot_util.js';
+import { sendPageMessage } from '../util/soyabot_util.js';
 
 function getEventEmbed(links, names, dates) {
     const embeds = [];
@@ -43,19 +43,7 @@ export async function messageExecute(message) {
     } else {
         const embeds = getEventEmbed(links, names, dates);
         if (embeds.length > 1) {
-            const row = new MessageActionRow().addComponents(
-                new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
-            );
-            const eventEmbed = await message.channel.send({
-                content: `**현재 페이지 - 1/${embeds.length}**`,
-                embeds: [embeds[0]],
-                components: [row]
-            });
-
-            const filter = (itr) => message.author.id === itr.user.id;
-            makePageCollector(eventEmbed, embeds, { filter, time: 120000 });
+            await sendPageMessage(message, embeds);
         } else {
             await message.channel.send({ embeds: [embeds[0]] });
         }
@@ -78,19 +66,7 @@ export async function commandExecute(interaction) {
     } else {
         const embeds = getEventEmbed(links, names, dates);
         if (embeds.length > 1) {
-            const row = new MessageActionRow().addComponents(
-                new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
-            );
-            const eventEmbed = await interaction.editReply({
-                content: `**현재 페이지 - 1/${embeds.length}**`,
-                embeds: [embeds[0]],
-                components: [row]
-            });
-
-            const filter = (itr) => interaction.user.id === itr.user.id;
-            makePageCollector(eventEmbed, embeds, { filter, time: 120000 });
+            await sendPageMessage(interaction, embeds);
         } else {
             await interaction.editReply({ embeds: [embeds[0]] });
         }
