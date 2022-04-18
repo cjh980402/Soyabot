@@ -39,7 +39,7 @@ export async function messageExecute(message, args) {
         args[0] -= i >= 16 ? starforce[args[2]][i - 16] : Math.floor((args[0] + 50) / 51); // 스타포스 상승 수치를 없애는 과정
     }
 
-    return message.channel.send(`${args[2]}제 ${args[3]}성 강화\n작으로 상승한 공: ${args[0] - args[1]}`);
+    await message.channel.send(`${args[2]}제 ${args[3]}성 강화\n작으로 상승한 공: ${args[0] - args[1]}`);
 }
 export const commandData = {
     name: '작분석',
@@ -105,5 +105,5 @@ export async function commandExecute(interaction) {
         sum -= i >= 16 ? starforce[level][i - 16] : Math.floor((sum + 50) / 51); // 스타포스 상승 수치를 없애는 과정
     }
 
-    return interaction.followUp(`${level}제 ${star}성 강화\n작으로 상승한 공: ${sum - base}`);
+    await interaction.followUp(`${level}제 ${star}성 강화\n작으로 상승한 공: ${sum - base}`);
 }

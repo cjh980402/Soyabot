@@ -89,7 +89,7 @@ export async function messageExecute(message, args) {
             message.client.users,
             `작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${message}\n에러 내용: ${err.stack}`
         );
-        return message.channel.send(`채널에 참가할 수 없습니다: ${err.message}`);
+        await message.channel.send(`채널에 참가할 수 없습니다: ${err.message}`);
     }
 }
 export const commandData = {
@@ -183,6 +183,6 @@ export async function commandExecute(interaction) {
             interaction.client.users,
             `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction}\n에러 내용: ${err.stack}`
         );
-        return interaction.followUp(`채널에 참가할 수 없습니다: ${err.message}`);
+        await interaction.followUp(`채널에 참가할 수 없습니다: ${err.message}`);
     }
 }

@@ -110,9 +110,9 @@ export async function messageExecute(message, args) {
     });
 
     if (!searchRslt) {
-        return message.channel.send('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
+        await message.channel.send('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
     } else {
-        return message.channel.send(await getCoinEmbed(searchRslt, type));
+        await message.channel.send(await getCoinEmbed(searchRslt, type));
     }
 }
 export const commandData = {
@@ -151,8 +151,8 @@ export async function commandExecute(interaction) {
     });
 
     if (!searchRslt) {
-        return interaction.followUp('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
+        await interaction.followUp('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
     } else {
-        return interaction.followUp(await getCoinEmbed(searchRslt, type));
+        await interaction.followUp(await getCoinEmbed(searchRslt, type));
     }
 }

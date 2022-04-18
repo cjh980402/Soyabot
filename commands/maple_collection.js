@@ -22,7 +22,7 @@ export async function messageExecute(message, args) {
 
     const collection = mapleUserInfo.Collection();
     if (!collection) {
-        return message.channel.send(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못했습니다.`);
+        await message.channel.send(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못했습니다.`);
     } else {
         const { stdout: collectionPic } = await exec(
             `python3 ./util/python/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(
@@ -33,7 +33,7 @@ export async function messageExecute(message, args) {
             }
         );
         const image = new MessageAttachment(collectionPic, 'collection.png');
-        return message.channel.send({ content: `${mapleUserInfo.Name}님의 코디 컬렉션`, files: [image] });
+        await message.channel.send({ content: `${mapleUserInfo.Name}님의 코디 컬렉션`, files: [image] });
     }
 }
 export const commandData = {
@@ -60,7 +60,7 @@ export async function commandExecute(interaction) {
 
     const collection = mapleUserInfo.Collection();
     if (!collection) {
-        return interaction.followUp(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못했습니다.`);
+        await interaction.followUp(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못했습니다.`);
     } else {
         const { stdout: collectionPic } = await exec(
             `python3 ./util/python/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(
@@ -71,6 +71,6 @@ export async function commandExecute(interaction) {
             }
         );
         const image = new MessageAttachment(collectionPic, 'collection.png');
-        return interaction.followUp({ content: `${mapleUserInfo.Name}님의 코디 컬렉션`, files: [image] });
+        await interaction.followUp({ content: `${mapleUserInfo.Name}님의 코디 컬렉션`, files: [image] });
     }
 }

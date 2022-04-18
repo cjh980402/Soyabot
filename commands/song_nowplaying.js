@@ -36,7 +36,7 @@ export async function messageExecute(message) {
         nowPlaying.setFooter({ text: `남은 재생 시간: ${Util.toDurationString(song.duration - seek)}` });
     }
 
-    return message.channel.send({ embeds: [nowPlaying] });
+    await message.channel.send({ embeds: [nowPlaying] });
 }
 export const commandData = {
     name: 'nowplaying',
@@ -71,5 +71,5 @@ export async function commandExecute(interaction) {
         nowPlaying.setFooter({ text: `남은 재생 시간: ${Util.toDurationString(song.duration - seek)}` });
     }
 
-    return interaction.followUp({ embeds: [nowPlaying] });
+    await interaction.followUp({ embeds: [nowPlaying] });
 }

@@ -35,7 +35,7 @@ export async function messageExecute(message, args) {
         }
     }
 
-    return message.channel.send(
+    await message.channel.send(
         `아케인 심볼 Lv.${startlev} → Lv.${endlev}
 요구량: ${total_req[0]}
 여로: ${total_meso[0].toLocaleString()}메소
@@ -91,7 +91,7 @@ export async function commandExecute(interaction) {
         }
     }
 
-    return interaction.followUp(
+    await interaction.followUp(
         `아케인 심볼 Lv.${startlev} → Lv.${endlev}
 요구량: ${total_req[0]}
 여로: ${total_meso[0].toLocaleString()}메소

@@ -5,7 +5,7 @@ export const command = ['스타버블', 'ㅅㅌㅂㅂ'];
 export const description = '- 엔젤릭버스터의 2번째 노래';
 export const type = ['메이플'];
 export async function messageExecute(message) {
-    return message.client.commands
+    await message.client.commands
         .find((cmd) => cmd.command.includes('play'))
         .messageExecute(message, ['https://youtu.be/ixww1OHztbs']);
 }
@@ -19,5 +19,5 @@ export async function commandExecute(interaction) {
         type: 'STRING',
         value: 'https://youtu.be/ixww1OHztbs'
     });
-    return interaction.client.commands.find((cmd) => cmd.commandData?.name === 'play').commandExecute(interaction);
+    await interaction.client.commands.find((cmd) => cmd.commandData?.name === 'play').commandExecute(interaction);
 }

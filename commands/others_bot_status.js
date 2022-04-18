@@ -33,7 +33,7 @@ export async function messageExecute(message) {
         memory = (100 * (1 - freemem() / totalmem())).toFixed(2);
     }
 
-    return message.channel.send(
+    await message.channel.send(
         `작동 시간: ${timeKoreanUnit(Math.floor(message.client.uptime / 1000))}\n메모리 사용량: ${memory}%`
     );
 }
@@ -50,7 +50,7 @@ export async function commandExecute(interaction) {
         memory = (100 * (1 - freemem() / totalmem())).toFixed(2);
     }
 
-    return interaction.followUp(
+    await interaction.followUp(
         `작동 시간: ${timeKoreanUnit(Math.floor(interaction.client.uptime / 1000))}\n메모리 사용량: ${memory}%`
     );
 }

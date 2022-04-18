@@ -20,10 +20,10 @@ export async function messageExecute(message) {
 
     if (queue.playing) {
         queue.player.pause();
-        return message.channel.send(`${message.author} ⏸️ 노래를 일시정지 했습니다.`);
+        await message.channel.send(`${message.author} ⏸️ 노래를 일시정지 했습니다.`);
+    } else {
+        await message.reply('대기열이 재생 상태가 아닙니다.');
     }
-
-    return message.reply('대기열이 재생 상태가 아닙니다.');
 }
 export const commandData = {
     name: 'pause',
@@ -44,8 +44,8 @@ export async function commandExecute(interaction) {
 
     if (queue.playing) {
         queue.player.pause();
-        return interaction.followUp(`${interaction.user} ⏸️ 노래를 일시정지 했습니다.`);
+        await interaction.followUp(`${interaction.user} ⏸️ 노래를 일시정지 했습니다.`);
+    } else {
+        await interaction.followUp('대기열이 재생 상태가 아닙니다.');
     }
-
-    return interaction.followUp('대기열이 재생 상태가 아닙니다.');
 }

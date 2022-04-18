@@ -46,7 +46,7 @@ export async function messageExecute(message, args) {
             rslt += `\n${key}: ${list[key]}회`;
         }
     }
-    return sendSplitCode(message.channel, rslt, { split: true });
+    await sendSplitCode(message.channel, rslt, { split: true });
 }
 export const commandData = {
     name: '골드애플',
@@ -98,5 +98,5 @@ export async function commandExecute(interaction) {
             rslt += `\n${key}: ${list[key]}회`;
         }
     }
-    return sendSplitCode(interaction, rslt, { split: true });
+    await sendSplitCode(interaction, rslt, { split: true });
 }

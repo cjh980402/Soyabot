@@ -114,7 +114,7 @@ export async function messageExecute(message, args) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
-    return message.channel.send(await getMesoEmbed(args[0]));
+    await message.channel.send(await getMesoEmbed(args[0]));
 }
 export const commandData = {
     name: '메소',
@@ -130,5 +130,5 @@ export const commandData = {
     ]
 };
 export async function commandExecute(interaction) {
-    return interaction.followUp(await getMesoEmbed(interaction.options.getString('서버')));
+    await interaction.followUp(await getMesoEmbed(interaction.options.getString('서버')));
 }

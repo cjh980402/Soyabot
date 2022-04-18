@@ -53,8 +53,8 @@ export async function messageExecute(message, args) {
                 return sendPageMessage(message, embeds);
             }
         }
-        return message.channel.send(`${day}요일은 학식이 제공되지 않습니다.`);
+        await message.channel.send(`${day}요일은 학식이 제공되지 않습니다.`);
     } else {
-        return message.channel.send('학식 정보를 조회할 수 없습니다.');
+        await message.channel.send('학식 정보를 조회할 수 없습니다.');
     }
 }

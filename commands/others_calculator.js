@@ -48,9 +48,9 @@ export async function messageExecute(message, args) {
     }
 
     try {
-        return sendSplitCode(message.channel, String(originEvaluate(inputExpression(args.join(' ')))), { code: 'js' });
+        await sendSplitCode(message.channel, String(originEvaluate(inputExpression(args.join(' ')))), { code: 'js' });
     } catch {
-        return message.channel.send('올바르지 않은 수식입니다.');
+        await message.channel.send('올바르지 않은 수식입니다.');
     }
 }
 export const commandData = {
@@ -67,12 +67,12 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     try {
-        return sendSplitCode(
+        await sendSplitCode(
             interaction,
             String(originEvaluate(inputExpression(interaction.options.getString('계산식')))),
             { code: 'js' }
         );
     } catch {
-        return interaction.followUp('올바르지 않은 수식입니다.');
+        await interaction.followUp('올바르지 않은 수식입니다.');
     }
 }

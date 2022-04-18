@@ -15,10 +15,7 @@ export const description = `- 입력한 카테고리(${Object.keys(noticematch).
 카테고리 생략 시 현재 알림상태를 알려줍니다.`;
 export const type = ['메이플'];
 export async function messageExecute(message) {
-    if (!message.guildId) {
-        return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
-    }
-    return message.reply('현재 봇 프로필에 있는 공지 채널에서만 자동알림을 받을 수 있습니다.');
+    await message.reply('현재 봇 프로필에 있는 공지 채널에서만 자동알림을 받을 수 있습니다.');
 }
 export const commandData = {
     name: '자동알림',
@@ -35,8 +32,5 @@ export const commandData = {
     ]
 };
 export async function commandExecute(interaction) {
-    if (!interaction.guildId) {
-        return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
-    }
-    return interaction.followUp('현재 봇 프로필에 있는 공지 채널에서만 자동알림을 받을 수 있습니다.');
+    await interaction.followUp('현재 봇 프로필에 있는 공지 채널에서만 자동알림을 받을 수 있습니다.');
 }

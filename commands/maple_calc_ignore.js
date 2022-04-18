@@ -25,7 +25,7 @@ export async function messageExecute(message, args) {
     }
 
     const boss_damage = Math.max(100 - monster * sum, 0);
-    return message.channel.send(
+    await message.channel.send(
         `총 합 방무: ${((1 - sum) * 100).toFixed(2)}%\n방어율 ${monster}%인 대상에게 딜량: ${boss_damage.toFixed(2)}%`
     );
 }
@@ -77,7 +77,7 @@ export async function commandExecute(interaction) {
     }
 
     const boss_damage = Math.max(100 - monster * sum, 0);
-    return interaction.followUp(
+    await interaction.followUp(
         `총 합 방무: ${((1 - sum) * 100).toFixed(2)}%\n방어율 ${monster}%인 대상에게 딜량: ${boss_damage.toFixed(2)}%`
     );
 }

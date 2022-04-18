@@ -37,7 +37,7 @@ export async function messageExecute(message, args) {
     if (target !== dest) {
         queue.songs.splice(dest - 1, 0, queue.songs.splice(target - 1, 1)[0]);
     }
-    return message.channel.send(
+    await message.channel.send(
         `${message.author} ${target < dest ? '➡️' : '⬅️'} ${target}번째 노래를 ${dest}번째로 이동했습니다.`
     );
 }
@@ -88,7 +88,7 @@ export async function commandExecute(interaction) {
     if (target !== dest) {
         queue.songs.splice(dest - 1, 0, queue.songs.splice(target - 1, 1)[0]);
     }
-    return interaction.followUp(
+    await interaction.followUp(
         `${interaction.user} ${target < dest ? '➡️' : '⬅️'} ${target}번째 노래를 ${dest}번째로 이동했습니다.`
     );
 }

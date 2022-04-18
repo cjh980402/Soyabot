@@ -40,7 +40,7 @@ export async function messageExecute(message, args) {
         return message.reply(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래를 삭제할 수 있습니다.`);
     }
 
-    return message.channel.send(
+    await message.channel.send(
         `❌ ${message.author}가 대기열에서 **${removed
             .map((song, i) => `${songRemove[i]}. ${song.title}`)
             .join(', ')}**을 삭제했습니다.`
@@ -89,7 +89,7 @@ export async function commandExecute(interaction) {
         return interaction.followUp(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래를 삭제할 수 있습니다.`);
     }
 
-    return interaction.followUp(
+    await interaction.followUp(
         `❌ ${interaction.user}가 대기열에서 **${removed
             .map((song, i) => `${songRemove[i]}. ${song.title}`)
             .join(', ')}**을 삭제했습니다.`

@@ -9,7 +9,7 @@ export const type = ['기타'];
 export async function messageExecute(message) {
     const imageURL = await getMessageImage(message);
     if (!imageURL) {
-        return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
+        await message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
     } else {
         const params = new URLSearchParams();
         params.set('image', imageURL);
@@ -24,9 +24,9 @@ export async function messageExecute(message) {
         });
         const data = await body.json();
         if (data.err) {
-            return message.channel.send('사진에서 적절한 대상 인물을 찾지 못했습니다.');
+            await message.channel.send('사진에서 적절한 대상 인물을 찾지 못했습니다.');
         } else {
-            return message.channel.send({ files: [data.output_url] });
+            await message.channel.send({ files: [data.output_url] });
         }
     }
 }

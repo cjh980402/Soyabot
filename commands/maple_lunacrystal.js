@@ -47,7 +47,7 @@ export async function messageExecute(message, args) {
             rslt += `\n${key}: ${list[key]}회`;
         }
     }
-    return message.channel.send(rslt);
+    await message.channel.send(rslt);
 }
 export const commandData = {
     name: '루나크리스탈',
@@ -107,5 +107,5 @@ export async function commandExecute(interaction) {
             rslt += `\n${key}: ${list[key]}회`;
         }
     }
-    return interaction.followUp(rslt);
+    await interaction.followUp(rslt);
 }

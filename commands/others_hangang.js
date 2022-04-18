@@ -23,7 +23,7 @@ export async function messageExecute(message) {
 
     const result = data.resultList.find((v) => v.W_TEMP);
 
-    return message.channel.send(
+    await message.channel.send(
         `지금 한강온도: ${result.W_TEMP}°C\n업데이트 시간: ${result.MSR_DATE.replace(
             /(\d{4})(\d{2})(\d{2})/,
             '$1년 $2월 $3일'
@@ -52,7 +52,7 @@ export async function commandExecute(interaction) {
 
     const result = data.resultList.find((v) => v.W_TEMP);
 
-    return interaction.followUp(
+    await interaction.followUp(
         `지금 한강온도: ${result.W_TEMP}°C\n업데이트 시간: ${result.MSR_DATE.replace(
             /(\d{4})(\d{2})(\d{2})/,
             '$1년 $2월 $3일'

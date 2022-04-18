@@ -13,9 +13,9 @@ export async function messageExecute(message, args) {
     const mapleUserInfo = new MapleUser(args[0]);
     const union = await mapleUserInfo.homeUnion();
     if (!union) {
-        return message.channel.send(`[${mapleUserInfo.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
+        await message.channel.send(`[${mapleUserInfo.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
     } else {
-        return message.channel.send(
+        await message.channel.send(
             `[${mapleUserInfo.Name}]\n직업: ${
                 union[3]
             }\n유니온 레벨: ${union[0].toLocaleString()}\n전투력: ${union[1].toLocaleString()}\n일일 코인 수급량: ${
@@ -41,9 +41,9 @@ export async function commandExecute(interaction) {
 
     const union = await mapleUserInfo.homeUnion();
     if (!union) {
-        return interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
+        await interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
     } else {
-        return interaction.followUp(
+        await interaction.followUp(
             `[${mapleUserInfo.Name}]\n직업: ${
                 union[3]
             }\n유니온 레벨: ${union[0].toLocaleString()}\n전투력: ${union[1].toLocaleString()}\n일일 코인 수급량: ${

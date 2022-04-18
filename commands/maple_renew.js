@@ -16,11 +16,11 @@ export async function messageExecute(message, args) {
     }
 
     if (await mapleUserInfo.isLatest()) {
-        return message.channel.send(
+        await message.channel.send(
             `[${mapleUserInfo.Name}]\n갱신이 완료되었습니다.\n\n${decodeURI(mapleUserInfo.GGURL)}`
         );
     } else {
-        return message.channel.send('제한시간 내에 갱신 작업을 실패했습니다.');
+        await message.channel.send('제한시간 내에 갱신 작업을 실패했습니다.');
     }
 }
 export const commandData = {
@@ -42,10 +42,10 @@ export async function commandExecute(interaction) {
     }
 
     if (await mapleUserInfo.isLatest()) {
-        return interaction.followUp(
+        await interaction.followUp(
             `[${mapleUserInfo.Name}]\n갱신이 완료되었습니다.\n\n${decodeURI(mapleUserInfo.GGURL)}`
         );
     } else {
-        return interaction.followUp('제한시간 내에 갱신 작업을 실패했습니다.');
+        await interaction.followUp('제한시간 내에 갱신 작업을 실패했습니다.');
     }
 }

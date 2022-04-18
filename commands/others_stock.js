@@ -280,9 +280,9 @@ export async function messageExecute(message, args) {
     const searchRslt = (await body.json()).items[0];
 
     if (!searchRslt?.length) {
-        return message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
+        await message.channel.send('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
     } else {
-        return message.channel.send(await getStockEmbed(search, searchRslt, type));
+        await message.channel.send(await getStockEmbed(search, searchRslt, type));
     }
 }
 export const commandData = {
@@ -312,8 +312,8 @@ export async function commandExecute(interaction) {
     const searchRslt = (await body.json()).items[0];
 
     if (!searchRslt?.length) {
-        return interaction.followUp('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
+        await interaction.followUp('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
     } else {
-        return interaction.followUp(await getStockEmbed(search, searchRslt, type));
+        await interaction.followUp(await getStockEmbed(search, searchRslt, type));
     }
 }

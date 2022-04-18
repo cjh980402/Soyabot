@@ -20,13 +20,13 @@ export async function messageExecute(message, args) {
 
     const data = mapleUserInfo.ExpHistory();
     if (!data) {
-        return message.channel.send(`[${mapleUserInfo.Name}]\n경험치 히스토리를 가져오지 못했습니다.`);
+        await message.channel.send(`[${mapleUserInfo.Name}]\n경험치 히스토리를 가져오지 못했습니다.`);
     } else {
         let rslt = `[${mapleUserInfo.Name}]`;
         for (const expData of data) {
             rslt += `\n${expData.date}: Lv.${expData.level} (${expData.exp}%)`;
         }
-        return message.channel.send(rslt);
+        await message.channel.send(rslt);
     }
 }
 export const commandData = {
@@ -53,12 +53,12 @@ export async function commandExecute(interaction) {
 
     const data = mapleUserInfo.ExpHistory();
     if (!data) {
-        return interaction.followUp(`[${mapleUserInfo.Name}]\n경험치 히스토리를 가져오지 못했습니다.`);
+        await interaction.followUp(`[${mapleUserInfo.Name}]\n경험치 히스토리를 가져오지 못했습니다.`);
     } else {
         let rslt = `[${mapleUserInfo.Name}]`;
         for (const expData of data) {
             rslt += `\n${expData.date}: Lv.${expData.level} (${expData.exp}%)`;
         }
-        return interaction.followUp(rslt);
+        await interaction.followUp(rslt);
     }
 }

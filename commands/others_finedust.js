@@ -15,7 +15,7 @@ export async function messageExecute(message) {
     );
     const $ = load(await body.text());
 
-    return message.channel.send({
+    await message.channel.send({
         content: `현재 ${dustType} 지도`,
         files: [$('div.play_video > img').attr('data-original-src')]
     });
@@ -32,7 +32,7 @@ export async function commandExecute(interaction) {
     );
     const $ = load(await body.text());
 
-    return interaction.followUp({
+    await interaction.followUp({
         content: '현재 미세먼지 지도',
         files: [$('div.play_video > img').attr('data-original-src')]
     });

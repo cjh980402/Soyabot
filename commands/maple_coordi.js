@@ -21,7 +21,7 @@ export async function messageExecute(message, args) {
 
     const coordi = mapleUserInfo.Coordi();
     if (!coordi) {
-        return message.channel.send(`[${mapleUserInfo.Name}]\n코디 정보가 없습니다.`);
+        await message.channel.send(`[${mapleUserInfo.Name}]\n코디 정보가 없습니다.`);
     } else {
         const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
         const coordiEmbed = new MessageEmbed()
@@ -39,7 +39,7 @@ export async function messageExecute(message, args) {
                 { name: '**무기**', value: coordi[6], inline: true }
             );
 
-        return message.channel.send({ embeds: [coordiEmbed], files: [image] });
+        await message.channel.send({ embeds: [coordiEmbed], files: [image] });
     }
 }
 export const commandData = {
@@ -66,7 +66,7 @@ export async function commandExecute(interaction) {
 
     const coordi = mapleUserInfo.Coordi();
     if (!coordi) {
-        return interaction.followUp(`[${mapleUserInfo.Name}]\n코디 정보가 없습니다.`);
+        await interaction.followUp(`[${mapleUserInfo.Name}]\n코디 정보가 없습니다.`);
     } else {
         const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
         const coordiEmbed = new MessageEmbed()
@@ -84,6 +84,6 @@ export async function commandExecute(interaction) {
                 { name: '**무기**', value: coordi[6], inline: true }
             );
 
-        return interaction.followUp({ embeds: [coordiEmbed], files: [image] });
+        await interaction.followUp({ embeds: [coordiEmbed], files: [image] });
     }
 }

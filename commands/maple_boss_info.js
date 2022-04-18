@@ -31,7 +31,7 @@ export async function messageExecute(message, args) {
         return message.channel.send('데이터가 없는 보스입니다.');
     }
 
-    return message.channel.send({ embeds: [getBossEmbed(bossName, bossGrade)] });
+    await message.channel.send({ embeds: [getBossEmbed(bossName, bossGrade)] });
 }
 export const commandData = {
     name: '보스',
@@ -58,5 +58,5 @@ export async function commandExecute(interaction) {
     }
     const bossGrade = interaction.options.getString('보스_난이도');
 
-    return interaction.followUp({ embeds: [getBossEmbed(bossName, bossGrade)] });
+    await interaction.followUp({ embeds: [getBossEmbed(bossName, bossGrade)] });
 }

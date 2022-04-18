@@ -39,11 +39,7 @@ export async function messageExecute(message, args) {
         .map((cmd) => `**${cmd.usage}**\n- 대체 명령어: ${cmd.command.join(', ')}\n${cmd.description}`);
 
     const embeds = getHelpEmbed(description, message.client.user.username);
-    if (embeds.length > 1) {
-        await sendPageMessage(message, embeds);
-    } else {
-        await message.channel.send({ embeds: [embeds[0]] });
-    }
+    await sendPageMessage(message, embeds);
 }
 export const commandData = {
     name: 'help',
@@ -76,9 +72,5 @@ export async function commandExecute(interaction) {
         .map((cmd) => `**${cmd.usage}**\n- 대체 명령어: ${cmd.command.join(', ')}\n${cmd.description}`);
 
     const embeds = getHelpEmbed(description, interaction.client.user.username);
-    if (embeds.length > 1) {
-        await sendPageMessage(interaction, embeds);
-    } else {
-        await interaction.editReply({ embeds: [embeds[0]] });
-    }
+    await sendPageMessage(interaction, embeds);
 }

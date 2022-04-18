@@ -41,7 +41,7 @@ export async function messageExecute(message, args) {
     const rslt = `로얄 헤어 (목표: ${MapleProb.ROYALHAIR_PROBTABLE[gender][goalhair]}) 결과\n\n수행 횟수: ${
         list.length
     }회\n\n진행 과정\n${list.map((v, i) => `${i + 1}번째: ${MapleProb.ROYALHAIR_PROBTABLE[gender][v]}`).join('\n')}`;
-    return message.channel.send(rslt);
+    await message.channel.send(rslt);
 }
 export const commandData = {
     name: '헤어',
@@ -116,6 +116,6 @@ export async function commandExecute(interaction) {
         }회\n\n진행 과정\n${list
             .map((v, i) => `${i + 1}번째: ${MapleProb.ROYALHAIR_PROBTABLE[subcommand][v]}`)
             .join('\n')}`;
-        return interaction.followUp(rslt);
+        await interaction.followUp(rslt);
     }
 }

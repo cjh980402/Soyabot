@@ -52,7 +52,7 @@ export async function messageExecute(message, args) {
         return message.channel.send('검색할 노래가 없습니다.');
     }
 
-    return message.channel.send({ embeds: [await getLyricsEmbed(search)] });
+    await message.channel.send({ embeds: [await getLyricsEmbed(search)] });
 }
 export const commandData = {
     name: 'lyrics',
@@ -72,5 +72,5 @@ export async function commandExecute(interaction) {
         return interaction.followUp('검색할 노래가 없습니다.');
     }
 
-    return interaction.followUp({ embeds: [await getLyricsEmbed(search)] });
+    await interaction.followUp({ embeds: [await getLyricsEmbed(search)] });
 }

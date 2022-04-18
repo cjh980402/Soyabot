@@ -12,11 +12,11 @@ export async function messageExecute(message) {
     if (message.client.db.get('SELECT * FROM pruning_skip WHERE guild_id = ?', message.guildId)) {
         // 기존상태: OFF
         message.client.db.run('DELETE FROM pruning_skip WHERE guild_id = ?', message.guildId);
-        return message.channel.send('현재 메시지 자동정리: **OFF → ON**');
+        await message.channel.send('현재 메시지 자동정리: **OFF → ON**');
     } else {
         // 기존상태: ON
         message.client.db.insert('pruning_skip', { guild_id: message.guildId, name: message.guild.name });
-        return message.channel.send('현재 메시지 자동정리: **ON → OFF**');
+        await message.channel.send('현재 메시지 자동정리: **ON → OFF**');
     }
 }
 export const commandData = {
@@ -31,10 +31,10 @@ export async function commandExecute(interaction) {
     if (interaction.client.db.get('SELECT * FROM pruning_skip WHERE guild_id = ?', interaction.guildId)) {
         // 기존상태: OFF
         interaction.client.db.run('DELETE FROM pruning_skip WHERE guild_id = ?', interaction.guildId);
-        return interaction.followUp('현재 메시지 자동정리: **OFF → ON**');
+        await interaction.followUp('현재 메시지 자동정리: **OFF → ON**');
     } else {
         // 기존상태: ON
         interaction.client.db.insert('pruning_skip', { guild_id: interaction.guildId, name: interaction.guild.name });
-        return interaction.followUp('현재 메시지 자동정리: **ON → OFF**');
+        await interaction.followUp('현재 메시지 자동정리: **ON → OFF**');
     }
 }

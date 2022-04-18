@@ -179,21 +179,21 @@ export async function messageExecute(message, args) {
 
     try {
         if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
-            return sendSplitCode(message.channel, await farm_read(args.slice(1).join('')), { split: true });
+            await sendSplitCode(message.channel, await farm_read(args.slice(1).join('')), { split: true });
         } else if (args[0] === '조합식' || args[0] === 'ㅈㅎㅅ') {
-            return message.channel.send(await farm_sex(args.slice(1).join('')));
+            await message.channel.send(await farm_sex(args.slice(1).join('')));
         } else if (args[0] === '정보' || args[0] === 'ㅈㅂ') {
-            return sendSplitCode(message.channel, await farm_info(args.slice(1).join('')), { split: true });
+            await sendSplitCode(message.channel, await farm_info(args.slice(1).join('')), { split: true });
         } else if (args[0] === '추가' || args[0] === 'ㅊㄱ') {
             if (args.length < 4) {
                 return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
             }
-            return message.channel.send(await farm_add(args[1], args[2], args.slice(3).join('')));
+            await message.channel.send(await farm_add(args[1], args[2], args.slice(3).join('')));
         } else {
-            return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
+            await message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
         }
     } catch {
-        return message.channel.send('농장 API 서버가 점검 중입니다.');
+        await message.channel.send('농장 API 서버가 점검 중입니다.');
     }
 }
 export const commandData = {
@@ -271,23 +271,23 @@ export async function commandExecute(interaction) {
 
     try {
         if (subcommand === '목록') {
-            return sendSplitCode(
+            await sendSplitCode(
                 interaction,
                 await farm_read(interaction.options.getString('몬스터_이름').replace(/\s+/g, '')),
                 { split: true }
             );
         } else if (subcommand === '조합식') {
-            return interaction.followUp(
+            await interaction.followUp(
                 await farm_sex(interaction.options.getString('몬스터_이름').replace(/\s+/g, ''))
             );
         } else if (subcommand === '정보') {
-            return sendSplitCode(
+            await sendSplitCode(
                 interaction,
                 await farm_info(interaction.options.getString('농장_이름').replace(/\s+/g, '')),
                 { split: true }
             );
         } else if (subcommand === '추가') {
-            return interaction.followUp(
+            await interaction.followUp(
                 await farm_add(
                     interaction.options.getString('끝나는_날짜'),
                     interaction.options.getString('농장_이름').replace(/\s+/g, ''),
@@ -296,6 +296,6 @@ export async function commandExecute(interaction) {
             );
         }
     } catch {
-        return interaction.followUp('농장 API 서버가 점검 중입니다.');
+        await nteraction.followUp('농장 API 서버가 점검 중입니다.');
     }
 }

@@ -20,9 +20,9 @@ export async function messageExecute(message, args) {
 
     const rslt = mapleUserInfo.Achieve();
     if (!rslt) {
-        return message.channel.send(`[${mapleUserInfo.Name}]\n기록이 없습니다.`);
+        await message.channel.send(`[${mapleUserInfo.Name}]\n기록이 없습니다.`);
     } else {
-        return message.channel.send(
+        await message.channel.send(
             `[${mapleUserInfo.Name}]\n등급: ${rslt[0]}\n업적점수: ${rslt[1]}\n월드랭킹: ${rslt[2]}\n전체랭킹: ${rslt[3]}`
         );
     }
@@ -51,9 +51,9 @@ export async function commandExecute(interaction) {
 
     const rslt = mapleUserInfo.Achieve();
     if (!rslt) {
-        return interaction.followUp(`[${mapleUserInfo.Name}]\n기록이 없습니다.`);
+        await interaction.followUp(`[${mapleUserInfo.Name}]\n기록이 없습니다.`);
     } else {
-        return interaction.followUp(
+        await interaction.followUp(
             `[${mapleUserInfo.Name}]\n등급: ${rslt[0]}\n업적점수: ${rslt[1]}\n월드랭킹: ${rslt[2]}\n전체랭킹: ${rslt[3]}`
         );
     }

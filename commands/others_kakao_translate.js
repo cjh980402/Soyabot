@@ -72,9 +72,9 @@ export async function messageExecute(message, args) {
 
     const text = message.content.replace(/\s*.+?\s+.+?\s+/, '').trim();
     if (text.length > 5000) {
-        return message.channel.send('5000자를 초과하는 내용은 번역하지 않습니다.');
+        await message.channel.send('5000자를 초과하는 내용은 번역하지 않습니다.');
     } else {
-        return message.channel.send(await tran(langCode[0], langCode[1], text));
+        await message.channel.send(await tran(langCode[0], langCode[1], text));
     }
 }
 export const commandData = {
@@ -111,7 +111,7 @@ export async function commandExecute(interaction) {
     const subcommand = interaction.options.getSubcommand();
 
     if (subcommand === '언어목록') {
-        return interaction.followUp(
+        await interaction.followUp(
             `<지원하는 언어 종류>\n${Object.values(langList)
                 .map((v) => v[0])
                 .join(', ')}`
@@ -125,9 +125,9 @@ export async function commandExecute(interaction) {
 
         const text = interaction.options.getString('내용');
         if (text.length > 5000) {
-            return interaction.followUp('5000자를 초과하는 내용은 번역하지 않습니다.');
+            await interaction.followUp('5000자를 초과하는 내용은 번역하지 않습니다.');
         } else {
-            return interaction.followUp(await tran(langCode[0], langCode[1], text));
+            await interaction.followUp(await tran(langCode[0], langCode[1], text));
         }
     }
 }

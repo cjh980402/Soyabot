@@ -12,7 +12,7 @@ export async function messageExecute(message, args) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
     const result = new SuperialItem();
-    return message.channel.send(result.doingStarforce(args.map(Number)));
+    await message.channel.send(result.doingStarforce(args.map(Number)));
 }
 export const commandData = {
     name: '타일런트시뮬',
@@ -43,7 +43,7 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     const result = new SuperialItem();
-    return interaction.followUp(
+    await interaction.followUp(
         result.doingStarforce([
             interaction.options.getInteger('시작_스타포스_개수'),
             interaction.options.getInteger('목표_스타포스_개수'),

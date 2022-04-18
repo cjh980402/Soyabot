@@ -77,12 +77,12 @@ export const command = ['통계', 'ㅌㄱ'];
 export const description = '- 봇의 명령어 사용량 통계를 그래프로 보여줍니다.';
 export const type = ['기타'];
 export async function messageExecute(message) {
-    return message.channel.send({ files: [await getCommandCountGraph(message.client)] });
+    await message.channel.send({ files: [await getCommandCountGraph(message.client)] });
 }
 export const commandData = {
     name: '통계',
     description: '봇의 명령어 사용량 통계를 그래프로 보여줍니다.'
 };
 export async function commandExecute(interaction) {
-    return interaction.followUp({ files: [await getCommandCountGraph(interaction.client)] });
+    await interaction.followUp({ files: [await getCommandCountGraph(interaction.client)] });
 }

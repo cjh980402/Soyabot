@@ -25,12 +25,12 @@ export const description = `- 해당하는 요리의 레시피를 출력합니�
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (picmatch[args[0]]) {
-        return message.channel.send({
+        await message.channel.send({
             content: `${args[0]} 요리의 레시피`,
             files: [`./pictures/muto/${picmatch[args[0]]}.png`]
         });
     } else {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
+        await message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 }
 export const commandData = {
@@ -48,5 +48,5 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     const food = interaction.options.getString('요리_이름');
-    return interaction.followUp({ content: `${food} 요리의 레시피`, files: [`./pictures/muto/${picmatch[food]}.png`] });
+    await interaction.followUp({ content: `${food} 요리의 레시피`, files: [`./pictures/muto/${picmatch[food]}.png`] });
 }

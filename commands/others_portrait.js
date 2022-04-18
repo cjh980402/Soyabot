@@ -11,7 +11,7 @@ export const type = ['기타'];
 export async function messageExecute(message) {
     const imageURL = await getMessageImage(message);
     if (!imageURL) {
-        return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
+        await message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
     } else {
         /*const { stdout: portraitPic } = await exec(`python3 ./util/python/gl2face_portrait.py ${imageURL}`, { encoding: 'buffer' }); // 파이썬 스크립트 실행
         const image = new MessageAttachment(portraitPic, 'portrait.png');*/
@@ -23,10 +23,10 @@ export async function messageExecute(message) {
         ); // 그림 작업은 오래걸리므로 시간 제한을 4분으로 변경
         if (200 <= statusCode && statusCode <= 299) {
             const image = new MessageAttachment(Buffer.from(await body.arrayBuffer()), 'portrait.png');
-            return message.channel.send({ files: [image] });
+            await message.channel.send({ files: [image] });
         } else {
+            await message.channel.send('그림 작업을 실패했습니다.');
             for await (const _ of body); // 메모리 누수 방지를 위한 force consumption of body
-            return message.channel.send('그림 작업을 실패했습니다.');
         }
     }
 }

@@ -20,7 +20,7 @@ export async function messageExecute(message) {
     }
 
     Util.shuffle(queue.songs, 1); // 첫번째 노래를 제외하고 섞기
-    return message.channel.send(`${message.author} 🔀 대기열을 섞었습니다.`);
+    await message.channel.send(`${message.author} 🔀 대기열을 섞었습니다.`);
 }
 export const commandData = {
     name: 'shuffle',
@@ -40,5 +40,5 @@ export async function commandExecute(interaction) {
     }
 
     Util.shuffle(queue.songs, 1); // 첫번째 노래를 제외하고 섞기
-    return interaction.followUp(`${interaction.user} 🔀 대기열을 섞었습니다.`);
+    await interaction.followUp(`${interaction.user} 🔀 대기열을 섞었습니다.`);
 }

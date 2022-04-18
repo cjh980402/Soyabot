@@ -19,7 +19,7 @@ export async function messageExecute(message) {
     }
 
     queue.loop = !queue.loop; // 반복 재생 상태 전환
-    return message.channel.send(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
+    await message.channel.send(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
 }
 export const commandData = {
     name: 'loop',
@@ -39,5 +39,5 @@ export async function commandExecute(interaction) {
     }
 
     queue.loop = !queue.loop; // 반복 재생 상태 전환
-    return interaction.followUp(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
+    await interaction.followUp(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
 }

@@ -23,7 +23,7 @@ export async function messageExecute(message) {
     const sundayDate = sundayData.find('.event_date').text();
     const sundayImg = sundayData.find('img[alt="썬데이 메이플!"]').attr('src');
 
-    return message.channel.send({ content: sundayDate, files: [sundayImg] });
+    await message.channel.send({ content: sundayDate, files: [sundayImg] });
 }
 export const commandData = {
     name: '썬데이',
@@ -46,5 +46,5 @@ export async function commandExecute(interaction) {
     const sundayDate = sundayData.find('.event_date').text();
     const sundayImg = sundayData.find('img[alt="썬데이 메이플!"]').attr('src');
 
-    return interaction.followUp({ content: sundayDate, files: [sundayImg] });
+    await interaction.followUp({ content: sundayDate, files: [sundayImg] });
 }

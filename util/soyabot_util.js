@@ -113,55 +113,59 @@ export async function sendSplitCode(target, content, options) {
 }
 
 export async function sendPageMessage(messageOrCommand, embeds, options = {}) {
-    const row = new MessageActionRow().addComponents(
-        new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
-        new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
-        new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
-    );
-    const data = {
-        content: `**현재 페이지 - 1/${embeds.length}**`,
-        embeds: [embeds[0]],
-        components: [row],
-        ...options
-    };
-    const page =
-        messageOrCommand instanceof CommandInteraction
-            ? await messageOrCommand.editReply(data)
-            : await messageOrCommand.channel.send(data);
+    const send =
+        messageOrCommand.editReply?.bind(messageOrCommand) ??
+        messageOrCommand.channel.send.bind(messageOrCommand.channel);
 
-    let currentPage = 0;
-    const filter = (itr) => (messageOrCommand.author ?? messageOrCommand.user).id === itr.user.id;
-    const collector = page.createMessageComponentCollector({ filter, time: 120000 });
-
-    collector
-        .on('collect', async (itr) => {
-            try {
-                switch (itr.customId) {
-                    case 'next':
-                        currentPage = (currentPage + 1) % embeds.length;
-                        await page.edit({
-                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                            embeds: [embeds[currentPage]]
-                        });
-                        break;
-                    case 'prev':
-                        currentPage = (currentPage - 1 + embeds.length) % embeds.length;
-                        await page.edit({
-                            content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
-                            embeds: [embeds[currentPage]]
-                        });
-                        break;
-                    case 'stop':
-                        collector.stop();
-                        break;
-                }
-            } catch {}
-        })
-        .once('end', async () => {
-            try {
-                // 페이지 메시지의 버튼 비활성화
-                row.components.forEach((v) => v.setDisabled(true));
-                await page.edit({ components: [row] });
-            } catch {}
+    if (embeds.length > 1) {
+        const row = new MessageActionRow().addComponents(
+            new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
+            new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
+            new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
+        );
+        const page = await send({
+            content: `**현재 페이지 - 1/${embeds.length}**`,
+            embeds: [embeds[0]],
+            components: [row],
+            ...options
         });
+
+        let currentPage = 0;
+        const filter = (itr) => (messageOrCommand.user ?? messageOrCommand.author).id === itr.user.id;
+        const collector = page.createMessageComponentCollector({ filter, time: 120000 });
+
+        collector
+            .on('collect', async (itr) => {
+                try {
+                    switch (itr.customId) {
+                        case 'next':
+                            currentPage = (currentPage + 1) % embeds.length;
+                            await page.edit({
+                                content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                                embeds: [embeds[currentPage]]
+                            });
+                            break;
+                        case 'prev':
+                            currentPage = (currentPage - 1 + embeds.length) % embeds.length;
+                            await page.edit({
+                                content: `**현재 페이지 - ${currentPage + 1}/${embeds.length}**`,
+                                embeds: [embeds[currentPage]]
+                            });
+                            break;
+                        case 'stop':
+                            collector.stop();
+                            break;
+                    }
+                } catch {}
+            })
+            .once('end', async () => {
+                try {
+                    // 페이지 메시지의 버튼 비활성화
+                    row.components.forEach((v) => v.setDisabled(true));
+                    await page.edit({ components: [row] });
+                } catch {}
+            });
+    } else {
+        await send({ embeds: [embeds[0]] });
+    }
 }

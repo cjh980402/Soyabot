@@ -29,7 +29,7 @@ export async function messageExecute(message, args) {
 진행률 (~250): ${(Math.min(levelTable[endlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
 진행률 (~275): ${(Math.min(levelTable[endlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
 진행률 (~300): ${((levelTable[endlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
-        return message.channel.send(rslt);
+        await message.channel.send(rslt);
     } else {
         if (isNaN(startlev) || startlev < 1 || startlev > 300) {
             return message.channel.send('1 ~ 300 범위의 시작 레벨을 입력해주세요.');
@@ -40,7 +40,7 @@ export async function messageExecute(message, args) {
 진행률 (~250): ${(Math.min(levelTable[startlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
 진행률 (~275): ${(Math.min(levelTable[startlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
 진행률 (~300): ${((levelTable[startlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
-        return message.channel.send(rslt);
+        await message.channel.send(rslt);
     }
 }
 export const commandData = {
@@ -80,7 +80,7 @@ export async function commandExecute(interaction) {
 진행률 (~250): ${(Math.min(levelTable[endlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
 진행률 (~275): ${(Math.min(levelTable[endlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
 진행률 (~300): ${((levelTable[endlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
-        return interaction.followUp(rslt);
+        await interaction.followUp(rslt);
     } else {
         if (startlev < 1 || startlev > 300) {
             return interaction.followUp('1 ~ 300 범위의 시작 레벨을 입력해주세요.');
@@ -91,6 +91,6 @@ export async function commandExecute(interaction) {
 진행률 (~250): ${(Math.min(levelTable[startlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
 진행률 (~275): ${(Math.min(levelTable[startlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
 진행률 (~300): ${((levelTable[startlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
-        return interaction.followUp(rslt);
+        await interaction.followUp(rslt);
     }
 }

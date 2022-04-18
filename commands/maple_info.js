@@ -68,7 +68,7 @@ export async function messageExecute(message, args) {
     }
 
     const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
-    return message.channel.send({ embeds: [await getInfoEmbed(mapleUserInfo, level)], files: [image] });
+    await message.channel.send({ embeds: [await getInfoEmbed(mapleUserInfo, level)], files: [image] });
 }
 export const commandData = {
     name: '정보',
@@ -94,5 +94,5 @@ export async function commandExecute(interaction) {
     }
 
     const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
-    return interaction.followUp({ embeds: [await getInfoEmbed(mapleUserInfo, level)], files: [image] });
+    await interaction.followUp({ embeds: [await getInfoEmbed(mapleUserInfo, level)], files: [image] });
 }

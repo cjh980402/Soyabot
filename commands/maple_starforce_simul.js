@@ -20,7 +20,7 @@ export async function messageExecute(message, args) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
     const result = new NormalItem();
-    return message.channel.send(result.doingStarforce(args.map(Number)));
+    await message.channel.send(result.doingStarforce(args.map(Number)));
 }
 export const commandData = {
     name: '스타포스시뮬',
@@ -78,7 +78,7 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     const result = new NormalItem();
-    return interaction.followUp(
+    await interaction.followUp(
         result.doingStarforce([
             interaction.options.getInteger('아이템_레벨_제한'),
             interaction.options.getInteger('시작_스타포스_개수'),

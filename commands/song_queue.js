@@ -35,11 +35,7 @@ export async function messageExecute(message) {
     }
 
     const embeds = getQueueEmbed(queue.songs, message.guild.iconURL(), message.client.user.username);
-    if (embeds.length > 1) {
-        await sendPageMessage(message, embeds);
-    } else {
-        await message.channel.send({ embeds: [embeds[0]] });
-    }
+    await sendPageMessage(message, embeds);
 }
 export const commandData = {
     name: 'queue',
@@ -56,9 +52,5 @@ export async function commandExecute(interaction) {
     }
 
     const embeds = getQueueEmbed(queue.songs, interaction.guild.iconURL(), interaction.client.user.username);
-    if (embeds.length > 1) {
-        await sendPageMessage(interaction, embeds);
-    } else {
-        await interaction.editReply({ embeds: [embeds[0]] });
-    }
+    await sendPageMessage(interaction, embeds);
 }

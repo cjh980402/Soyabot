@@ -20,14 +20,14 @@ export async function messageExecute(message, args) {
 
     const data = mapleUserInfo.LevelHistory();
     if (!data) {
-        return message.channel.send(`[${mapleUserInfo.Name}]\n레벨 히스토리를 가져오지 못했습니다.`);
+        await message.channel.send(`[${mapleUserInfo.Name}]\n레벨 히스토리를 가져오지 못했습니다.`);
     } else {
         const len = data[0].length;
         let rslt = `[${mapleUserInfo.Name}]`;
         for (let i = 1; i < len; i++) {
             rslt += `\nLv.${data[1][i]} 달성일: ${data[0][i]}`;
         }
-        return message.channel.send(rslt);
+        await message.channel.send(rslt);
     }
 }
 export const commandData = {
@@ -54,13 +54,13 @@ export async function commandExecute(interaction) {
 
     const data = mapleUserInfo.LevelHistory();
     if (!data) {
-        return interaction.followUp(`[${mapleUserInfo.Name}]\n레벨 히스토리를 가져오지 못했습니다.`);
+        await interaction.followUp(`[${mapleUserInfo.Name}]\n레벨 히스토리를 가져오지 못했습니다.`);
     } else {
         const len = data[0].length;
         let rslt = `[${mapleUserInfo.Name}]`;
         for (let i = 1; i < len; i++) {
             rslt += `\nLv.${data[1][i]} 달성일: ${data[0][i]}`;
         }
-        return interaction.followUp(rslt);
+        await interaction.followUp(rslt);
     }
 }

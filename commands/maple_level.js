@@ -39,7 +39,7 @@ export async function messageExecute(message, args) {
         }
         rslt += `\n잔여량 (~300): ${req_300}\n진행률 (~300): ${((sumExp / levelTable[299]) * 100).toFixed(3)}%`;
     }
-    return message.channel.send(rslt);
+    await message.channel.send(rslt);
 }
 export const commandData = {
     name: '레벨',
@@ -81,5 +81,5 @@ export async function commandExecute(interaction) {
         }
         rslt += `\n잔여량 (~300): ${req_300}\n진행률 (~300): ${((sumExp / levelTable[299]) * 100).toFixed(3)}%`;
     }
-    return interaction.followUp(rslt);
+    await interaction.followUp(rslt);
 }

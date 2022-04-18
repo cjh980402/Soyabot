@@ -39,14 +39,10 @@ export async function messageExecute(message) {
     const dates = eventData.find('dd a').map((_, v) => $(v).text());
 
     if (links.length === 0) {
-        return message.channel.send('현재 진행중인 이벤트가 없습니다.');
+        await message.channel.send('현재 진행중인 이벤트가 없습니다.');
     } else {
         const embeds = getEventEmbed(links, names, dates);
-        if (embeds.length > 1) {
-            await sendPageMessage(message, embeds);
-        } else {
-            await message.channel.send({ embeds: [embeds[0]] });
-        }
+        await sendPageMessage(message, embeds);
     }
 }
 export const commandData = {
@@ -62,13 +58,9 @@ export async function commandExecute(interaction) {
     const dates = eventData.find('dd a').map((_, v) => $(v).text());
 
     if (links.length === 0) {
-        return interaction.followUp('현재 진행중인 이벤트가 없습니다.');
+        await interaction.followUp('현재 진행중인 이벤트가 없습니다.');
     } else {
         const embeds = getEventEmbed(links, names, dates);
-        if (embeds.length > 1) {
-            await sendPageMessage(interaction, embeds);
-        } else {
-            await interaction.editReply({ embeds: [embeds[0]] });
-        }
+        await sendPageMessage(interaction, embeds);
     }
 }

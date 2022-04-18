@@ -144,30 +144,30 @@ function choiceVS(str) {
     return splitVS[Math.floor(Math.random() * splitVS.length)];
 }
 
-export default function (message) {
+export default async function (message) {
     if (/vs/i.test(message.content) && !/vsc/i.test(message.content)) {
-        return message.reply(choiceVS(message.content));
+        await message.reply(choiceVS(message.content));
     } else if (message.content.endsWith('확률')) {
-        return message.reply(`확률: ${Math.floor(Math.random() * 101)}%`);
+        await message.reply(`확률: ${Math.floor(Math.random() * 101)}%`);
     } else if (/뭐하지|ㅁㅎㅈ/.test(message.content)) {
-        return message.reply(recommendWork(message.client.user.username));
+        await message.reply(recommendWork(message.client.user.username));
     } else if (/뭐먹지|ㅁㅁㅈ/.test(message.content)) {
-        return message.reply(recommendFood());
+        await message.reply(recommendFood());
     } else if (message.content.includes(message.client.user.username)) {
         if (/바\s*보|멍\s*청\s*이/.test(message.content)) {
             return message.channel.send('🤔');
         }
         const msgType = Math.floor(Math.random() * 5);
         if (msgType === 0) {
-            return message.channel.send('ㅋㅋㅋ');
+            await message.channel.send('ㅋㅋㅋ');
         } else if (msgType === 1) {
-            return message.channel.send('제로조아');
+            await message.channel.send('제로조아');
         } else if (msgType === 2) {
-            return message.channel.send('헤비...');
+            await message.channel.send('헤비...');
         } else if (msgType === 3) {
-            return message.channel.send('이노시스 조아');
+            await message.channel.send('이노시스 조아');
         } else {
-            return message.channel.send(
+            await message.channel.send(
                 `'${message.member?.nickname ?? message.author.username}'님이 ${
                     message.client.user.username
                 }을 불렀습니다.`
@@ -176,7 +176,7 @@ export default function (message) {
     } else if (message.content.includes('ㅊㅊㅊㅊ')) {
         const msgType = Math.floor(Math.random() * 3);
         if (msgType === 0) {
-            return message.channel.send('👍');
+            await message.channel.send('👍');
         }
     }
 }

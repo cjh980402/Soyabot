@@ -8,7 +8,7 @@ export const type = ['기타'];
 export async function messageExecute(message) {
     const { body } = await request('https://api.signal.bz/news/realtime');
     const data = await body.json();
-    return message.channel.send(
+    await message.channel.send(
         `실시간 검색어\n${new Date().toLocaleString()}\n\n${data.top10
             .map((v) => `${v.rank}. ${v.keyword}`)
             .join('\n')}`
@@ -21,7 +21,7 @@ export const commandData = {
 export async function commandExecute(interaction) {
     const { body } = await request('https://api.signal.bz/news/realtime');
     const data = await body.json();
-    return interaction.followUp(
+    await interaction.followUp(
         `실시간 검색어\n${new Date().toLocaleString()}\n\n${data.top10
             .map((v) => `${v.rank}. ${v.keyword}`)
             .join('\n')}`

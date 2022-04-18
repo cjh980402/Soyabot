@@ -30,7 +30,7 @@ export async function messageExecute(message, args) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
-    return message.channel.send(await shortURL(args[0]));
+    await message.channel.send(await shortURL(args[0]));
 }
 export const commandData = {
     name: '단축주소',
@@ -45,5 +45,5 @@ export const commandData = {
     ]
 };
 export async function commandExecute(interaction) {
-    return interaction.followUp(await shortURL(interaction.options.getString('대상_주소')));
+    await interaction.followUp(await shortURL(interaction.options.getString('대상_주소')));
 }

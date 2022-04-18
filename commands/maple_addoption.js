@@ -28,12 +28,12 @@ export const description = `- 해당하는 무기의 추옵표를 출력합니�
 export const type = ['메이플'];
 export async function messageExecute(message, args) {
     if (picmatch[args[0]]) {
-        return message.channel.send({
+        await message.channel.send({
             content: `${args[0]} 무기의 추옵표`,
             files: [`./pictures/add_option/${picmatch[args[0]]}.png`]
         });
     } else {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
+        await message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 }
 export const commandData = {
@@ -51,7 +51,7 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     const weapon = interaction.options.getString('무기종류');
-    return interaction.followUp({
+    await interaction.followUp({
         content: `${weapon} 무기의 추옵표`,
         files: [`./pictures/add_option/${picmatch[weapon]}.png`]
     });

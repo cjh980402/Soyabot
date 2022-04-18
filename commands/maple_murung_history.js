@@ -20,13 +20,13 @@ export async function messageExecute(message, args) {
 
     const data = mapleUserInfo.MurungHistory();
     if (!data) {
-        return message.channel.send(`[${mapleUserInfo.Name}]\n기록이 없습니다.`);
+        await message.channel.send(`[${mapleUserInfo.Name}]\n기록이 없습니다.`);
     } else {
         let rslt = `[${mapleUserInfo.Name}]`;
         for (let i = data[0].length - 1; i >= 0; i--) {
             rslt += `\n${data[0][i]}: ${data[1][i]}`;
         }
-        return message.channel.send(rslt);
+        await message.channel.send(rslt);
     }
 }
 export const commandData = {
@@ -53,12 +53,12 @@ export async function commandExecute(interaction) {
 
     const data = mapleUserInfo.MurungHistory();
     if (!data) {
-        return interaction.followUp(`[${mapleUserInfo.Name}]\n기록이 없습니다.`);
+        await interaction.followUp(`[${mapleUserInfo.Name}]\n기록이 없습니다.`);
     } else {
         let rslt = `[${mapleUserInfo.Name}]`;
         for (let i = data[0].length - 1; i >= 0; i--) {
             rslt += `\n${data[0][i]}: ${data[1][i]}`;
         }
-        return interaction.followUp(rslt);
+        await interaction.followUp(rslt);
     }
 }

@@ -18,7 +18,7 @@ export async function messageExecute(message, args) {
         message.channel.send('제한시간 내에 갱신 작업을 실패했습니다.');
     }
 
-    return message.channel.send({
+    await message.channel.send({
         content: `${mapleUserInfo.Name}님의 캐릭터 이미지`,
         files: [mapleUserInfo.userImg()]
     });
@@ -45,7 +45,7 @@ export async function commandExecute(interaction) {
         await interaction.editReply('제한시간 내에 갱신 작업을 실패했습니다.');
     }
 
-    return interaction.followUp({
+    await interaction.followUp({
         content: `${mapleUserInfo.Name}님의 캐릭터 이미지`,
         files: [mapleUserInfo.userImg()]
     });

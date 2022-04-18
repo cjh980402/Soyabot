@@ -49,8 +49,8 @@ export const type = ['기타'];
 export async function messageExecute(message) {
     const imageURL = await getMessageImage(message);
     if (!imageURL) {
-        return message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
+        await message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
     } else {
-        return sendSplitCode(message.channel, await clova_face(imageURL), { split: true });
+        await sendSplitCode(message.channel, await clova_face(imageURL), { split: true });
     }
 }

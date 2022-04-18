@@ -17,7 +17,7 @@ export async function messageExecute(message, args) {
     for (let i = 0; i < count; i++) {
         rslt += list[Math.floor(Math.random() * list.length)];
     }
-    return message.reply(`${count}글자 닉네임 추천: ${rslt}`);
+    await message.reply(`${count}글자 닉네임 추천: ${rslt}`);
 }
 export const commandData = {
     name: '녜힁',
@@ -39,5 +39,5 @@ export async function commandExecute(interaction) {
     for (let i = 0; i < count; i++) {
         rslt += list[Math.floor(Math.random() * list.length)];
     }
-    return interaction.followUp(`${count}글자 닉네임 추천: ${rslt}`);
+    await interaction.followUp(`${count}글자 닉네임 추천: ${rslt}`);
 }

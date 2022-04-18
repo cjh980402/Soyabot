@@ -66,9 +66,9 @@ export async function messageExecute(message, args) {
 
     const text = message.content.replace(/\s*.+?\s+.+?\s+.+?\s+/, '').trim();
     if (text.length > 1000) {
-        return message.channel.send('1000자를 초과하는 내용은 번역하지 않습니다.');
+        await message.channel.send('1000자를 초과하는 내용은 번역하지 않습니다.');
     } else {
-        return message.channel.send(await tran(args[0], args[1], text));
+        await message.channel.send(await tran(args[0], args[1], text));
     }
 }
 export const commandData = {
@@ -119,7 +119,7 @@ export async function commandExecute(interaction) {
     if (subcommand === '언어목록') {
         const list =
             '한국어(ko)-영어(en), 한국어(ko)-일본어(ja), 한국어(ko)-중국어 간체(zh-CN), 한국어(ko)-중국어 번체(zh-TW), 한국어(ko)-스페인어(es), 한국어(ko)-프랑스어(fr), 한국어(ko)-러시아어(ru), 한국어(ko)-베트남어(vi), 한국어(ko)-태국어(th), 한국어(ko)-인도네시아어(id), 한국어(ko)-독일어(de), 한국어(ko)-이탈리아어(it), 중국어 간체(zh-CN) - 중국어 번체(zh-TW), 중국어 간체(zh-CN) - 일본어(ja), 중국어 번체(zh-TW) - 일본어(ja), 영어(en)-일본어(ja), 영어(en)-중국어 간체(zh-CN), 영어(en)-중국어 번체(zh-TW), 영어(en)-프랑스어(fr)';
-        return interaction.followUp(`<지원하는 번역 종류>\n\n${list.replace(/, /g, '\n')}\n\n순서는 바뀌어도 됩니다.`);
+        await interaction.followUp(`<지원하는 번역 종류>\n\n${list.replace(/, /g, '\n')}\n\n순서는 바뀌어도 됩니다.`);
     } else if (subcommand === '언어번역') {
         const source = interaction.options.getString('대상언어');
         const target = interaction.options.getString('결과언어');
@@ -129,9 +129,9 @@ export async function commandExecute(interaction) {
 
         const text = interaction.options.getString('내용');
         if (text.length > 1000) {
-            return interaction.followUp('1000자를 초과하는 내용은 번역하지 않습니다.');
+            await interaction.followUp('1000자를 초과하는 내용은 번역하지 않습니다.');
         } else {
-            return interaction.followUp(await tran(source, target, text));
+            await interaction.followUp(await tran(source, target, text));
         }
     }
 }

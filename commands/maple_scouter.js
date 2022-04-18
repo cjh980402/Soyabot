@@ -92,7 +92,7 @@ export async function messageExecute(message, args) {
     }
 
     const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
-    return message.channel.send({ embeds: [getScouterEmbed(mapleUserInfo, union)], files: [image] });
+    await message.channel.send({ embeds: [getScouterEmbed(mapleUserInfo, union)], files: [image] });
 }
 export const commandData = {
     name: '스카우터',
@@ -133,5 +133,5 @@ export async function commandExecute(interaction) {
     }
 
     const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
-    return interaction.followUp({ embeds: [getScouterEmbed(mapleUserInfo, union)], files: [image] });
+    await interaction.followUp({ embeds: [getScouterEmbed(mapleUserInfo, union)], files: [image] });
 }

@@ -10,7 +10,7 @@ export async function messageExecute(message, args) {
     if (!message.guildId) {
         return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
-    return message.reply('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
+    await message.reply('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
 
     /*const queue = message.client.queues.get(message.guildId);
     if (!queue?.player.state.resource) {
@@ -34,7 +34,7 @@ export async function messageExecute(message, args) {
 
     queue.volume = volume;
     queue.player.state.resource.volume.setVolume(queue.volume / 100);
-    return message.channel.send(`변경된 음량: **${queue.volume}%**`);*/
+    await message.channel.send(`변경된 음량: **${queue.volume}%**`);*/
 }
 export const commandData = {
     name: 'volume',
@@ -51,7 +51,7 @@ export async function commandExecute(interaction) {
     if (!interaction.guildId) {
         return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
-    return interaction.followUp('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
+    await interaction.followUp('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
 
     /*const queue = interaction.client.queues.get(interaction.guildId);
     if (!queue?.player.state.resource) {
@@ -71,5 +71,5 @@ export async function commandExecute(interaction) {
 
     queue.volume = volume;
     queue.player.state.resource.volume.setVolume(queue.volume / 100);
-    return interaction.followUp(`변경된 음량: **${queue.volume}%**`);*/
+    await interaction.followUp(`변경된 음량: **${queue.volume}%**`);*/
 }

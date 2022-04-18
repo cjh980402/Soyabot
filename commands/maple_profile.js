@@ -40,7 +40,7 @@ export async function messageExecute(message, args) {
         { encoding: 'buffer' }
     );
     const image = new MessageAttachment(profilePic, 'profile.png');
-    return message.channel.send({ content: `${mapleUserInfo.Name}님의 프로필`, files: [image] });
+    await message.channel.send({ content: `${mapleUserInfo.Name}님의 프로필`, files: [image] });
 }
 export const commandData = {
     name: '프로필',
@@ -84,5 +84,5 @@ export async function commandExecute(interaction) {
         { encoding: 'buffer' }
     );
     const image = new MessageAttachment(profilePic, 'profile.png');
-    return interaction.followUp({ content: `${mapleUserInfo.Name}님의 프로필`, files: [image] });
+    await interaction.followUp({ content: `${mapleUserInfo.Name}님의 프로필`, files: [image] });
 }
