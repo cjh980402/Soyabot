@@ -21,7 +21,7 @@
     "pretty": "prettier --config .prettierrc --write '**/*.js'"
   },
   "dependencies": {
-    "@discordjs/voice": "^0.8.0",
+    "@discordjs/voice": "^0.9.0",
     "better-sqlite3": "^7.5.1",
     "bufferutil": "^4.0.6",
     "chartjs-node-canvas": "^4.1.6",
@@ -35,7 +35,7 @@
     "mathjs": "^10.4.3",
     "opusscript": "^0.0.8",
     "simple-youtube-api": "^5.2.1",
-    "sodium": "^3.0.2",
+    "sodium-native": "^3.3.0",
     "soundcloud.ts": "^0.4.5",
     "string-progressbar": "^1.0.4",
     "undici": "^5.0.0",
