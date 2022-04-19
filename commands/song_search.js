@@ -1,6 +1,9 @@
-import { Collection, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
+import { sendAdmin } from '../admin/bot_message.js';
+import { QueueElement } from '../classes/QueueElement.js';
 import { youtubeSearch } from '../util/song_util.js';
+import { joinVoice } from '../util/soyabot_util.js';
 import { Util } from '../util/Util.js';
 
 export const usage = `${PREFIX}search (영상 제목)`;
@@ -11,11 +14,24 @@ export async function messageExecute(message, args) {
     if (!message.guildId) {
         return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
+
+    const { channel } = message.member.voice;
+    const serverQueue = message.client.queues.get(message.guildId);
+    if (!channel) {
+        return message.reply('음성 채널에 먼저 참가해주세요!');
+    }
+    if (serverQueue && channel.id !== message.guild.me.voice.channelId) {
+        return message.reply(`${message.client.user}과 같은 음성 채널에 참가해주세요!`);
+    }
     if (args.length < 1) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
-    if (!message.member.voice.channel) {
-        return message.reply('음성 채널에 먼저 참가해주세요!');
+
+    if (!channel.joinable) {
+        return message.reply('권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.');
+    }
+    if (channel.type === 'GUILD_VOICE' && !channel.speakable) {
+        return message.reply('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
     }
 
     const search = args.join(' ');
@@ -27,13 +43,13 @@ export async function messageExecute(message, args) {
     const resultsEmbed = new MessageEmbed()
         .setTitle('**재생할 노래의 번호를 알려주세요.**')
         .setColor('#FF9999')
-        .setDescription(`${search}의 검색 결과`);
-    resultsEmbed.addFields(
-        ...results.map((video, index) => ({
-            name: `**${index + 1}. ${video.title}** \`[${video.duration === 0 ? '⊚ LIVE' : video.durationText}]\``,
-            value: `https://youtu.be/${video.id}`
-        }))
-    );
+        .setDescription(`${search}의 검색 결과`)
+        .addFields(
+            ...results.map((video, index) => ({
+                name: `**${index + 1}. ${video.title}** \`[${video.duration === 0 ? '⊚ LIVE' : video.durationText}]\``,
+                value: `https://youtu.be/${video.id}`
+            }))
+        );
     const resultsMessage = await message.channel.send({ embeds: [resultsEmbed] });
 
     try {
@@ -49,17 +65,55 @@ export async function messageExecute(message, args) {
             errors: ['time']
         });
 
-        const playCommand = message.client.commands.find((cmd) => cmd.command.includes('play'));
-        for (const song of songChoice) {
-            await playCommand.messageExecute(message, [resultsEmbed.fields[song - 1].value]);
+        const songs = results
+            .filter((_, i) => songChoice.includes(i + 1))
+            .map((v) => ({
+                title: v.title,
+                url: v.url,
+                duration: Math.ceil(v.duration / 1000),
+                thumbnail: v.thumbnails.at(-1).url
+            }));
+
+        const choiceEmbed = new MessageEmbed()
+            .setTitle('**선택 결과**')
+            .setColor('#FF9999')
+            .setDescription(
+                songs
+                    .map(
+                        (song, index) =>
+                            `${index + 1}. ${song.title} \`[${
+                                song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
+                            }]\``
+                    )
+                    .join('\n')
+            );
+
+        if (serverQueue) {
+            serverQueue.textChannel = message.channel;
+            serverQueue.songs.push(...songs);
+            return message.channel.send({
+                content: `✅ ${message.author}가 노래를 추가했습니다.`,
+                embeds: [choiceEmbed]
+            });
         }
+
+        await message.channel.send({
+            content: `✅ ${message.author}가 노래를 시작했습니다.`,
+            embeds: [choiceEmbed]
+        });
 
         try {
             await rslt.first().delete();
-        } catch {}
-    } catch (err) {
-        if (!(err instanceof Collection)) {
-            throw err; // 시간초과 에러(Collection<Snowflake, Message>)가 아닌 경우 에러를 다시 throw
+            const newQueue = new QueueElement(message.channel, channel, await joinVoice(channel), songs);
+            message.client.queues.set(message.guildId, newQueue);
+            newQueue.playSong();
+        } catch (err) {
+            message.client.queues.delete(message.guildId);
+            sendAdmin(
+                message.client.users,
+                `작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${message}\n에러 내용: ${err.stack}`
+            );
+            await message.channel.send(`채널에 참가할 수 없습니다: ${err.message}`);
         }
     } finally {
         try {
@@ -83,8 +137,21 @@ export async function commandExecute(interaction) {
     if (!interaction.guildId) {
         return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
-    if (!interaction.member.voice.channel) {
+
+    const { channel } = interaction.member.voice;
+    const serverQueue = interaction.client.queues.get(interaction.guildId);
+    if (!channel) {
         return interaction.followUp('음성 채널에 먼저 참가해주세요!');
+    }
+    if (serverQueue && channel.id !== interaction.guild.me.voice.channelId) {
+        return interaction.followUp(`${interaction.client.user}과 같은 음성 채널에 참가해주세요!`);
+    }
+
+    if (!channel.joinable) {
+        return interaction.followUp('권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.');
+    }
+    if (channel.type === 'GUILD_VOICE' && !channel.speakable) {
+        return interaction.followUp('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
     }
 
     const search = interaction.options.getString('영상_제목');
@@ -96,13 +163,13 @@ export async function commandExecute(interaction) {
     const resultsEmbed = new MessageEmbed()
         .setTitle('**재생할 노래의 번호를 알려주세요.**')
         .setColor('#FF9999')
-        .setDescription(`${search}의 검색 결과`);
-    resultsEmbed.addFields(
-        ...results.map((video, index) => ({
-            name: `**${index + 1}. ${video.title}** \`[${video.duration === 0 ? '⊚ LIVE' : video.durationText}]\``,
-            value: `https://youtu.be/${video.id}`
-        }))
-    );
+        .setDescription(`${search}의 검색 결과`)
+        .addFields(
+            ...results.map((video, index) => ({
+                name: `**${index + 1}. ${video.title}** \`[${video.duration === 0 ? '⊚ LIVE' : video.durationText}]\``,
+                value: `https://youtu.be/${video.id}`
+            }))
+        );
     const resultsMessage = await interaction.editReply({ embeds: [resultsEmbed] });
 
     try {
@@ -118,19 +185,55 @@ export async function commandExecute(interaction) {
             errors: ['time']
         });
 
-        const playCommand = interaction.client.commands.find((cmd) => cmd.commandData?.name === 'play');
-        interaction.options._hoistedOptions.push({ name: '영상_주소_제목', type: 'STRING' });
-        for (const song of songChoice) {
-            interaction.options._hoistedOptions.at(-1).value = resultsEmbed.fields[song - 1].value;
-            await playCommand.commandExecute(interaction);
+        const songs = results
+            .filter((_, i) => songChoice.includes(i + 1))
+            .map((v) => ({
+                title: v.title,
+                url: v.url,
+                duration: Math.ceil(v.duration / 1000),
+                thumbnail: v.thumbnails.at(-1).url
+            }));
+
+        const choiceEmbed = new MessageEmbed()
+            .setTitle('**선택 결과**')
+            .setColor('#FF9999')
+            .setDescription(
+                songs
+                    .map(
+                        (song, index) =>
+                            `${index + 1}. ${song.title} \`[${
+                                song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
+                            }]\``
+                    )
+                    .join('\n')
+            );
+
+        if (serverQueue) {
+            serverQueue.textChannel = interaction.channel;
+            serverQueue.songs.push(...songs);
+            return interaction.followUp({
+                content: `✅ ${interaction.user}가 노래를 추가했습니다.`,
+                embeds: [choiceEmbed]
+            });
         }
+
+        await interaction.followUp({
+            content: `✅ ${interaction.user}가 노래를 시작했습니다.`,
+            embeds: [choiceEmbed]
+        });
 
         try {
             await rslt.first().delete();
-        } catch {}
-    } catch (err) {
-        if (!(err instanceof Collection)) {
-            throw err; // 시간초과 에러(Collection<Snowflake, Message>)가 아닌 경우 에러를 다시 throw
+            const newQueue = new QueueElement(interaction.channel, channel, await joinVoice(channel), songs);
+            interaction.client.queues.set(interaction.guildId, newQueue);
+            newQueue.playSong();
+        } catch (err) {
+            interaction.client.queues.delete(interaction.guildId);
+            sendAdmin(
+                interaction.client.users,
+                `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction}\n에러 내용: ${err.stack}`
+            );
+            await interaction.followUp(`채널에 참가할 수 없습니다: ${err.message}`);
         }
     } finally {
         try {

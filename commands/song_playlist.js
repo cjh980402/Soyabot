@@ -1,4 +1,4 @@
-import { MessageEmbed, Util as DjsUtil } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { sendAdmin } from '../admin/bot_message.js';
 import { QueueElement } from '../classes/QueueElement.js';
@@ -56,16 +56,14 @@ export async function messageExecute(message, args) {
         .setColor('#FF9999')
         .setURL(playlist.url)
         .setDescription(
-            DjsUtil.splitMessage(
-                playlist.songs
-                    .map(
-                        (song, index) =>
-                            `${index + 1}. ${song.title} \`[${
-                                song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
-                            }]\``
-                    )
-                    .join('\n')
-            )[0]
+            playlist.songs
+                .map(
+                    (song, index) =>
+                        `${index + 1}. ${song.title} \`[${
+                            song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
+                        }]\``
+                )
+                .join('\n')
         );
 
     if (serverQueue) {
@@ -147,16 +145,14 @@ export async function commandExecute(interaction) {
         .setColor('#FF9999')
         .setURL(playlist.url)
         .setDescription(
-            DjsUtil.splitMessage(
-                playlist.songs
-                    .map(
-                        (song, index) =>
-                            `${index + 1}. ${song.title} \`[${
-                                song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
-                            }]\``
-                    )
-                    .join('\n')
-            )[0]
+            playlist.songs
+                .map(
+                    (song, index) =>
+                        `${index + 1}. ${song.title} \`[${
+                            song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
+                        }]\``
+                )
+                .join('\n')
         );
 
     if (serverQueue) {

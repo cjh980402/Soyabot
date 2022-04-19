@@ -125,15 +125,10 @@ export async function commandExecute(interaction) {
         return interaction.followUp('재생할 수 없는 영상입니다.');
     }
 
-    if (interaction.options._hoistedOptions.length === 1) {
-        try {
-            await interaction.deleteReply(); // search 기능으로 실행되지 않은 경우만 삭제 수행
-        } catch {}
-    }
     if (serverQueue) {
         serverQueue.textChannel = interaction.channel;
         serverQueue.songs.push(song);
-        return interaction.channel.send(
+        return interaction.followUp(
             `✅ ${interaction.user}가 **${song.title}** \`[${
                 song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
             }]\`를 대기열에 추가했습니다.`
@@ -141,6 +136,7 @@ export async function commandExecute(interaction) {
     }
 
     try {
+        await interaction.deleteReply();
         const newQueue = new QueueElement(interaction.channel, channel, await joinVoice(channel), [song]);
         interaction.client.queues.set(interaction.guildId, newQueue);
         newQueue.playSong();
