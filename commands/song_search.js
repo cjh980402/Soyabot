@@ -52,27 +52,30 @@ export async function messageExecute(message, args) {
         );
     const resultsMessage = await message.channel.send({ embeds: [resultsEmbed] });
 
-    try {
-        let songChoice;
-        const rslt = await message.channel.awaitMessages({
+    let songChoice;
+    const choiceMessage = (
+        await message.channel.awaitMessages({
             filter: (msg) =>
                 msg.author.id === message.author.id &&
                 (songChoice = Util.deduplication(msg.content.split(',').map(Math.trunc))).every(
                     (v) => !isNaN(v) && 1 <= v && v <= results.length
                 ),
             max: 1,
-            time: 20000,
-            errors: ['time']
-        });
+            time: 20000
+        })
+    ).first();
 
-        const songs = results
-            .filter((_, i) => songChoice.includes(i + 1))
-            .map((v) => ({
-                title: v.title,
-                url: v.url,
-                duration: Math.ceil(v.duration / 1000),
-                thumbnail: v.thumbnails.at(-1).url
-            }));
+    try {
+        await resultsMessage.delete();
+    } catch {}
+
+    if (choiceMessage) {
+        const songs = songChoice.map((v) => ({
+            title: results[v - 1].title,
+            url: results[v - 1].url,
+            duration: Math.ceil(results[v - 1].duration / 1000),
+            thumbnail: results[v - 1].thumbnails.at(-1).url
+        }));
 
         const choiceEmbed = new MessageEmbed()
             .setTitle('**선택 결과**')
@@ -103,7 +106,7 @@ export async function messageExecute(message, args) {
         });
 
         try {
-            await rslt.first().delete();
+            await choiceMessage.delete();
             const newQueue = new QueueElement(message.channel, channel, await joinVoice(channel), songs);
             message.client.queues.set(message.guildId, newQueue);
             newQueue.playSong();
@@ -115,10 +118,6 @@ export async function messageExecute(message, args) {
             );
             await message.channel.send(`채널에 참가할 수 없습니다: ${err.message}`);
         }
-    } finally {
-        try {
-            await resultsMessage.delete();
-        } catch {}
     }
 }
 export const commandData = {
@@ -172,27 +171,30 @@ export async function commandExecute(interaction) {
         );
     const resultsMessage = await interaction.editReply({ embeds: [resultsEmbed] });
 
-    try {
-        let songChoice;
-        const rslt = await interaction.channel.awaitMessages({
+    let songChoice;
+    const choiceMessage = (
+        await interaction.channel.awaitMessages({
             filter: (msg) =>
                 msg.author.id === interaction.user.id &&
                 (songChoice = Util.deduplication(msg.content.split(',').map(Math.trunc))).every(
                     (v) => !isNaN(v) && 1 <= v && v <= results.length
                 ),
             max: 1,
-            time: 20000,
-            errors: ['time']
-        });
+            time: 20000
+        })
+    ).first();
 
-        const songs = results
-            .filter((_, i) => songChoice.includes(i + 1))
-            .map((v) => ({
-                title: v.title,
-                url: v.url,
-                duration: Math.ceil(v.duration / 1000),
-                thumbnail: v.thumbnails.at(-1).url
-            }));
+    try {
+        await resultsMessage.delete();
+    } catch {}
+
+    if (choiceMessage) {
+        const songs = songChoice.map((v) => ({
+            title: results[v - 1].title,
+            url: results[v - 1].url,
+            duration: Math.ceil(results[v - 1].duration / 1000),
+            thumbnail: results[v - 1].thumbnails.at(-1).url
+        }));
 
         const choiceEmbed = new MessageEmbed()
             .setTitle('**선택 결과**')
@@ -223,7 +225,7 @@ export async function commandExecute(interaction) {
         });
 
         try {
-            await rslt.first().delete();
+            await choiceMessage.delete();
             const newQueue = new QueueElement(interaction.channel, channel, await joinVoice(channel), songs);
             interaction.client.queues.set(interaction.guildId, newQueue);
             newQueue.playSong();
@@ -235,9 +237,5 @@ export async function commandExecute(interaction) {
             );
             await interaction.followUp(`채널에 참가할 수 없습니다: ${err.message}`);
         }
-    } finally {
-        try {
-            await resultsMessage.delete();
-        } catch {}
     }
 }

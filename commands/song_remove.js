@@ -41,9 +41,9 @@ export async function messageExecute(message, args) {
     }
 
     await message.channel.send(
-        `❌ ${message.author}가 대기열에서 **${removed
-            .map((song, i) => `${songRemove[i]}. ${song.title}`)
-            .join(', ')}**을 삭제했습니다.`
+        `❌ ${message.author}가 대기열에서 ${removed
+            .map((song, i) => `**${songRemove[i]}. ${song.title}**`)
+            .join(', ')}을 삭제했습니다.`
     );
 }
 export const commandData = {
@@ -90,8 +90,8 @@ export async function commandExecute(interaction) {
     }
 
     await interaction.followUp(
-        `❌ ${interaction.user}가 대기열에서 **${removed
-            .map((song, i) => `${songRemove[i]}. ${song.title}`)
-            .join(', ')}**을 삭제했습니다.`
+        `❌ ${interaction.user}가 대기열에서 ${removed
+            .map((song, i) => `**${songRemove[i]}. ${song.title}**`)
+            .join(', ')}을 삭제했습니다.`
     );
 }
