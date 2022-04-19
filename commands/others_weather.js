@@ -99,7 +99,7 @@ export async function messageExecute(message, args) {
             .setColor('#FF9999')
             .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`).join('\n'))
             .setTimestamp();
-        message.channel.send({ embeds: [localListEmbed] });
+        await message.channel.send({ embeds: [localListEmbed] });
 
         const rslt = await message.channel.awaitMessages({
             filter: (msg) =>

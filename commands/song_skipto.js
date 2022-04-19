@@ -29,7 +29,7 @@ export async function messageExecute(message, args) {
         return message.reply(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래로 건너뛸 수 있습니다.`);
     }
 
-    message.channel.send(`${message.author} ⏭️ ${skipto - 1}개의 노래를 건너뛰었습니다.`);
+    await message.channel.send(`${message.author} ⏭️ ${skipto - 1}개의 노래를 건너뛰었습니다.`);
     if (queue.loop) {
         queue.songs.push(...queue.songs.splice(0, skipto - 2));
     } else {
@@ -70,7 +70,7 @@ export async function commandExecute(interaction) {
         return interaction.followUp(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래로 건너뛸 수 있습니다.`);
     }
 
-    interaction.followUp(`${interaction.user} ⏭️ ${skipto - 1}개의 노래를 건너뛰었습니다.`);
+    await interaction.followUp(`${interaction.user} ⏭️ ${skipto - 1}개의 노래를 건너뛰었습니다.`);
     if (queue.loop) {
         queue.songs.push(...queue.songs.splice(0, skipto - 2));
     } else {

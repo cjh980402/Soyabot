@@ -296,6 +296,6 @@ export async function commandExecute(interaction) {
             );
         }
     } catch {
-        await nteraction.followUp('농장 API 서버가 점검 중입니다.');
+        await interaction.followUp('농장 API 서버가 점검 중입니다.');
     }
 }

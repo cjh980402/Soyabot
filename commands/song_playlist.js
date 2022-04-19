@@ -77,7 +77,7 @@ export async function messageExecute(message, args) {
         });
     }
 
-    message.channel.send({ content: `✅ ${message.author}가 재생목록을 시작했습니다.`, embeds: [playlistEmbed] });
+    await message.channel.send({ content: `✅ ${message.author}가 재생목록을 시작했습니다.`, embeds: [playlistEmbed] });
 
     try {
         const newQueue = new QueueElement(message.channel, channel, await joinVoice(channel), playlist.songs);

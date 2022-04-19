@@ -18,7 +18,7 @@ export async function messageExecute(message) {
         return message.reply(`${message.client.user}과 같은 음성 채널에 참가해주세요!`);
     }
 
-    message.channel.send(`${message.author} ⏹️ 노래를 정지했습니다.`);
+    await message.channel.send(`${message.author} ⏹️ 노래를 정지했습니다.`);
     queue.clearStop();
 }
 export const commandData = {
@@ -38,6 +38,6 @@ export async function commandExecute(interaction) {
         return interaction.followUp(`${interaction.client.user}과 같은 음성 채널에 참가해주세요!`);
     }
 
-    interaction.followUp(`${interaction.user} ⏹️ 노래를 정지했습니다.`);
+    await interaction.followUp(`${interaction.user} ⏹️ 노래를 정지했습니다.`);
     queue.clearStop();
 }

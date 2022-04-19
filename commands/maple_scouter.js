@@ -88,7 +88,7 @@ export async function messageExecute(message, args) {
     }
 
     if (!(await mapleUserInfo.isLatest())) {
-        message.channel.send('제한시간 내에 갱신 작업을 실패했습니다.');
+        await message.channel.send('제한시간 내에 갱신 작업을 실패했습니다.');
     }
 
     const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');

@@ -3,7 +3,7 @@ import { request } from 'undici';
 import { joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
 
 function contentSplitCode(content, options) {
-    content ||= '\u200b';
+    content ||= '\u200b'; // 빈 문자열 방지
     const splitOptions = options.split ? { ...options.split } : null; // 옵션을 수정할 수도 있기 때문에 복사본 생성
 
     if (options.code) {
@@ -13,12 +13,8 @@ function contentSplitCode(content, options) {
             splitOptions.append = `\n\`\`\`${splitOptions.append ?? ''}`;
         }
     }
-    if (splitOptions) {
-        content = Util.splitMessage(content, splitOptions);
-    } else {
-        content = [content];
-    }
-    return content;
+
+    return splitOptions ? Util.splitMessage(content, splitOptions) : [content];
 }
 
 function entersState(target, status, timeout) {

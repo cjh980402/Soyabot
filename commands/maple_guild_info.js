@@ -31,7 +31,7 @@ export async function messageExecute(message, args) {
     /*const mapleGuildInfo = new MapleGuild(serverEngName[args[0]], args[1]);
     const isLatest = await mapleGuildInfo.isLatest();
 
-    message.channel.send('정보 가져오는 중...');
+    await message.channel.send('정보 가져오는 중...');
     const rslt = `${args[0]} ${args[1]} 길드 (${mapleGuildInfo.MemberCount}명)\n길드원 목록 갱신 ${isLatest ? '성공' : '실패'}\n\n${(await mapleGuildInfo.memberDataList()).join('\n\n')}`;
 
     await sendSplitCode(message.channel, rslt, { split: true });*/
