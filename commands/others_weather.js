@@ -101,17 +101,19 @@ export async function messageExecute(message, args) {
             .setTimestamp();
         await message.channel.send({ embeds: [localListEmbed] });
 
-        const rslt = await message.channel.awaitMessages({
-            filter: (msg) =>
-                msg.author.id === message.author.id &&
-                !isNaN(msg.content) &&
-                1 <= +msg.content &&
-                +msg.content <= searchRslt.length,
-            max: 1,
-            time: 20000,
-            errors: ['time']
-        });
-        targetLocal = searchRslt[Math.trunc(rslt.first().content) - 1];
+        const choiceMessage = (
+            await message.channel.awaitMessages({
+                filter: (msg) =>
+                    msg.author.id === message.author.id &&
+                    !isNaN(msg.content) &&
+                    1 <= +msg.content &&
+                    +msg.content <= searchRslt.length,
+                max: 1,
+                time: 20000,
+                errors: ['time']
+            })
+        ).first();
+        targetLocal = searchRslt[Math.trunc(choiceMessage.content) - 1];
     }
 
     const embeds = await getWeatherEmbed(targetLocal);
@@ -147,19 +149,21 @@ export async function commandExecute(interaction) {
             .setColor('#FF9999')
             .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`).join('\n'))
             .setTimestamp();
-        await interaction.editReply({ embeds: [localListEmbed] });
+        await interaction.followUp({ embeds: [localListEmbed] });
 
-        const rslt = await interaction.channel.awaitMessages({
-            filter: (msg) =>
-                msg.author.id === interaction.user.id &&
-                !isNaN(msg.content) &&
-                1 <= +msg.content &&
-                +msg.content <= searchRslt.length,
-            max: 1,
-            time: 20000,
-            errors: ['time']
-        });
-        targetLocal = searchRslt[Math.trunc(rslt.first().content) - 1];
+        const choiceMessage = (
+            await interaction.channel.awaitMessages({
+                filter: (msg) =>
+                    msg.author.id === interaction.user.id &&
+                    !isNaN(msg.content) &&
+                    1 <= +msg.content &&
+                    +msg.content <= searchRslt.length,
+                max: 1,
+                time: 20000,
+                errors: ['time']
+            })
+        ).first();
+        targetLocal = searchRslt[Math.trunc(choiceMessage.content) - 1];
     }
 
     const embeds = await getWeatherEmbed(targetLocal);

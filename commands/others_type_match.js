@@ -58,7 +58,7 @@ export async function commandExecute(interaction) {
     const random = Math.floor(Math.random() * (max - min + 1)) + min; // 랜덤 선택된 문장의 인덱스
     const choice = matchString[random];
     const choiceLength = Hangul.disassemble(choice).length;
-    await interaction.editReply(`이번 문장은 ${random <= 1119 ? '한글' : '영어'} 문장입니다.`);
+    await interaction.followUp(`이번 문장은 ${random <= 1119 ? '한글' : '영어'} 문장입니다.`);
 
     for (let i = 3; i > 0; i--) {
         await interaction.channel.send(String(i));

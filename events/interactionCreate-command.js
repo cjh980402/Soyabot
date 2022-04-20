@@ -63,13 +63,13 @@ export async function listener(interaction) {
                     // awaitMessages에서 시간초과한 경우
                     await interaction.followUp(`'${originCommandName}'의 입력 대기 시간이 초과되었습니다.`);
                 } else if (err instanceof MapleError) {
-                    await interaction.editReply(err.message);
+                    await interaction.followUp(err.message);
                 } else {
                     sendAdmin(
                         interaction.client.users,
                         `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction}\n에러 내용: ${err.stack}`
                     );
-                    await interaction.editReply('에러로그가 전송되었습니다.');
+                    await interaction.followUp('에러로그가 전송되었습니다.');
                 }
             } catch {}
         }

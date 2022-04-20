@@ -59,7 +59,7 @@ export async function commandExecute(interaction) {
         new MessageButton().setCustomId('repeat').setEmoji('🎲').setStyle('SECONDARY')
     );
     let count = 1;
-    const dice = await interaction.editReply({
+    const dice = await interaction.followUp({
         content: `${nickname}님의 ${count}번째 스탯 주사위`,
         files: [image],
         components: [row]

@@ -46,7 +46,7 @@ export async function commandExecute(interaction) {
         return interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
     }
     if (!(await mapleUserInfo.isLatest())) {
-        await interaction.editReply('제한시간 내에 갱신 작업을 실패했습니다.');
+        await interaction.followUp('제한시간 내에 갱신 작업을 실패했습니다.');
     }
 
     const rank = mapleUserInfo.Rank();

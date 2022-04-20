@@ -110,7 +110,7 @@ export async function sendSplitCode(target, content, options) {
 
 export async function sendPageMessage(messageOrCommand, embeds, options = {}) {
     const send =
-        messageOrCommand.editReply?.bind(messageOrCommand) ??
+        messageOrCommand.followUp?.bind(messageOrCommand) ??
         messageOrCommand.channel.send.bind(messageOrCommand.channel);
 
     if (embeds.length > 1) {

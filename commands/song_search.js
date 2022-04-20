@@ -67,6 +67,7 @@ export async function messageExecute(message, args) {
 
     try {
         await resultsMessage.delete();
+        await choiceMessage?.delete();
     } catch {}
 
     if (choiceMessage) {
@@ -106,7 +107,6 @@ export async function messageExecute(message, args) {
         });
 
         try {
-            await choiceMessage.delete();
             const newQueue = new QueueElement(message.channel, channel, await joinVoice(channel), songs);
             message.client.queues.set(message.guildId, newQueue);
             newQueue.playSong();
@@ -169,7 +169,7 @@ export async function commandExecute(interaction) {
                 value: `https://youtu.be/${video.id}`
             }))
         );
-    const resultsMessage = await interaction.editReply({ embeds: [resultsEmbed] });
+    const resultsMessage = await interaction.followUp({ embeds: [resultsEmbed] });
 
     let songChoice;
     const choiceMessage = (
@@ -186,6 +186,7 @@ export async function commandExecute(interaction) {
 
     try {
         await resultsMessage.delete();
+        await choiceMessage?.delete();
     } catch {}
 
     if (choiceMessage) {
@@ -225,7 +226,6 @@ export async function commandExecute(interaction) {
         });
 
         try {
-            await choiceMessage.delete();
             const newQueue = new QueueElement(interaction.channel, channel, await joinVoice(channel), songs);
             interaction.client.queues.set(interaction.guildId, newQueue);
             newQueue.playSong();

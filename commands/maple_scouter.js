@@ -129,7 +129,7 @@ export async function commandExecute(interaction) {
     }
 
     if (!(await mapleUserInfo.isLatest())) {
-        await interaction.editReply('제한시간 내에 갱신 작업을 실패했습니다.');
+        await interaction.followUp('제한시간 내에 갱신 작업을 실패했습니다.');
     }
 
     const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');

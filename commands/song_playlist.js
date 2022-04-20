@@ -164,7 +164,7 @@ export async function commandExecute(interaction) {
         });
     }
 
-    await interaction.editReply({
+    await interaction.followUp({
         content: `✅ ${interaction.user}가 재생목록을 시작했습니다.`,
         embeds: [playlistEmbed]
     });

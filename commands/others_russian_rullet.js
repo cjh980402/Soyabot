@@ -163,7 +163,7 @@ export async function commandExecute(interaction) {
     }
     const bullet = interaction.options.getInteger('탄환_수') ?? 6; // 탄환 수 지정
     const gameUser = [interaction.member]; // 참가자 객체 배열
-    await interaction.editReply(
+    await interaction.followUp(
         `게임을 시작하셨습니다.\n${PREFIX}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${
             gameUser[0].nickname ?? gameUser[0].user.username
         }`

@@ -74,7 +74,7 @@ export async function commandExecute(interaction) {
     /*const mapleGuildInfo = new MapleGuild(serverEngName[serverName], guildName);
     const isLatest = await mapleGuildInfo.isLatest();
 
-    await interaction.editReply('정보 가져오는 중...');
+    await interaction.followUp('정보 가져오는 중...');
     const rslt = `${serverName} ${guildName} 길드 (${mapleGuildInfo.MemberCount}명)\n길드원 목록 갱신 ${isLatest ? '성공' : '실패'}\n\n${(await mapleGuildInfo.memberDataList()).join('\n\n')}`;
 
     await sendSplitCode(interaction, rslt, { split: true });*/
