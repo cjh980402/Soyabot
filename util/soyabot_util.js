@@ -162,6 +162,6 @@ export async function sendPageMessage(messageOrCommand, embeds, options = {}) {
                 } catch {}
             });
     } else {
-        await send({ embeds: [embeds[0]] });
+        await send({ embeds: [embeds[0]], ...options });
     }
 }
