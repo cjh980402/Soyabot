@@ -7,7 +7,7 @@ const promiseTimeout = (promise, ms) => Promise.race([promise, setTimeout(ms)]);
 
 export const name = 'interactionCreate';
 export async function listener(interaction) {
-    if (interaction.isCommand()) {
+    if (interaction.isChatInputCommand()) {
         let { commandName } = interaction;
         const originCommandName = commandName;
         try {

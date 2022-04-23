@@ -1,7 +1,7 @@
 import {
     Util as DjsUtil,
     Channel,
-    CommandInteraction,
+    ChatInputCommandInteraction,
     ActionRowBuilder,
     ButtonBuilder,
     PermissionsBitField,
@@ -72,10 +72,7 @@ export async function joinVoice(channel) {
 
     try {
         await entersState(connection, VoiceConnectionStatus.Ready, 30000); // 연결될 때까지 최대 30초 대기
-        if (
-            channel.type === 'GUILD_STAGE_VOICE' &&
-            channel.permissionsFor(channel.guild.me).has(PermissionsBitField.StageModerator)
-        ) {
+        if (channel.isStage() && channel.permissionsFor(channel.guild.me).has(PermissionsBitField.StageModerator)) {
             await channel.guild.me.voice.setSuppressed(false); // 스테이지 채널이면서 관리 권한이 있으면 봇을 speaker로 설정
         }
         return connection;
@@ -109,9 +106,9 @@ export function commandCount(db, commandName) {
 
 export async function sendSplitCode(target, content, options) {
     for (const c of contentSplitCode(content, options)) {
-        if (target instanceof Channel && target.isText()) {
+        if (target instanceof Channel && target.isTextBased()) {
             await target.send(c);
-        } else if (target instanceof CommandInteraction) {
+        } else if (target instanceof ChatInputCommandInteraction) {
             await target.followUp(c);
         }
     }

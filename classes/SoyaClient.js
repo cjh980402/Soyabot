@@ -37,11 +37,11 @@ export class SoyaClient extends Client {
                 GuildEmojiManager: 0,
                 ChannelManager: {
                     maxSize: 1,
-                    keepOverLimit: (v) => v.isText() || v.isVoice()
+                    keepOverLimit: (v) => v.isTextBased() || v.isVoiceBased()
                 },
                 GuildChannelManager: {
                     maxSize: 1,
-                    keepOverLimit: (v) => v.isText() || v.isVoice()
+                    keepOverLimit: (v) => v.isTextBased() || v.isVoiceBased()
                 },
                 GuildBanManager: 0,
                 GuildInviteManager: 0,
