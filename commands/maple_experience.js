@@ -53,12 +53,16 @@ export const commandData = {
             name: '시작_레벨',
             type: ApplicationCommandOptionType.Integer,
             description: '경험치 정보를 계산할 시작 레벨',
+            min_value: 1,
+            max_value: 300,
             required: true
         },
         {
             name: '끝_레벨',
             type: ApplicationCommandOptionType.Integer,
-            description: '경험치 정보를 계산할 끝 레벨'
+            description: '경험치 정보를 계산할 끝 레벨',
+            min_value: 1,
+            max_value: 300
         }
     ]
 };
@@ -67,9 +71,6 @@ export async function commandExecute(interaction) {
     const endlev = interaction.options.getInteger('끝_레벨');
 
     if (endlev) {
-        if (startlev < 1 || startlev > 299) {
-            return interaction.followUp('1 ~ 299 범위의 시작 레벨을 입력해주세요.');
-        }
         if (endlev < startlev || endlev > 300) {
             return interaction.followUp('시작 레벨 ~ 300 범위의 끝 레벨을 입력해주세요.');
         }
@@ -83,10 +84,6 @@ export async function commandExecute(interaction) {
 진행률 (~300): ${((levelTable[endlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
         await interaction.followUp(rslt);
     } else {
-        if (startlev < 1 || startlev > 300) {
-            return interaction.followUp('1 ~ 300 범위의 시작 레벨을 입력해주세요.');
-        }
-
         const rslt = `Lv.${startlev} 경험치통: ${(levelTable[startlev] - levelTable[startlev - 1]).toLocaleString()}
 (${Util.toUnitString(levelTable[startlev] - levelTable[startlev - 1])})
 진행률 (~250): ${(Math.min(levelTable[startlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%

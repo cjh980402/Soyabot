@@ -38,22 +38,29 @@ export const commandData = {
             name: '몬스터의_방어율',
             type: ApplicationCommandOptionType.Number,
             description: '공격 대상 몬스터의 방어율',
+            min_value: 0,
             required: true
         },
         {
             name: '현재_방무',
             type: ApplicationCommandOptionType.Number,
             description: '캐릭터의 현재 방무 수치',
+            min_value: 0,
+            max_value: 100,
             required: true
         },
         {
             name: '추가_방무1',
             type: ApplicationCommandOptionType.Number,
+            min_value: 0,
+            max_value: 100,
             description: '추가할 방무 수치'
         },
         {
             name: '추가_방무2',
             type: ApplicationCommandOptionType.Number,
+            min_value: 0,
+            max_value: 100,
             description: '추가할 방무 수치'
         }
     ]

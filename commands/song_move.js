@@ -50,12 +50,14 @@ export const commandData = {
             name: '대기열_번호',
             type: ApplicationCommandOptionType.Integer,
             description: '위치를 옮길 노래의 대기열 번호',
+            min_value: 2,
             required: true
         },
         {
             name: '이동할_위치',
             type: ApplicationCommandOptionType.Integer,
             description: '노래가 이동될 위치의 대기열 번호',
+            min_value: 2,
             required: true
         }
     ]
@@ -77,12 +79,12 @@ export async function commandExecute(interaction) {
     }
 
     const target = interaction.options.getInteger('대기열_번호');
-    if (target < 2 || target > queue.songs.length) {
+    if (target > queue.songs.length) {
         return interaction.followUp(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래만 이동할 수 있습니다.`);
     }
 
     const dest = interaction.options.getInteger('이동할_위치');
-    if (dest < 2 || dest > queue.songs.length) {
+    if (dest > queue.songs.length) {
         return interaction.followUp(`현재 대기열에서 2 ~ ${queue.songs.length}번째 위치로만 이동할 수 있습니다.`);
     }
 

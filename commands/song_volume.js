@@ -44,7 +44,9 @@ export const commandData = {
         {
             name: '변경할_음량',
             type: ApplicationCommandOptionType.Number,
-            description: '새로 설정할 봇의 음량 수치'
+            description: '새로 설정할 봇의 음량 수치',
+            min_value: 0,
+            max_value: 100
         }
     ]
 };
