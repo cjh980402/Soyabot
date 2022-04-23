@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { sendBotNotice, sendAdmin } from './bot_message.js';
@@ -33,7 +33,7 @@ export function startNotice(client) {
                 }
 
                 if (notice.length > 0) {
-                    const noticeEmbed = new MessageEmbed()
+                    const noticeEmbed = new EmbedBuilder()
                         .setTitle('**메이플 공지사항**')
                         .setColor('#FF9999')
                         .setDescription(notice.join('\n\n'))
@@ -80,7 +80,7 @@ export function startUpdate(client) {
                 }
 
                 if (update.length > 0) {
-                    const noticeEmbed = new MessageEmbed()
+                    const noticeEmbed = new EmbedBuilder()
                         .setTitle('**메이플 업데이트**')
                         .setColor('#FF9999')
                         .setDescription(update.join('\n\n'))
@@ -135,7 +135,7 @@ export function startTest(client) {
                 }
 
                 if (test.length > 0) {
-                    const noticeEmbed = new MessageEmbed()
+                    const noticeEmbed = new EmbedBuilder()
                         .setTitle('**메이플 테스트월드 공지**')
                         .setColor('#FF9999')
                         .setDescription(test.join('\n\n'))

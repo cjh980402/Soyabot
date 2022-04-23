@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { create, all } from 'mathjs';
 import { PREFIX } from '../soyabot_config.js';
 import { sendSplitCode } from '../util/soyabot_util.js';
@@ -59,7 +60,7 @@ export const commandData = {
     options: [
         {
             name: '계산식',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '결과값을 계산할 계산식',
             required: true
         }

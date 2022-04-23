@@ -1,4 +1,4 @@
-import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { Attachment, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../classes/MapleParser.js';
 import { levelTable } from '../util/Constant.js';
@@ -15,12 +15,12 @@ async function getInfoEmbed(mapleUserInfo, level) {
     const char_seed = mapleUserInfo.Seed(); // 1: 층수, 2: 클리어 시간
     const char_rank = mapleUserInfo.Rank(); // 종합, 월드, 직업(월드), 직업(전체)
 
-    return new MessageEmbed()
+    return new EmbedBuilder()
         .setTitle(`**${mapleUserInfo.Name}님의 정보**`)
         .setColor('#FF9999')
         .setURL(mapleUserInfo.GGURL)
         .setImage('attachment://character.png')
-        .addFields(
+        .addFields([
             { name: '**레벨**', value: char_lv < 300 ? `${char_lv} (${char_percent}%)` : char_lv, inline: true },
             { name: '**직업**', value: char_job, inline: true },
             { name: '**길드**', value: char_guild || '-', inline: true },
@@ -46,7 +46,7 @@ async function getInfoEmbed(mapleUserInfo, level) {
                 value: char_rank ? `전체: ${char_rank[3]}\n월드: ${char_rank[2]}` : '-',
                 inline: true
             }
-        );
+        ]);
 }
 
 export const usage = `${PREFIX}정보 (닉네임)`;
@@ -67,7 +67,7 @@ export async function messageExecute(message, args) {
         await message.channel.send('제한시간 내에 갱신 작업을 실패했습니다.');
     }
 
-    const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
+    const image = new Attachment(mapleUserInfo.userImg(), 'character.png');
     await message.channel.send({ embeds: [await getInfoEmbed(mapleUserInfo, level)], files: [image] });
 }
 export const commandData = {
@@ -76,7 +76,7 @@ export const commandData = {
     options: [
         {
             name: '닉네임',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '전체적인 정보를 검색할 캐릭터의 닉네임',
             required: true
         }
@@ -93,6 +93,6 @@ export async function commandExecute(interaction) {
         await interaction.followUp('제한시간 내에 갱신 작업을 실패했습니다.');
     }
 
-    const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
+    const image = new Attachment(mapleUserInfo.userImg(), 'character.png');
     await interaction.followUp({ embeds: [await getInfoEmbed(mapleUserInfo, level)], files: [image] });
 }

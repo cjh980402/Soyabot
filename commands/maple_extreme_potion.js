@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { levelTable } from '../util/Constant.js';
 const probTable = [
@@ -129,13 +130,13 @@ export const commandData = {
     options: [
         {
             name: '시작_레벨',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '익성비 시뮬을 시작할 시작 레벨',
             required: true
         },
         {
             name: '목표_레벨',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '익성비 시뮬의 목표 레벨'
         }
     ]

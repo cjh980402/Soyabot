@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { NormalItem } from '../classes/NormalItem.js';
 
@@ -28,25 +29,25 @@ export const commandData = {
     options: [
         {
             name: '아이템_레벨_제한',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '시뮬레이션 대상 아이템의 레벨 제한',
             required: true
         },
         {
             name: '시작_스타포스_개수',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '시뮬레이션 시작 스타포스 개수',
             required: true
         },
         {
             name: '목표_스타포스_개수',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '시뮬레이션 목표 스타포스 개수',
             required: true
         },
         {
             name: '스타캐치',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '스타캐치 적용 유무',
             choices: [
                 { name: '스타캐치 미적용', value: 0 },
@@ -55,7 +56,7 @@ export const commandData = {
         },
         {
             name: '할인_이벤트',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '적용할 스타포스 할인 이벤트',
             choices: [
                 { name: '이벤트 미적용', value: 0 },
@@ -66,7 +67,7 @@ export const commandData = {
         },
         {
             name: '파괴_방지',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '적용할 파괴 방지의 종류',
             choices: [
                 { name: '파괴 방지 미적용', value: 0 },

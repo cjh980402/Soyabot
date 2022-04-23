@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 
 function findGameCommandType(str) {
@@ -147,7 +148,7 @@ export const commandData = {
     options: [
         {
             name: '탄환_수',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '러시안룰렛 게임의 탄환 수',
             choices: [...Array(19)].map((_, i) => ({ name: i + 2, value: i + 2 }))
         }

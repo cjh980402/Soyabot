@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { sendPageMessage } from '../util/soyabot_util.js';
 
@@ -9,7 +9,7 @@ function getQueueEmbed(songs, thumbnail, name) {
             .slice(i, i + 8)
             .map((track, j) => `${i + j + 1}. [${track.title}](${track.url})`)
             .join('\n\n');
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle(`**${name} 음악 대기열**`)
             .setThumbnail(thumbnail)
             .setColor('#FF9999')

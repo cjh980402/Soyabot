@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { sendPageMessage } from '../util/soyabot_util.js';
 
@@ -6,7 +6,7 @@ function getHelpEmbed(help, name) {
     const embeds = [];
     for (let i = 0; i < help.length; i += 7) {
         const info = help.slice(i, i + 7).join('\n');
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle(`**${name} 도움말**`)
             .setColor('#FF9999')
             .setDescription(`모든 명령어 목록\n\n${info}`)
@@ -48,7 +48,7 @@ export const commandData = {
     options: [
         {
             name: '세부항목',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '도움말을 출력할 카테고리나 명령어 대상'
         }
     ]

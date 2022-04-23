@@ -1,8 +1,8 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { ADMIN_ID, NOTICE_CHANNEL_ID } from '../soyabot_config.js';
 
 export async function sendBotNotice(client, data, isMaple = false) {
-    data = data instanceof MessageEmbed ? { embeds: [data] } : String(data);
+    data = data instanceof EmbedBuilder ? { embeds: [data] } : String(data);
     try {
         if (isMaple) {
             // 메이플 공지는 공지용 채널에만 전송

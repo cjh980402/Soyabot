@@ -1,4 +1,4 @@
-import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { Attachment, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { PREFIX } from '../soyabot_config.js';
 import renderChart from '../util/chartjs_rendering.js';
@@ -91,16 +91,16 @@ async function getMesoEmbed(server) {
         }
     };
 
-    const image = new MessageAttachment(await renderChart(config, 1200, 975), 'meso.png');
-    const mesoEmbed = new MessageEmbed()
+    const image = new Attachment(await renderChart(config, 1200, 975), 'meso.png');
+    const mesoEmbed = new EmbedBuilder()
         .setTitle(`**${server} 서버 메소 시세**`)
         .setColor('#FF9999')
         .setURL('https://talk.gamemarket.kr/maple/graph')
         .setImage('attachment://meso.png')
-        .addFields(
+        .addFields([
             { name: '**메소마켓**', value: `${market.at(-1)[serverList[server]]}메포` },
             { name: '**무통거래**', value: `${direct.at(-1)[serverList[server]]}원` }
-        );
+        ]);
 
     return { embeds: [mesoEmbed], files: [image] };
 }
@@ -122,7 +122,7 @@ export const commandData = {
     options: [
         {
             name: '서버',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '메소 시세를 검색할 서버',
             required: true,
             choices: Object.keys(serverList).map((v) => ({ name: v, value: v }))

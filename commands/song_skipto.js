@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { canModifyQueue } from '../util/soyabot_util.js';
 
@@ -43,7 +44,7 @@ export const commandData = {
     options: [
         {
             name: '대기열_번호',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '재생 중인 노래를 건너뛰고 바로 재생할 노래의 대기열 번호',
             required: true
         }

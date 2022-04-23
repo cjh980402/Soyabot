@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { sendAdmin } from '../admin/bot_message.js';
 
@@ -22,7 +23,7 @@ export const commandData = {
     options: [
         {
             name: '건의_사항',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '개발자에게 전송할 건의 사항',
             required: true
         }

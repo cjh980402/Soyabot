@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { sendAdmin } from '../admin/bot_message.js';
 import { QueueElement } from '../classes/QueueElement.js';
@@ -51,7 +51,7 @@ export async function messageExecute(message, args) {
         return message.reply('재생할 수 없는 재생목록입니다.');
     }
 
-    const playlistEmbed = new MessageEmbed()
+    const playlistEmbed = new EmbedBuilder()
         .setTitle(`**${playlist.title}**`)
         .setColor('#FF9999')
         .setURL(playlist.url)
@@ -96,7 +96,7 @@ export const commandData = {
     options: [
         {
             name: '재생목록_주소_제목',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '재생할 재생목록의 주소 또는 제목',
             required: true
         }
@@ -140,7 +140,7 @@ export async function commandExecute(interaction) {
         return interaction.followUp('재생할 수 없는 재생목록입니다.');
     }
 
-    const playlistEmbed = new MessageEmbed()
+    const playlistEmbed = new EmbedBuilder()
         .setTitle(`**${playlist.title}**`)
         .setColor('#FF9999')
         .setURL(playlist.url)

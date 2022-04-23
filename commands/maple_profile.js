@@ -1,4 +1,4 @@
-import { MessageAttachment } from 'discord.js';
+import { Attachment, ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
 import { MapleUser } from '../classes/MapleParser.js';
@@ -39,7 +39,7 @@ export async function messageExecute(message, args) {
         }' '${seed ? seed[1] : '기록없음'}' '${seed ? seed[2] : ' '}'`,
         { encoding: 'buffer' }
     );
-    const image = new MessageAttachment(profilePic, 'profile.png');
+    const image = new Attachment(profilePic, 'profile.png');
     await message.channel.send({ content: `${mapleUserInfo.Name}님의 프로필`, files: [image] });
 }
 export const commandData = {
@@ -48,7 +48,7 @@ export const commandData = {
     options: [
         {
             name: '닉네임',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '프로필을 출력할 캐릭터의 닉네임',
             required: true
         }
@@ -83,6 +83,6 @@ export async function commandExecute(interaction) {
         }' '${seed ? seed[1] : '기록없음'}' '${seed ? seed[2] : ' '}'`,
         { encoding: 'buffer' }
     );
-    const image = new MessageAttachment(profilePic, 'profile.png');
+    const image = new Attachment(profilePic, 'profile.png');
     await interaction.followUp({ content: `${mapleUserInfo.Name}님의 프로필`, files: [image] });
 }

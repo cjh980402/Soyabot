@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 
 export const usage = `${PREFIX}스타버블`;
@@ -16,7 +17,7 @@ export const commandData = {
 export async function commandExecute(interaction) {
     interaction.options._hoistedOptions.push({
         name: '영상_주소_제목',
-        type: 'STRING',
+        type: ApplicationCommandOptionType.String,
         value: 'https://youtu.be/ixww1OHztbs'
     });
     await interaction.client.commands.find((cmd) => cmd.commandData?.name === 'play').commandExecute(interaction);

@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 const picmatch = {
     앗볶음: 'AtFried',
@@ -39,7 +40,7 @@ export const commandData = {
     options: [
         {
             name: '요리_이름',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '추옵 정보를 검색할 무기의 종류',
             required: true,
             choices: Object.keys(picmatch).map((v) => ({ name: v, value: v }))

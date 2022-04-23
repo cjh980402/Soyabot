@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { MapleProb } from '../util/maple_probtable.js';
 
@@ -49,17 +50,17 @@ export const commandData = {
     options: [
         {
             name: '확률',
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             description: '현재 로얄 성형의 확률을 보여줍니다.'
         },
         {
             name: '남',
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             description: '남자 캐릭터의 성형 시뮬레이션을 수행합니다.',
             options: [
                 {
                     name: '목표_성형_이름',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     description: '시뮬레이션의 목표 성형',
                     required: true
                 }
@@ -67,12 +68,12 @@ export const commandData = {
         },
         {
             name: '여',
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             description: '여자 캐릭터의 성형 시뮬레이션을 수행합니다.',
             options: [
                 {
                     name: '목표_성형_이름',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     description: '시뮬레이션의 목표 성형',
                     required: true
                 }

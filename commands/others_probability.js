@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 
 export const usage = `${PREFIX}확률 (내용)`;
@@ -13,7 +14,7 @@ export const commandData = {
     options: [
         {
             name: '내용',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '봇이 확률을 말해줄 내용'
         }
     ]

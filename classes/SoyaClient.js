@@ -1,4 +1,4 @@
-import { Client, Intents, Options } from 'discord.js';
+import { Client, IntentsBitField, Options, Partials, ActivityType } from 'discord.js';
 import { SQLiteHandler } from './SQLiteHandler.js';
 import { MapleProb } from '../util/maple_probtable.js';
 
@@ -12,14 +12,15 @@ export class SoyaClient extends Client {
         super({
             retryLimit: 3,
             failIfNotExists: false,
-            partials: ['CHANNEL'],
+            partials: [Partials.Channel],
             intents: [
-                Intents.FLAGS.GUILDS,
-                Intents.FLAGS.GUILD_VOICE_STATES,
-                Intents.FLAGS.GUILD_MESSAGES,
-                Intents.FLAGS.DIRECT_MESSAGES
+                IntentsBitField.Flags.MessageContent,
+                IntentsBitField.Flags.Guilds,
+                IntentsBitField.Flags.GuildVoiceStates,
+                IntentsBitField.Flags.GuildMessages,
+                IntentsBitField.Flags.DirectMessages
             ],
-            presence: { activities: [{ name: '/help', type: 'LISTENING' }] },
+            presence: { activities: [{ name: '/help', type: ActivityType.Listening }] },
             sweepers: {
                 guildMembers: {
                     interval: 3600,

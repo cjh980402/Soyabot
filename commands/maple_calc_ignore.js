@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 
 export const usage = `${PREFIX}방무 (몬스터의 방어율) (현재 방무) (추가 방무1) (추가 방무2) ...`;
@@ -35,24 +36,24 @@ export const commandData = {
     options: [
         {
             name: '몬스터의_방어율',
-            type: 'NUMBER',
+            type: ApplicationCommandOptionType.Number,
             description: '공격 대상 몬스터의 방어율',
             required: true
         },
         {
             name: '현재_방무',
-            type: 'NUMBER',
+            type: ApplicationCommandOptionType.Number,
             description: '캐릭터의 현재 방무 수치',
             required: true
         },
         {
             name: '추가_방무1',
-            type: 'NUMBER',
+            type: ApplicationCommandOptionType.Number,
             description: '추가할 방무 수치'
         },
         {
             name: '추가_방무2',
-            type: 'NUMBER',
+            type: ApplicationCommandOptionType.Number,
             description: '추가할 방무 수치'
         }
     ]

@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { bossData } from '../util/Constant.js';
 
@@ -10,7 +10,7 @@ function getBossEmbed(bossName, bossGrade) {
     }
     const targetBoss = bossData[bossName][bossGrade];
 
-    return new MessageEmbed()
+    return new EmbedBuilder()
         .setTitle(`**${bossName}(${bossGrade})의 보상 / 정보**`)
         .setColor('#FF9999')
         .setDescription(`**보상**\n${targetBoss[0].join('\n\n')}\n\n**정보**\n${targetBoss[1].join('\n\n')}`);
@@ -39,13 +39,13 @@ export const commandData = {
     options: [
         {
             name: '보스_이름',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '보스 정보를 검색할 보스의 이름',
             required: true
         },
         {
             name: '보스_난이도',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '보스 정보를 검색할 보스의 난이도',
             choices: bossDifficulty.map((v) => ({ name: v, value: v }))
         }

@@ -1,10 +1,11 @@
-import { MessageEmbed, Util } from 'discord.js';
+import { EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
+import { Util } from '../util/Util.js';
 
 async function getLyricsEmbed(search) {
-    const lyricsEmbed = new MessageEmbed().setColor('#FF9999');
+    const lyricsEmbed = new EmbedBuilder().setColor('#FF9999');
     const { body: songBody } = await request(
         `https://www.melon.com/search/song/index.htm?q=${encodeURIComponent(search)}`
     );
@@ -60,7 +61,7 @@ export const commandData = {
     options: [
         {
             name: '노래_제목',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '가사를 검색할 노래 제목'
         }
     ]

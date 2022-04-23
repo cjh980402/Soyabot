@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
@@ -16,7 +16,7 @@ function getEventEmbed(links, names, dates) {
             )
             .get()
             .join('\n\n');
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle('**진행중인 이벤트**')
             .setColor('#FF9999')
             .setDescription(info)

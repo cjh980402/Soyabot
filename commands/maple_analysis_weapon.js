@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 
 export const usage = `${PREFIX}작분석 (총 공격력) (기본공) (레벨 제한) (강화 단계) (추가 옵션)`;
@@ -47,32 +48,32 @@ export const commandData = {
     options: [
         {
             name: '총_공격력',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '무기의 총 공격력 (기본공+파란색글씨+초록글씨)',
             required: true
         },
         {
             name: '기본공',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '무기의 기본공마',
             required: true
         },
         {
             name: '레벨_제한',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '130, 140, 150, 160, 200 중의 하나',
             required: true,
             choices: [130, 140, 150, 160, 200].map((v) => ({ name: v, value: v }))
         },
         {
             name: '강화_단계',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '0 ~ 25성 사용가능 (130제는 20성까지)',
             required: true
         },
         {
             name: '추가_옵션',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '무기의 추옵 공격력 수치'
         }
     ]

@@ -22,11 +22,11 @@ export async function listener(message) {
         }
 
         const botPermissions = [
-            'VIEW_CHANNEL',
-            message.channel.isThread() ? 'SEND_MESSAGES_IN_THREADS' : 'SEND_MESSAGES',
-            'READ_MESSAGE_HISTORY',
-            'EMBED_LINKS',
-            'ATTACH_FILES'
+            'ViewChannel',
+            message.channel.isThread() ? 'SendMessagesInThreads' : 'SendMessages',
+            'ReadMessageHistory',
+            'EmbedLinks',
+            'AttachFiles'
         ];
         const missingPermission =
             message.guildId &&

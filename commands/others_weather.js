@@ -1,8 +1,9 @@
-import { MessageEmbed, Util } from 'discord.js';
+import { EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
 import { sendPageMessage } from '../util/soyabot_util.js';
+import { Util } from '../util/Util.js';
 
 async function getWeatherEmbed(targetLocal) {
     const targetURL = `https://weather.naver.com/today/${targetLocal[1][0]}`;
@@ -64,7 +65,7 @@ async function getWeatherEmbed(targetLocal) {
 
     const embeds = [];
     for (const desc of weatherDesc) {
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle(`**${targetLocal[0][0]}**`)
             .setColor('#FF9999')
             .setURL(targetURL)
@@ -94,7 +95,7 @@ export async function messageExecute(message, args) {
     } else if (searchRslt.length === 1) {
         targetLocal = searchRslt[0];
     } else {
-        const localListEmbed = new MessageEmbed()
+        const localListEmbed = new EmbedBuilder()
             .setTitle('**검색할 지역의 번호를 알려주세요.**')
             .setColor('#FF9999')
             .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`).join('\n'))
@@ -125,7 +126,7 @@ export const commandData = {
     options: [
         {
             name: '지역',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '날씨 정보를 검색할 지역'
         }
     ]
@@ -144,7 +145,7 @@ export async function commandExecute(interaction) {
     } else if (searchRslt.length === 1) {
         targetLocal = searchRslt[0];
     } else {
-        const localListEmbed = new MessageEmbed()
+        const localListEmbed = new EmbedBuilder()
             .setTitle('**검색할 지역의 번호를 알려주세요.**')
             .setColor('#FF9999')
             .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`).join('\n'))

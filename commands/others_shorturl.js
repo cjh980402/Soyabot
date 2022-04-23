@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET, PREFIX } from '../soyabot_config.js';
 
@@ -38,7 +39,7 @@ export const commandData = {
     options: [
         {
             name: '대상_주소',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '짧은 형태의 주소로 변환할 주소',
             required: true
         }

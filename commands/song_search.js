@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { sendAdmin } from '../admin/bot_message.js';
 import { QueueElement } from '../classes/QueueElement.js';
@@ -40,12 +40,12 @@ export async function messageExecute(message, args) {
         return message.reply('검색 내용에 해당하는 영상을 찾지 못했습니다.');
     }
 
-    const resultsEmbed = new MessageEmbed()
+    const resultsEmbed = new EmbedBuilder()
         .setTitle('**재생할 노래의 번호를 알려주세요.**')
         .setColor('#FF9999')
         .setDescription(`${search}의 검색 결과`)
         .addFields(
-            ...results.map((video, index) => ({
+            results.map((video, index) => ({
                 name: `**${index + 1}. ${video.title}** \`[${video.duration === 0 ? '⊚ LIVE' : video.durationText}]\``,
                 value: `https://youtu.be/${video.id}`
             }))
@@ -78,7 +78,7 @@ export async function messageExecute(message, args) {
             thumbnail: results[v - 1].thumbnails.at(-1).url
         }));
 
-        const choiceEmbed = new MessageEmbed()
+        const choiceEmbed = new EmbedBuilder()
             .setTitle('**선택 결과**')
             .setColor('#FF9999')
             .setDescription(
@@ -126,7 +126,7 @@ export const commandData = {
     options: [
         {
             name: '영상_제목',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '검색할 노래의 영상 제목',
             required: true
         }
@@ -159,12 +159,12 @@ export async function commandExecute(interaction) {
         return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
     }
 
-    const resultsEmbed = new MessageEmbed()
+    const resultsEmbed = new EmbedBuilder()
         .setTitle('**재생할 노래의 번호를 알려주세요.**')
         .setColor('#FF9999')
         .setDescription(`${search}의 검색 결과`)
         .addFields(
-            ...results.map((video, index) => ({
+            results.map((video, index) => ({
                 name: `**${index + 1}. ${video.title}** \`[${video.duration === 0 ? '⊚ LIVE' : video.durationText}]\``,
                 value: `https://youtu.be/${video.id}`
             }))
@@ -197,7 +197,7 @@ export async function commandExecute(interaction) {
             thumbnail: results[v - 1].thumbnails.at(-1).url
         }));
 
-        const choiceEmbed = new MessageEmbed()
+        const choiceEmbed = new EmbedBuilder()
             .setTitle('**선택 결과**')
             .setColor('#FF9999')
             .setDescription(

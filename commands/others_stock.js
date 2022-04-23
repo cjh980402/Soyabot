@@ -1,4 +1,4 @@
-import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { Attachment, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { PREFIX } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
@@ -43,7 +43,7 @@ async function getStockEmbed(search, searchRslt, type) {
     const identifer = stockfind[4][0];
     let image = null;
 
-    const stockEmbed = new MessageEmbed()
+    const stockEmbed = new EmbedBuilder()
         .setTitle(`**${name} (${code}) ${type}**`)
         .setColor('#FF9999')
         .setURL(`https://m.stock.naver.com${link}`);
@@ -75,17 +75,17 @@ async function getStockEmbed(search, searchRslt, type) {
             { encoding: 'buffer' }
         );
         // 파이썬 스크립트 실행
-        image = new MessageAttachment(stockPic, `${code}.png`);
+        image = new Attachment(stockPic, `${code}.png`);
 
-        stockEmbed.addFields(
+        stockEmbed.addFields([
             { name: '**거래량**', value: data.totalInfos['거래량'], inline: true },
             { name: '**거래대금**', value: data.totalInfos['대금'], inline: true },
             { name: '**개인**', value: data.dealTrendInfo.personalValue, inline: true },
             { name: '**외국인**', value: data.dealTrendInfo.foreignValue, inline: true },
             { name: '**기관**', value: data.dealTrendInfo.institutionalValue, inline: true }
-        );
+        ]);
         if (data.upDownStockInfo) {
-            stockEmbed.addFields(
+            stockEmbed.addFields([
                 {
                     name: '**상승**',
                     value: `${data.upDownStockInfo.riseCount} (${data.upDownStockInfo.upperCount})`,
@@ -96,7 +96,7 @@ async function getStockEmbed(search, searchRslt, type) {
                     value: `${data.upDownStockInfo.fallCount} (${data.upDownStockInfo.lowerCount})`,
                     inline: true
                 }
-            );
+            ]);
         }
     } else if (stockfind[2][0] === '해외지수') {
         // 해외 지수
@@ -122,7 +122,7 @@ async function getStockEmbed(search, searchRslt, type) {
             { encoding: 'buffer' }
         );
         // 파이썬 스크립트 실행
-        image = new MessageAttachment(stockPic, `${code}.png`);
+        image = new Attachment(stockPic, `${code}.png`);
     } else if (stockfind[2][0] === '코스피' || stockfind[2][0] === '코스닥' || stockfind[2][0] === '코넥스') {
         // 국내 주식
         const { body } = await request(`https://m.stock.naver.com/api/stock/${identifer}/integration`);
@@ -152,23 +152,23 @@ async function getStockEmbed(search, searchRslt, type) {
             { encoding: 'buffer' }
         );
         // 파이썬 스크립트 실행
-        image = new MessageAttachment(stockPic, `${code}.png`);
+        image = new Attachment(stockPic, `${code}.png`);
 
-        stockEmbed.addFields(
+        stockEmbed.addFields([
             { name: '**거래량**', value: data.totalInfos['거래량'], inline: true },
             { name: '**거래대금**', value: `${data.totalInfos['대금']}원`, inline: true }
-        );
+        ]);
         if (data.stockEndType === 'etf') {
-            stockEmbed.addFields(
+            stockEmbed.addFields([
                 { name: '**최근 1개월 수익률**', value: data.totalInfos['최근 1개월 수익률'], inline: true },
                 { name: '**최근 3개월 수익률**', value: data.totalInfos['최근 3개월 수익률'], inline: true },
                 { name: '**최근 6개월 수익률**', value: data.totalInfos['최근 6개월 수익률'], inline: true },
                 { name: '**최근 1년 수익률**', value: data.totalInfos['최근 1년 수익률'], inline: true },
                 { name: '**NAV**', value: data.totalInfos['NAV'], inline: true },
                 { name: '**펀드보수**', value: data.totalInfos['펀드보수'], inline: true }
-            );
+            ]);
         } else {
-            stockEmbed.addFields(
+            stockEmbed.addFields([
                 { name: '**시가총액**', value: `${data.totalInfos['시총']}원`, inline: true },
                 { name: '**외인소진율**', value: data.totalInfos['외인소진율'], inline: true },
                 { name: '**PER**', value: data.totalInfos['PER'], inline: true },
@@ -177,7 +177,7 @@ async function getStockEmbed(search, searchRslt, type) {
                 { name: '**BPS**', value: data.totalInfos['BPS'], inline: true },
                 { name: '**배당률**', value: data.totalInfos['배당수익률'], inline: true },
                 { name: '**배당금**', value: data.totalInfos['주당배당금'], inline: true }
-            );
+            ]);
         }
     } else {
         // 해외 주식
@@ -205,9 +205,9 @@ async function getStockEmbed(search, searchRslt, type) {
             { encoding: 'buffer' }
         );
         // 파이썬 스크립트 실행
-        image = new MessageAttachment(stockPic, `${code}.png`);
+        image = new Attachment(stockPic, `${code}.png`);
 
-        stockEmbed.addFields(
+        stockEmbed.addFields([
             { name: '**거래량**', value: data.stockItemTotalInfos['거래량'], inline: true },
             {
                 name: '**거래대금**',
@@ -219,12 +219,12 @@ async function getStockEmbed(search, searchRslt, type) {
                 value: `${data.stockItemTotalInfos['시총']}${data.currencyType.name}`,
                 inline: true
             }
-        );
+        ]);
         if (data.stockEndType === 'etf') {
             const { body: etfBody } = await request(`https://api.stock.naver.com/etf/${identifer}/basic`);
             const etfData = await etfBody.json();
             etfData.stockItemTotalInfos = getTotalInfoObj(etfData.stockItemTotalInfos);
-            stockEmbed.addFields(
+            stockEmbed.addFields([
                 {
                     name: '**최근 1개월 수익률**',
                     value: etfData.stockItemTotalInfos['최근 1개월 수익률'],
@@ -243,9 +243,9 @@ async function getStockEmbed(search, searchRslt, type) {
                 { name: '**최근 1년 수익률**', value: etfData.stockItemTotalInfos['최근 1년 수익률'], inline: true },
                 { name: '**NAV**', value: etfData.stockItemTotalInfos['NAV'], inline: true },
                 { name: '**배당금**', value: etfData.stockItemTotalInfos['배당금'], inline: true }
-            );
+            ]);
         } else {
-            stockEmbed.addFields(
+            stockEmbed.addFields([
                 { name: '**업종**', value: data.stockItemTotalInfos['업종'], inline: true },
                 { name: '**PER**', value: data.stockItemTotalInfos['PER'], inline: true },
                 { name: '**EPS**', value: data.stockItemTotalInfos['EPS'], inline: true },
@@ -253,7 +253,7 @@ async function getStockEmbed(search, searchRslt, type) {
                 { name: '**BPS**', value: data.stockItemTotalInfos['BPS'], inline: true },
                 { name: '**배당률**', value: data.stockItemTotalInfos['배당수익률'], inline: true },
                 { name: '**배당금**', value: data.stockItemTotalInfos['주당배당금'], inline: true }
-            );
+            ]);
         }
     }
 
@@ -291,13 +291,13 @@ export const commandData = {
     options: [
         {
             name: '검색_내용',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '주식정보를 검색할 내용',
             required: true
         },
         {
             name: '차트_종류',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '출력할 차트의 종류 (생략 시 일봉으로 적용)',
             choices: Object.keys(chartType).map((v) => ({ name: v, value: v }))
         }

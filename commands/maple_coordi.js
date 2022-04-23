@@ -1,4 +1,4 @@
-import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { Attachment, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../classes/MapleParser.js';
 
@@ -23,13 +23,13 @@ export async function messageExecute(message, args) {
     if (!coordi) {
         await message.channel.send(`[${mapleUserInfo.Name}]\n코디 정보가 없습니다.`);
     } else {
-        const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
-        const coordiEmbed = new MessageEmbed()
+        const image = new Attachment(mapleUserInfo.userImg(), 'character.png');
+        const coordiEmbed = new EmbedBuilder()
             .setTitle(`**${mapleUserInfo.Name}님의 코디**`)
             .setColor('#FF9999')
             .setURL(mapleUserInfo.GGURL)
             .setImage('attachment://character.png')
-            .addFields(
+            .addFields([
                 { name: '**헤어**', value: coordi[1], inline: true },
                 { name: '**성형**', value: coordi[2], inline: true },
                 { name: '**모자**', value: coordi[0], inline: true },
@@ -37,7 +37,7 @@ export async function messageExecute(message, args) {
                 { name: '**하의**', value: coordi[4], inline: true },
                 { name: '**신발**', value: coordi[5], inline: true },
                 { name: '**무기**', value: coordi[6], inline: true }
-            );
+            ]);
 
         await message.channel.send({ embeds: [coordiEmbed], files: [image] });
     }
@@ -48,7 +48,7 @@ export const commandData = {
     options: [
         {
             name: '닉네임',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '코디 정보를 출력할 캐릭터의 닉네임',
             required: true
         }
@@ -68,13 +68,13 @@ export async function commandExecute(interaction) {
     if (!coordi) {
         await interaction.followUp(`[${mapleUserInfo.Name}]\n코디 정보가 없습니다.`);
     } else {
-        const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
-        const coordiEmbed = new MessageEmbed()
+        const image = new Attachment(mapleUserInfo.userImg(), 'character.png');
+        const coordiEmbed = new EmbedBuilder()
             .setTitle(`**${mapleUserInfo.Name}님의 코디**`)
             .setColor('#FF9999')
             .setURL(mapleUserInfo.GGURL)
             .setImage('attachment://character.png')
-            .addFields(
+            .addFields([
                 { name: '**헤어**', value: coordi[1], inline: true },
                 { name: '**성형**', value: coordi[2], inline: true },
                 { name: '**모자**', value: coordi[0], inline: true },
@@ -82,7 +82,7 @@ export async function commandExecute(interaction) {
                 { name: '**하의**', value: coordi[4], inline: true },
                 { name: '**신발**', value: coordi[5], inline: true },
                 { name: '**무기**', value: coordi[6], inline: true }
-            );
+            ]);
 
         await interaction.followUp({ embeds: [coordiEmbed], files: [image] });
     }

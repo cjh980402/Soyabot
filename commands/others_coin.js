@@ -1,4 +1,4 @@
-import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { Attachment, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { PREFIX } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
@@ -58,27 +58,27 @@ async function getCoinEmbed(searchRslt, type) {
     );
     // 파이썬 스크립트 실행
 
-    const image = new MessageAttachment(coinPic, `${code}.png`);
-    const coinEmbed = new MessageEmbed()
+    const image = new Attachment(coinPic, `${code}.png`);
+    const coinEmbed = new EmbedBuilder()
         .setTitle(`**${name} (${code}) ${type}**`)
         .setColor('#FF9999')
         .setURL(`https://upbit.com/exchange?code=CRIX.UPBIT.KRW-${code}&tab=chart`)
         .setImage(`attachment://${code}.png`)
-        .addFields({ name: '**거래대금**', value: `${amount}원`, inline: true });
+        .addFields([{ name: '**거래대금**', value: `${amount}원`, inline: true }]);
 
     const binancePrice = await getCoinBinancePrice(code);
     if (binancePrice !== -1) {
         const binanceKRW = await usdToKRW(binancePrice);
         const kimPre = todayData.trade_price - binanceKRW;
         const kimPrePercent = 100 * (kimPre / binanceKRW);
-        coinEmbed.addFields(
+        coinEmbed.addFields([
             {
                 name: '**바이낸스**',
                 value: `${binancePrice.toLocaleString()}$\n${binanceKRW.toLocaleString()}원`,
                 inline: true
             },
             { name: '**김프**', value: `${kimPre.toLocaleString()}원 (${kimPrePercent.toFixed(2)}%)`, inline: true }
-        );
+        ]);
     }
 
     return { embeds: [coinEmbed], files: [image] };
@@ -121,13 +121,13 @@ export const commandData = {
     options: [
         {
             name: '검색_내용',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '코인정보를 검색할 내용',
             required: true
         },
         {
             name: '차트_종류',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '출력할 차트의 종류 (생략 시 1일로 적용)',
             choices: Object.keys(chartType).map((v) => ({ name: v, value: v }))
         }

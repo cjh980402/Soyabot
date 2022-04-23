@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, ButtonStyle } from 'discord.js';
 import { AudioPlayerStatus, createAudioPlayer, NoSubscriberBehavior, VoiceConnectionStatus } from '@discordjs/voice';
 import { FormatError } from 'youtube-dlsr';
 import { sendAdmin } from '../admin/bot_message.js';
@@ -84,7 +84,7 @@ export class QueueElement {
 
         const song = this.songs[0];
         try {
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setTitle('**🎶 노래 재생 중 🎶**')
                 .setColor('#FF9999')
                 .setImage(song.thumbnail)
@@ -95,18 +95,18 @@ export class QueueElement {
                             ? '⊚ 실시간 방송'
                             : `전체 재생 시간: ${Util.toDurationString(song.duration)}`
                 });
-            const row1 = new MessageActionRow().addComponents(
-                new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('play_pause').setEmoji('⏯️').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('skip').setEmoji('⏭️').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('loop').setEmoji('🔁').setStyle('SECONDARY')
-            );
-            const row2 = new MessageActionRow().addComponents(
-                new MessageButton().setCustomId('mute').setEmoji('🔇').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('volume_down').setEmoji('🔉').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('volume_up').setEmoji('🔊').setStyle('SECONDARY'),
-                new MessageButton().setCustomId('shuffle').setEmoji('🔀').setStyle('SECONDARY')
-            );
+            const row1 = new ActionRowBuilder().addComponents([
+                new ButtonBuilder().setCustomId('stop').setEmoji('⏹️').setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder().setCustomId('play_pause').setEmoji('⏯️').setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder().setCustomId('skip').setEmoji('⏭️').setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder().setCustomId('loop').setEmoji('🔁').setStyle(ButtonStyle.Secondary)
+            ]);
+            const row2 = new ActionRowBuilder().addComponents([
+                new ButtonBuilder().setCustomId('mute').setEmoji('🔇').setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder().setCustomId('volume_down').setEmoji('🔉').setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder().setCustomId('volume_up').setEmoji('🔊').setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder().setCustomId('shuffle').setEmoji('🔀').setStyle(ButtonStyle.Secondary)
+            ]);
 
             this.playingMessage = await this.sendMessage({ embeds: [embed], components: [row1, row2] });
             this.player.play(await songDownload(song.url));

@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { sendAdmin } from '../admin/bot_message.js';
 import { QueueElement } from '../classes/QueueElement.js';
@@ -79,7 +80,7 @@ export const commandData = {
     options: [
         {
             name: '영상_주소_제목',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '재생할 노래의 영상 주소 또는 제목',
             required: true
         }

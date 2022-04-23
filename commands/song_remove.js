@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { canModifyQueue } from '../util/soyabot_util.js';
 import { Util } from '../util/Util.js';
@@ -52,7 +53,7 @@ export const commandData = {
     options: [
         {
             name: '대기열_번호',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '삭제할 노래의 번호',
             required: true
         }

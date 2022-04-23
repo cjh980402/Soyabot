@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { MapleProb } from '../util/maple_probtable.js';
 
@@ -53,7 +54,7 @@ export const commandData = {
     options: [
         {
             name: '횟수',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '로얄스타일 시뮬레이션 횟수'
         }
     ]

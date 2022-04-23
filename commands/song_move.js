@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { canModifyQueue } from '../util/soyabot_util.js';
 
@@ -47,13 +48,13 @@ export const commandData = {
     options: [
         {
             name: '대기열_번호',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '위치를 옮길 노래의 대기열 번호',
             required: true
         },
         {
             name: '이동할_위치',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '노래가 이동될 위치의 대기열 번호',
             required: true
         }

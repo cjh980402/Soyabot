@@ -1,13 +1,22 @@
-import { Util, Channel, CommandInteraction, MessageActionRow, MessageButton, Permissions } from 'discord.js';
+import {
+    Util as DjsUtil,
+    Channel,
+    CommandInteraction,
+    ActionRowBuilder,
+    ButtonBuilder,
+    PermissionsBitField,
+    ButtonStyle
+} from 'discord.js';
 import { request } from 'undici';
 import { joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
+import { Util } from './Util.js';
 
 function contentSplitCode(content, options) {
     content ||= '\u200b'; // 빈 문자열 방지
     const splitOptions = options.split ? { ...options.split } : null; // 옵션을 수정할 수도 있기 때문에 복사본 생성
 
     if (options.code) {
-        content = `\`\`\`${options.code}\n${Util.cleanCodeBlockContent(content)}\n\`\`\``;
+        content = `\`\`\`${options.code}\n${DjsUtil.cleanCodeBlockContent(content)}\n\`\`\``;
         if (splitOptions) {
             splitOptions.prepend = `${splitOptions.prepend ?? ''}\`\`\`${options.code}\n`;
             splitOptions.append = `\n\`\`\`${splitOptions.append ?? ''}`;
@@ -65,7 +74,7 @@ export async function joinVoice(channel) {
         await entersState(connection, VoiceConnectionStatus.Ready, 30000); // 연결될 때까지 최대 30초 대기
         if (
             channel.type === 'GUILD_STAGE_VOICE' &&
-            channel.permissionsFor(channel.guild.me).has(Permissions.STAGE_MODERATOR)
+            channel.permissionsFor(channel.guild.me).has(PermissionsBitField.StageModerator)
         ) {
             await channel.guild.me.voice.setSuppressed(false); // 스테이지 채널이면서 관리 권한이 있으면 봇을 speaker로 설정
         }
@@ -114,11 +123,11 @@ export async function sendPageMessage(messageOrCommand, embeds, options = {}) {
         messageOrCommand.channel.send.bind(messageOrCommand.channel);
 
     if (embeds.length > 1) {
-        const row = new MessageActionRow().addComponents(
-            new MessageButton().setCustomId('prev').setEmoji('⬅️').setStyle('SECONDARY'),
-            new MessageButton().setCustomId('stop').setEmoji('⏹️').setStyle('SECONDARY'),
-            new MessageButton().setCustomId('next').setEmoji('➡️').setStyle('SECONDARY')
-        );
+        const row = new ActionRowBuilder().addComponents([
+            new ButtonBuilder().setCustomId('prev').setEmoji('⬅️').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('stop').setEmoji('⏹️').setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder().setCustomId('next').setEmoji('➡️').setStyle(ButtonStyle.Secondary)
+        ]);
         const page = await send({
             content: `**현재 페이지 - 1/${embeds.length}**`,
             embeds: [embeds[0]],

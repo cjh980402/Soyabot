@@ -1,4 +1,4 @@
-import { MessageAttachment } from 'discord.js';
+import { Attachment } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import renderChart from '../util/chartjs_rendering.js';
 
@@ -69,7 +69,7 @@ async function getCommandCountGraph(client) {
         }
     };
 
-    return new MessageAttachment(await renderChart(config, 2000, height), 'chart.png');
+    return new Attachment(await renderChart(config, 2000, height), 'chart.png');
 }
 
 export const usage = `${PREFIX}통계`;

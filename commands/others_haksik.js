@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
@@ -7,7 +7,7 @@ import { sendPageMessage } from '../util/soyabot_util.js';
 function getHaksikEmbed(date, haksik) {
     const embeds = [];
     for (let i = 0; i < date.length; i++) {
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle(`**${date[i]}**`)
             .setColor('#FF9999')
             .setDescription(

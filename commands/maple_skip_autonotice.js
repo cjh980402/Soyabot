@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 const noticematch = {
     공지: 'notice',
@@ -25,7 +26,7 @@ export const commandData = {
     options: [
         {
             name: '카테고리',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '자동알림 상태를 변경할 카테고리',
             choices: Object.keys(noticematch).map((v) => ({ name: v, value: v }))
         }

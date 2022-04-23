@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { levelTable } from '../util/Constant.js';
 import { Util } from '../util/Util.js';
@@ -50,13 +51,13 @@ export const commandData = {
     options: [
         {
             name: '시작_레벨',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '경험치 정보를 계산할 시작 레벨',
             required: true
         },
         {
             name: '끝_레벨',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '경험치 정보를 계산할 끝 레벨'
         }
     ]

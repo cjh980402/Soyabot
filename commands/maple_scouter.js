@@ -1,4 +1,4 @@
-import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { Attachment, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../classes/MapleParser.js';
 const scoreGrade = [
@@ -46,18 +46,18 @@ function getScouterEmbed(mapleUserInfo, union) {
         }
     }
 
-    return new MessageEmbed()
+    return new EmbedBuilder()
         .setTitle(`**${mapleUserInfo.Name}님의 측정결과**`)
         .setColor('#FF9999')
         .setURL(mapleUserInfo.GGURL)
         .setImage('attachment://character.png')
-        .addFields(
+        .addFields([
             { name: '**직업**', value: job, inline: true },
             { name: '**레벨**', value: String(level), inline: true },
             { name: '**유니온**', value: union.toLocaleString(), inline: true },
             { name: '**무릉 기록**', value: murung ? `${murungfl}층 (${min}분 ${sec}초)` : '-', inline: true },
             { name: '**측정 결과**', value: `${grade}! (${score}점)` }
-        );
+        ]);
 }
 
 export const usage = `${PREFIX}스카우터 (닉네임)`;
@@ -91,7 +91,7 @@ export async function messageExecute(message, args) {
         await message.channel.send('제한시간 내에 갱신 작업을 실패했습니다.');
     }
 
-    const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
+    const image = new Attachment(mapleUserInfo.userImg(), 'character.png');
     await message.channel.send({ embeds: [getScouterEmbed(mapleUserInfo, union)], files: [image] });
 }
 export const commandData = {
@@ -100,7 +100,7 @@ export const commandData = {
     options: [
         {
             name: '닉네임',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '점수를 평가할 캐릭터의 닉네임'
         }
     ]
@@ -132,6 +132,6 @@ export async function commandExecute(interaction) {
         await interaction.followUp('제한시간 내에 갱신 작업을 실패했습니다.');
     }
 
-    const image = new MessageAttachment(mapleUserInfo.userImg(), 'character.png');
+    const image = new Attachment(mapleUserInfo.userImg(), 'character.png');
     await interaction.followUp({ embeds: [getScouterEmbed(mapleUserInfo, union)], files: [image] });
 }

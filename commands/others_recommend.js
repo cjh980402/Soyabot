@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 
 function recommendWork(name) {
@@ -150,12 +151,12 @@ export const commandData = {
     options: [
         {
             name: '할_일',
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             description: '할 일을 추천해줍니다.'
         },
         {
             name: '메뉴',
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             description: '메뉴를 추천해줍니다.'
         }
     ]

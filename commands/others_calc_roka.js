@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 
 export const usage = `${PREFIX}입대 (입대일)`;
@@ -49,7 +50,7 @@ export const commandData = {
     options: [
         {
             name: '입대일',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '전역일을 계산할 대상의 입대일',
             required: true
         }

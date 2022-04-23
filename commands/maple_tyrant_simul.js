@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { SuperialItem } from '../classes/SuperialItem.js';
 
@@ -20,19 +21,19 @@ export const commandData = {
     options: [
         {
             name: '시작_스타포스_개수',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '시뮬레이션 시작 스타포스 개수',
             required: true
         },
         {
             name: '목표_스타포스_개수',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '시뮬레이션 목표 스타포스 개수',
             required: true
         },
         {
             name: '스타캐치',
-            type: 'INTEGER',
+            type: ApplicationCommandOptionType.Integer,
             description: '스타캐치 적용 유무',
             choices: [
                 { name: '스타캐치 미적용', value: 0 },

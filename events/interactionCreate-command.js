@@ -19,11 +19,11 @@ export async function listener(interaction) {
             );
 
             const botPermissions = [
-                'VIEW_CHANNEL',
-                interaction.channel.isThread() ? 'SEND_MESSAGES_IN_THREADS' : 'SEND_MESSAGES',
-                'READ_MESSAGE_HISTORY',
-                'EMBED_LINKS',
-                'ATTACH_FILES'
+                'ViewChannel',
+                interaction.channel.isThread() ? 'SendMessagesInThreads' : 'SendMessages',
+                'ReadMessageHistory',
+                'EmbedLinks',
+                'AttachFiles'
             ];
             const missingPermission =
                 interaction.guildId &&

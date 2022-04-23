@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { MapleProb } from '../util/maple_probtable.js';
 
@@ -55,14 +56,14 @@ export const commandData = {
     options: [
         {
             name: '카테고리',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '시뮬레이션을 수행할 루나크리스탈 카테고리',
             required: true,
             choices: Object.keys(MapleProb.LUNACRYSTAL_PROBTABLE).map((v) => ({ name: v, value: v }))
         },
         {
             name: '횟수',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '루나크리스탈 시뮬레이션 횟수'
         }
     ]

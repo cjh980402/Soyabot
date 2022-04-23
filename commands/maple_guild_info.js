@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { BOT_SERVER_DOMAIN, PREFIX } from '../soyabot_config.js';
 // import { MapleGuild } from '../classes/MapleParser.js'
@@ -54,14 +55,14 @@ export const commandData = {
     options: [
         {
             name: '서버_이름',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '검색할 길드의 서버',
             required: true,
             choices: Object.keys(serverEngName).map((v) => ({ name: v, value: v }))
         },
         {
             name: '길드_이름',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '검색할 길드의 이름',
             required: true
         }

@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import Hangul from 'hangul-js';
 import { setTimeout } from 'node:timers/promises';
 import { PREFIX } from '../soyabot_config.js';
@@ -45,7 +46,7 @@ export const commandData = {
     options: [
         {
             name: '옵션',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '한을 입력 시 한글, 영을 입력 시 영어, 생략 시 둘 다 나옵니다.',
             choices: ['한', '영'].map((v) => ({ name: v, value: v }))
         }

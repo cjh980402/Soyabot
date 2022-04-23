@@ -1,4 +1,4 @@
-import { MessageAttachment, MessageActionRow, MessageButton } from 'discord.js';
+import { Attachment, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
 
@@ -9,7 +9,7 @@ async function getDiceAttachment(nickname) {
     );
     // 파이썬 스크립트 실행, 쉘에서 작은 따옴표로 감싸서 쉘 특수문자 이스케이핑, 닉네임의 작은 따옴표는 별도로 이스케이핑
 
-    return new MessageAttachment(dicePic, 'dice.png');
+    return new Attachment(dicePic, 'dice.png');
 }
 
 export const usage = `${PREFIX}데굴데굴`;
@@ -19,9 +19,9 @@ export const type = ['메이플'];
 export async function messageExecute(message) {
     const nickname = message.member?.nickname ?? message.author.username;
     const image = await getDiceAttachment(nickname);
-    const row = new MessageActionRow().addComponents(
-        new MessageButton().setCustomId('repeat').setEmoji('🎲').setStyle('SECONDARY')
-    );
+    const row = new ActionRowBuilder().addComponents([
+        new ButtonBuilder().setCustomId('repeat').setEmoji('🎲').setStyle(ButtonStyle.Secondary)
+    ]);
     let count = 1;
     const dice = await message.channel.send({
         content: `${nickname}님의 ${count}번째 스탯 주사위`,
@@ -55,9 +55,9 @@ export const commandData = {
 export async function commandExecute(interaction) {
     const nickname = interaction.member?.nickname ?? interaction.user.username;
     const image = await getDiceAttachment(nickname);
-    const row = new MessageActionRow().addComponents(
-        new MessageButton().setCustomId('repeat').setEmoji('🎲').setStyle('SECONDARY')
-    );
+    const row = new ActionRowBuilder().addComponents([
+        new ButtonBuilder().setCustomId('repeat').setEmoji('🎲').setStyle(ButtonStyle.Secondary)
+    ]);
     let count = 1;
     const dice = await interaction.followUp({
         content: `${nickname}님의 ${count}번째 스탯 주사위`,

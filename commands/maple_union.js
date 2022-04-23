@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../classes/MapleParser.js';
 
@@ -30,7 +31,7 @@ export const commandData = {
     options: [
         {
             name: '닉네임',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '유니온 정보를 검색할 캐릭터의 닉네임',
             required: true
         }

@@ -1,4 +1,4 @@
-import { MessageAttachment } from 'discord.js';
+import { Attachment, ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
 import { MapleUser } from '../classes/MapleParser.js';
@@ -32,7 +32,7 @@ export async function messageExecute(message, args) {
                 encoding: 'buffer'
             }
         );
-        const image = new MessageAttachment(collectionPic, 'collection.png');
+        const image = new Attachment(collectionPic, 'collection.png');
         await message.channel.send({ content: `${mapleUserInfo.Name}님의 코디 컬렉션`, files: [image] });
     }
 }
@@ -42,7 +42,7 @@ export const commandData = {
     options: [
         {
             name: '닉네임',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: '컬렉션을 출력할 캐릭터의 닉네임',
             required: true
         }
@@ -70,7 +70,7 @@ export async function commandExecute(interaction) {
                 encoding: 'buffer'
             }
         );
-        const image = new MessageAttachment(collectionPic, 'collection.png');
+        const image = new Attachment(collectionPic, 'collection.png');
         await interaction.followUp({ content: `${mapleUserInfo.Name}님의 코디 컬렉션`, files: [image] });
     }
 }

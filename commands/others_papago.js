@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET, PREFIX } from '../soyabot_config.js';
 
@@ -77,17 +78,17 @@ export const commandData = {
     options: [
         {
             name: '언어목록',
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             description: '번역 가능한 언어 목록을 보여줍니다.'
         },
         {
             name: '언어번역',
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             description: '언어 번역을 수행합니다.',
             options: [
                 {
                     name: '대상언어',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     description: '대상 언어의 영어 코드',
                     required: true,
                     choices: ['ko', 'en', 'ja', 'zh-CN', 'zh-TW', 'es', 'fr', 'ru', 'vi', 'th', 'id', 'de', 'it'].map(
@@ -96,7 +97,7 @@ export const commandData = {
                 },
                 {
                     name: '결과언어',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     description: '결과 언어의 영어 코드',
                     required: true,
                     choices: ['ko', 'en', 'ja', 'zh-CN', 'zh-TW', 'es', 'fr', 'ru', 'vi', 'th', 'id', 'de', 'it'].map(
@@ -105,7 +106,7 @@ export const commandData = {
                 },
                 {
                     name: '내용',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     description: '번역할 문장',
                     required: true
                 }

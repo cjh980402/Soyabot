@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { PREFIX } from '../soyabot_config.js';
 import { sendSplitCode } from '../util/soyabot_util.js';
@@ -202,12 +203,12 @@ export const commandData = {
     options: [
         {
             name: '목록',
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             description: '입력한 몬스터의 농장 목록을 보여줍니다.',
             options: [
                 {
                     name: '몬스터_이름',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     description: '농장 목록을 검색할 몬스터의 이름',
                     required: true
                 }
@@ -215,12 +216,12 @@ export const commandData = {
         },
         {
             name: '조합식',
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             description: '입력한 몬스터가 포함되는 조합식을 보여줍니다.',
             options: [
                 {
                     name: '몬스터_이름',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     description: '조합식을 검색할 몬스터의 이름',
                     required: true
                 }
@@ -228,12 +229,12 @@ export const commandData = {
         },
         {
             name: '정보',
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             description: '입력한 농장의 몬스터 목록을 보여줍니다.',
             options: [
                 {
                     name: '농장_이름',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     description: '몬스터 목록을 검색할 농장의 이름',
                     required: true
                 }
@@ -241,24 +242,24 @@ export const commandData = {
         },
         {
             name: '추가',
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             description: '농장 데이터에 몬스터를 추가합니다.',
             options: [
                 {
                     name: '끝나는_날짜',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     description: "몬스터의 기한이 끝나는 날짜(YYMMDD 형식, 무한유지를 하는 몬스터는 '무한유지')",
                     required: true
                 },
                 {
                     name: '농장_이름',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     description: '몬스터가 있는 농장의 이름',
                     required: true
                 },
                 {
                     name: '몬스터_이름',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     description: '추가할 몬스터의 이름',
                     required: true
                 }

@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 // import { canModifyQueue } from '../util/soyabot_util.js';
 
@@ -42,7 +43,7 @@ export const commandData = {
     options: [
         {
             name: '변경할_음량',
-            type: 'NUMBER',
+            type: ApplicationCommandOptionType.Number,
             description: '새로 설정할 봇의 음량 수치'
         }
     ]

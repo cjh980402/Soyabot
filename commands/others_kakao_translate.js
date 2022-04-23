@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { KAKAO_API_KEY, PREFIX } from '../soyabot_config.js';
 const langList = {
@@ -83,23 +84,23 @@ export const commandData = {
     options: [
         {
             name: '언어목록',
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             description: '번역 가능한 언어 목록을 보여줍니다.'
         },
         {
             name: '언어번역',
-            type: 'SUB_COMMAND',
+            type: ApplicationCommandOptionType.Subcommand,
             description: '언어 번역을 수행합니다.',
             options: [
                 {
                     name: '대상언어_결과언어',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     description: '대상 언어 첫글자 + 결과 언어 첫글자 입력',
                     required: true
                 },
                 {
                     name: '내용',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     description: '번역할 문장',
                     required: true
                 }
