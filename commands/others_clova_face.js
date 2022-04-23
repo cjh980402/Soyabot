@@ -73,6 +73,6 @@ export async function commandExecute(interaction) {
     if (!imageURL) {
         await interaction.followUp('사진과 함께 명령어를 사용해주세요.');
     } else {
-        await sendSplitCode(interaction, await clova_celebrity(imageURL), { split: true });
+        await sendSplitCode(interaction, await clova_face(imageURL), { split: true });
     }
 }

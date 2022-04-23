@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
@@ -22,18 +23,31 @@ export async function messageExecute(message) {
 }
 export const commandData = {
     name: '미세먼지',
-    description: '현재 한국의 미세먼지 현황을 보여줍니다.'
+    description: '현재 한국의 미세먼지(초미세먼지) 현황을 보여줍니다.',
+    options: [
+        {
+            name: '미세먼지',
+            type: ApplicationCommandOptionType.Subcommand,
+            description: '현재 한국의 미세먼지 현황을 보여줍니다.'
+        },
+        {
+            name: '초미세먼지',
+            type: ApplicationCommandOptionType.Subcommand,
+            description: '현재 한국의 초미세먼지 현황을 보여줍니다.'
+        }
+    ]
 };
 export async function commandExecute(interaction) {
+    const dustType = interaction.options.getSubcommand();
     const { body } = await request(
         `https://m.search.daum.net/search?w=tot&nil_mtopsearch=btn&DA=YZR&q=${encodeURIComponent(
-            '미세먼지'
+            dustType
         )}%EC%98%81%EC%83%81`
     );
     const $ = load(await body.text());
 
     await interaction.followUp({
-        content: '현재 미세먼지 지도',
+        content: `현재 ${dustType} 지도`,
         files: [$('div.play_video > img').attr('data-original-src')]
     });
 }
