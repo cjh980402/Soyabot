@@ -1,3 +1,5 @@
+import { PREFIX } from '../soyabot_config.js';
+
 function recommendWork(name) {
     const worklist = [
         '메이플스토리',
@@ -58,9 +60,8 @@ function recommendFood() {
         '뱃지 오브 프루바',
         '뱃지 오브 사투르누스'
     ]; // 일, 월, 화, 수, 목, 금, 토
-    const daybadge = badgelist[new Date().getDay()]; // 오늘에 해당하는 뱃지
     const foodlist = [
-        daybadge,
+        badgelist[new Date().getDay()], // 오늘에 해당하는 뱃지
         '코어 젬스톤',
         '재물 획득의 비약',
         '경험 축적의 비약',
@@ -130,53 +131,41 @@ function recommendFood() {
     return `추천 메뉴는 [${foodlist[Math.floor(Math.random() * foodlist.length)]}]입니다.`;
 }
 
-function choiceVS(str) {
-    const splitVS = str.trim().split(/\s*vs\s*/i);
-    if (splitVS.some((v) => v === '')) {
-        return '빈 항목이 존재합니다.';
+export const usage = `${PREFIX}추천 (카테고리)`;
+export const command = ['추천', 'ㅊㅊ'];
+export const description = '- 봇이 카테고리(할일, 메뉴)에 따른 추천을 해줍니다.';
+export const type = ['기타'];
+export async function messageExecute(message, args) {
+    if (args[0] === '할일' || args[0] === 'ㅎㅇ') {
+        await message.channel.send(recommendWork(message.client.user.username));
+    } else if (args[0] === '메뉴' || args[0] === 'ㅁㄴ') {
+        await message.channel.send(recommendFood());
+    } else {
+        await message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
-    for (let ind = 0, lastInd; ind < splitVS.length / 2; ind++) {
-        lastInd = splitVS.lastIndexOf(splitVS[ind]);
-        if (lastInd !== ind && splitVS[lastInd] === splitVS[ind]) {
-            return `'${splitVS[ind]}' 항목이 중복입니다.`;
-        }
-    }
-    return splitVS[Math.floor(Math.random() * splitVS.length)];
 }
+export const commandData = {
+    name: '추천',
+    description: '봇이 할 일이나 메뉴를 추천해줍니다.',
+    options: [
+        {
+            name: '할_일',
+            type: 'SUB_COMMAND',
+            description: '할 일을 추천해줍니다.'
+        },
+        {
+            name: '메뉴',
+            type: 'SUB_COMMAND',
+            description: '메뉴를 추천해줍니다.'
+        }
+    ]
+};
+export async function commandExecute(interaction) {
+    const subcommand = interaction.options.getSubcommand();
 
-export default async function (message) {
-    if (/vs/i.test(message.content) && !/vsc/i.test(message.content)) {
-        await message.reply(choiceVS(message.content));
-    } else if (message.content.endsWith('확률')) {
-        await message.reply(`확률: ${Math.floor(Math.random() * 101)}%`);
-    } else if (/뭐하지|ㅁㅎㅈ/.test(message.content)) {
-        await message.reply(recommendWork(message.client.user.username));
-    } else if (/뭐먹지|ㅁㅁㅈ/.test(message.content)) {
-        await message.reply(recommendFood());
-    } else if (message.content.includes(message.client.user.username)) {
-        if (/바\s*보|멍\s*청\s*이/.test(message.content)) {
-            return message.channel.send('🤔');
-        }
-        const msgType = Math.floor(Math.random() * 5);
-        if (msgType === 0) {
-            await message.channel.send('ㅋㅋㅋ');
-        } else if (msgType === 1) {
-            await message.channel.send('제로조아');
-        } else if (msgType === 2) {
-            await message.channel.send('헤비...');
-        } else if (msgType === 3) {
-            await message.channel.send('이노시스 조아');
-        } else {
-            await message.channel.send(
-                `'${message.member?.nickname ?? message.author.username}'님이 ${
-                    message.client.user.username
-                }을 불렀습니다.`
-            );
-        }
-    } else if (message.content.includes('ㅊㅊㅊㅊ')) {
-        const msgType = Math.floor(Math.random() * 3);
-        if (msgType === 0) {
-            await message.channel.send('👍');
-        }
+    if (subcommand === '할_일') {
+        await interaction.followUp(recommendWork(interaction.client.user.username));
+    } else if (subcommand === '메뉴') {
+        await interaction.followUp(recommendFood());
     }
 }

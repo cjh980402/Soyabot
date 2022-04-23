@@ -4,7 +4,6 @@ import { adminChat } from '../admin/admin_function.js';
 import { sendAdmin } from '../admin/bot_message.js';
 import { MapleError } from '../classes/MapleParser.js';
 import { commandCount } from '../util/soyabot_util.js';
-import botChatting from '../util/bot_chatting.js';
 import { PREFIX, ADMIN_ID } from '../soyabot_config.js';
 const promiseTimeout = (promise, ms) => Promise.race([promise, setTimeout(ms)]);
 
@@ -15,7 +14,7 @@ export async function listener(message) {
         console.log(
             `(${new Date().toLocaleString()}) ${message.channelId} ${message.channel.name ?? 'DM'} ${
                 message.author.id
-            } ${message.author.username}: ${message.content || message.embeds[0]?.description || ''}\n`
+            } ${message.author.username}: ${message}\n`
         );
         if (message.author.bot || message.author.system) {
             // 봇 또는 시스템 유저 여부 체크
@@ -42,7 +41,6 @@ export async function listener(message) {
                     // 관리자 여부 체크
                     await adminChat(message);
                 }
-                await botChatting(message); // 잡담 로직
             }
             return;
         }
