@@ -150,7 +150,7 @@ export const commandData = {
     description: '봇이 할 일이나 메뉴를 추천해줍니다.',
     options: [
         {
-            name: '할_일',
+            name: '할일',
             type: ApplicationCommandOptionType.Subcommand,
             description: '할 일을 추천해줍니다.'
         },
@@ -164,7 +164,7 @@ export const commandData = {
 export async function commandExecute(interaction) {
     const subcommand = interaction.options.getSubcommand();
 
-    if (subcommand === '할_일') {
+    if (subcommand === '할일') {
         await interaction.followUp(recommendWork(interaction.client.user.username));
     } else if (subcommand === '메뉴') {
         await interaction.followUp(recommendFood());

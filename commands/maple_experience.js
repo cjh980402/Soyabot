@@ -13,34 +13,34 @@ export async function messageExecute(message, args) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
-    const startlev = Math.trunc(args[0]);
+    const startLev = Math.trunc(args[0]);
     if (args.length === 2) {
-        const endlev = Math.trunc(args[1]);
-        if (isNaN(startlev) || startlev < 1 || startlev > 299) {
-            return message.channel.send('1 ~ 299 범위의 시작 레벨을 입력해주세요.');
+        const endLev = Math.trunc(args[1]);
+        if (isNaN(startLev) || startLev < 1 || startLev > 300) {
+            return message.channel.send('1 ~ 300 범위의 시작 레벨을 입력해주세요.');
         }
-        if (isNaN(endlev) || endlev < startlev || endlev > 300) {
+        if (isNaN(endLev) || endLev < startLev || endLev > 300) {
             return message.channel.send('시작 레벨 ~ 300 범위의 끝 레벨을 입력해주세요.');
         }
 
-        const rslt = `Lv.${startlev} → Lv.${endlev} 경험치통: ${(
-            levelTable[endlev - 1] - levelTable[startlev - 1]
+        const rslt = `Lv.${startLev} → Lv.${endLev} 경험치통: ${(
+            levelTable[endLev - 1] - levelTable[startLev - 1]
         ).toLocaleString()}
-(${Util.toUnitString(levelTable[endlev - 1] - levelTable[startlev - 1])})
-진행률 (~250): ${(Math.min(levelTable[endlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
-진행률 (~275): ${(Math.min(levelTable[endlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
-진행률 (~300): ${((levelTable[endlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
+(${Util.toUnitString(levelTable[endLev - 1] - levelTable[startLev - 1])})
+진행률 (~250): ${(Math.min(levelTable[endLev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
+진행률 (~275): ${(Math.min(levelTable[endLev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
+진행률 (~300): ${((levelTable[endLev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
         await message.channel.send(rslt);
     } else {
-        if (isNaN(startlev) || startlev < 1 || startlev > 300) {
+        if (isNaN(startLev) || startLev < 1 || startLev > 300) {
             return message.channel.send('1 ~ 300 범위의 시작 레벨을 입력해주세요.');
         }
 
-        const rslt = `Lv.${startlev} 경험치통: ${(levelTable[startlev] - levelTable[startlev - 1]).toLocaleString()}
-(${Util.toUnitString(levelTable[startlev] - levelTable[startlev - 1])})
-진행률 (~250): ${(Math.min(levelTable[startlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
-진행률 (~275): ${(Math.min(levelTable[startlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
-진행률 (~300): ${((levelTable[startlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
+        const rslt = `Lv.${startLev} 경험치통: ${(levelTable[startLev] - levelTable[startLev - 1]).toLocaleString()}
+(${Util.toUnitString(levelTable[startLev] - levelTable[startLev - 1])})
+진행률 (~250): ${(Math.min(levelTable[startLev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
+진행률 (~275): ${(Math.min(levelTable[startLev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
+진행률 (~300): ${((levelTable[startLev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
         await message.channel.send(rslt);
     }
 }
@@ -67,28 +67,28 @@ export const commandData = {
     ]
 };
 export async function commandExecute(interaction) {
-    const startlev = interaction.options.getInteger('시작_레벨');
-    const endlev = interaction.options.getInteger('끝_레벨');
+    const startLev = interaction.options.getInteger('시작_레벨');
+    const endLev = interaction.options.getInteger('끝_레벨');
 
-    if (endlev) {
-        if (endlev < startlev || endlev > 300) {
+    if (endLev) {
+        if (endLev < startLev || endLev > 300) {
             return interaction.followUp('시작 레벨 ~ 300 범위의 끝 레벨을 입력해주세요.');
         }
 
-        const rslt = `Lv.${startlev} → Lv.${endlev} 경험치통: ${(
-            levelTable[endlev - 1] - levelTable[startlev - 1]
+        const rslt = `Lv.${startLev} → Lv.${endLev} 경험치통: ${(
+            levelTable[endLev - 1] - levelTable[startLev - 1]
         ).toLocaleString()}
-(${Util.toUnitString(levelTable[endlev - 1] - levelTable[startlev - 1])})
-진행률 (~250): ${(Math.min(levelTable[endlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
-진행률 (~275): ${(Math.min(levelTable[endlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
-진행률 (~300): ${((levelTable[endlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
+(${Util.toUnitString(levelTable[endLev - 1] - levelTable[startLev - 1])})
+진행률 (~250): ${(Math.min(levelTable[endLev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
+진행률 (~275): ${(Math.min(levelTable[endLev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
+진행률 (~300): ${((levelTable[endLev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
         await interaction.followUp(rslt);
     } else {
-        const rslt = `Lv.${startlev} 경험치통: ${(levelTable[startlev] - levelTable[startlev - 1]).toLocaleString()}
-(${Util.toUnitString(levelTable[startlev] - levelTable[startlev - 1])})
-진행률 (~250): ${(Math.min(levelTable[startlev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
-진행률 (~275): ${(Math.min(levelTable[startlev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
-진행률 (~300): ${((levelTable[startlev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
+        const rslt = `Lv.${startLev} 경험치통: ${(levelTable[startLev] - levelTable[startLev - 1]).toLocaleString()}
+(${Util.toUnitString(levelTable[startLev] - levelTable[startLev - 1])})
+진행률 (~250): ${(Math.min(levelTable[startLev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
+진행률 (~275): ${(Math.min(levelTable[startLev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
+진행률 (~300): ${((levelTable[startLev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
         await interaction.followUp(rslt);
     }
 }

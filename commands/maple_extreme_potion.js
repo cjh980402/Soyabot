@@ -63,11 +63,11 @@ const probTable = [
     [100, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
 
-function extremePotion(startlev, endlev) {
+function extremePotion(startLev, endLev) {
     let rslt = '',
         cnt = 0;
 
-    for (let lev = startlev; lev < endlev; cnt++) {
+    for (let lev = startLev; lev < endLev; cnt++) {
         const now = Math.floor(Math.random() * 100 + 1);
         let sum = 0,
             i = 0;
@@ -94,34 +94,34 @@ export async function messageExecute(message, args) {
     }
 
     if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
-        const startlev = Math.trunc(args[1]);
-        let rslt = `<${startlev}레벨 기준 확률>`;
-        if (isNaN(startlev) || startlev < 141 || startlev > 199) {
+        const startLev = Math.trunc(args[1]);
+        let rslt = `<${startLev}레벨 기준 확률>`;
+        if (isNaN(startLev) || startLev < 141 || startLev > 199) {
             return message.channel.send('141 ~ 199 범위의 기준 레벨을 입력해주세요.');
         }
         for (let i = 0; i < 10; i++) {
-            rslt += `\n${i + 1} 레벨업 확률: ${probTable[startlev - 141][i]}%`;
+            rslt += `\n${i + 1} 레벨업 확률: ${probTable[startLev - 141][i]}%`;
         }
         return message.channel.send(rslt);
     }
 
-    const startlev = Math.trunc(args[0]);
+    const startLev = Math.trunc(args[0]);
     if (args.length === 2) {
-        const endlev = Math.trunc(args[1]);
-        if (isNaN(startlev) || startlev < 141 || startlev > 199) {
+        const endLev = Math.trunc(args[1]);
+        if (isNaN(startLev) || startLev < 141 || startLev > 199) {
             return message.channel.send('141 ~ 199 범위의 시작 레벨을 입력해주세요.');
         }
-        if (isNaN(endlev) || endlev < startlev || endlev > 200) {
+        if (isNaN(endLev) || endLev < startLev || endLev > 200) {
             return message.channel.send('시작 레벨 ~ 200 범위의 목표 레벨을 입력해주세요.');
         }
-        await message.channel.send(extremePotion(startlev, endlev));
+        await message.channel.send(extremePotion(startLev, endLev));
     } else {
-        if (isNaN(startlev) || startlev < 200 || startlev > 299) {
+        if (isNaN(startLev) || startLev < 200 || startLev > 299) {
             return message.channel.send('200 ~ 299 범위의 시작 레벨을 입력해주세요.');
         }
         const exp199 = levelTable[199] - levelTable[198];
-        const expNow = levelTable[startlev] - levelTable[startlev - 1];
-        await message.channel.send(`Lv.${startlev} 익성비 효과\n경험치: ${((exp199 / expNow) * 100).toFixed(3)}%`);
+        const expNow = levelTable[startLev] - levelTable[startLev - 1];
+        await message.channel.send(`Lv.${startLev} 익성비 효과\n경험치: ${((exp199 / expNow) * 100).toFixed(3)}%`);
     }
 }
 export const commandData = {
@@ -172,29 +172,29 @@ export async function commandExecute(interaction) {
     const subcommand = interaction.options.getSubcommand();
 
     if (subcommand === '확률') {
-        const startlev = interaction.options.getInteger('대상_레벨');
+        const targetLev = interaction.options.getInteger('대상_레벨');
 
-        let rslt = `<${startlev}레벨 기준 확률>`;
+        let rslt = `<${targetLev}레벨 기준 확률>`;
         for (let i = 0; i < 10; i++) {
-            rslt += `\n${i + 1} 레벨업 확률: ${probTable[startlev - 141][i]}%`;
+            rslt += `\n${i + 1} 레벨업 확률: ${probTable[targetLev - 141][i]}%`;
         }
         await interaction.followUp(rslt);
     } else if (subcommand === '시뮬') {
-        const startlev = interaction.options.getInteger('시작_레벨');
-        const endlev = interaction.options.getInteger('목표_레벨');
+        const startLev = interaction.options.getInteger('시작_레벨');
+        const endLev = interaction.options.getInteger('목표_레벨');
 
-        if (endlev) {
-            if (endlev < startlev) {
+        if (endLev) {
+            if (endLev < startLev) {
                 return interaction.followUp('시작 레벨의 이상의 값으로 목표 레벨을 입력해주세요.');
             }
-            await interaction.followUp(extremePotion(startlev, endlev));
+            await interaction.followUp(extremePotion(startLev, endLev));
         } else {
-            if (startlev < 200 || startlev > 299) {
+            if (startLev < 200) {
                 return interaction.followUp('200 ~ 299 범위의 시작 레벨을 입력해주세요.');
             }
             const exp199 = levelTable[199] - levelTable[198];
-            const expNow = levelTable[startlev] - levelTable[startlev - 1];
-            await interaction.followUp(`Lv.${startlev} 익성비 효과\n경험치: ${((exp199 / expNow) * 100).toFixed(3)}%`);
+            const expNow = levelTable[startLev] - levelTable[startLev - 1];
+            await interaction.followUp(`Lv.${startLev} 익성비 효과\n경험치: ${((exp199 / expNow) * 100).toFixed(3)}%`);
         }
     }
 }

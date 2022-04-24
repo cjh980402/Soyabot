@@ -28,7 +28,8 @@ export const commandData = {
             name: '글자_수',
             type: ApplicationCommandOptionType.Integer,
             description: '추천받을 닉네임의 글자 수',
-            choices: [2, 3, 4, 5, 6].map((v) => ({ name: v, value: v }))
+            min_value: 2,
+            max_value: 6
         }
     ]
 };

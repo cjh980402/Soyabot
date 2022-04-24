@@ -12,18 +12,18 @@ export async function messageExecute(message, args) {
         return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
     }
 
-    const startlev = Math.trunc(args[0]),
-        endlev = Math.trunc(args[1]);
-    if (isNaN(startlev) || startlev < 1 || startlev > 20) {
+    const startLev = Math.trunc(args[0]),
+        endLev = Math.trunc(args[1]);
+    if (isNaN(startLev) || startLev < 1 || startLev > 20) {
         return message.channel.send('1 ~ 20 범위의 시작 레벨을 입력해주세요.');
     }
-    if (isNaN(endlev) || endlev < startlev || endlev > 20) {
+    if (isNaN(endLev) || endLev < startLev || endLev > 20) {
         return message.channel.send('시작 레벨 ~ 20 범위의 목표 레벨을 입력해주세요.');
     }
 
     const total_req = [0, 0];
     const total_meso = [0, 0, 0, 0, 0, 0];
-    for (let i = startlev; i < endlev; i++) {
+    for (let i = startLev; i < endLev; i++) {
         total_req[0] += i * i + 11; // 요구량 = i^2 + 11
         total_meso[0] += 3110000 + 3960000 * i; // 여로 심볼
         total_meso[1] += 6220000 + 4620000 * i; // 츄츄 심볼
@@ -37,14 +37,14 @@ export async function messageExecute(message, args) {
     }
 
     await message.channel.send(
-        `아케인 심볼 Lv.${startlev} → Lv.${endlev}
+        `아케인 심볼 Lv.${startLev} → Lv.${endLev}
 요구량: ${total_req[0]}
 여로: ${total_meso[0].toLocaleString()}메소
 츄츄: ${total_meso[1].toLocaleString()}메소
 레헬른: ${total_meso[2].toLocaleString()}메소
 아르카나 이상: ${total_meso[3].toLocaleString()}메소
 
-어센틱 심볼 Lv.${Math.min(11, startlev)} → Lv.${Math.min(11, endlev)}
+어센틱 심볼 Lv.${Math.min(11, startLev)} → Lv.${Math.min(11, endLev)}
 요구량: ${total_req[1]}
 세르니움: ${total_meso[4].toLocaleString()}메소
 아르크스: ${total_meso[5].toLocaleString()}메소`
@@ -58,28 +58,30 @@ export const commandData = {
             name: '시작_레벨',
             type: ApplicationCommandOptionType.Integer,
             description: '심볼 강화 정보를 계산할 시작 레벨',
-            required: true,
-            choices: [...Array(20)].map((_, i) => ({ name: i + 1, value: i + 1 }))
+            min_value: 1,
+            max_value: 20,
+            required: true
         },
         {
             name: '목표_레벨',
             type: ApplicationCommandOptionType.Integer,
             description: '심볼 강화 정보를 계산할 목표 레벨',
-            required: true,
-            choices: [...Array(20)].map((_, i) => ({ name: i + 1, value: i + 1 }))
+            min_value: 1,
+            max_value: 20,
+            required: true
         }
     ]
 };
 export async function commandExecute(interaction) {
-    const startlev = interaction.options.getInteger('시작_레벨');
-    const endlev = interaction.options.getInteger('목표_레벨');
-    if (endlev < startlev) {
+    const startLev = interaction.options.getInteger('시작_레벨');
+    const endLev = interaction.options.getInteger('목표_레벨');
+    if (endLev < startLev) {
         return interaction.followUp('시작 레벨 이상의 목표 레벨을 입력해주세요.');
     }
 
     const total_req = [0, 0];
     const total_meso = [0, 0, 0, 0, 0, 0];
-    for (let i = startlev; i < endlev; i++) {
+    for (let i = startLev; i < endLev; i++) {
         total_req[0] += i * i + 11; // 요구량 = i^2 + 11
         total_meso[0] += 3110000 + 3960000 * i; // 여로 심볼
         total_meso[1] += 6220000 + 4620000 * i; // 츄츄 심볼
@@ -93,14 +95,14 @@ export async function commandExecute(interaction) {
     }
 
     await interaction.followUp(
-        `아케인 심볼 Lv.${startlev} → Lv.${endlev}
+        `아케인 심볼 Lv.${startLev} → Lv.${endLev}
 요구량: ${total_req[0]}
 여로: ${total_meso[0].toLocaleString()}메소
 츄츄: ${total_meso[1].toLocaleString()}메소
 레헬른: ${total_meso[2].toLocaleString()}메소
 아르카나 이상: ${total_meso[3].toLocaleString()}메소
 
-어센틱 심볼 Lv.${Math.min(11, startlev)} → Lv.${Math.min(11, endlev)}
+어센틱 심볼 Lv.${Math.min(11, startLev)} → Lv.${Math.min(11, endLev)}
 요구량: ${total_req[1]}
 세르니움: ${total_meso[4].toLocaleString()}메소
 아르크스: ${total_meso[5].toLocaleString()}메소`

@@ -144,13 +144,14 @@ export async function messageExecute(message, args) {
 }
 export const commandData = {
     name: '러시안룰렛',
-    description: '러시안룰렛 게임을 수행합니다. 탄환 수가 2 ~ 20 범위가 아니거나 생략된 경우 자동으로 6발이 됩니다.',
+    description: '러시안룰렛 게임을 수행합니다. 탄환 수가 생략된 경우 자동으로 6발이 됩니다.',
     options: [
         {
             name: '탄환_수',
             type: ApplicationCommandOptionType.Integer,
             description: '러시안룰렛 게임의 탄환 수',
-            choices: [...Array(19)].map((_, i) => ({ name: i + 2, value: i + 2 }))
+            min_value: 2,
+            max_value: 20
         }
     ]
 };

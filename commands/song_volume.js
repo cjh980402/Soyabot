@@ -68,9 +68,6 @@ export async function commandExecute(interaction) {
     if (volume === null) {
         return interaction.followUp(`🔊 현재 음량: **${queue.volume}%**`);
     }
-    if (volume > 100 || volume < 0) {
-        return interaction.followUp('0 ~ 100 범위의 음량만 가능합니다.');
-    }
 
     queue.volume = volume;
     queue.player.state.resource.volume.setVolume(queue.volume / 100);

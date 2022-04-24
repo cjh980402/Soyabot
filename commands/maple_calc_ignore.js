@@ -45,21 +45,21 @@ export const commandData = {
             name: '현재_방무',
             type: ApplicationCommandOptionType.Number,
             description: '캐릭터의 현재 방무 수치',
-            min_value: 0,
+            min_value: -100,
             max_value: 100,
             required: true
         },
         {
             name: '추가_방무1',
             type: ApplicationCommandOptionType.Number,
-            min_value: 0,
+            min_value: -100,
             max_value: 100,
             description: '추가할 방무 수치'
         },
         {
             name: '추가_방무2',
             type: ApplicationCommandOptionType.Number,
-            min_value: 0,
+            min_value: -100,
             max_value: 100,
             description: '추가할 방무 수치'
         }
