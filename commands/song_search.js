@@ -101,7 +101,8 @@ export async function messageExecute(message, args) {
     } catch {
     } finally {
         try {
-            await list.delete();
+            row.components[0].setDisabled(true);
+            await list.edit({ components: [row] });
         } catch {}
     }
 }
@@ -190,7 +191,6 @@ export async function commandExecute(interaction) {
         }
 
         try {
-            await interaction.deleteReply();
             const newQueue = new QueueElement(interaction.channel, channel, await joinVoice(channel), songs);
             interaction.client.queues.set(interaction.guildId, newQueue);
             newQueue.playSong();
@@ -205,7 +205,8 @@ export async function commandExecute(interaction) {
     } catch {
     } finally {
         try {
-            await list.delete();
+            row.components[0].setDisabled(true);
+            await list.edit({ components: [row] });
         } catch {}
     }
 }
