@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { sendAdmin } from '../admin/bot_message.js';
 import { QueueElement } from '../classes/QueueElement.js';
@@ -8,7 +8,7 @@ import { Util } from '../util/Util.js';
 
 export const usage = `${PREFIX}search (영상 제목)`;
 export const command = ['search', 's'];
-export const description = '- 재생할 노래를 검색하고 선택합니다. (,로 구분하여 여러 노래 선택 가능)';
+export const description = '- 재생할 노래를 검색하고 선택합니다.';
 export const channelCool = true;
 export const type = ['음악'];
 export async function messageExecute(message, args) {
@@ -105,7 +105,7 @@ export async function messageExecute(message, args) {
 }
 export const commandData = {
     name: 'search',
-    description: '재생할 노래를 검색하고 선택합니다. (,로 구분하여 여러 노래 선택 가능)',
+    description: '재생할 노래를 검색하고 선택합니다.',
     options: [
         {
             name: '영상_제목',
