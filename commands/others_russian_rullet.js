@@ -30,8 +30,7 @@ export async function messageExecute(message, args) {
         components: [startRow]
     });
 
-    const filter = (itr) => itr.guild.memberCount >= 2;
-    const startCollector = gameStart.createMessageComponentCollector({ filter, time: 300000 });
+    const startCollector = gameStart.createMessageComponentCollector({ time: 300000 });
 
     startCollector
         .on('collect', async (itr) => {
@@ -50,7 +49,7 @@ export async function messageExecute(message, args) {
                             );
                             if (gameUser.length === bullet) {
                                 isStart = true;
-                                await itr.channel.send('인원이 가득 차 게임이 자동으로 시작됩니다.');
+                                await itr.followUp('인원이 가득 차 게임이 자동으로 시작됩니다.');
                                 startCollector.stop();
                             }
                         }
@@ -59,8 +58,7 @@ export async function messageExecute(message, args) {
                         if (gameUser.some((v) => itr.member.id === v.id)) {
                             if (gameUser.length > 1) {
                                 isStart = true;
-                                await itr.channel.send('러시안룰렛을 시작합니다.');
-                                await itr.deferUpdate();
+                                await itr.reply('러시안룰렛을 시작합니다.');
                                 startCollector.stop();
                             } else {
                                 await itr.reply({
@@ -74,8 +72,7 @@ export async function messageExecute(message, args) {
                         break;
                     case 'exit':
                         if (gameUser.some((v) => itr.member.id === v.id)) {
-                            await itr.channel.send('게임을 종료합니다.');
-                            await itr.deferUpdate();
+                            await itr.reply('게임을 종료합니다.');
                             startCollector.stop();
                         } else {
                             await itr.reply({ content: '게임에 참여한 사람만 종료할 수 있습니다.', ephemeral: true });
@@ -184,8 +181,7 @@ export async function commandExecute(interaction) {
         components: [startRow]
     });
 
-    const filter = (itr) => itr.guild.memberCount >= 2;
-    const startCollector = gameStart.createMessageComponentCollector({ filter, time: 300000 });
+    const startCollector = gameStart.createMessageComponentCollector({ time: 300000 });
 
     startCollector
         .on('collect', async (itr) => {
@@ -204,7 +200,7 @@ export async function commandExecute(interaction) {
                             );
                             if (gameUser.length === bullet) {
                                 isStart = true;
-                                await itr.channel.send('인원이 가득 차 게임이 자동으로 시작됩니다.');
+                                await itr.followUp('인원이 가득 차 게임이 자동으로 시작됩니다.');
                                 startCollector.stop();
                             }
                         }
@@ -213,8 +209,7 @@ export async function commandExecute(interaction) {
                         if (gameUser.some((v) => itr.member.id === v.id)) {
                             if (gameUser.length > 1) {
                                 isStart = true;
-                                await itr.channel.send('러시안룰렛을 시작합니다.');
-                                await itr.deferUpdate();
+                                await itr.reply('러시안룰렛을 시작합니다.');
                                 startCollector.stop();
                             } else {
                                 await itr.reply({
@@ -228,8 +223,7 @@ export async function commandExecute(interaction) {
                         break;
                     case 'exit':
                         if (gameUser.some((v) => itr.member.id === v.id)) {
-                            await itr.channel.send('게임을 종료합니다.');
-                            await itr.deferUpdate();
+                            await itr.reply('게임을 종료합니다.');
                             startCollector.stop();
                         } else {
                             await itr.reply({ content: '게임에 참여한 사람만 종료할 수 있습니다.', ephemeral: true });
