@@ -69,7 +69,6 @@ export async function messageExecute(message, args) {
         })
         .once('end', async () => {
             try {
-                // 게임 시작 메시지의 버튼 비활성화
                 startRow.components[0].setDisabled(true);
                 await gameStart.edit({ components: [startRow] });
             } catch {}
@@ -137,7 +136,6 @@ export async function commandExecute(interaction) {
         })
         .once('end', async () => {
             try {
-                // 게임 시작 메시지의 버튼 비활성화
                 startRow.components[0].setDisabled(true);
                 await gameStart.edit({ components: [startRow] });
             } catch {}

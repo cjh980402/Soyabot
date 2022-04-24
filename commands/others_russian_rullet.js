@@ -38,7 +38,7 @@ export async function messageExecute(message, args) {
                 let isStart = false;
                 switch (itr.customId) {
                     case 'join':
-                        if (gameUser.some((v) => itr.member.id === v.id)) {
+                        if (gameUser.some((v) => itr.user.id === v.id)) {
                             await itr.reply({ content: '이미 참가하셨습니다.', ephemeral: true });
                         } else {
                             gameUser.push(itr.member); // 참가자 리스트에 추가
@@ -55,7 +55,7 @@ export async function messageExecute(message, args) {
                         }
                         break;
                     case 'start':
-                        if (gameUser.some((v) => itr.member.id === v.id)) {
+                        if (gameUser.some((v) => itr.user.id === v.id)) {
                             if (gameUser.length > 1) {
                                 isStart = true;
                                 await itr.reply('러시안룰렛을 시작합니다.');
@@ -71,7 +71,7 @@ export async function messageExecute(message, args) {
                         }
                         break;
                     case 'exit':
-                        if (gameUser.some((v) => itr.member.id === v.id)) {
+                        if (gameUser.some((v) => itr.user.id === v.id)) {
                             await itr.reply('게임을 종료합니다.');
                             startCollector.stop();
                         } else {
@@ -93,7 +93,7 @@ export async function messageExecute(message, args) {
                     });
 
                     let i = 0;
-                    const filter = (itr) => itr.member.id === gameUser[i % gameUser.length].id;
+                    const filter = (itr) => itr.user.id === gameUser[i % gameUser.length].id;
                     const doingCollector = gameDoing.createMessageComponentCollector({ filter, time: 300000 });
 
                     doingCollector
@@ -129,7 +129,6 @@ export async function messageExecute(message, args) {
                         })
                         .once('end', async () => {
                             try {
-                                // 게임 진행 메시지의 버튼 비활성화
                                 doingRow.components[0].setDisabled(true);
                                 await gameDoing.edit({ components: [doingRow] });
                             } catch {}
@@ -139,7 +138,6 @@ export async function messageExecute(message, args) {
         })
         .once('end', async () => {
             try {
-                // 게임 시작 메시지의 버튼 비활성화
                 startRow.components.forEach((v) => v.setDisabled(true));
                 await gameStart.edit({ components: [startRow] });
             } catch {}
@@ -189,7 +187,7 @@ export async function commandExecute(interaction) {
                 let isStart = false;
                 switch (itr.customId) {
                     case 'join':
-                        if (gameUser.some((v) => itr.member.id === v.id)) {
+                        if (gameUser.some((v) => itr.user.id === v.id)) {
                             await itr.reply({ content: '이미 참가하셨습니다.', ephemeral: true });
                         } else {
                             gameUser.push(itr.member); // 참가자 리스트에 추가
@@ -206,7 +204,7 @@ export async function commandExecute(interaction) {
                         }
                         break;
                     case 'start':
-                        if (gameUser.some((v) => itr.member.id === v.id)) {
+                        if (gameUser.some((v) => itr.user.id === v.id)) {
                             if (gameUser.length > 1) {
                                 isStart = true;
                                 await itr.reply('러시안룰렛을 시작합니다.');
@@ -222,7 +220,7 @@ export async function commandExecute(interaction) {
                         }
                         break;
                     case 'exit':
-                        if (gameUser.some((v) => itr.member.id === v.id)) {
+                        if (gameUser.some((v) => itr.user.id === v.id)) {
                             await itr.reply('게임을 종료합니다.');
                             startCollector.stop();
                         } else {
@@ -244,7 +242,7 @@ export async function commandExecute(interaction) {
                     });
 
                     let i = 0;
-                    const filter = (itr) => itr.member.id === gameUser[i % gameUser.length].id;
+                    const filter = (itr) => itr.user.id === gameUser[i % gameUser.length].id;
                     const doingCollector = gameDoing.createMessageComponentCollector({ filter, time: 300000 });
 
                     doingCollector
@@ -280,7 +278,6 @@ export async function commandExecute(interaction) {
                         })
                         .once('end', async () => {
                             try {
-                                // 게임 진행 메시지의 버튼 비활성화
                                 doingRow.components[0].setDisabled(true);
                                 await gameDoing.edit({ components: [doingRow] });
                             } catch {}
@@ -290,7 +287,6 @@ export async function commandExecute(interaction) {
         })
         .once('end', async () => {
             try {
-                // 게임 시작 메시지의 버튼 비활성화
                 startRow.components.forEach((v) => v.setDisabled(true));
                 await gameStart.edit({ components: [startRow] });
             } catch {}

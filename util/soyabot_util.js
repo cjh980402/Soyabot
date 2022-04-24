@@ -163,7 +163,6 @@ export async function sendPageMessage(messageOrCommand, embeds, options = {}) {
             })
             .once('end', async () => {
                 try {
-                    // 페이지 메시지의 버튼 비활성화
                     row.components.forEach((v) => v.setDisabled(true));
                     await page.edit({ components: [row] });
                 } catch {}

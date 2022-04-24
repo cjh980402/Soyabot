@@ -108,7 +108,7 @@ export async function messageExecute(message, args) {
             ]);
         }
 
-        const list = await message.channel.send({ content: '검색할 지역을 선택하세요.', components });
+        const list = await message.channel.send({ content: '검색할 지역을 선택해주세요.', components });
         try {
             const choiceButton = await list.awaitMessageComponent({
                 filter: (itr) => itr.user.id === message.author.id,
@@ -165,7 +165,7 @@ export async function commandExecute(interaction) {
             ]);
         }
 
-        const list = await interaction.followUp({ content: '검색할 지역을 선택하세요.', components });
+        const list = await interaction.followUp({ content: '검색할 지역을 선택해주세요.', components });
         try {
             const choiceButton = await list.awaitMessageComponent({
                 filter: (itr) => itr.user.id === interaction.user.id,

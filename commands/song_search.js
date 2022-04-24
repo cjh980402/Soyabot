@@ -1,4 +1,4 @@
-import { EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { sendAdmin } from '../admin/bot_message.js';
 import { QueueElement } from '../classes/QueueElement.js';
@@ -41,74 +41,51 @@ export async function messageExecute(message, args) {
         return message.reply('검색 내용에 해당하는 영상을 찾지 못했습니다.');
     }
 
-    const resultsEmbed = new EmbedBuilder()
-        .setTitle('**재생할 노래의 번호를 알려주세요.**')
-        .setColor('#FF9999')
-        .setDescription(`${search}의 검색 결과`)
-        .addFields(
-            results.map((video, index) => ({
-                name: `**${index + 1}. ${video.title}** \`[${video.duration === 0 ? '⊚ LIVE' : video.durationText}]\``,
-                value: `https://youtu.be/${video.id}`
-            }))
-        );
-    const resultsMessage = await message.channel.send({ embeds: [resultsEmbed] });
+    const components = [];
+    for (let i = 0; i < results.length; i++) {
+        if (i % 2 == 0) {
+            components.push(new ActionRowBuilder());
+        }
+        components.at(-1).addComponents([
+            new ButtonBuilder()
+                .setCustomId(String(i))
+                .setLabel(
+                    `${i + 1}. ${
+                        results[i].title.length > 60 ? `${results[i].title.substring(0, 60)}...` : results[i].title
+                    } [${results[i].duration === 0 ? '⊚ LIVE' : results[i].durationText}]`
+                )
+                .setStyle(ButtonStyle.Primary)
+        ]);
+    }
 
-    let songChoice;
-    const choiceMessage = (
-        await message.channel.awaitMessages({
-            filter: (msg) =>
-                msg.author.id === message.author.id &&
-                (songChoice = Util.deduplication(msg.content.split(',').map(Math.trunc))).every(
-                    (v) => !isNaN(v) && 1 <= v && v <= results.length
-                ),
-            max: 1,
-            time: 20000
-        })
-    ).first();
-
+    const list = await message.channel.send({ content: '재생할 노래를 선택해주세요.', components });
     try {
-        await resultsMessage.delete();
-        await choiceMessage?.delete();
-    } catch {}
+        const choiceButton = await list.awaitMessageComponent({
+            filter: (itr) => itr.user.id === message.author.id,
+            time: 20000
+        });
+        await choiceButton.deferUpdate();
 
-    if (choiceMessage) {
-        const songs = songChoice.map((v) => ({
-            title: results[v - 1].title,
-            url: results[v - 1].url,
-            duration: Math.ceil(results[v - 1].duration / 1000),
-            thumbnail: results[v - 1].thumbnails.at(-1).url
-        }));
-
-        const choiceEmbed = new EmbedBuilder()
-            .setTitle('**선택 결과**')
-            .setColor('#FF9999')
-            .setDescription(
-                songs
-                    .map(
-                        (song, index) =>
-                            `${index + 1}. ${song.title} \`[${
-                                song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
-                            }]\``
-                    )
-                    .join('\n')
-            );
+        const choiceSong = results[+choiceButton.customId];
+        const song = {
+            title: choiceSong.title,
+            url: choiceSong.url,
+            duration: Math.ceil(choiceSong.duration / 1000),
+            thumbnail: choiceSong.thumbnails.at(-1).url
+        };
 
         if (serverQueue) {
             serverQueue.textChannel = message.channel;
-            serverQueue.songs.push(...songs);
-            return message.channel.send({
-                content: `✅ ${message.author}가 노래를 추가했습니다.`,
-                embeds: [choiceEmbed]
-            });
+            serverQueue.songs.push(song);
+            return message.channel.send(
+                `✅ ${message.author}가 **${song.title}** \`[${
+                    song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
+                }]\`를 대기열에 추가했습니다.`
+            );
         }
 
-        await message.channel.send({
-            content: `✅ ${message.author}가 노래를 시작했습니다.`,
-            embeds: [choiceEmbed]
-        });
-
         try {
-            const newQueue = new QueueElement(message.channel, channel, await joinVoice(channel), songs);
+            const newQueue = new QueueElement(message.channel, channel, await joinVoice(channel), [song]);
             message.client.queues.set(message.guildId, newQueue);
             newQueue.playSong();
         } catch (err) {
@@ -119,6 +96,11 @@ export async function messageExecute(message, args) {
             );
             await message.channel.send(`채널에 참가할 수 없습니다: ${err.message}`);
         }
+    } catch {
+    } finally {
+        try {
+            await list.delete();
+        } catch {}
     }
 }
 export const commandData = {
@@ -160,74 +142,52 @@ export async function commandExecute(interaction) {
         return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
     }
 
-    const resultsEmbed = new EmbedBuilder()
-        .setTitle('**재생할 노래의 번호를 알려주세요.**')
-        .setColor('#FF9999')
-        .setDescription(`${search}의 검색 결과`)
-        .addFields(
-            results.map((video, index) => ({
-                name: `**${index + 1}. ${video.title}** \`[${video.duration === 0 ? '⊚ LIVE' : video.durationText}]\``,
-                value: `https://youtu.be/${video.id}`
-            }))
-        );
-    const resultsMessage = await interaction.followUp({ embeds: [resultsEmbed] });
+    const components = [];
+    for (let i = 0; i < results.length; i++) {
+        if (i % 2 == 0) {
+            components.push(new ActionRowBuilder());
+        }
+        components.at(-1).addComponents([
+            new ButtonBuilder()
+                .setCustomId(String(i))
+                .setLabel(
+                    `${i + 1}. ${
+                        results[i].title.length > 60 ? `${results[i].title.substring(0, 60)}...` : results[i].title
+                    } [${results[i].duration === 0 ? '⊚ LIVE' : results[i].durationText}]`
+                )
+                .setStyle(ButtonStyle.Primary)
+        ]);
+    }
 
-    let songChoice;
-    const choiceMessage = (
-        await interaction.channel.awaitMessages({
-            filter: (msg) =>
-                msg.author.id === interaction.user.id &&
-                (songChoice = Util.deduplication(msg.content.split(',').map(Math.trunc))).every(
-                    (v) => !isNaN(v) && 1 <= v && v <= results.length
-                ),
-            max: 1,
-            time: 20000
-        })
-    ).first();
-
+    const list = await interaction.followUp({ content: '재생할 노래를 선택해주세요.', components });
     try {
-        await resultsMessage.delete();
-        await choiceMessage?.delete();
-    } catch {}
+        const choiceButton = await list.awaitMessageComponent({
+            filter: (itr) => itr.user.id === interaction.user.id,
+            time: 20000
+        });
+        await choiceButton.deferUpdate();
 
-    if (choiceMessage) {
-        const songs = songChoice.map((v) => ({
-            title: results[v - 1].title,
-            url: results[v - 1].url,
-            duration: Math.ceil(results[v - 1].duration / 1000),
-            thumbnail: results[v - 1].thumbnails.at(-1).url
-        }));
-
-        const choiceEmbed = new EmbedBuilder()
-            .setTitle('**선택 결과**')
-            .setColor('#FF9999')
-            .setDescription(
-                songs
-                    .map(
-                        (song, index) =>
-                            `${index + 1}. ${song.title} \`[${
-                                song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
-                            }]\``
-                    )
-                    .join('\n')
-            );
+        const choiceSong = results[+choiceButton.customId];
+        const song = {
+            title: choiceSong.title,
+            url: choiceSong.url,
+            duration: Math.ceil(choiceSong.duration / 1000),
+            thumbnail: choiceSong.thumbnails.at(-1).url
+        };
 
         if (serverQueue) {
             serverQueue.textChannel = interaction.channel;
-            serverQueue.songs.push(...songs);
-            return interaction.followUp({
-                content: `✅ ${interaction.user}가 노래를 추가했습니다.`,
-                embeds: [choiceEmbed]
-            });
+            serverQueue.songs.push(song);
+            return interaction.followUp(
+                `✅ ${interaction.user}가 **${song.title}** \`[${
+                    song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
+                }]\`를 대기열에 추가했습니다.`
+            );
         }
 
-        await interaction.followUp({
-            content: `✅ ${interaction.user}가 노래를 시작했습니다.`,
-            embeds: [choiceEmbed]
-        });
-
         try {
-            const newQueue = new QueueElement(interaction.channel, channel, await joinVoice(channel), songs);
+            await interaction.deleteReply();
+            const newQueue = new QueueElement(interaction.channel, channel, await joinVoice(channel), [song]);
             interaction.client.queues.set(interaction.guildId, newQueue);
             newQueue.playSong();
         } catch (err) {
@@ -238,5 +198,10 @@ export async function commandExecute(interaction) {
             );
             await interaction.followUp(`채널에 참가할 수 없습니다: ${err.message}`);
         }
+    } catch {
+    } finally {
+        try {
+            await list.delete();
+        } catch {}
     }
 }

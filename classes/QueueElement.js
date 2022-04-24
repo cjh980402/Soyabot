@@ -26,6 +26,7 @@ export class QueueElement {
         this.voiceChannel = voiceChannel;
         this.songs = songs;
 
+        this.connection.removeAllListeners('error');
         this.connection.once('error', () => this.clearStop());
 
         this.player
@@ -70,7 +71,6 @@ export class QueueElement {
         this.songs = [];
         this.#subscription.unsubscribe();
         this.player.stop(true);
-        this.connection.removeAllListeners('error');
         if (this.connection.state.status !== VoiceConnectionStatus.Destroyed) {
             this.connection.destroy();
         }
@@ -149,7 +149,6 @@ export class QueueElement {
                     this.playingMessage?.guildId
                 )
             ) {
-                // 음악 메시지의 버튼 비활성화
                 this.playingMessage?.components.forEach((row) => row.components.forEach((v) => v.setDisabled(true)));
                 await this.playingMessage?.edit({ components: this.playingMessage.components });
             } else {
