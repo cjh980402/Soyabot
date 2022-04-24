@@ -55,8 +55,8 @@ export async function messageExecute(message, args) {
     collector
         .on('collect', async (itr) => {
             try {
-                const start = Date.now();
                 await itr.showModal(modal);
+                const start = Date.now();
                 const submit = await itr.awaitModalSubmit({
                     filter: (itr) => itr.fields.getTextInputValue('user_input') === choice,
                     time: 40000

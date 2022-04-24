@@ -30,7 +30,7 @@ export async function messageExecute(message, args) {
     if (!channel.joinable) {
         return message.reply('권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.');
     }
-    if (channel.type === 'GUILD_VOICE' && !channel.speakable) {
+    if (channel.isVoice() && !channel.speakable) {
         return message.reply('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
     }
 
@@ -119,7 +119,7 @@ export async function commandExecute(interaction) {
     if (!channel.joinable) {
         return interaction.followUp('권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.');
     }
-    if (channel.type === 'GUILD_VOICE' && !channel.speakable) {
+    if (channel.isVoice() && !channel.speakable) {
         return interaction.followUp('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
     }
 

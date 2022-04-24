@@ -134,7 +134,7 @@ export class QueueElement {
             try {
                 const channels = this.textChannel.guild.channels.cache;
                 if (!channels.has(this.textChannel.id)) {
-                    this.textChannel = channels.find((v) => v.type === 'GUILD_TEXT') ?? this.textChannel;
+                    this.textChannel = channels.find((v) => v.isText()) ?? this.textChannel;
                 }
                 return await this.textChannel.send(content);
             } catch {}

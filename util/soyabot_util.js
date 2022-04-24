@@ -48,7 +48,7 @@ function entersState(target, status, timeout) {
 }
 
 export async function getFullContent(message) {
-    if (message.type === 'DEFAULT' && message.attachments.first()?.name === 'message.txt') {
+    if (message.attachments.first()?.name === 'message.txt') {
         const { body } = await request(message.attachments.first().url);
         return body.text();
     } else {
