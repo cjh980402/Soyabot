@@ -1,4 +1,4 @@
-import { EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
@@ -88,33 +88,40 @@ export async function messageExecute(message, args) {
             search
         )}`
     );
-    const searchRslt = (await body.json()).items[0];
+    const searchRslt = (await body.json()).items[0].slice(0, 10);
     let targetLocal;
     if (!searchRslt?.length) {
         return message.channel.send('검색된 지역이 없습니다.');
     } else if (searchRslt.length === 1) {
         targetLocal = searchRslt[0];
     } else {
-        const localListEmbed = new EmbedBuilder()
-            .setTitle('**검색할 지역의 번호를 알려주세요.**')
-            .setColor('#FF9999')
-            .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`).join('\n'))
-            .setTimestamp();
-        await message.channel.send({ embeds: [localListEmbed] });
+        const components = [];
+        for (let i = 0; i < searchRslt.length; i++) {
+            if (i % 2 == 0) {
+                components.push(new ActionRowBuilder());
+            }
+            components.at(-1).addComponents([
+                new ButtonBuilder()
+                    .setCustomId(String(i))
+                    .setLabel(`${i + 1}. ${searchRslt[i][0][0]}`)
+                    .setStyle(ButtonStyle.Primary)
+            ]);
+        }
 
-        const choiceMessage = (
-            await message.channel.awaitMessages({
-                filter: (msg) =>
-                    msg.author.id === message.author.id &&
-                    !isNaN(msg.content) &&
-                    1 <= +msg.content &&
-                    +msg.content <= searchRslt.length,
-                max: 1,
-                time: 20000,
-                errors: ['time']
-            })
-        ).first();
-        targetLocal = searchRslt[Math.trunc(choiceMessage.content) - 1];
+        const list = await message.channel.send({ content: '검색할 지역을 선택하세요.', components });
+        try {
+            const choiceButton = await list.awaitMessageComponent({
+                filter: (itr) => itr.user.id === message.author.id,
+                time: 20000
+            });
+            await choiceButton.deferUpdate();
+            targetLocal = searchRslt[+choiceButton.customId];
+        } catch {
+            targetLocal = searchRslt[0];
+        }
+
+        components.forEach((row) => row.components.forEach((v) => v.setDisabled(true)));
+        await list.edit({ components });
     }
 
     const embeds = await getWeatherEmbed(targetLocal);
@@ -138,33 +145,40 @@ export async function commandExecute(interaction) {
             search
         )}`
     );
-    const searchRslt = (await body.json()).items[0];
+    const searchRslt = (await body.json()).items[0].slice(0, 10);
     let targetLocal;
     if (!searchRslt?.length) {
         return interaction.followUp('검색된 지역이 없습니다.');
     } else if (searchRslt.length === 1) {
         targetLocal = searchRslt[0];
     } else {
-        const localListEmbed = new EmbedBuilder()
-            .setTitle('**검색할 지역의 번호를 알려주세요.**')
-            .setColor('#FF9999')
-            .setDescription(searchRslt.map((v, i) => `${i + 1}. ${v[0]}`).join('\n'))
-            .setTimestamp();
-        await interaction.followUp({ embeds: [localListEmbed] });
+        const components = [];
+        for (let i = 0; i < searchRslt.length; i++) {
+            if (i % 2 == 0) {
+                components.push(new ActionRowBuilder());
+            }
+            components.at(-1).addComponents([
+                new ButtonBuilder()
+                    .setCustomId(String(i))
+                    .setLabel(`${i + 1}. ${searchRslt[i][0][0]}`)
+                    .setStyle(ButtonStyle.Primary)
+            ]);
+        }
 
-        const choiceMessage = (
-            await interaction.channel.awaitMessages({
-                filter: (msg) =>
-                    msg.author.id === interaction.user.id &&
-                    !isNaN(msg.content) &&
-                    1 <= +msg.content &&
-                    +msg.content <= searchRslt.length,
-                max: 1,
-                time: 20000,
-                errors: ['time']
-            })
-        ).first();
-        targetLocal = searchRslt[Math.trunc(choiceMessage.content) - 1];
+        const list = await interaction.followUp({ content: '검색할 지역을 선택하세요.', components });
+        try {
+            const choiceButton = await list.awaitMessageComponent({
+                filter: (itr) => itr.user.id === interaction.user.id,
+                time: 20000
+            });
+            await choiceButton.deferUpdate();
+            targetLocal = searchRslt[+choiceButton.customId];
+        } catch {
+            targetLocal = searchRslt[0];
+        }
+
+        components.forEach((row) => row.components.forEach((v) => v.setDisabled(true)));
+        await list.edit({ components });
     }
 
     const embeds = await getWeatherEmbed(targetLocal);
