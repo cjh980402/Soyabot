@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ApplicationCommandOptionType } from 'discord.js';
+import { ActionRowBuilder, SelectMenuBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
 import { sendAdmin } from '../admin/bot_message.js';
 import { QueueElement } from '../classes/QueueElement.js';
@@ -41,51 +41,53 @@ export async function messageExecute(message, args) {
         return message.reply('검색 내용에 해당하는 영상을 찾지 못했습니다.');
     }
 
-    const components = [];
-    for (let i = 0; i < results.length; i++) {
-        if (i % 2 == 0) {
-            components.push(new ActionRowBuilder());
-        }
-        components.at(-1).addComponents([
-            new ButtonBuilder()
-                .setCustomId(String(i))
-                .setLabel(
-                    `${i + 1}. ${
-                        results[i].title.length > 60 ? `${results[i].title.substring(0, 60)}...` : results[i].title
-                    } [${results[i].duration === 0 ? '⊚ LIVE' : results[i].durationText}]`
-                )
-                .setStyle(ButtonStyle.Primary)
-        ]);
-    }
+    const row = new ActionRowBuilder().addComponents([
+        new SelectMenuBuilder()
+            .setCustomId('select_menu')
+            .setPlaceholder(`총 ${results.length}곡이 검색되었습니다.`)
+            .setMinValues(1)
+            .setMaxValues(results.length)
+            .addOptions(
+                results.map((v, i) => ({
+                    label: v.title,
+                    description: `[${results[i].duration === 0 ? '⊚ LIVE' : results[i].durationText}]`,
+                    value: String(i)
+                }))
+            )
+    ]);
 
-    const list = await message.channel.send({ content: '재생할 노래를 선택해주세요.', components });
+    const list = await message.channel.send({ content: '재생할 노래를 선택해주세요.', components: [row] });
     try {
-        const choiceButton = await list.awaitMessageComponent({
+        const choiceMenu = await list.awaitMessageComponent({
             filter: (itr) => itr.user.id === message.author.id,
             time: 20000
         });
-        await choiceButton.deferUpdate();
+        await choiceMenu.deferUpdate();
 
-        const choiceSong = results[+choiceButton.customId];
-        const song = {
-            title: choiceSong.title,
-            url: choiceSong.url,
-            duration: Math.ceil(choiceSong.duration / 1000),
-            thumbnail: choiceSong.thumbnails.at(-1).url
-        };
+        const songs = choiceMenu.values.map((v) => ({
+            title: results[v].title,
+            url: results[v].url,
+            duration: Math.ceil(results[v].duration / 1000),
+            thumbnail: results[v].thumbnails.at(-1).url
+        }));
 
         if (serverQueue) {
             serverQueue.textChannel = message.channel;
-            serverQueue.songs.push(song);
+            serverQueue.songs.push(...songs);
             return message.channel.send(
-                `✅ ${message.author}가 **${song.title}** \`[${
-                    song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
-                }]\`를 대기열에 추가했습니다.`
+                `✅ ${message.author}가\n${songs
+                    .map(
+                        (song) =>
+                            `**${song.title}** [${
+                                song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
+                            }]`
+                    )
+                    .join('\n')}\n를 대기열에 추가했습니다.`
             );
         }
 
         try {
-            const newQueue = new QueueElement(message.channel, channel, await joinVoice(channel), [song]);
+            const newQueue = new QueueElement(message.channel, channel, await joinVoice(channel), songs);
             message.client.queues.set(message.guildId, newQueue);
             newQueue.playSong();
         } catch (err) {
@@ -142,52 +144,54 @@ export async function commandExecute(interaction) {
         return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
     }
 
-    const components = [];
-    for (let i = 0; i < results.length; i++) {
-        if (i % 2 == 0) {
-            components.push(new ActionRowBuilder());
-        }
-        components.at(-1).addComponents([
-            new ButtonBuilder()
-                .setCustomId(String(i))
-                .setLabel(
-                    `${i + 1}. ${
-                        results[i].title.length > 60 ? `${results[i].title.substring(0, 60)}...` : results[i].title
-                    } [${results[i].duration === 0 ? '⊚ LIVE' : results[i].durationText}]`
-                )
-                .setStyle(ButtonStyle.Primary)
-        ]);
-    }
+    const row = new ActionRowBuilder().addComponents([
+        new SelectMenuBuilder()
+            .setCustomId('select_menu')
+            .setPlaceholder(`총 ${results.length}곡이 검색되었습니다.`)
+            .setMinValues(1)
+            .setMaxValues(results.length)
+            .addOptions(
+                results.map((v, i) => ({
+                    label: v.title,
+                    description: `[${results[i].duration === 0 ? '⊚ LIVE' : results[i].durationText}]`,
+                    value: String(i)
+                }))
+            )
+    ]);
 
-    const list = await interaction.followUp({ content: '재생할 노래를 선택해주세요.', components });
+    const list = await interaction.followUp({ content: '재생할 노래를 선택해주세요.', components: [row] });
     try {
-        const choiceButton = await list.awaitMessageComponent({
+        const choiceMenu = await list.awaitMessageComponent({
             filter: (itr) => itr.user.id === interaction.user.id,
             time: 20000
         });
-        await choiceButton.deferUpdate();
+        await choiceMenu.deferUpdate();
 
-        const choiceSong = results[+choiceButton.customId];
-        const song = {
-            title: choiceSong.title,
-            url: choiceSong.url,
-            duration: Math.ceil(choiceSong.duration / 1000),
-            thumbnail: choiceSong.thumbnails.at(-1).url
-        };
+        const songs = choiceMenu.values.map((v) => ({
+            title: results[v].title,
+            url: results[v].url,
+            duration: Math.ceil(results[v].duration / 1000),
+            thumbnail: results[v].thumbnails.at(-1).url
+        }));
 
         if (serverQueue) {
             serverQueue.textChannel = interaction.channel;
-            serverQueue.songs.push(song);
+            serverQueue.songs.push(...songs);
             return interaction.followUp(
-                `✅ ${interaction.user}가 **${song.title}** \`[${
-                    song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
-                }]\`를 대기열에 추가했습니다.`
+                `✅ ${interaction.user}가\n${songs
+                    .map(
+                        (song) =>
+                            `**${song.title}** [${
+                                song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
+                            }]`
+                    )
+                    .join('\n')}\n를 대기열에 추가했습니다.`
             );
         }
 
         try {
             await interaction.deleteReply();
-            const newQueue = new QueueElement(interaction.channel, channel, await joinVoice(channel), [song]);
+            const newQueue = new QueueElement(interaction.channel, channel, await joinVoice(channel), songs);
             interaction.client.queues.set(interaction.guildId, newQueue);
             newQueue.playSong();
         } catch (err) {

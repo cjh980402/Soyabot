@@ -1,4 +1,3 @@
-import { Collection } from 'discord.js';
 import { setTimeout } from 'node:timers/promises';
 import { sendAdmin } from '../admin/bot_message.js';
 import { MapleError } from '../classes/MapleParser.js';
@@ -59,10 +58,7 @@ export async function listener(interaction) {
         } catch (err) {
             interaction.client.cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
             try {
-                if (err instanceof Collection) {
-                    // awaitMessages에서 시간초과한 경우
-                    await interaction.followUp(`'${originCommandName}'의 입력 대기 시간이 초과되었습니다.`);
-                } else if (err instanceof MapleError) {
+                if (err instanceof MapleError) {
                     await interaction.followUp(err.message);
                 } else {
                     sendAdmin(

@@ -1,4 +1,3 @@
-import { Collection } from 'discord.js';
 import { setTimeout } from 'node:timers/promises';
 import { adminChat } from '../admin/admin_function.js';
 import { sendAdmin } from '../admin/bot_message.js';
@@ -76,10 +75,7 @@ export async function listener(message) {
     } catch (err) {
         message.client.cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제
         try {
-            if (err instanceof Collection) {
-                // awaitMessages에서 시간초과한 경우
-                await message.channel.send(`'${originCommandName}'의 입력 대기 시간이 초과되었습니다.`);
-            } else if (err instanceof MapleError) {
+            if (err instanceof MapleError) {
                 await message.reply(err.message);
             } else {
                 sendAdmin(

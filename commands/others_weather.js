@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
+import { ActionRowBuilder, EmbedBuilder, SelectMenuBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { PREFIX } from '../soyabot_config.js';
@@ -88,40 +88,41 @@ export async function messageExecute(message, args) {
             search
         )}`
     );
-    const searchRslt = (await body.json()).items[0].slice(0, 10);
+    const searchRslt = (await body.json()).items[0].slice(0, 25);
     let targetLocal;
     if (!searchRslt?.length) {
         return message.channel.send('검색된 지역이 없습니다.');
     } else if (searchRslt.length === 1) {
         targetLocal = searchRslt[0];
     } else {
-        const components = [];
-        for (let i = 0; i < searchRslt.length; i++) {
-            if (i % 2 == 0) {
-                components.push(new ActionRowBuilder());
-            }
-            components.at(-1).addComponents([
-                new ButtonBuilder()
-                    .setCustomId(String(i))
-                    .setLabel(`${i + 1}. ${searchRslt[i][0][0]}`)
-                    .setStyle(ButtonStyle.Primary)
-            ]);
-        }
+        const row = new ActionRowBuilder().addComponents([
+            new SelectMenuBuilder()
+                .setCustomId('select_menu')
+                .setPlaceholder(`총 ${searchRslt.length}지역이 검색되었습니다.`)
+                .addOptions(
+                    searchRslt.map((v, i) => ({
+                        label: v[0][0],
+                        value: String(i)
+                    }))
+                )
+        ]);
 
-        const list = await message.channel.send({ content: '검색할 지역을 선택해주세요.', components });
+        const list = await message.channel.send({ content: '검색할 지역을 선택해주세요.', components: [row] });
         try {
-            const choiceButton = await list.awaitMessageComponent({
+            const choiceMenu = await list.awaitMessageComponent({
                 filter: (itr) => itr.user.id === message.author.id,
                 time: 20000
             });
-            await choiceButton.deferUpdate();
-            targetLocal = searchRslt[+choiceButton.customId];
+            await choiceMenu.deferUpdate();
+            targetLocal = searchRslt[choiceMenu.values[0]];
         } catch {
             targetLocal = searchRslt[0];
+        } finally {
+            try {
+                row.components[0].setDisabled(true);
+                await list.edit({ components: [row] });
+            } catch {}
         }
-
-        components.forEach((row) => row.components.forEach((v) => v.setDisabled(true)));
-        await list.edit({ components });
     }
 
     const embeds = await getWeatherEmbed(targetLocal);
@@ -145,40 +146,41 @@ export async function commandExecute(interaction) {
             search
         )}`
     );
-    const searchRslt = (await body.json()).items[0].slice(0, 10);
+    const searchRslt = (await body.json()).items[0].slice(0, 25);
     let targetLocal;
     if (!searchRslt?.length) {
         return interaction.followUp('검색된 지역이 없습니다.');
     } else if (searchRslt.length === 1) {
         targetLocal = searchRslt[0];
     } else {
-        const components = [];
-        for (let i = 0; i < searchRslt.length; i++) {
-            if (i % 2 == 0) {
-                components.push(new ActionRowBuilder());
-            }
-            components.at(-1).addComponents([
-                new ButtonBuilder()
-                    .setCustomId(String(i))
-                    .setLabel(`${i + 1}. ${searchRslt[i][0][0]}`)
-                    .setStyle(ButtonStyle.Primary)
-            ]);
-        }
+        const row = new ActionRowBuilder().addComponents([
+            new SelectMenuBuilder()
+                .setCustomId('select_menu')
+                .setPlaceholder(`총 ${searchRslt.length}지역이 검색되었습니다.`)
+                .addOptions(
+                    searchRslt.map((v, i) => ({
+                        label: v[0][0],
+                        value: String(i)
+                    }))
+                )
+        ]);
 
-        const list = await interaction.followUp({ content: '검색할 지역을 선택해주세요.', components });
+        const list = await interaction.followUp({ content: '검색할 지역을 선택해주세요.', components: [row] });
         try {
-            const choiceButton = await list.awaitMessageComponent({
+            const choiceMenu = await list.awaitMessageComponent({
                 filter: (itr) => itr.user.id === interaction.user.id,
                 time: 20000
             });
-            await choiceButton.deferUpdate();
-            targetLocal = searchRslt[+choiceButton.customId];
+            await choiceMenu.deferUpdate();
+            targetLocal = searchRslt[choiceMenu.values[0]];
         } catch {
             targetLocal = searchRslt[0];
+        } finally {
+            try {
+                row.components[0].setDisabled(true);
+                await list.edit({ components: [row] });
+            } catch {}
         }
-
-        components.forEach((row) => row.components.forEach((v) => v.setDisabled(true)));
-        await list.edit({ components });
     }
 
     const embeds = await getWeatherEmbed(targetLocal);

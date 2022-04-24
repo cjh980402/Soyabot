@@ -20,7 +20,7 @@ export class SoyaClient extends Client {
                 IntentsBitField.Flags.GuildMessages,
                 IntentsBitField.Flags.DirectMessages
             ],
-            presence: { activities: [{ name: '/help', type: ActivityType.Listening }] },
+            presence: { activities: [{ name: '/help 및 /건의', type: ActivityType.Listening }] },
             sweepers: {
                 guildMembers: {
                     interval: 3600,
