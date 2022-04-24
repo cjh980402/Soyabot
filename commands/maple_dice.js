@@ -29,15 +29,15 @@ export async function messageExecute(message) {
         components: [row]
     });
 
-    const filter = (itr) => itr.customId === 'repeat' && message.author.id === itr.user.id;
+    const filter = (itr) => message.author.id === itr.user.id;
     const collector = dice.createMessageComponentCollector({ filter, time: 120000 });
 
     collector
-        .on('collect', async () => {
+        .on('collect', async (itr) => {
             try {
                 const nickname = message.member?.nickname ?? message.author.username;
                 const image = await getDiceAttachment(nickname);
-                await dice.edit({ content: `${nickname}님의 ${++count}번째 스탯 주사위`, files: [image] });
+                await itr.update({ content: `${nickname}님의 ${++count}번째 스탯 주사위`, files: [image] });
             } catch {}
         })
         .once('end', async () => {
@@ -65,15 +65,15 @@ export async function commandExecute(interaction) {
         components: [row]
     });
 
-    const filter = (itr) => itr.customId === 'repeat' && interaction.user.id === itr.user.id;
+    const filter = (itr) => interaction.user.id === itr.user.id;
     const collector = dice.createMessageComponentCollector({ filter, time: 120000 });
 
     collector
-        .on('collect', async () => {
+        .on('collect', async (itr) => {
             try {
                 const nickname = interaction.member?.nickname ?? interaction.user.username;
                 const image = await getDiceAttachment(nickname);
-                await dice.edit({ content: `${nickname}님의 ${++count}번째 스탯 주사위`, files: [image] });
+                await itr.update({ content: `${nickname}님의 ${++count}번째 스탯 주사위`, files: [image] });
             } catch {}
         })
         .once('end', async () => {

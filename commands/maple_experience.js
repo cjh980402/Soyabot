@@ -71,7 +71,7 @@ export async function commandExecute(interaction) {
     const endLev = interaction.options.getInteger('끝_레벨');
 
     if (endLev) {
-        if (endLev < startLev || endLev > 300) {
+        if (endLev < startLev) {
             return interaction.followUp('시작 레벨 ~ 300 범위의 끝 레벨을 입력해주세요.');
         }
 

@@ -5,13 +5,12 @@ export const name = 'interactionCreate';
 export async function listener(interaction) {
     if (interaction.isButton()) {
         try {
-            await interaction.deferUpdate(); // 버튼이 로딩 상태가 되었다가 원래대로 돌아옴
-
             const queue = interaction.client.queues.get(interaction.guildId);
             if (queue?.playingMessage?.id !== interaction.message.id || !queue.player.state.resource) {
                 return;
             }
 
+            await interaction.deferUpdate(); // 버튼이 로딩 상태가 되었다가 원래대로 돌아옴
             if (!canModifyQueue(interaction.member)) {
                 return queue.sendMessage(`${interaction.client.user}과 같은 음성 채널에 참가해주세요!`);
             }

@@ -151,9 +151,7 @@ export class QueueElement {
             ) {
                 // 음악 메시지의 버튼 비활성화
                 this.playingMessage?.components.forEach((row) => row.components.forEach((v) => v.setDisabled(true)));
-                await this.playingMessage?.edit({
-                    components: this.playingMessage.components
-                });
+                await this.playingMessage?.edit({ components: this.playingMessage.components });
             } else {
                 await this.playingMessage?.delete();
             }

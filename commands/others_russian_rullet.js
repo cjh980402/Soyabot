@@ -1,35 +1,10 @@
-import { ApplicationCommandOptionType } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ApplicationCommandOptionType } from 'discord.js';
 import { PREFIX } from '../soyabot_config.js';
-
-function findGameCommandType(str) {
-    const [prefixCommand] = str.trim().split(/\s+/);
-    if (!prefixCommand.startsWith(PREFIX)) {
-        return -1;
-    }
-    const command = prefixCommand.slice(PREFIX.length);
-    if (command === '참가' || command === 'ㅊㄱ') {
-        return 1;
-    }
-    if (command === '시작' || command === 'ㅅㅈ') {
-        return 2;
-    }
-    if (command === '종료' || command === 'ㅈㄹ') {
-        return 3;
-    }
-    if (command === '빵' || command === 'ㅃ') {
-        return 4;
-    }
-}
 
 export const usage = `${PREFIX}러시안룰렛 (탄환 수)`;
 export const command = ['러시안룰렛', 'ㄹㅅㅇㄹㄹ', 'ㄽㅇㄹㄹ'];
-export const description = `- 러시안룰렛 게임을 수행합니다.
-- 탄환 수가 2 ~ 20 범위가 아니거나 생략된 경우 자동으로 6발이 됩니다.
-- ${PREFIX}참가: 게임에 참가를 합니다.
-- ${PREFIX}시작: 참가자가 2명 이상일 때 게임을 시작합니다.
-- ${PREFIX}종료: 인원을 모집 중인 게임을 종료합니다.
-- ${PREFIX}빵: 본인의 차례를 수행합니다.`;
-export const channelCool = true;
+export const description =
+    '- 러시안룰렛 게임을 수행합니다. 탄환 수가 2 ~ 20 범위가 아니거나 생략된 경우 자동으로 6발이 됩니다.';
 export const type = ['기타'];
 export async function messageExecute(message, args) {
     if (!message.guildId) {
@@ -42,105 +17,136 @@ export async function messageExecute(message, args) {
     const count = Math.trunc(args[0]);
     const bullet = isNaN(count) || count < 2 || count > 20 ? 6 : count; // 탄환 수 지정
     const gameUser = [message.member]; // 참가자 객체 배열
-    await message.channel.send(
-        `게임을 시작하셨습니다.\n${PREFIX}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${
+    const startRow = new ActionRowBuilder().addComponents([
+        new ButtonBuilder().setCustomId('join').setLabel('참가').setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId('start').setLabel('시작').setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId('exit').setLabel('종료').setStyle(ButtonStyle.Danger)
+    ]);
+
+    const gameStart = await message.channel.send({
+        content: `게임을 시작하셨습니다.\n참가 버튼을 눌러서 게임 참가가 가능합니다.\n현재 참가자 (1명): ${
             gameUser[0].nickname ?? gameUser[0].user.username
-        }`
-    );
-    for (let gameCommandType = 0; ; ) {
-        await message.channel.awaitMessages({
-            filter: (msg) => {
-                gameCommandType = findGameCommandType(msg.content);
-                if (gameCommandType === 1) {
-                    if (gameUser.some((v) => msg.member.id === v.id)) {
-                        msg.channel.send('이미 참가하셨습니다.');
-                        return false;
-                    } else {
-                        gameUser.push(msg.member); // 참가자 리스트에 추가
-                        msg.channel.send(
-                            `게임에 참가하셨습니다.\n현재 참가자 (${gameUser.length}명): ${gameUser
-                                .map((v) => v.nickname ?? v.user.username)
-                                .join(', ')}`
-                        );
-                        return true;
-                    }
-                } else if (gameCommandType === 2) {
-                    if (gameUser.some((v) => msg.member.id === v.id)) {
-                        if (gameUser.length > 1) {
-                            msg.channel.send('러시안룰렛을 시작합니다.');
-                            return true;
+        }`,
+        components: [startRow]
+    });
+
+    const filter = (itr) => itr.guild.memberCount >= 2;
+    const startCollector = gameStart.createMessageComponentCollector({ filter, time: 300000 });
+
+    startCollector
+        .on('collect', async (itr) => {
+            try {
+                let isStart = false;
+                switch (itr.customId) {
+                    case 'join':
+                        if (gameUser.some((v) => itr.member.id === v.id)) {
+                            await itr.reply({ content: '이미 참가하셨습니다.', ephemeral: true });
                         } else {
-                            msg.channel.send('2명 이상의 참가자가 있어야 시작할 수 있습니다.');
-                            return false;
+                            gameUser.push(itr.member); // 참가자 리스트에 추가
+                            await itr.update(
+                                `게임에 참가하셨습니다.\n현재 참가자 (${gameUser.length}명): ${gameUser
+                                    .map((v) => v.nickname ?? v.user.username)
+                                    .join(', ')}`
+                            );
+                            if (gameUser.length === bullet) {
+                                isStart = true;
+                                await itr.channel.send('인원이 가득 차 게임이 자동으로 시작됩니다.');
+                                startCollector.stop();
+                            }
                         }
-                    } else {
-                        msg.channel.send('게임에 참가한 사람만 시작할 수 있습니다.');
-                        return false;
-                    }
-                } else if (gameCommandType === 3) {
-                    if (gameUser.some((v) => msg.member.id === v.id)) {
-                        msg.channel.send('게임을 종료합니다.');
-                        return true;
-                    } else {
-                        msg.channel.send('게임에 참여한 사람만 종료할 수 있습니다.');
-                        return false;
-                    }
-                } else {
-                    // 러시안룰렛 시작과 관련이 없는 채팅인 경우
-                    return false;
+                        break;
+                    case 'start':
+                        if (gameUser.some((v) => itr.member.id === v.id)) {
+                            if (gameUser.length > 1) {
+                                isStart = true;
+                                await itr.channel.send('러시안룰렛을 시작합니다.');
+                                await itr.deferUpdate();
+                                startCollector.stop();
+                            } else {
+                                await itr.reply({
+                                    content: '2명 이상의 참가자가 있어야 시작할 수 있습니다.',
+                                    ephemeral: true
+                                });
+                            }
+                        } else {
+                            await itr.reply({ content: '게임에 참가한 사람만 시작할 수 있습니다.', ephemeral: true });
+                        }
+                        break;
+                    case 'exit':
+                        if (gameUser.some((v) => itr.member.id === v.id)) {
+                            await itr.channel.send('게임을 종료합니다.');
+                            await itr.deferUpdate();
+                            startCollector.stop();
+                        } else {
+                            await itr.reply({ content: '게임에 참여한 사람만 종료할 수 있습니다.', ephemeral: true });
+                        }
+                        break;
                 }
-            },
-            max: 1,
-            time: 300000,
-            errors: ['time']
-        }); // 5분 대기
-        if (gameCommandType === 1 && gameUser.length === bullet) {
-            await message.channel.send('인원이 가득 차 게임이 자동으로 시작됩니다.');
-            break; // 게임 시작
-        } else if (gameCommandType === 2) {
-            break; // 게임 시작
-        } else if (gameCommandType === 3) {
-            return; // 게임 종료
-        }
-    }
-    // 게임을 진행할 때는 멘션으로 해당하는 사람에게 알려준다.
-    await message.channel.send(
-        `탄환 ${bullet}발이 장전되었습니다. 첫 시작은 ${gameUser[0]}님입니다.\n${PREFIX}빵 명령어로 방아쇠를 당겨주세요.`
-    );
-    const die = Math.floor(Math.random() * bullet); // 0번째 ~ (bullet - 1)번째 탄환 중에서 선택
-    for (let i = 0; i < bullet; i++) {
-        try {
-            await message.channel.awaitMessages({
-                filter: (msg) =>
-                    msg.member.id === gameUser[i % gameUser.length].id && findGameCommandType(msg.content) === 4,
-                max: 1,
-                time: 60000,
-                errors: ['time']
-            });
-        } catch {} // 시간 초과돼도 에러 throw 안하게 catch를 해줌
-        if (i === die) {
+
+                if (isStart) {
+                    // 게임을 진행할 때는 멘션으로 해당하는 사람에게 알려준다.
+                    const doingRow = new ActionRowBuilder().addComponents([
+                        new ButtonBuilder().setCustomId('gun').setEmoji('🔫').setStyle(ButtonStyle.Danger)
+                    ]);
+
+                    const die = Math.floor(Math.random() * bullet); // 0번째 ~ (bullet - 1)번째 탄환 중에서 선택
+                    const gameDoing = await message.channel.send({
+                        content: `탄환 ${bullet}발이 장전되었습니다. 첫 시작은 ${gameUser[0]}님입니다.\n🔫 버튼을 눌러서 방아쇠를 당겨주세요.`,
+                        components: [doingRow]
+                    });
+
+                    let i = 0;
+                    const filter = (itr) => itr.member.id === gameUser[i % gameUser.length].id;
+                    const doingCollector = gameDoing.createMessageComponentCollector({ filter, time: 300000 });
+
+                    doingCollector
+                        .on('collect', async (itr) => {
+                            try {
+                                if (i === die) {
+                                    try {
+                                        const dieUser = await itr.guild.members.fetch({
+                                            user: gameUser[i % gameUser.length].id,
+                                            cache: false
+                                        });
+                                        await itr.update(`🔫 ${dieUser}님이 사망하셨습니다......\n한 판 더 하실?`);
+                                    } catch {
+                                        await itr.update('사망한 유저가 방에서 나가서 게임이 자동으로 종료됩니다.');
+                                    }
+                                    doingCollector.stop();
+                                } else {
+                                    try {
+                                        const nextUser = await itr.guild.members.fetch({
+                                            user: gameUser[(i + 1) % gameUser.length].id,
+                                            cache: false
+                                        });
+                                        await itr.update(
+                                            `🔫 철컥 (${bullet - (i + 1)}발 남음)\n다음 차례는 ${nextUser}님입니다.`
+                                        );
+                                    } catch {
+                                        await itr.update('다음 차례 유저가 방에서 나가서 게임이 자동으로 종료됩니다.');
+                                        doingCollector.stop();
+                                    }
+                                }
+                                i++;
+                            } catch {}
+                        })
+                        .once('end', async () => {
+                            try {
+                                // 게임 진행 메시지의 버튼 비활성화
+                                doingRow.components[0].setDisabled(true);
+                                await gameDoing.edit({ components: [doingRow] });
+                            } catch {}
+                        });
+                }
+            } catch {}
+        })
+        .once('end', async () => {
             try {
-                const dieUser = await message.guild.members.fetch({
-                    user: gameUser[i % gameUser.length].id,
-                    cache: false
-                });
-                return message.channel.send(`🔫 ${dieUser}님이 사망하셨습니다......\n한 판 더 하실?`);
-            } catch {
-                return message.channel.send('사망한 유저가 방에서 나가서 게임이 자동으로 종료됩니다.');
-            }
-        } else {
-            try {
-                const nextUser = await message.guild.members.fetch({
-                    user: gameUser[(i + 1) % gameUser.length].id,
-                    cache: false
-                });
-                await message.channel.send(`🔫 철컥 (${bullet - (i + 1)}발 남음)`);
-                await message.channel.send(`다음 차례는 ${nextUser}님입니다.`);
-            } catch {
-                return message.channel.send('다음 차례 유저가 방에서 나가서 게임이 자동으로 종료됩니다.');
-            }
-        }
-    }
+                // 게임 시작 메시지의 버튼 비활성화
+                startRow.components.forEach((v) => v.setDisabled(true));
+                await gameStart.edit({ components: [startRow] });
+            } catch {}
+        });
 }
 export const commandData = {
     name: '러시안룰렛',
@@ -165,103 +171,134 @@ export async function commandExecute(interaction) {
     }
     const bullet = interaction.options.getInteger('탄환_수') ?? 6; // 탄환 수 지정
     const gameUser = [interaction.member]; // 참가자 객체 배열
-    await interaction.followUp(
-        `게임을 시작하셨습니다.\n${PREFIX}참가 명령어로 게임 참가가 가능합니다.\n현재 참가자 (1명): ${
+    const startRow = new ActionRowBuilder().addComponents([
+        new ButtonBuilder().setCustomId('join').setLabel('참가').setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId('start').setLabel('시작').setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId('exit').setLabel('종료').setStyle(ButtonStyle.Danger)
+    ]);
+
+    const gameStart = await interaction.followUp({
+        content: `게임을 시작하셨습니다.\n참가 버튼을 눌러서 게임 참가가 가능합니다.\n현재 참가자 (1명): ${
             gameUser[0].nickname ?? gameUser[0].user.username
-        }`
-    );
-    for (let gameCommandType = 0; ; ) {
-        await interaction.channel.awaitMessages({
-            filter: (msg) => {
-                gameCommandType = findGameCommandType(msg.content);
-                if (gameCommandType === 1) {
-                    if (gameUser.some((v) => msg.member.id === v.id)) {
-                        msg.channel.send('이미 참가하셨습니다.');
-                        return false;
-                    } else {
-                        gameUser.push(msg.member); // 참가자 리스트에 추가
-                        msg.channel.send(
-                            `게임에 참가하셨습니다.\n현재 참가자 (${gameUser.length}명): ${gameUser
-                                .map((v) => v.nickname ?? v.user.username)
-                                .join(', ')}`
-                        );
-                        return true;
-                    }
-                } else if (gameCommandType === 2) {
-                    if (gameUser.some((v) => msg.member.id === v.id)) {
-                        if (gameUser.length > 1) {
-                            msg.channel.send('러시안룰렛을 시작합니다.');
-                            return true;
+        }`,
+        components: [startRow]
+    });
+
+    const filter = (itr) => itr.guild.memberCount >= 2;
+    const startCollector = gameStart.createMessageComponentCollector({ filter, time: 300000 });
+
+    startCollector
+        .on('collect', async (itr) => {
+            try {
+                let isStart = false;
+                switch (itr.customId) {
+                    case 'join':
+                        if (gameUser.some((v) => itr.member.id === v.id)) {
+                            await itr.reply({ content: '이미 참가하셨습니다.', ephemeral: true });
                         } else {
-                            msg.channel.send('2명 이상의 참가자가 있어야 시작할 수 있습니다.');
-                            return false;
+                            gameUser.push(itr.member); // 참가자 리스트에 추가
+                            await itr.update(
+                                `게임에 참가하셨습니다.\n현재 참가자 (${gameUser.length}명): ${gameUser
+                                    .map((v) => v.nickname ?? v.user.username)
+                                    .join(', ')}`
+                            );
+                            if (gameUser.length === bullet) {
+                                isStart = true;
+                                await itr.channel.send('인원이 가득 차 게임이 자동으로 시작됩니다.');
+                                startCollector.stop();
+                            }
                         }
-                    } else {
-                        msg.channel.send('게임에 참가한 사람만 시작할 수 있습니다.');
-                        return false;
-                    }
-                } else if (gameCommandType === 3) {
-                    if (gameUser.some((v) => msg.member.id === v.id)) {
-                        msg.channel.send('게임을 종료합니다.');
-                        return true;
-                    } else {
-                        msg.channel.send('게임에 참여한 사람만 종료할 수 있습니다.');
-                        return false;
-                    }
-                } else {
-                    // 러시안룰렛 시작과 관련이 없는 채팅인 경우
-                    return false;
+                        break;
+                    case 'start':
+                        if (gameUser.some((v) => itr.member.id === v.id)) {
+                            if (gameUser.length > 1) {
+                                isStart = true;
+                                await itr.channel.send('러시안룰렛을 시작합니다.');
+                                await itr.deferUpdate();
+                                startCollector.stop();
+                            } else {
+                                await itr.reply({
+                                    content: '2명 이상의 참가자가 있어야 시작할 수 있습니다.',
+                                    ephemeral: true
+                                });
+                            }
+                        } else {
+                            await itr.reply({ content: '게임에 참가한 사람만 시작할 수 있습니다.', ephemeral: true });
+                        }
+                        break;
+                    case 'exit':
+                        if (gameUser.some((v) => itr.member.id === v.id)) {
+                            await itr.channel.send('게임을 종료합니다.');
+                            await itr.deferUpdate();
+                            startCollector.stop();
+                        } else {
+                            await itr.reply({ content: '게임에 참여한 사람만 종료할 수 있습니다.', ephemeral: true });
+                        }
+                        break;
                 }
-            },
-            max: 1,
-            time: 300000,
-            errors: ['time']
-        }); // 5분 대기
-        if (gameCommandType === 1 && gameUser.length === bullet) {
-            await interaction.channel.send('인원이 가득 차 게임이 자동으로 시작됩니다.');
-            break; // 게임 시작
-        } else if (gameCommandType === 2) {
-            break; // 게임 시작
-        } else if (gameCommandType === 3) {
-            return; // 게임 종료
-        }
-    }
-    // 게임을 진행할 때는 멘션으로 해당하는 사람에게 알려준다.
-    await interaction.followUp(
-        `탄환 ${bullet}발이 장전되었습니다. 첫 시작은 ${gameUser[0]}님입니다.\n${PREFIX}빵 명령어로 방아쇠를 당겨주세요.`
-    );
-    const die = Math.floor(Math.random() * bullet); // 0번째 ~ (bullet - 1)번째 탄환 중에서 선택
-    for (let i = 0; i < bullet; i++) {
-        try {
-            await interaction.channel.awaitMessages({
-                filter: (msg) =>
-                    msg.member.id === gameUser[i % gameUser.length].id && findGameCommandType(msg.content) === 4,
-                max: 1,
-                time: 60000,
-                errors: ['time']
-            });
-        } catch {} // 시간 초과돼도 에러 throw 안하게 catch를 해줌
-        if (i === die) {
+
+                if (isStart) {
+                    // 게임을 진행할 때는 멘션으로 해당하는 사람에게 알려준다.
+                    const doingRow = new ActionRowBuilder().addComponents([
+                        new ButtonBuilder().setCustomId('gun').setEmoji('🔫').setStyle(ButtonStyle.Danger)
+                    ]);
+
+                    const die = Math.floor(Math.random() * bullet); // 0번째 ~ (bullet - 1)번째 탄환 중에서 선택
+                    const gameDoing = await interaction.followUp({
+                        content: `탄환 ${bullet}발이 장전되었습니다. 첫 시작은 ${gameUser[0]}님입니다.\n🔫 버튼을 눌러서 방아쇠를 당겨주세요.`,
+                        components: [doingRow]
+                    });
+
+                    let i = 0;
+                    const filter = (itr) => itr.member.id === gameUser[i % gameUser.length].id;
+                    const doingCollector = gameDoing.createMessageComponentCollector({ filter, time: 300000 });
+
+                    doingCollector
+                        .on('collect', async (itr) => {
+                            try {
+                                if (i === die) {
+                                    try {
+                                        const dieUser = await itr.guild.members.fetch({
+                                            user: gameUser[i % gameUser.length].id,
+                                            cache: false
+                                        });
+                                        await itr.update(`🔫 ${dieUser}님이 사망하셨습니다......\n한 판 더 하실?`);
+                                    } catch {
+                                        await itr.update('사망한 유저가 방에서 나가서 게임이 자동으로 종료됩니다.');
+                                    }
+                                    doingCollector.stop();
+                                } else {
+                                    try {
+                                        const nextUser = await itr.guild.members.fetch({
+                                            user: gameUser[(i + 1) % gameUser.length].id,
+                                            cache: false
+                                        });
+                                        await itr.update(
+                                            `🔫 철컥 (${bullet - (i + 1)}발 남음)\n다음 차례는 ${nextUser}님입니다.`
+                                        );
+                                    } catch {
+                                        await itr.update('다음 차례 유저가 방에서 나가서 게임이 자동으로 종료됩니다.');
+                                        doingCollector.stop();
+                                    }
+                                }
+                                i++;
+                            } catch {}
+                        })
+                        .once('end', async () => {
+                            try {
+                                // 게임 진행 메시지의 버튼 비활성화
+                                doingRow.components[0].setDisabled(true);
+                                await gameDoing.edit({ components: [doingRow] });
+                            } catch {}
+                        });
+                }
+            } catch {}
+        })
+        .once('end', async () => {
             try {
-                const dieUser = await interaction.guild.members.fetch({
-                    user: gameUser[i % gameUser.length].id,
-                    cache: false
-                });
-                return interaction.channel.send(`🔫 ${dieUser}님이 사망하셨습니다......\n한 판 더 하실?`);
-            } catch {
-                return interaction.channel.send('사망한 유저가 방에서 나가서 게임이 자동으로 종료됩니다.');
-            }
-        } else {
-            try {
-                const nextUser = await interaction.guild.members.fetch({
-                    user: gameUser[(i + 1) % gameUser.length].id,
-                    cache: false
-                });
-                await interaction.channel.send(`🔫 철컥 (${bullet - (i + 1)}발 남음)`);
-                await interaction.channel.send(`다음 차례는 ${nextUser}님입니다.`);
-            } catch {
-                return interaction.channel.send('다음 차례 유저가 방에서 나가서 게임이 자동으로 종료됩니다.');
-            }
-        }
-    }
+                // 게임 시작 메시지의 버튼 비활성화
+                startRow.components.forEach((v) => v.setDisabled(true));
+                await gameStart.edit({ components: [startRow] });
+            } catch {}
+        });
 }
