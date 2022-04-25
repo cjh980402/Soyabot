@@ -34,7 +34,7 @@ export async function messageExecute(message, args) {
     }
 
     const descriptions = message.client.commands
-        .filter((cmd) => !detail || cmd.type.includes(detail))
+        .filter((cmd) => !args[0] || cmd.type.includes(args[0]))
         .map((cmd) => `**${PREFIX}${cmd.commandData.name}**\n- ${cmd.commandData.description}`);
 
     const embeds = getHelpEmbed(descriptions, message.client.user.username);
@@ -48,7 +48,7 @@ export const commandData = {
         {
             name: '세부항목',
             type: ApplicationCommandOptionType.String,
-            description: '도움말을 출력할 카테고리나 명령어 대상'
+            description: '도움말을 출력할 카테고리나 명령어'
         }
     ]
 };

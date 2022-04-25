@@ -23,12 +23,16 @@ export const commandData = {
             name: '시작_스타포스_개수',
             type: ApplicationCommandOptionType.Integer,
             description: '시뮬레이션 시작 스타포스 개수',
+            min_value: 0,
+            max_value: 14,
             required: true
         },
         {
             name: '목표_스타포스_개수',
             type: ApplicationCommandOptionType.Integer,
             description: '시뮬레이션 목표 스타포스 개수',
+            min_value: 0,
+            max_value: 14,
             required: true
         },
         {

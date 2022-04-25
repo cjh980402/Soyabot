@@ -55,15 +55,15 @@ export const commandData = {
         {
             name: '기본공',
             type: ApplicationCommandOptionType.Integer,
-            description: '무기의 기본공마',
+            description: '무기의 기본 공격력(마력)',
             required: true
         },
         {
             name: '레벨_제한',
             type: ApplicationCommandOptionType.Integer,
             description: '130, 140, 150, 160, 200 중의 하나',
-            required: true,
-            choices: [130, 140, 150, 160, 200].map((v) => ({ name: v, value: v }))
+            choices: [130, 140, 150, 160, 200].map((v) => ({ name: v, value: v })),
+            required: true
         },
         {
             name: '강화_단계',

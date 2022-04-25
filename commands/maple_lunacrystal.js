@@ -63,8 +63,8 @@ export const commandData = {
                     name: '카테고리',
                     type: ApplicationCommandOptionType.String,
                     description: '확률을 출력할 루나크리스탈 카테고리',
-                    required: true,
-                    choices: Object.keys(MapleProb.LUNACRYSTAL_PROBTABLE).map((v) => ({ name: v, value: v }))
+                    choices: Object.keys(MapleProb.LUNACRYSTAL_PROBTABLE).map((v) => ({ name: v, value: v })),
+                    required: true
                 }
             ]
         },
@@ -77,8 +77,8 @@ export const commandData = {
                     name: '카테고리',
                     type: ApplicationCommandOptionType.String,
                     description: '시뮬레이션을 수행할 루나크리스탈 카테고리',
-                    required: true,
-                    choices: Object.keys(MapleProb.LUNACRYSTAL_PROBTABLE).map((v) => ({ name: v, value: v }))
+                    choices: Object.keys(MapleProb.LUNACRYSTAL_PROBTABLE).map((v) => ({ name: v, value: v })),
+                    required: true
                 },
                 {
                     name: '횟수',

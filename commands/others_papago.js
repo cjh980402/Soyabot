@@ -90,19 +90,19 @@ export const commandData = {
                     name: '대상언어',
                     type: ApplicationCommandOptionType.String,
                     description: '대상 언어의 영어 코드',
-                    required: true,
                     choices: ['ko', 'en', 'ja', 'zh-CN', 'zh-TW', 'es', 'fr', 'ru', 'vi', 'th', 'id', 'de', 'it'].map(
                         (v) => ({ name: v, value: v })
-                    )
+                    ),
+                    required: true
                 },
                 {
                     name: '결과언어',
                     type: ApplicationCommandOptionType.String,
                     description: '결과 언어의 영어 코드',
-                    required: true,
                     choices: ['ko', 'en', 'ja', 'zh-CN', 'zh-TW', 'es', 'fr', 'ru', 'vi', 'th', 'id', 'de', 'it'].map(
                         (v) => ({ name: v, value: v })
-                    )
+                    ),
+                    required: true
                 },
                 {
                     name: '내용',

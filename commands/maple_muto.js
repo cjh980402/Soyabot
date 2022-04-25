@@ -41,9 +41,9 @@ export const commandData = {
         {
             name: '요리_이름',
             type: ApplicationCommandOptionType.String,
-            description: '추옵 정보를 검색할 무기의 종류',
-            required: true,
-            choices: Object.keys(picmatch).map((v) => ({ name: v, value: v }))
+            description: '레시피를 출력할 요리의 이름',
+            choices: Object.keys(picmatch).map((v) => ({ name: v, value: v })),
+            required: true
         }
     ]
 };

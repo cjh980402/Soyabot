@@ -57,8 +57,8 @@ export const commandData = {
             name: '서버_이름',
             type: ApplicationCommandOptionType.String,
             description: '검색할 길드의 서버',
-            required: true,
-            choices: Object.keys(serverEngName).map((v) => ({ name: v, value: v }))
+            choices: Object.keys(serverEngName).map((v) => ({ name: v, value: v })),
+            required: true
         },
         {
             name: '길드_이름',

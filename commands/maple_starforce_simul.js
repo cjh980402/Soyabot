@@ -28,21 +28,26 @@ export const commandData = {
     description: '일반 장비템의 스타포스 시뮬레이션을 수행합니다.',
     options: [
         {
-            name: '아이템_레벨_제한',
+            name: '레벨_제한',
             type: ApplicationCommandOptionType.Integer,
             description: '시뮬레이션 대상 아이템의 레벨 제한',
+            min_value: 98,
             required: true
         },
         {
             name: '시작_스타포스_개수',
             type: ApplicationCommandOptionType.Integer,
             description: '시뮬레이션 시작 스타포스 개수',
+            min_value: 0,
+            max_value: 24,
             required: true
         },
         {
             name: '목표_스타포스_개수',
             type: ApplicationCommandOptionType.Integer,
             description: '시뮬레이션 목표 스타포스 개수',
+            min_value: 0,
+            max_value: 24,
             required: true
         },
         {
@@ -81,7 +86,7 @@ export async function commandExecute(interaction) {
     const result = new NormalItem();
     await interaction.followUp(
         result.doingStarforce([
-            interaction.options.getInteger('아이템_레벨_제한'),
+            interaction.options.getInteger('레벨_제한'),
             interaction.options.getInteger('시작_스타포스_개수'),
             interaction.options.getInteger('목표_스타포스_개수'),
             interaction.options.getInteger('스타캐치') ?? 1,

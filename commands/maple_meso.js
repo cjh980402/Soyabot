@@ -124,8 +124,8 @@ export const commandData = {
             name: '서버',
             type: ApplicationCommandOptionType.String,
             description: '메소 시세를 검색할 서버',
-            required: true,
-            choices: Object.keys(serverList).map((v) => ({ name: v, value: v }))
+            choices: Object.keys(serverList).map((v) => ({ name: v, value: v })),
+            required: true
         }
     ]
 };

@@ -45,8 +45,8 @@ export const commandData = {
             name: '무기종류',
             type: ApplicationCommandOptionType.String,
             description: '추옵 정보를 검색할 무기의 종류',
-            required: true,
-            choices: Object.keys(picmatch).map((v) => ({ name: v, value: v }))
+            choices: Object.keys(picmatch).map((v) => ({ name: v, value: v })),
+            required: true
         }
     ]
 };
