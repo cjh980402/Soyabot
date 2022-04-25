@@ -1,4 +1,4 @@
-import { EmbedBuilder } from 'discord.js';
+import { EmbedBuilder, ChannelType } from 'discord.js';
 import { ADMIN_ID, NOTICE_CHANNEL_ID } from '../soyabot_config.js';
 
 export async function sendBotNotice(client, data, isMaple = false) {
@@ -29,7 +29,7 @@ export async function sendBotNotice(client, data, isMaple = false) {
 
 export async function sendChannelID(channels, id, data) {
     try {
-        return await channels._add({ id, type: 1 }, null, { cache: false }).send(data); // 임시 채널 객체 생성 후 메시지 전송
+        return await channels._add({ id, type: ChannelType.DM }, null, { cache: false }).send(data); // 임시 채널 객체 생성 후 메시지 전송
     } catch {
         return null;
     }

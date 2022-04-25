@@ -4,8 +4,8 @@ import { sendPageMessage } from '../util/soyabot_util.js';
 
 function getHelpEmbed(help, name) {
     const embeds = [];
-    for (let i = 0; i < help.length; i += 7) {
-        const info = help.slice(i, i + 7).join('\n');
+    for (let i = 0; i < help.length; i += 10) {
+        const info = help.slice(i, i + 10).join('\n');
         const embed = new EmbedBuilder()
             .setTitle(`**${name} 도움말**`)
             .setColor('#FF9999')
@@ -33,11 +33,11 @@ export async function messageExecute(message, args) {
         }
     }
 
-    const description = message.client.commands
-        .filter((cmd) => cmd.description && (cmd.type.includes(args[0]) || !args[0]))
-        .map((cmd) => `**${cmd.usage}**\n- 대체 명령어: ${cmd.command.join(', ')}\n${cmd.description}`);
+    const descriptions = message.client.commands
+        .filter((cmd) => !detail || cmd.type.includes(detail))
+        .map((cmd) => `**${PREFIX}${cmd.commandData.name}**\n- ${cmd.commandData.description}`);
 
-    const embeds = getHelpEmbed(description, message.client.user.username);
+    const embeds = getHelpEmbed(descriptions, message.client.user.username);
     await sendPageMessage(message, embeds);
 }
 export const commandData = {
@@ -65,10 +65,10 @@ export async function commandExecute(interaction) {
         }
     }
 
-    const description = interaction.client.commands
-        .filter((cmd) => cmd.description && (cmd.type.includes(detail) || !detail))
-        .map((cmd) => `**${cmd.usage}**\n- 대체 명령어: ${cmd.command.join(', ')}\n${cmd.description}`);
+    const descriptions = interaction.client.commands
+        .filter((cmd) => !detail || cmd.type.includes(detail))
+        .map((cmd) => `**${PREFIX}${cmd.commandData.name}**\n- ${cmd.commandData.description}`);
 
-    const embeds = getHelpEmbed(description, interaction.client.user.username);
+    const embeds = getHelpEmbed(descriptions, interaction.client.user.username);
     await sendPageMessage(interaction, embeds);
 }
