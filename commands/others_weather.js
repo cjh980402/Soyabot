@@ -110,7 +110,7 @@ export async function messageExecute(message, args) {
         try {
             const choiceMenu = await list.awaitMessageComponent({
                 filter: (itr) => itr.user.id === message.author.id,
-                time: 20000
+                time: 15000
             });
             await choiceMenu.deferUpdate();
             targetLocal = searchRslt[choiceMenu.values[0]];
@@ -168,7 +168,7 @@ export async function commandExecute(interaction) {
         try {
             const choiceMenu = await list.awaitMessageComponent({
                 filter: (itr) => itr.user.id === interaction.user.id,
-                time: 20000
+                time: 15000
             });
             await choiceMenu.deferUpdate();
             targetLocal = searchRslt[choiceMenu.values[0]];

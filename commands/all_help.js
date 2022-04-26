@@ -9,7 +9,7 @@ function getHelpEmbed(help, name) {
         const embed = new EmbedBuilder()
             .setTitle(`**${name} 도움말**`)
             .setColor('#FF9999')
-            .setDescription(`모든 명령어 목록\n\n${info}`)
+            .setDescription(`명령어 목록\n\n${info}`)
             .setTimestamp();
         embeds.push(embed);
     }
