@@ -15,7 +15,7 @@ import { matchString } from '../util/Constant.js';
 export const usage = `${PREFIX}타자대결 (옵션)`;
 export const command = ['타자대결', 'ㅌㅈㄷㄱ'];
 export const description = `- 임의의 문장을 빨리 치는 사람이 승리하는 타자 대결을 수행합니다.
-- 옵션에 한을 입력 시 한글, 영을 입력 시 영어, 생략 시 둘 다 나옵니다.`;
+- 옵션에 한을 입력 시 한글, 영을 입력 시 영어, 생략 시 랜덤으로 나옵니다.`;
 export const type = ['기타'];
 export async function messageExecute(message, args) {
     const [min, max] = /^한글?$/.test(args[0])
@@ -81,7 +81,7 @@ export const commandData = {
         {
             name: '옵션',
             type: ApplicationCommandOptionType.String,
-            description: '한을 입력 시 한글, 영을 입력 시 영어, 생략 시 둘 다 나옵니다.',
+            description: '한을 입력 시 한글, 영을 입력 시 영어, 생략 시 랜덤으로 나옵니다.',
             choices: ['한', '영'].map((v) => ({ name: v, value: v }))
         }
     ]

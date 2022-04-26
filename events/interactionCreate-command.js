@@ -7,8 +7,7 @@ const promiseTimeout = (promise, ms) => Promise.race([promise, setTimeout(ms)]);
 export const name = 'interactionCreate';
 export async function listener(interaction) {
     if (interaction.isChatInputCommand()) {
-        let { commandName } = interaction;
-        const originCommandName = commandName;
+        const { commandName } = interaction;
         try {
             await interaction.deferReply(); // deferReply를 하지 않으면 3초 내로 슬래시 커맨드 응답을 해야함
             console.log(
@@ -43,17 +42,13 @@ export async function listener(interaction) {
                 );
             }
 
-            commandName = nowCommand.channelCool ? `${originCommandName}_${interaction.channelId}` : originCommandName;
-
             if (interaction.client.cooldowns.has(commandName)) {
                 // 명령이 수행 중인 경우
-                return await interaction.followUp(`'${originCommandName}' 명령을 사용하기 위해 잠시 기다려야합니다.`);
+                return await interaction.followUp(`'${commandName}' 명령을 사용하기 위해 잠시 기다려야합니다.`);
             }
             interaction.client.cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
-            commandCount(interaction.client.db, originCommandName);
-            await (nowCommand.channelCool
-                ? nowCommand.commandExecute(interaction)
-                : promiseTimeout(nowCommand.commandExecute(interaction), 300000)); // 명령어 수행 부분
+            commandCount(interaction.client.db, commandName);
+            await promiseTimeout(nowCommand.commandExecute(interaction), 300000); // 명령어 수행 부분
             interaction.client.cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
         } catch (err) {
             interaction.client.cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제

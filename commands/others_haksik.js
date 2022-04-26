@@ -26,7 +26,7 @@ function getHaksikEmbed(date, haksik) {
 
 export const usage = `${PREFIX}학식 (요일)`;
 export const command = ['학식', 'ㅎㅅ'];
-export const description = '- 입력한 요일에 해당하는 학식을 보여줍니다. 요일을 생략시에는 오늘 학식을 보여줍니다.';
+export const description = '- 입력한 요일에 해당하는 학식을 보여줍니다. 요일을 생략 시에는 오늘 학식을 보여줍니다.';
 export const type = ['기타'];
 export async function messageExecute(message, args) {
     const week = ['일', '월', '화', '수', '목', '금', '토'];
@@ -61,7 +61,7 @@ export async function messageExecute(message, args) {
 }
 export const commandData = {
     name: '학식',
-    description: '입력한 요일에 해당하는 학식을 보여줍니다. 요일을 생략시에는 오늘 학식을 보여줍니다.',
+    description: '입력한 요일에 해당하는 학식을 보여줍니다. 요일을 생략 시에는 오늘 학식을 보여줍니다.',
     options: [
         {
             name: '요일',

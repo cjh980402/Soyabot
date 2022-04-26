@@ -29,8 +29,10 @@ export async function messageExecute(message) {
         components: [row]
     });
 
-    const filter = (itr) => message.author.id === itr.user.id;
-    const collector = dice.createMessageComponentCollector({ filter, time: 120000 });
+    const collector = dice.createMessageComponentCollector({
+        filter: (itr) => message.author.id === itr.user.id,
+        time: 120000
+    });
 
     collector
         .on('collect', async (itr) => {
@@ -64,8 +66,10 @@ export async function commandExecute(interaction) {
         components: [row]
     });
 
-    const filter = (itr) => interaction.user.id === itr.user.id;
-    const collector = dice.createMessageComponentCollector({ filter, time: 120000 });
+    const collector = dice.createMessageComponentCollector({
+        filter: (itr) => interaction.user.id === itr.user.id,
+        time: 120000
+    });
 
     collector
         .on('collect', async (itr) => {

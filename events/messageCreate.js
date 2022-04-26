@@ -8,7 +8,7 @@ const promiseTimeout = (promise, ms) => Promise.race([promise, setTimeout(ms)]);
 
 export const name = 'messageCreate';
 export async function listener(message) {
-    let commandName, originCommandName;
+    let commandName;
     try {
         console.log(
             `(${new Date().toLocaleString()}) ${message.channelId} ${message.channel.name ?? 'DM'} ${
@@ -59,18 +59,15 @@ export async function listener(message) {
             );
         }
 
-        originCommandName = nowCommand.command[0];
-        commandName = nowCommand.channelCool ? `${originCommandName}_${message.channelId}` : originCommandName;
+        commandName = nowCommand.command[0];
 
         if (message.client.cooldowns.has(commandName)) {
             // 명령이 수행 중인 경우
-            return await message.channel.send(`'${originCommandName}' 명령을 사용하기 위해 잠시 기다려야합니다.`);
+            return await message.channel.send(`'${commandName}' 명령을 사용하기 위해 잠시 기다려야합니다.`);
         }
         message.client.cooldowns.add(commandName); // 수행 중이지 않은 명령이면 새로 추가한다
-        commandCount(message.client.db, originCommandName);
-        await (nowCommand.channelCool
-            ? nowCommand.messageExecute(message, args)
-            : promiseTimeout(nowCommand.messageExecute(message, args), 300000)); // 명령어 수행 부분
+        commandCount(message.client.db, commandName);
+        await promiseTimeout(nowCommand.messageExecute(message, args), 300000); // 명령어 수행 부분
         message.client.cooldowns.delete(commandName); // 명령어 수행 끝나면 쿨타임 삭제
     } catch (err) {
         message.client.cooldowns.delete(commandName); // 에러 발생 시 쿨타임 삭제

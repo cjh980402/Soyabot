@@ -79,7 +79,6 @@ async function getWeatherEmbed(targetLocal) {
 export const usage = `${PREFIX}날씨 (지역)`;
 export const command = ['날씨', 'ㄴㅆ'];
 export const description = '- 입력한 지역의 날씨를 알려줍니다.';
-export const channelCool = true;
 export const type = ['기타'];
 export async function messageExecute(message, args) {
     const search = args.length > 0 ? args.join(' ') : '동대문구 전농1동';

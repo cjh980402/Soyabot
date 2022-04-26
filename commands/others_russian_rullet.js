@@ -30,12 +30,12 @@ export async function messageExecute(message, args) {
         components: [startRow]
     });
 
+    let isStart = false;
     const startCollector = gameStart.createMessageComponentCollector({ time: 300000 });
 
     startCollector
         .on('collect', async (itr) => {
             try {
-                let isStart = false;
                 switch (itr.customId) {
                     case 'join':
                         if (gameUser.some((v) => itr.user.id === v.id)) {
@@ -79,30 +79,40 @@ export async function messageExecute(message, args) {
                         }
                         break;
                 }
+            } catch {}
+        })
+        .once('end', async () => {
+            try {
+                startRow.components.forEach((v) => v.setDisabled(true));
+                await gameStart.edit({ components: [startRow] });
+            } catch {}
 
+            try {
                 if (isStart) {
                     // 게임을 진행할 때는 멘션으로 해당하는 사람에게 알려준다.
                     const doingRow = new ActionRowBuilder().addComponents([
                         new ButtonBuilder().setCustomId('gun').setEmoji('🔫').setStyle(ButtonStyle.Danger)
                     ]);
 
-                    const die = Math.floor(Math.random() * bullet); // 0번째 ~ (bullet - 1)번째 탄환 중에서 선택
                     const gameDoing = await message.channel.send({
                         content: `탄환 ${bullet}발이 장전되었습니다. 첫 시작은 ${gameUser[0]}님입니다.\n🔫 버튼을 눌러서 방아쇠를 당겨주세요.`,
                         components: [doingRow]
                     });
 
-                    let i = 0;
-                    const filter = (itr) => itr.user.id === gameUser[i % gameUser.length].id;
-                    const doingCollector = gameDoing.createMessageComponentCollector({ filter, time: 300000 });
+                    let now = 0;
+                    const doingCollector = gameDoing.createMessageComponentCollector({
+                        filter: (itr) => itr.user.id === gameUser[now % gameUser.length].id,
+                        time: 300000
+                    });
+                    const die = Math.floor(Math.random() * bullet); // 0번째 ~ (bullet - 1)번째 탄환 중에서 선택
 
                     doingCollector
                         .on('collect', async (itr) => {
                             try {
-                                if (i === die) {
+                                if (now === die) {
                                     try {
                                         const dieUser = await itr.guild.members.fetch({
-                                            user: gameUser[i % gameUser.length].id,
+                                            user: gameUser[now % gameUser.length].id,
                                             cache: false
                                         });
                                         await itr.update(`🔫 ${dieUser}님이 사망하셨습니다......\n한 판 더 하실?`);
@@ -113,18 +123,18 @@ export async function messageExecute(message, args) {
                                 } else {
                                     try {
                                         const nextUser = await itr.guild.members.fetch({
-                                            user: gameUser[(i + 1) % gameUser.length].id,
+                                            user: gameUser[(now + 1) % gameUser.length].id,
                                             cache: false
                                         });
                                         await itr.update(
-                                            `🔫 철컥 (${bullet - (i + 1)}발 남음)\n다음 차례는 ${nextUser}님입니다.`
+                                            `🔫 철컥 (${bullet - (now + 1)}발 남음)\n다음 차례는 ${nextUser}님입니다.`
                                         );
                                     } catch {
                                         await itr.update('다음 차례 유저가 방에서 나가서 게임이 자동으로 종료됩니다.');
                                         doingCollector.stop();
                                     }
                                 }
-                                i++;
+                                now++;
                             } catch {}
                         })
                         .once('end', async () => {
@@ -134,12 +144,6 @@ export async function messageExecute(message, args) {
                             } catch {}
                         });
                 }
-            } catch {}
-        })
-        .once('end', async () => {
-            try {
-                startRow.components.forEach((v) => v.setDisabled(true));
-                await gameStart.edit({ components: [startRow] });
             } catch {}
         });
 }
@@ -179,12 +183,12 @@ export async function commandExecute(interaction) {
         components: [startRow]
     });
 
+    let isStart = false;
     const startCollector = gameStart.createMessageComponentCollector({ time: 300000 });
 
     startCollector
         .on('collect', async (itr) => {
             try {
-                let isStart = false;
                 switch (itr.customId) {
                     case 'join':
                         if (gameUser.some((v) => itr.user.id === v.id)) {
@@ -228,7 +232,15 @@ export async function commandExecute(interaction) {
                         }
                         break;
                 }
+            } catch {}
+        })
+        .once('end', async () => {
+            try {
+                startRow.components.forEach((v) => v.setDisabled(true));
+                await gameStart.edit({ components: [startRow] });
+            } catch {}
 
+            try {
                 if (isStart) {
                     // 게임을 진행할 때는 멘션으로 해당하는 사람에게 알려준다.
                     const doingRow = new ActionRowBuilder().addComponents([
@@ -241,17 +253,19 @@ export async function commandExecute(interaction) {
                         components: [doingRow]
                     });
 
-                    let i = 0;
-                    const filter = (itr) => itr.user.id === gameUser[i % gameUser.length].id;
-                    const doingCollector = gameDoing.createMessageComponentCollector({ filter, time: 300000 });
+                    let now = 0;
+                    const doingCollector = gameDoing.createMessageComponentCollector({
+                        filter: (itr) => itr.user.id === gameUser[now % gameUser.length].id,
+                        time: 300000
+                    });
 
                     doingCollector
                         .on('collect', async (itr) => {
                             try {
-                                if (i === die) {
+                                if (now === die) {
                                     try {
                                         const dieUser = await itr.guild.members.fetch({
-                                            user: gameUser[i % gameUser.length].id,
+                                            user: gameUser[now % gameUser.length].id,
                                             cache: false
                                         });
                                         await itr.update(`🔫 ${dieUser}님이 사망하셨습니다......\n한 판 더 하실?`);
@@ -262,18 +276,18 @@ export async function commandExecute(interaction) {
                                 } else {
                                     try {
                                         const nextUser = await itr.guild.members.fetch({
-                                            user: gameUser[(i + 1) % gameUser.length].id,
+                                            user: gameUser[(now + 1) % gameUser.length].id,
                                             cache: false
                                         });
                                         await itr.update(
-                                            `🔫 철컥 (${bullet - (i + 1)}발 남음)\n다음 차례는 ${nextUser}님입니다.`
+                                            `🔫 철컥 (${bullet - (now + 1)}발 남음)\n다음 차례는 ${nextUser}님입니다.`
                                         );
                                     } catch {
                                         await itr.update('다음 차례 유저가 방에서 나가서 게임이 자동으로 종료됩니다.');
                                         doingCollector.stop();
                                     }
                                 }
-                                i++;
+                                now++;
                             } catch {}
                         })
                         .once('end', async () => {
@@ -283,12 +297,6 @@ export async function commandExecute(interaction) {
                             } catch {}
                         });
                 }
-            } catch {}
-        })
-        .once('end', async () => {
-            try {
-                startRow.components.forEach((v) => v.setDisabled(true));
-                await gameStart.edit({ components: [startRow] });
             } catch {}
         });
 }

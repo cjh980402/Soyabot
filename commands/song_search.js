@@ -9,7 +9,6 @@ import { Util } from '../util/Util.js';
 export const usage = `${PREFIX}search (영상 제목)`;
 export const command = ['search', 's'];
 export const description = '- 재생할 노래를 검색하고 선택합니다.';
-export const channelCool = true;
 export const type = ['음악'];
 export async function messageExecute(message, args) {
     if (!message.guildId) {

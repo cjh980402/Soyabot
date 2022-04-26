@@ -133,8 +133,10 @@ export async function sendPageMessage(messageOrCommand, embeds, options = {}) {
         });
 
         let currentPage = 0;
-        const filter = (itr) => (messageOrCommand.user ?? messageOrCommand.author).id === itr.user.id;
-        const collector = page.createMessageComponentCollector({ filter, time: 120000 });
+        const collector = page.createMessageComponentCollector({
+            filter: (itr) => (messageOrCommand.user ?? messageOrCommand.author).id === itr.user.id,
+            time: 120000
+        });
 
         collector
             .on('collect', async (itr) => {
