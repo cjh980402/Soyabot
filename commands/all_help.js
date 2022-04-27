@@ -31,7 +31,7 @@ export const commandData = {
 export async function commandExecute(interaction) {
     const detail = interaction.options.getString('세부항목');
     if (detail && !type.includes(detail)) {
-        const target = interaction.client.commands.find((cmd) => cmd.command.includes(detail));
+        const target = interaction.client.commands.get(detail);
         if (target) {
             return interaction.followUp(`**/${target.commandData.name}**\n- ${target.commandData.description}`);
         } else {

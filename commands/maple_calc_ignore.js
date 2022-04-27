@@ -16,7 +16,7 @@ export const commandData = {
             name: '현재_방무',
             type: ApplicationCommandOptionType.Number,
             description: '캐릭터의 현재 방무 수치',
-            min_value: -100,
+            min_value: 0,
             max_value: 100,
             required: true
         },

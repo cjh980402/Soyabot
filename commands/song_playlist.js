@@ -43,7 +43,7 @@ export async function commandExecute(interaction) {
     // 영상 주소가 주어진 경우는 play 기능을 실행
     if (isValidVideo(urlOrSearch) && !isValidPlaylist(urlOrSearch)) {
         interaction.options._hoistedOptions[0].name = '영상_주소_제목';
-        return interaction.client.commands.find((cmd) => cmd.commandData?.name === 'play').commandExecute(interaction);
+        return interaction.client.commands.get('play').commandExecute(interaction);
     }
 
     let playlist = null;

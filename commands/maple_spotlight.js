@@ -11,5 +11,5 @@ export async function commandExecute(interaction) {
         type: ApplicationCommandOptionType.String,
         value: 'https://youtu.be/2cLhHDXAdxI'
     });
-    await interaction.client.commands.find((cmd) => cmd.commandData?.name === 'play').commandExecute(interaction);
+    await interaction.client.commands.get('play').commandExecute(interaction);
 }

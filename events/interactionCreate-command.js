@@ -42,11 +42,11 @@ export async function listener(interaction) {
                 );
             }
 
-            const nowCommand = interaction.client.commands.get(interaction.commandName); // 해당하는 명령어 찾기
             interaction.client.cooldowns.add(interaction.commandName); // 수행 중이지 않은 명령이면 새로 추가한다
+            const { commandExecute } = interaction.client.commands.get(interaction.commandName);
 
             commandCount(interaction.client.db, interaction.commandName);
-            await promiseTimeout(nowCommand.commandExecute(interaction), 300000); // 명령어 수행 부분
+            await promiseTimeout(commandExecute(interaction), 300000); // 명령어 수행 부분
 
             interaction.client.cooldowns.delete(interaction.commandName); // 명령어 수행 끝나면 쿨타임 삭제
         } catch (err) {

@@ -5,28 +5,14 @@ import { ADMIN_ID } from '../soyabot_config.js';
 export const name = 'messageCreate';
 export async function listener(message) {
     try {
-        if (message.author.bot || message.author.system) {
-            // 봇 또는 시스템 유저 여부 체크
+        if (!message.content || message.author.bot || message.author.system) {
+            // 빈 메시지, 봇, 시스템 유저 여부 체크
             return;
         }
 
-        const botPermissions = [
-            'ViewChannel',
-            message.channel.isThread() ? 'SendMessagesInThreads' : 'SendMessages',
-            'ReadMessageHistory',
-            'EmbedLinks',
-            'AttachFiles'
-        ];
-
-        if (
-            !message.guildId ||
-            (message.channel.permissionsFor(message.guild.me).has(botPermissions) &&
-                !message.guild.me.isCommunicationDisabled())
-        ) {
-            if (message.author.id === ADMIN_ID) {
-                // 관리자 여부 체크
-                await adminChat(message);
-            }
+        if (message.author.id === ADMIN_ID) {
+            // 관리자 여부 체크
+            await adminChat(message);
         }
     } catch (err) {
         try {
