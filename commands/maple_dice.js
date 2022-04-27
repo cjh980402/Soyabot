@@ -30,7 +30,7 @@ export async function commandExecute(interaction) {
     });
 
     const collector = dice.createMessageComponentCollector({
-        filter: (itr) => interaction.user.id === itr.user.id,
+        filter: (itr) => itr.user.id === interaction.user.id,
         time: 120000
     });
 

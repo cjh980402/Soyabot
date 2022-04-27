@@ -123,7 +123,7 @@ export async function sendPageMessage(interaction, embeds, options = {}) {
 
         let currentPage = 0;
         const collector = page.createMessageComponentCollector({
-            filter: (itr) => (messageOrCommand.user ?? messageOrCommand.author).id === itr.user.id,
+            filter: (itr) => itr.user.id === interaction.user.id,
             time: 120000
         });
 
