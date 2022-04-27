@@ -1,52 +1,8 @@
 import { ApplicationCommandOptionType } from 'discord.js';
-import { PREFIX } from '../soyabot_config.js';
 import { canModifyQueue } from '../util/soyabot_util.js';
 import { Util } from '../util/Util.js';
 
-export const usage = `${PREFIX}remove (대기열 번호)`;
-export const command = ['remove', 'rm'];
-export const description = '- 대기열에서 지정한 노래를 삭제합니다. (,로 구분하여 여러 노래 삭제 가능)';
 export const type = ['음악'];
-export async function messageExecute(message, args) {
-    if (!message.guildId) {
-        return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
-    }
-    if (args.length < 1) {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-    }
-
-    const queue = message.client.queues.get(message.guildId);
-    if (!queue?.player.state.resource) {
-        return message.reply('재생 중인 노래가 없습니다.');
-    }
-    if (!canModifyQueue(message.member)) {
-        return message.reply(`${message.client.user}과 같은 음성 채널에 참가해주세요!`);
-    }
-    if (queue.songs.length < 2) {
-        return message.reply('현재 대기열에서 삭제할 수 있는 노래가 없습니다.');
-    }
-
-    const songRemove = Util.deduplication(args.join('').split(',').map(Math.trunc));
-    const removed = [];
-    if (songRemove.every((v) => !isNaN(v) && 2 <= v && v <= queue.songs.length)) {
-        queue.songs = queue.songs.filter((v, i) => {
-            if (songRemove.includes(i + 1)) {
-                removed.push(v);
-                return false;
-            } else {
-                return true;
-            }
-        });
-    } else {
-        return message.reply(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래를 삭제할 수 있습니다.`);
-    }
-
-    await message.channel.send(
-        `❌ ${message.author}가 대기열에서 ${removed
-            .map((song, i) => `**${songRemove[i]}. ${song.title}**`)
-            .join(', ')}을 삭제했습니다.`
-    );
-}
 export const commandData = {
     name: 'remove',
     description: '대기열에서 지정한 노래를 삭제합니다. (,로 구분하여 여러 노래 삭제 가능)',

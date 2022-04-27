@@ -1,6 +1,5 @@
 import { Attachment, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
-import { PREFIX } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
 import { Util } from '../util/Util.js';
 const chartType = {
@@ -84,37 +83,7 @@ async function getCoinEmbed(searchRslt, type) {
     return { embeds: [coinEmbed], files: [image] };
 }
 
-export const usage = `${PREFIX}코인정보 (검색 내용) (차트 종류)`;
-export const command = ['코인정보', 'ㅋㅇㅈㅂ'];
-export const description = `- 검색 내용에 해당하는 코인의 정보를 보여줍니다.
-- (차트 종류): ${Object.keys(chartType).join(', ')} 입력가능 (생략 시 1일로 적용)`;
 export const type = ['기타'];
-export async function messageExecute(message, args) {
-    if (args.length < 1) {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-    }
-
-    const type = args.length > 1 && chartType[args.at(-1)] ? args.pop() : '1일'; // 차트 종류
-    const krSearch = args.join('');
-    const enSearch = args.join(' ').toUpperCase();
-    const { body } = await request('https://api.upbit.com/v1/market/all');
-    const searchList = await body.json();
-    const searchRslt = searchList.find((v) => {
-        const [currency, code] = v.market.split('-');
-        return (
-            currency === 'KRW' &&
-            (code.includes(enSearch) ||
-                v.korean_name.includes(krSearch) ||
-                v.english_name.toUpperCase().includes(enSearch))
-        );
-    });
-
-    if (!searchRslt) {
-        await message.channel.send('검색 내용에 해당하는 코인의 정보를 조회할 수 없습니다.');
-    } else {
-        await message.channel.send(await getCoinEmbed(searchRslt, type));
-    }
-}
 export const commandData = {
     name: '코인정보',
     description: '검색 내용에 해당하는 코인의 정보를 보여줍니다.',

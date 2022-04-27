@@ -1,5 +1,4 @@
 import { ApplicationCommandOptionType } from 'discord.js';
-import { PREFIX } from '../soyabot_config.js';
 const picmatch = {
     앗볶음: 'AtFried',
     헉튀김: 'HeokFried',
@@ -19,21 +18,7 @@ const picmatch = {
     흑흑화채: 'HeukheukHwachae'
 };
 
-export const usage = `${PREFIX}무토 (요리 이름)`;
-export const command = ['무토', 'ㅁㅌ'];
-export const description = `- 해당하는 요리의 레시피를 출력합니다.
-- (요리 이름): ${Object.keys(picmatch).join(', ')} 입력가능`;
 export const type = ['메이플'];
-export async function messageExecute(message, args) {
-    if (picmatch[args[0]]) {
-        await message.channel.send({
-            content: `${args[0]} 요리의 레시피`,
-            files: [`./pictures/muto/${picmatch[args[0]]}.png`]
-        });
-    } else {
-        await message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-    }
-}
 export const commandData = {
     name: '무토',
     description: '해당하는 요리의 레시피를 출력합니다.',

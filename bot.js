@@ -15,7 +15,7 @@ try {
     const datas = [];
     for (const file of readdirSync('./commands')) {
         const cmd = await import(`./commands/${file}`);
-        client.commands.push(cmd); // js파일의 명령 객체를 배열에 push
+        client.commands.set(cmd.commandData.name, cmd);
         if (cmd.commandData) {
             datas.push(cmd.commandData);
         }

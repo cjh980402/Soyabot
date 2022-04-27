@@ -1,5 +1,4 @@
 import { EmbedBuilder } from 'discord.js';
-import { PREFIX } from '../soyabot_config.js';
 import { sendPageMessage } from '../util/soyabot_util.js';
 
 function getQueueEmbed(songs, thumbnail, name) {
@@ -20,23 +19,7 @@ function getQueueEmbed(songs, thumbnail, name) {
     return embeds;
 }
 
-export const usage = `${PREFIX}queue`;
-export const command = ['queue', 'q'];
-export const description = '- 대기열과 지금 재생 중인 노래 출력합니다.';
 export const type = ['음악'];
-export async function messageExecute(message) {
-    if (!message.guildId) {
-        return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
-    }
-
-    const queue = message.client.queues.get(message.guildId);
-    if (!queue?.player.state.resource) {
-        return message.reply('재생 중인 노래가 없습니다.');
-    }
-
-    const embeds = getQueueEmbed(queue.songs, message.guild.iconURL(), message.client.user.username);
-    await sendPageMessage(message, embeds);
-}
 export const commandData = {
     name: 'queue',
     description: '대기열과 지금 재생 중인 노래 출력합니다.'

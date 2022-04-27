@@ -1,5 +1,4 @@
 import { ApplicationCommandOptionType } from 'discord.js';
-import { PREFIX } from '../soyabot_config.js';
 
 function recommendWork(name) {
     const worklist = [
@@ -132,19 +131,7 @@ function recommendFood() {
     return `추천 메뉴는 [${foodlist[Math.floor(Math.random() * foodlist.length)]}]입니다.`;
 }
 
-export const usage = `${PREFIX}추천 (카테고리)`;
-export const command = ['추천', 'ㅊㅊ'];
-export const description = '- 봇이 카테고리(할일, 메뉴)에 따른 추천을 해줍니다.';
 export const type = ['기타'];
-export async function messageExecute(message, args) {
-    if (args[0] === '할일' || args[0] === 'ㅎㅇ') {
-        await message.channel.send(recommendWork(message.client.user.username));
-    } else if (args[0] === '메뉴' || args[0] === 'ㅁㄴ') {
-        await message.channel.send(recommendFood());
-    } else {
-        await message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-    }
-}
 export const commandData = {
     name: '추천',
     description: '봇이 할 일이나 메뉴를 추천해줍니다.',

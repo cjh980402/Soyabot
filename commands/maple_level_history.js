@@ -1,36 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
-import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../classes/MapleParser.js';
 
-export const usage = `${PREFIX}히스토리 (닉네임)`;
-export const command = ['히스토리', 'ㅎㅅㅌㄹ', '레벨히스토리', 'ㄹㅂㅎㅅㅌㄹ', 'ㄼㅎㅅㅌㄹ'];
-export const description = '- 캐릭터의 레벨업 내역을 보여줍니다.';
 export const type = ['메이플'];
-export async function messageExecute(message, args) {
-    if (args.length !== 1) {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-    }
-
-    const mapleUserInfo = new MapleUser(args[0]);
-    if (!(await mapleUserInfo.homeLevel())) {
-        return message.channel.send(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
-    }
-    if (!(await mapleUserInfo.isLatest())) {
-        await message.channel.send('제한시간 내에 갱신 작업을 실패했습니다.');
-    }
-
-    const data = mapleUserInfo.LevelHistory();
-    if (!data) {
-        await message.channel.send(`[${mapleUserInfo.Name}]\n레벨 히스토리를 가져오지 못했습니다.`);
-    } else {
-        const len = data[0].length;
-        let rslt = `[${mapleUserInfo.Name}]`;
-        for (let i = 1; i < len; i++) {
-            rslt += `\nLv.${data[1][i]} 달성일: ${data[0][i]}`;
-        }
-        await message.channel.send(rslt);
-    }
-}
 export const commandData = {
     name: '히스토리',
     description: '캐릭터의 레벨업 내역을 보여줍니다.',

@@ -1,28 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
-import { PREFIX } from '../soyabot_config.js';
 import { NormalItem } from '../classes/NormalItem.js';
 
-export const usage = `${PREFIX}스타포스시뮬 A B C D E F`;
-export const command = ['스타포스시뮬', 'ㅅㅌㅍㅅㅅㅁ'];
-export const description = `- A: 아이템 레벨 제한 (98 ~ 250)
-- B: 시작 스타포스 개수
-- C: 목표 스타포스 개수
-- D: 스타캐치 미적용 = 0 / 스타캐치 적용 = 1
-- E: 이벤트 미적용 = 0
-     30퍼 할인 이벤트 = 1
-     5, 10, 15성 100% 성공 이벤트 = 2
-     10성 이하 1 + 1 이벤트 = 3
-- F: 파괴 방지 미적용 = 0
-     파괴 방지 (12 ~ 17성 적용) = 1
-     파괴 방지 (15 ~ 17성 적용) = 2`;
 export const type = ['메이플'];
-export async function messageExecute(message, args) {
-    if (!args[0]) {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-    }
-    const result = new NormalItem();
-    await message.channel.send(result.doingStarforce(args.map(Number)));
-}
 export const commandData = {
     name: '스타포스시뮬',
     description: '일반 장비템의 스타포스 시뮬레이션을 수행합니다.',

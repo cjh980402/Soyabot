@@ -1,8 +1,8 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { FormData, request } from 'undici';
 import { safelyExtractBody } from 'undici/lib/fetch/body.js';
-import { getMessageImage, sendSplitCode } from '../util/soyabot_util.js';
-import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET, PREFIX } from '../soyabot_config.js';
+import { sendSplitCode } from '../util/soyabot_util.js';
+import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '../soyabot_config.js';
 
 async function requestCFR(url) {
     const form = new FormData();
@@ -43,18 +43,7 @@ async function clova_face(url) {
     return rslt;
 }
 
-export const usage = `${PREFIX}얼굴인식`;
-export const command = ['얼굴인식', 'ㅇㄱㅇㅅ'];
-export const description = '- 인물 사진과 함께 명령어를 사용하면 얼굴을 분석한 후 성별, 나이 등을 알려줍니다.';
 export const type = ['기타'];
-export async function messageExecute(message) {
-    const imageURL = await getMessageImage(message);
-    if (!imageURL) {
-        await message.channel.send('사진이 포함된 메시지에 명령어를 사용해주세요.');
-    } else {
-        await sendSplitCode(message.channel, await clova_face(imageURL), { split: true });
-    }
-}
 export const commandData = {
     name: '얼굴인식',
     description: '인물 사진과 함께 명령어를 사용하면 얼굴을 분석한 후 성별, 나이 등을 알려줍니다.',

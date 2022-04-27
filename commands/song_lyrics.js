@@ -1,7 +1,6 @@
 import { EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
-import { PREFIX } from '../soyabot_config.js';
 import { Util } from '../util/Util.js';
 
 async function getLyricsEmbed(search) {
@@ -41,20 +40,7 @@ async function getLyricsEmbed(search) {
     return lyricsEmbed;
 }
 
-export const usage = `${PREFIX}lyrics (노래 제목)`;
-export const command = ['lyrics', 'ly', '가사'];
-export const description =
-    '- 입력한 노래의 가사를 출력합니다. 노래 제목을 생략 시에는 현재 재생 중인 노래의 가사를 출력합니다.';
 export const type = ['음악'];
-export async function messageExecute(message, args) {
-    const queue = message.client.queues.get(message.guild?.id);
-    const search = args.join(' ') || queue?.songs[0].title;
-    if (!search) {
-        return message.channel.send('검색할 노래가 없습니다.');
-    }
-
-    await message.channel.send({ embeds: [await getLyricsEmbed(search)] });
-}
 export const commandData = {
     name: 'lyrics',
     description: '입력한 노래의 가사를 출력합니다. 노래 제목을 생략 시에는 현재 재생 중인 노래의 가사를 출력합니다.',

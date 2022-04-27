@@ -1,7 +1,6 @@
 import { Attachment, EmbedBuilder } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
-import { PREFIX } from '../soyabot_config.js';
 import { sendPageMessage } from '../util/soyabot_util.js';
 
 async function getCoronaEmbed() {
@@ -46,15 +45,7 @@ async function getCoronaEmbed() {
     return [corona1, corona2];
 }
 
-export const usage = `${PREFIX}코로나`;
-export const command = ['코로나', 'ㅋㄹㄴ'];
-export const description = '- 최신 기준 코로나 국내 현황 통계를 알려줍니다.';
 export const type = ['기타'];
-export async function messageExecute(message) {
-    const thumbnail = new Attachment('./pictures/mohw.png');
-    const embeds = await getCoronaEmbed();
-    await sendPageMessage(message, embeds, { files: [thumbnail] });
-}
 export const commandData = {
     name: '코로나',
     description: '최신 기준 코로나 국내 현황 통계를 알려줍니다.'

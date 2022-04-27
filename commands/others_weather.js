@@ -1,7 +1,6 @@
 import { ActionRowBuilder, EmbedBuilder, SelectMenuBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
-import { PREFIX } from '../soyabot_config.js';
 import { sendPageMessage } from '../util/soyabot_util.js';
 import { Util } from '../util/Util.js';
 
@@ -76,57 +75,7 @@ async function getWeatherEmbed(targetLocal) {
     return embeds;
 }
 
-export const usage = `${PREFIX}날씨 (지역)`;
-export const command = ['날씨', 'ㄴㅆ'];
-export const description = '- 입력한 지역의 날씨를 알려줍니다.';
 export const type = ['기타'];
-export async function messageExecute(message, args) {
-    const search = args.length > 0 ? args.join(' ') : '동대문구 전농1동';
-    const { body } = await request(
-        `https://ac.weather.naver.com/ac?q_enc=utf-8&r_format=json&r_enc=utf-8&r_lt=1&st=1&q=${encodeURIComponent(
-            search
-        )}`
-    );
-    const searchRslt = (await body.json()).items[0].slice(0, 25);
-    let targetLocal;
-    if (!searchRslt?.length) {
-        return message.channel.send('검색된 지역이 없습니다.');
-    } else if (searchRslt.length === 1) {
-        targetLocal = searchRslt[0];
-    } else {
-        const row = new ActionRowBuilder().addComponents([
-            new SelectMenuBuilder()
-                .setCustomId('select_menu')
-                .setPlaceholder(`총 ${searchRslt.length}지역이 검색되었습니다.`)
-                .addOptions(
-                    searchRslt.map((v, i) => ({
-                        label: v[0][0],
-                        value: String(i)
-                    }))
-                )
-        ]);
-
-        const list = await message.channel.send({ content: '검색할 지역을 선택해주세요.', components: [row] });
-        try {
-            const choiceMenu = await list.awaitMessageComponent({
-                filter: (itr) => itr.user.id === message.author.id,
-                time: 15000
-            });
-            await choiceMenu.deferUpdate();
-            targetLocal = searchRslt[choiceMenu.values[0]];
-        } catch {
-            targetLocal = searchRslt[0];
-        } finally {
-            try {
-                row.components[0].setDisabled(true);
-                await list.edit({ components: [row] });
-            } catch {}
-        }
-    }
-
-    const embeds = await getWeatherEmbed(targetLocal);
-    await sendPageMessage(message, embeds);
-}
 export const commandData = {
     name: '날씨',
     description: '입력한 지역의 날씨를 알려줍니다.',
@@ -145,7 +94,7 @@ export async function commandExecute(interaction) {
             search
         )}`
     );
-    const searchRslt = (await body.json()).items[0].slice(0, 25);
+    const searchRslt = (await body.json()).items[0]?.slice(0, 25);
     let targetLocal;
     if (!searchRslt?.length) {
         return interaction.followUp('검색된 지역이 없습니다.');

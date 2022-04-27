@@ -1,4 +1,3 @@
-export const PREFIX = '/';
 export const TOKEN = '';
 export const ADMIN_ID = '';
 export const NOTICE_CHANNEL_ID = '';

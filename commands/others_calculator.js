@@ -1,6 +1,5 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { create, all } from 'mathjs';
-import { PREFIX } from '../soyabot_config.js';
 import { sendSplitCode } from '../util/soyabot_util.js';
 const math = create(all);
 const originEvaluate = math.evaluate; // 오버라이드 전에 원래 evaluate 함수를 가져옴
@@ -39,21 +38,7 @@ function inputExpression(str) {
         .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (all) => `^(${[...all].map((v) => '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(v)).join('')})`);
 }
 
-export const usage = `${PREFIX}ev (계산식)`;
-export const command = ['ev', '계산기', 'ㄱㅅㄱ', 'ㄳㄱ'];
-export const description = '- 계산식에 해당하는 결과값을 보여줍니다.';
 export const type = ['기타'];
-export async function messageExecute(message, args) {
-    if (args.length < 1) {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-    }
-
-    try {
-        await sendSplitCode(message.channel, String(originEvaluate(inputExpression(args.join(' ')))), { code: 'js' });
-    } catch {
-        await message.channel.send('올바르지 않은 수식입니다.');
-    }
-}
 export const commandData = {
     name: 'ev',
     description: '계산식에 해당하는 결과값을 보여줍니다.',

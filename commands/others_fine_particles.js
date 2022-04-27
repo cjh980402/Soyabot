@@ -1,7 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
-import { PREFIX } from '../soyabot_config.js';
 import { sendPageMessage } from '../util/soyabot_util.js';
 
 async function getFineParticlesEmbed() {
@@ -25,14 +24,7 @@ async function getFineParticlesEmbed() {
     return embeds;
 }
 
-export const usage = `${PREFIX}미세먼지`;
-export const command = ['미세먼지', 'ㅁㅅㅁㅈ'];
-export const description = '- 현재 한국의 미세먼지 현황을 보여줍니다.';
 export const type = ['기타'];
-export async function messageExecute(message) {
-    const embeds = await getFineParticlesEmbed();
-    await sendPageMessage(message, embeds);
-}
 export const commandData = {
     name: '미세먼지',
     description: '현재 한국의 미세먼지 현황을 보여줍니다.'

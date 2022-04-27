@@ -1,5 +1,4 @@
 import { Attachment } from 'discord.js';
-import { PREFIX } from '../soyabot_config.js';
 import renderChart from '../util/chartjs_rendering.js';
 
 async function getCommandCountGraph(client) {
@@ -72,13 +71,7 @@ async function getCommandCountGraph(client) {
     return new Attachment(await renderChart(config, 2000, height), 'chart.png');
 }
 
-export const usage = `${PREFIX}통계`;
-export const command = ['통계', 'ㅌㄱ'];
-export const description = '- 봇의 명령어 사용량 통계를 그래프로 보여줍니다.';
 export const type = ['기타'];
-export async function messageExecute(message) {
-    await message.channel.send({ files: [await getCommandCountGraph(message.client)] });
-}
 export const commandData = {
     name: '통계',
     description: '봇의 명령어 사용량 통계를 그래프로 보여줍니다.'

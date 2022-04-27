@@ -1,33 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
-import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../classes/MapleParser.js';
 
-export const usage = `${PREFIX}랭킹 (닉네임)`;
-export const command = ['랭킹', 'ㄹㅋ'];
-export const description = '- 캐릭터의 랭킹을 출력합니다.';
 export const type = ['메이플'];
-export async function messageExecute(message, args) {
-    if (args.length !== 1) {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-    }
-
-    const mapleUserInfo = new MapleUser(args[0]);
-    if (!(await mapleUserInfo.homeLevel())) {
-        return message.channel.send(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
-    }
-    if (!(await mapleUserInfo.isLatest())) {
-        await message.channel.send('제한시간 내에 갱신 작업을 실패했습니다.');
-    }
-
-    const rank = mapleUserInfo.Rank();
-    if (!rank) {
-        await message.channel.send(`[${mapleUserInfo.Name}]\n랭킹 정보를 가져오지 못했습니다.`);
-    } else {
-        await message.channel.send(
-            `[${mapleUserInfo.Name}]\n종합 랭킹(전체): ${rank[0]}\n종합 랭킹(월드): ${rank[1]}\n직업 랭킹(전체): ${rank[3]}\n직업 랭킹(월드): ${rank[2]}`
-        );
-    }
-}
 export const commandData = {
     name: '랭킹',
     description: '캐릭터의 랭킹을 출력합니다.',

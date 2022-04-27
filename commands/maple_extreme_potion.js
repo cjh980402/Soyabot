@@ -1,5 +1,4 @@
 import { ApplicationCommandOptionType } from 'discord.js';
-import { PREFIX } from '../soyabot_config.js';
 import { levelTable } from '../util/Constant.js';
 const probTable = [
     [5, 5, 5, 5, 5, 5, 10, 20, 20, 20],
@@ -82,48 +81,7 @@ function extremePotion(startLev, endLev) {
     return `${rslt}총 ${cnt}개의 익성비를 소모`;
 }
 
-export const usage = `${PREFIX}익성비 (시작 레벨) (목표 레벨)`;
-export const command = ['익성비', 'ㅇㅅㅂ', '풀장', 'ㅍㅈ'];
-export const description = `- 시작 레벨 ~ 목표 레벨의 익성비 시뮬레이션을 수행합니다.
-- 200레벨 이상의 경우 시작 레벨만 입력해주세요.
-- 참고. ${PREFIX}익성비 확률 (시작 레벨)`;
 export const type = ['메이플'];
-export async function messageExecute(message, args) {
-    if (args.length !== 1 && args.length !== 2) {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-    }
-
-    if (args[0] === '확률' || args[0] === 'ㅎㄹ') {
-        const startLev = Math.trunc(args[1]);
-        let rslt = `<${startLev}레벨 기준 확률>`;
-        if (isNaN(startLev) || startLev < 141 || startLev > 199) {
-            return message.channel.send('141 ~ 199 범위의 기준 레벨을 입력해주세요.');
-        }
-        for (let i = 0; i < 10; i++) {
-            rslt += `\n${i + 1} 레벨업 확률: ${probTable[startLev - 141][i]}%`;
-        }
-        return message.channel.send(rslt);
-    }
-
-    const startLev = Math.trunc(args[0]);
-    if (args.length === 2) {
-        const endLev = Math.trunc(args[1]);
-        if (isNaN(startLev) || startLev < 141 || startLev > 199) {
-            return message.channel.send('141 ~ 199 범위의 시작 레벨을 입력해주세요.');
-        }
-        if (isNaN(endLev) || endLev < startLev || endLev > 200) {
-            return message.channel.send('시작 레벨 ~ 200 범위의 목표 레벨을 입력해주세요.');
-        }
-        await message.channel.send(extremePotion(startLev, endLev));
-    } else {
-        if (isNaN(startLev) || startLev < 200 || startLev > 299) {
-            return message.channel.send('200 ~ 299 범위의 시작 레벨을 입력해주세요.');
-        }
-        const exp199 = levelTable[199] - levelTable[198];
-        const expNow = levelTable[startLev] - levelTable[startLev - 1];
-        await message.channel.send(`Lv.${startLev} 익성비 효과\n경험치: ${((exp199 / expNow) * 100).toFixed(3)}%`);
-    }
-}
 export const commandData = {
     name: '익성비',
     description: '익성비 관련 기능을 수행합니다.',

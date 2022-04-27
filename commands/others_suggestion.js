@@ -1,22 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
-import { PREFIX } from '../soyabot_config.js';
 import { sendAdmin } from '../admin/bot_message.js';
 
-export const usage = `${PREFIX}건의 (건의 사항)`;
-export const command = ['건의', 'ㄱㅇ'];
-export const description = '- 개발자에게 건의 사항을 전송합니다.';
 export const type = ['기타'];
-export async function messageExecute(message, args) {
-    if (args.length < 1) {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-    }
-
-    const rslt = await sendAdmin(
-        message.client.users,
-        `${message.channelId} ${message.id}\n작성자: ${message.author.username}\n건의 내용: ${args.join(' ')}`
-    );
-    await message.reply(rslt ? '건의사항이 전송되었습니다.' : '건의사항 전송을 실패했습니다.');
-}
 export const commandData = {
     name: '건의',
     description: '개발자에게 건의 사항을 전송합니다.',

@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
-import { KAKAO_API_KEY, PREFIX } from '../soyabot_config.js';
+import { KAKAO_API_KEY } from '../soyabot_config.js';
 const langList = {
     한: ['한국어', 'kr'],
     영: ['영어', 'en'],
@@ -48,36 +48,7 @@ function findLangCode(src, tar) {
     }
 }
 
-export const usage = `${PREFIX}번역 (대상 언어 첫글자 + 결과 언어 첫글자) (내용)`;
-export const command = ['번역', 'ㅂㅇ'];
-export const description = `- 카카오 i를 이용한 언어 번역을 수행합니다. 한국어 → 영어의 경우 두번째 매개변수는 한영으로 입력하면 됩니다.
-- 참고. ${PREFIX}번역 목록`;
 export const type = ['기타'];
-export async function messageExecute(message, args) {
-    if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
-        return message.channel.send(
-            `<지원하는 언어 종류>\n${Object.values(langList)
-                .map((v) => v[0])
-                .join(', ')}`
-        );
-    }
-    if (args.length < 2) {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-    }
-    const langCode = findLangCode(args[0][0], args[0][1]);
-    if (!langCode) {
-        return message.channel.send(
-            `형식에 맞지 않거나 지원하지 않는 번역입니다.\n입력형식은 '${usage}'입니다.\n언어의 목록은 ${PREFIX}번역 목록을 확인해주세요.`
-        );
-    }
-
-    const text = message.content.replace(/\s*.+?\s+.+?\s+/, '').trim();
-    if (text.length > 5000) {
-        await message.channel.send('5000자를 초과하는 내용은 번역하지 않습니다.');
-    } else {
-        await message.channel.send(await tran(langCode[0], langCode[1], text));
-    }
-}
 export const commandData = {
     name: '번역',
     description: '카카오 i를 이용한 언어 번역을 수행합니다.',

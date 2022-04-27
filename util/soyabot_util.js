@@ -56,13 +56,6 @@ export async function getFullContent(message) {
     }
 }
 
-export async function getMessageImage(message) {
-    if (message.reference) {
-        message = await message.fetchReference();
-    }
-    return message.attachments.first()?.height ? message.attachments.first().url : null;
-}
-
 export async function joinVoice(channel) {
     const connection = joinVoiceChannel({
         channelId: channel.id,
@@ -114,18 +107,14 @@ export async function sendSplitCode(target, content, options) {
     }
 }
 
-export async function sendPageMessage(messageOrCommand, embeds, options = {}) {
-    const send =
-        messageOrCommand.followUp?.bind(messageOrCommand) ??
-        messageOrCommand.channel.send.bind(messageOrCommand.channel);
-
+export async function sendPageMessage(interaction, embeds, options = {}) {
     if (embeds.length > 1) {
         const row = new ActionRowBuilder().addComponents([
             new ButtonBuilder().setCustomId('prev').setEmoji('⬅️').setStyle(ButtonStyle.Secondary),
             new ButtonBuilder().setCustomId('stop').setEmoji('⏹️').setStyle(ButtonStyle.Secondary),
             new ButtonBuilder().setCustomId('next').setEmoji('➡️').setStyle(ButtonStyle.Secondary)
         ]);
-        const page = await send({
+        const page = await interaction.followUp({
             content: `**현재 페이지 - 1/${embeds.length}**`,
             embeds: [embeds[0]],
             components: [row],
@@ -170,6 +159,6 @@ export async function sendPageMessage(messageOrCommand, embeds, options = {}) {
                 } catch {}
             });
     } else {
-        await send({ embeds: [embeds[0]], ...options });
+        await interaction.followUp({ embeds: [embeds[0]], ...options });
     }
 }

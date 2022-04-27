@@ -1,79 +1,11 @@
 import { ApplicationCommandOptionType } from 'discord.js';
-import { PREFIX } from '../soyabot_config.js';
 import { sendAdmin } from '../admin/bot_message.js';
 import { QueueElement } from '../classes/QueueElement.js';
 import { isValidPlaylist, isValidVideo, getSongInfo } from '../util/song_util.js';
 import { joinVoice } from '../util/soyabot_util.js';
 import { Util } from '../util/Util.js';
 
-export const usage = `${PREFIX}play (영상 주소│영상 제목)`;
-export const command = ['play', 'p', '노래'];
-export const description = '- YouTube나 Soundcloud를 통해 노래를 재생합니다.';
 export const type = ['음악'];
-export async function messageExecute(message, args) {
-    if (!message.guildId) {
-        return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
-    }
-
-    const { channel } = message.member.voice;
-    const serverQueue = message.client.queues.get(message.guildId);
-    if (!channel) {
-        return message.reply('음성 채널에 먼저 참가해주세요!');
-    }
-    if (serverQueue && channel.id !== message.guild.me.voice.channelId) {
-        return message.reply(`${message.client.user}과 같은 음성 채널에 참가해주세요!`);
-    }
-    if (args.length < 1) {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-    }
-
-    if (!channel.joinable) {
-        return message.reply('권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.');
-    }
-    if (channel.isVoice() && !channel.speakable) {
-        return message.reply('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
-    }
-
-    const url = args[0];
-    const search = args.join(' ');
-    // 재생목록 주소가 주어진 경우는 playlist 기능을 실행
-    if (!isValidVideo(url) && isValidPlaylist(url)) {
-        return message.client.commands.find((cmd) => cmd.command.includes('playlist')).messageExecute(message, args);
-    }
-
-    let song = null;
-    try {
-        song = await getSongInfo(url, search);
-        if (!song) {
-            return message.reply('검색 내용에 해당하는 영상을 찾지 못했습니다.');
-        }
-    } catch {
-        return message.reply('재생할 수 없는 영상입니다.');
-    }
-
-    if (serverQueue) {
-        serverQueue.textChannel = message.channel;
-        serverQueue.songs.push(song);
-        return message.channel.send(
-            `✅ ${message.author}가\n**${song.title}** [${
-                song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
-            }]\n를 대기열에 추가했습니다.`
-        );
-    }
-
-    try {
-        const newQueue = new QueueElement(message.channel, channel, await joinVoice(channel), [song]);
-        message.client.queues.set(message.guildId, newQueue);
-        newQueue.playSong();
-    } catch (err) {
-        message.client.queues.delete(message.guildId);
-        sendAdmin(
-            message.client.users,
-            `작성자: ${message.author.username}\n방 ID: ${message.channelId}\n채팅 내용: ${message}\n에러 내용: ${err.stack}`
-        );
-        await message.channel.send(`채널에 참가할 수 없습니다: ${err.message}`);
-    }
-}
 export const commandData = {
     name: 'play',
     description: 'YouTube나 Soundcloud를 통해 노래를 재생합니다.',

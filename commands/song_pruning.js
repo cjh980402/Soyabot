@@ -1,24 +1,4 @@
-import { PREFIX } from '../soyabot_config.js';
-
-export const usage = `${PREFIX}pruning`;
-export const command = ['pruning', 'pr'];
-export const description = '- 봇의 음악 메시지 자동정리 기능 상태를 전환합니다.';
 export const type = ['음악'];
-export async function messageExecute(message) {
-    if (!message.guildId) {
-        return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
-    }
-
-    if (message.client.db.get('SELECT * FROM pruning_skip WHERE guild_id = ?', message.guildId)) {
-        // 기존상태: OFF
-        message.client.db.run('DELETE FROM pruning_skip WHERE guild_id = ?', message.guildId);
-        await message.channel.send('현재 메시지 자동정리: **OFF → ON**');
-    } else {
-        // 기존상태: ON
-        message.client.db.insert('pruning_skip', { guild_id: message.guildId, name: message.guild.name });
-        await message.channel.send('현재 메시지 자동정리: **ON → OFF**');
-    }
-}
 export const commandData = {
     name: 'pruning',
     description: '봇의 음악 메시지 자동정리 기능 상태를 전환합니다.'

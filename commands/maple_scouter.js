@@ -1,5 +1,4 @@
 import { Attachment, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
-import { PREFIX } from '../soyabot_config.js';
 import { MapleUser } from '../classes/MapleParser.js';
 const scoreGrade = [
     [0, '메린이'],
@@ -60,40 +59,7 @@ function getScouterEmbed(mapleUserInfo, union) {
         ]);
 }
 
-export const usage = `${PREFIX}스카우터 (닉네임)`;
-export const command = ['스카우터', 'ㅅㅋㅇㅌ'];
-export const description =
-    '- 정해진 조건으로 해당 캐릭터의 점수를 평가합니다. 닉네임을 생략 시에는 기준 점수표를 보여줍니다.';
 export const type = ['메이플'];
-export async function messageExecute(message, args) {
-    if (args.length !== 1) {
-        let rslt = '스카우터 기준 점수표';
-        for (let i = 0; i < scoreGrade.length - 2; i++) {
-            rslt += `\n${scoreGrade[i][0]} ~ ${scoreGrade[i + 1][0] - 1}점: ${scoreGrade[i][1]}`;
-        }
-        rslt += `\n${scoreGrade.at(-2)[0]}점 이상: ${scoreGrade.at(-2)[1]}
-
-점수 공식
-(레벨 - 100) + (무릉 층수 * 3) + (유니온 / 40)
-※ 레벨 275 이상: (레벨 - 50)
-※ 무릉 45층 이상: (무릉 층수 * 4)
-※ 유니온 8000 이상: (유니온 / 32)`;
-        return message.channel.send(rslt);
-    }
-
-    const mapleUserInfo = new MapleUser(args[0]);
-    const union = (await mapleUserInfo.homeUnion())?.[0];
-    if (!union) {
-        return message.channel.send(`[${mapleUserInfo.Name}]\n존재하지 않거나 월드 내 최고 레벨이 아닌 캐릭터입니다.`);
-    }
-
-    if (!(await mapleUserInfo.isLatest())) {
-        await message.channel.send('제한시간 내에 갱신 작업을 실패했습니다.');
-    }
-
-    const image = new Attachment(mapleUserInfo.userImg(), 'character.png');
-    await message.channel.send({ embeds: [getScouterEmbed(mapleUserInfo, union)], files: [image] });
-}
 export const commandData = {
     name: '스카우터',
     description: '정해진 조건으로 해당 캐릭터의 점수를 평가합니다. 닉네임을 생략 시에는 기준 점수표를 보여줍니다.',

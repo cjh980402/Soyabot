@@ -1,43 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
-import { PREFIX } from '../soyabot_config.js';
 import { canModifyQueue } from '../util/soyabot_util.js';
 
-export const usage = `${PREFIX}skipto (대기열 번호)`;
-export const command = ['skipto', 'st'];
-export const description = '- 번호로 선택한 대기열의 노래로 건너뜁니다.';
 export const type = ['음악'];
-export async function messageExecute(message, args) {
-    if (!message.guildId) {
-        return message.reply('사용이 불가능한 채널입니다.'); // 길드 여부 체크
-    }
-    if (args.length !== 1 || isNaN(args[0])) {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-    }
-
-    const queue = message.client.queues.get(message.guildId);
-    if (!queue?.player.state.resource) {
-        return message.reply('재생 중인 노래가 없습니다.');
-    }
-    if (!canModifyQueue(message.member)) {
-        return message.reply(`${message.client.user}과 같은 음성 채널에 참가해주세요!`);
-    }
-    if (queue.songs.length < 2) {
-        return message.reply('현재 대기열에서 건너뛸 수 있는 노래가 없습니다.');
-    }
-
-    const skipto = Math.trunc(args[0]);
-    if (skipto < 2 || skipto > queue.songs.length) {
-        return message.reply(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래로 건너뛸 수 있습니다.`);
-    }
-
-    await message.channel.send(`${message.author} ⏭️ ${skipto - 1}개의 노래를 건너뛰었습니다.`);
-    if (queue.loop) {
-        queue.songs.push(...queue.songs.splice(0, skipto - 2));
-    } else {
-        queue.songs.splice(0, skipto - 2);
-    }
-    queue.player.stop();
-}
 export const commandData = {
     name: 'skipto',
     description: '번호로 선택한 대기열의 노래로 건너뜁니다.',

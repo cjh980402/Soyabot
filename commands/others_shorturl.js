@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
-import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET, PREFIX } from '../soyabot_config.js';
+import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '../soyabot_config.js';
 
 async function shortURL(url) {
     const params = new URLSearchParams();
@@ -22,17 +22,7 @@ async function shortURL(url) {
     }
 }
 
-export const usage = `${PREFIX}단축주소 (대상 주소)`;
-export const command = ['단축주소', 'ㄷㅊㅈㅅ'];
-export const description = '- 입력한 주소를 짧은 형태의 주소로 변환합니다.';
 export const type = ['기타'];
-export async function messageExecute(message, args) {
-    if (args.length !== 1) {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-    }
-
-    await message.channel.send(await shortURL(args[0]));
-}
 export const commandData = {
     name: '단축주소',
     description: '입력한 주소를 짧은 형태의 주소로 변환합니다.',

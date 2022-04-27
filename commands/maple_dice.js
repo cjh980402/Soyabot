@@ -1,5 +1,4 @@
 import { Attachment, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import { PREFIX } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
 
 async function getDiceAttachment(nickname) {
@@ -12,43 +11,7 @@ async function getDiceAttachment(nickname) {
     return new Attachment(dicePic, 'dice.png');
 }
 
-export const usage = `${PREFIX}데굴데굴`;
-export const command = ['데굴데굴', 'ㄷㄱㄷㄱ'];
-export const description = '- 추억의 메이플스토리 주사위!';
 export const type = ['메이플'];
-export async function messageExecute(message) {
-    const nickname = message.member?.nickname ?? message.author.username;
-    const image = await getDiceAttachment(nickname);
-    const row = new ActionRowBuilder().addComponents([
-        new ButtonBuilder().setCustomId('repeat').setEmoji('🎲').setStyle(ButtonStyle.Secondary)
-    ]);
-    let count = 1;
-    const dice = await message.channel.send({
-        content: `${nickname}님의 ${count}번째 스탯 주사위`,
-        files: [image],
-        components: [row]
-    });
-
-    const collector = dice.createMessageComponentCollector({
-        filter: (itr) => message.author.id === itr.user.id,
-        time: 120000
-    });
-
-    collector
-        .on('collect', async (itr) => {
-            try {
-                const nickname = message.member?.nickname ?? message.author.username;
-                const image = await getDiceAttachment(nickname);
-                await itr.update({ content: `${nickname}님의 ${++count}번째 스탯 주사위`, files: [image] });
-            } catch {}
-        })
-        .once('end', async () => {
-            try {
-                row.components[0].setDisabled(true);
-                await dice.edit({ components: [row] });
-            } catch {}
-        });
-}
 export const commandData = {
     name: '데굴데굴',
     description: '추억의 메이플스토리 주사위!'

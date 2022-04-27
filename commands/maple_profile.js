@@ -1,47 +1,8 @@
 import { Attachment, ApplicationCommandOptionType } from 'discord.js';
-import { PREFIX } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
 import { MapleUser } from '../classes/MapleParser.js';
 
-export const usage = `${PREFIX}프로필 (닉네임)`;
-export const command = ['프로필', 'ㅍㄹㅍ', 'ㅍㄿ'];
-export const description = '- 캐릭터의 maple.GG 프로필을 출력합니다.';
 export const type = ['메이플'];
-export async function messageExecute(message, args) {
-    if (args.length !== 1) {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-    }
-
-    const mapleUserInfo = new MapleUser(args[0]);
-    const level = await mapleUserInfo.homeLevel();
-    if (!level) {
-        return message.channel.send(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
-    }
-    if (!(await mapleUserInfo.isLatest())) {
-        await message.channel.send('제한시간 내에 갱신 작업을 실패했습니다.');
-    }
-
-    const rank = mapleUserInfo.Rank();
-    const rankString = rank[2] === '-위' ? ' ' : `월드 ${rank[2]} (전체 ${rank[3]})`;
-    const murung = mapleUserInfo.Murung();
-    const union = mapleUserInfo.Union();
-    const seed = mapleUserInfo.Seed();
-
-    const { stdout: profilePic } = await exec(
-        `python3 ./util/python/maple_gg_profile.py ${mapleUserInfo.userImg(false)} ${
-            mapleUserInfo.Name
-        } ${mapleUserInfo.serverName()} ${level[0]} '${
-            level[4]
-        }' ${mapleUserInfo.serverImg()} ${level[2].toLocaleString()} '${level[3] || '(없음)'}' '${rankString}' '${
-            murung ? murung[1] : '기록없음'
-        }' '${murung ? murung[2] : ' '}' '${union ? union[3] : '기록없음'}' '${
-            union ? `Lv.${union[0].toLocaleString()}` : ' '
-        }' '${seed ? seed[1] : '기록없음'}' '${seed ? seed[2] : ' '}'`,
-        { encoding: 'buffer' }
-    );
-    const image = new Attachment(profilePic, 'profile.png');
-    await message.channel.send({ content: `${mapleUserInfo.Name}님의 프로필`, files: [image] });
-}
 export const commandData = {
     name: '프로필',
     description: '캐릭터의 maple.GG 프로필을 출력합니다.',

@@ -1,5 +1,4 @@
 import { freemem, totalmem } from 'node:os';
-import { PREFIX } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
 
 function timeKoreanUnit(num) {
@@ -20,23 +19,7 @@ function timeKoreanUnit(num) {
     return rslt.join(' ') || '0초';
 }
 
-export const usage = `${PREFIX}상태`;
-export const command = ['상태', 'ㅅㅌ'];
-export const description = '- 봇의 작동 상태를 알려줍니다.';
 export const type = ['기타'];
-export async function messageExecute(message) {
-    let memory;
-    if (process.platform === 'linux') {
-        const freeExec = (await exec('free')).stdout.split(/\s+/);
-        memory = (100 * (1 - +freeExec[13] / +freeExec[8])).toFixed(2);
-    } else {
-        memory = (100 * (1 - freemem() / totalmem())).toFixed(2);
-    }
-
-    await message.channel.send(
-        `작동 시간: ${timeKoreanUnit(Math.floor(message.client.uptime / 1000))}\n메모리 사용량: ${memory}%`
-    );
-}
 export const commandData = {
     name: '상태',
     description: '봇의 작동 상태를 알려줍니다.'

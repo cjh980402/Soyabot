@@ -1,6 +1,5 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
-import { PREFIX } from '../soyabot_config.js';
 import { sendSplitCode } from '../util/soyabot_util.js';
 
 async function farm_monster(monster) {
@@ -164,39 +163,7 @@ async function farm_info(user) {
     }
 }
 
-export const usage = `${PREFIX}농장 ...`;
-export const command = ['농장', 'ㄴㅈ', 'ㄵ'];
-export const description = `- 몬스터라이프 관련 기능을 수행합니다.
-- ${PREFIX}농장 목록 (몬스터 이름)
-- ${PREFIX}농장 조합식 (몬스터 이름)
-- ${PREFIX}농장 정보 (농장 이름)
-- ${PREFIX}농장 추가 (끝나는 날짜) (농장 이름) (몬스터 이름)
-- 참고. 끝나는 날짜의 형식은 YYMMDD 형식입니다. (무한유지를 하는 몬스터는 '무한유지')`;
 export const type = ['메이플'];
-export async function messageExecute(message, args) {
-    if (args.length < 2) {
-        return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-    }
-
-    try {
-        if (args[0] === '목록' || args[0] === 'ㅁㄹ') {
-            await sendSplitCode(message.channel, await farm_read(args.slice(1).join('')), { split: true });
-        } else if (args[0] === '조합식' || args[0] === 'ㅈㅎㅅ') {
-            await message.channel.send(await farm_sex(args.slice(1).join('')));
-        } else if (args[0] === '정보' || args[0] === 'ㅈㅂ') {
-            await sendSplitCode(message.channel, await farm_info(args.slice(1).join('')), { split: true });
-        } else if (args[0] === '추가' || args[0] === 'ㅊㄱ') {
-            if (args.length < 4) {
-                return message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-            }
-            await message.channel.send(await farm_add(args[1], args[2], args.slice(3).join('')));
-        } else {
-            await message.channel.send(`**${usage}**\n- 대체 명령어: ${command.join(', ')}\n${description}`);
-        }
-    } catch {
-        await message.channel.send('농장 API 서버가 점검 중입니다.');
-    }
-}
 export const commandData = {
     name: '농장',
     description: '몬스터라이프 관련 기능을 수행합니다.',
