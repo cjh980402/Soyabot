@@ -39,7 +39,7 @@ export async function commandExecute(interaction) {
         }
     }
 
-    const descriptions = interaction.client.commands
+    const descriptions = [...interaction.client.commands.values()]
         .filter((cmd) => !detail || cmd.type.includes(detail))
         .map((cmd) => `**/${cmd.commandData.name}**\n- ${cmd.commandData.description}`);
 

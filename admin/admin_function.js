@@ -30,7 +30,7 @@ export async function adminChat(message) {
     } else if (message.channel.isDM() && message.reference) {
         // 건의 답변 기능
         const suggestRefer = await message.fetchReference();
-        const [channelId] = suggestRefer.content.split(/\s/);
+        const channelId = /^(\d+)\n/.exec(suggestRefer.content)?.[1];
         const rslt = await sendChannelID(message.client.channels, channelId, `[건의 답변]\n${fullContent}`);
         await message.channel.send(rslt ? '건의 답변을 보냈습니다.' : '해당하는 건의의 정보가 존재하지 않습니다.');
     }
