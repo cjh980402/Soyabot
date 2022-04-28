@@ -18,9 +18,7 @@ export async function listener(interaction) {
             const botPermissions = [
                 'ViewChannel',
                 interaction.channel.isThread() ? 'SendMessagesInThreads' : 'SendMessages',
-                'ReadMessageHistory',
-                'EmbedLinks',
-                'AttachFiles'
+                'EmbedLinks'
             ];
 
             if (
