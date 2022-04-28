@@ -43,9 +43,7 @@ export async function commandExecute(interaction) {
     // 재생목록 주소가 주어진 경우는 playlist 기능을 실행
     if (!isValidVideo(urlOrSearch) && isValidPlaylist(urlOrSearch)) {
         interaction.options._hoistedOptions[0].name = '재생목록_주소_제목';
-        return interaction.client.commands
-            .find((cmd) => cmd.commandData?.name === 'playlist')
-            .commandExecute(interaction);
+        return interaction.client.commands.get('playlist').commandExecute(interaction);
     }
 
     let song = null;

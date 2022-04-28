@@ -127,16 +127,16 @@ export class QueueElement {
         }
     }
 
-    async sendMessage(content) {
+    async sendMessage(data) {
         try {
-            return await this.textChannel.send(content);
+            return await this.textChannel.send(data);
         } catch {
             try {
                 const channels = this.textChannel.guild.channels.cache;
                 if (!channels.has(this.textChannel.id)) {
                     this.textChannel = channels.find((v) => v.isText()) ?? this.textChannel;
                 }
-                return await this.textChannel.send(content);
+                return await this.textChannel.send(data);
             } catch {}
         }
     }

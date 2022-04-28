@@ -54,7 +54,7 @@ export async function commandExecute(interaction) {
             .addOptions(
                 results.map((v, i) => ({
                     label: v.title,
-                    description: `[${results[i].duration === 0 ? '⊚ LIVE' : results[i].durationText}]`,
+                    description: `[${v.duration === 0 ? '⊚ LIVE' : v.durationText}]`,
                     value: String(i)
                 }))
             )
