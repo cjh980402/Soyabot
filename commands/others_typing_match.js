@@ -32,18 +32,17 @@ export async function commandExecute(interaction) {
     const choice = matchString[random];
     const choiceLength = Hangul.disassemble(choice).length;
     await interaction.followUp(
-        `이번 문장은 ${random <= 1119 ? '한글' : '영어'} 문장입니다. 입력 버튼을 누른 후 문장을 입력해주세요.`
+        `이번 문장은 ${
+            random <= 1119 ? '한글' : '영어'
+        } 문장입니다. 3초 후 문장이 출력되면 입력 버튼을 누른 후 주어진 문장을 입력해주세요.`
     );
 
-    for (let i = 3; i > 0; i--) {
-        await interaction.channel.send(String(i));
-        await setTimeout(1000); // 3초 카운트 다운 로직
-    }
+    await setTimeout(3000); // 3초 대기
 
     const startRow = new ActionRowBuilder().addComponents([
         new ButtonBuilder().setCustomId('start').setLabel('입력').setStyle(ButtonStyle.Primary)
     ]);
-    const gameStart = await interaction.channel.send({
+    const gameStart = await interaction.followUp({
         content: `대결할 문장: ${[...choice].join('\u200b')}\n\n위 문장으로 대결을 수행합니다.`,
         components: [startRow]
     });

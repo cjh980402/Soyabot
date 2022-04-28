@@ -67,7 +67,6 @@ export async function commandExecute(interaction) {
     }
 
     try {
-        await interaction.deleteReply();
         const newQueue = new QueueElement(interaction.channel, channel, await joinVoice(channel), [song]);
         interaction.client.queues.set(interaction.guildId, newQueue);
         newQueue.playSong();
@@ -77,6 +76,10 @@ export async function commandExecute(interaction) {
             interaction.client.users,
             `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction}\n에러 내용: ${err.stack}`
         );
-        await interaction.channel.send(`채널에 참가할 수 없습니다: ${err.message}`);
+        await interaction.followUp(`채널에 참가할 수 없습니다: ${err.message}`);
+    } finally {
+        try {
+            await interaction.deleteReply();
+        } catch {}
     }
 }

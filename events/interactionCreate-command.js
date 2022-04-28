@@ -15,24 +15,6 @@ export async function listener(interaction) {
                 } ${interaction.user.username}: ${interaction}\n`
             );
 
-            const botPermissions = [
-                'ViewChannel',
-                interaction.channel.isThread() ? 'SendMessagesInThreads' : 'SendMessages',
-                'EmbedLinks'
-            ];
-
-            if (
-                interaction.guildId &&
-                (!interaction.channel.permissionsFor(interaction.guild.me).has(botPermissions) ||
-                    interaction.guild.me.isCommunicationDisabled())
-            ) {
-                // 기본 권한이 없어서 명령을 수행하지 못하는 채널이므로 DM으로 메시지 전송
-                return await interaction.user.send(
-                    `봇에 적절한 권한이 부여되지 않았거나 타임아웃이 적용되어 명령을 수행할 수 없습니다.
-필요한 권한 종류: ${botPermissions.join(', ')}`
-                );
-            }
-
             if (interaction.client.cooldowns.has(interaction.commandName)) {
                 // 명령이 수행 중인 경우
                 return await interaction.followUp(
