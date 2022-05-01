@@ -123,7 +123,7 @@ export class QueueElement {
             }
             await this.deleteMessage();
             this.songs.shift();
-            return this.playSong();
+            this.playSong();
         }
     }
 
