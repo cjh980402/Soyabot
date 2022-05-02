@@ -1,6 +1,5 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { FormData, request } from 'undici';
-import { safelyExtractBody } from 'undici/lib/fetch/body.js';
 import { NAVER_CLIENT_ID, NAVER_CLIENT_SECRET } from '../soyabot_config.js';
 
 async function requestCFR(url) {
@@ -8,15 +7,13 @@ async function requestCFR(url) {
     const { body: imageBody } = await request(url);
     form.set('image', await imageBody.blob());
 
-    const [formBody, contentType] = safelyExtractBody(form);
     const { body } = await request('https://openapi.naver.com/v1/vision/celebrity', {
         method: 'POST',
         headers: {
             'X-Naver-Client-Id': NAVER_CLIENT_ID,
-            'X-Naver-Client-Secret': NAVER_CLIENT_SECRET,
-            'content-type': contentType
+            'X-Naver-Client-Secret': NAVER_CLIENT_SECRET
         },
-        body: formBody.stream
+        body: form
     });
     return body.json();
 }
