@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { SuperialItem } from '../classes/SuperialItem.js';
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '타일런트시뮬',
     description: '타일런트 장비템의 스타포스 시뮬레이션을 수행합니다.',

@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { MapleUser } from '../classes/MapleParser.js';
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '시드',
     description: '캐릭터의 직업, 시드 최고기록, 시간을 출력합니다.',

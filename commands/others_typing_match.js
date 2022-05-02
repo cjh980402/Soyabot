@@ -11,7 +11,7 @@ import Hangul from 'hangul-js';
 import { setTimeout } from 'node:timers/promises';
 import { matchString } from '../util/Constant.js';
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '타자대결',
     description: '임의의 문장을 빨리 치는 사람이 승리하는 타자 대결을 수행합니다.',

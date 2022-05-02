@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '작분석',
     description: '무기의 작으로 상승한 공격력을 계산합니다.',

@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '입대',
     description: 'YYMMDD 형식으로 입력한 입대일을 기준으로 전역일을 계산해줍니다. (육군 기준)',

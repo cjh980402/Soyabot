@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { canModifyQueue } from '../util/soyabot_util.js';
 
-export const type = ['음악'];
+export const type = '음악';
 export const commandData = {
     name: 'move',
     description: '번호로 선택한 대기열의 노래를 원하는 위치로 이동합니다.',

@@ -40,7 +40,7 @@ async function clova_face(url) {
     return rslt;
 }
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '얼굴인식',
     description: '인물 사진과 함께 명령어를 사용하면 얼굴을 분석한 후 성별, 나이 등을 알려줍니다.',

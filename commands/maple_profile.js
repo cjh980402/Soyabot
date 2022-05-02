@@ -2,7 +2,7 @@ import { Attachment, ApplicationCommandOptionType } from 'discord.js';
 import { exec } from '../admin/admin_function.js';
 import { MapleUser } from '../classes/MapleParser.js';
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '프로필',
     description: '캐릭터의 maple.GG 프로필을 출력합니다.',

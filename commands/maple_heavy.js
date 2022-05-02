@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { MapleUser } from '../classes/MapleParser.js';
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '헤비',
     description: '헤비...',

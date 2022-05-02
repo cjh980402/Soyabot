@@ -3,7 +3,7 @@ import { MapleUser } from '../classes/MapleParser.js';
 import { levelTable } from '../util/Constant.js';
 import { Util } from '../util/Util.js';
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '레벨',
     description: '캐릭터의 공식 홈페이지의 레벨과 경험치를 기준으로 250, 275, 300까지 남은 경험치량을 계산합니다.',

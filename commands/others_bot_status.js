@@ -19,7 +19,7 @@ function timeKoreanUnit(num) {
     return rslt.join(' ') || '0초';
 }
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '상태',
     description: '봇의 작동 상태를 알려줍니다.'

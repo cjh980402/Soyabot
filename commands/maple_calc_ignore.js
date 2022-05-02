@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '방무',
     description: '실방무와 딜량을 계산합니다. 추가 방무가 음수면 해당 수치를 원래 방무에서 제거합니다.',

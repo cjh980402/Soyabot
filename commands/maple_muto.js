@@ -18,7 +18,7 @@ const picmatch = {
     흑흑화채: 'HeukheukHwachae'
 };
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '무토',
     description: '해당하는 요리의 레시피를 출력합니다.',

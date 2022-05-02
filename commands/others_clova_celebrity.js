@@ -36,7 +36,7 @@ async function clova_celebrity(url) {
     return rslt;
 }
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '닮은꼴',
     description: '인물 사진과 함께 명령어를 사용하면 얼굴을 분석한 후 닮은 유명인을 알려줍니다.',

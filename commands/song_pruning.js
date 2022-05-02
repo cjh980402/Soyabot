@@ -1,4 +1,4 @@
-export const type = ['음악'];
+export const type = '음악';
 export const commandData = {
     name: 'pruning',
     description: '봇의 음악 메시지 자동정리 기능 상태를 전환합니다.'

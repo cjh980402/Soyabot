@@ -1,6 +1,6 @@
 import { canModifyQueue } from '../util/soyabot_util.js';
 
-export const type = ['음악'];
+export const type = '음악';
 export const commandData = {
     name: 'stop',
     description: '지금 재생 중인 노래를 정지하고 대기열을 비웁니다.'

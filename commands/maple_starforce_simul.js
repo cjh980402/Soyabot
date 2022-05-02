@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { NormalItem } from '../classes/NormalItem.js';
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '스타포스시뮬',
     description: '일반 장비템의 스타포스 시뮬레이션을 수행합니다.',

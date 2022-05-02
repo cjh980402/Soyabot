@@ -163,7 +163,7 @@ async function farm_info(user) {
     }
 }
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '농장',
     description: '몬스터라이프 관련 기능을 수행합니다.',

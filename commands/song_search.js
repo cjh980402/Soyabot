@@ -5,7 +5,7 @@ import { youtubeSearch } from '../util/song_util.js';
 import { joinVoice } from '../util/soyabot_util.js';
 import { Util } from '../util/Util.js';
 
-export const type = ['음악'];
+export const type = '음악';
 export const commandData = {
     name: 'search',
     description: '재생할 노래를 검색하고 선택합니다.',

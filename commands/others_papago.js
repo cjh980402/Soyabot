@@ -44,7 +44,7 @@ function checkLan(src, tar) {
     );
 }
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '파파고',
     description: '파파고를 이용한 언어 번역을 수행합니다.',

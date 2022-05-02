@@ -1,7 +1,7 @@
 import { request } from 'undici';
 import { load } from 'cheerio';
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '썬데이',
     description: '현재 진행 (예정) 중인 썬데이 메이플을 공지합니다.'

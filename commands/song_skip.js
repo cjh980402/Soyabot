@@ -1,6 +1,6 @@
 import { canModifyQueue } from '../util/soyabot_util.js';
 
-export const type = ['음악'];
+export const type = '음악';
 export const commandData = {
     name: 'skip',
     description: '지금 재생 중인 노래 건너뜁니다.'

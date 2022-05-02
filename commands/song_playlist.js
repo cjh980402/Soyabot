@@ -5,7 +5,7 @@ import { isValidPlaylist, isValidVideo, getPlaylistInfo } from '../util/song_uti
 import { joinVoice } from '../util/soyabot_util.js';
 import { Util } from '../util/Util.js';
 
-export const type = ['음악'];
+export const type = '음악';
 export const commandData = {
     name: 'playlist',
     description: 'YouTube나 Soundcloud의 재생목록을 재생합니다.',

@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { MapleUser } from '../classes/MapleParser.js';
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '갱신',
     description: '캐릭터의 maple.GG 정보를 갱신합니다.',

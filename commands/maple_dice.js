@@ -11,7 +11,7 @@ async function getDiceAttachment(nickname) {
     return new Attachment(dicePic, 'dice.png');
 }
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '데굴데굴',
     description: '추억의 메이플스토리 주사위!'

@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '확률',
     description: '봇이 내용에 따른 확률을 말해줍니다.',

@@ -83,7 +83,7 @@ async function getCoinEmbed(searchRslt, type) {
     return { embeds: [coinEmbed], files: [image] };
 }
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '코인정보',
     description: '검색 내용에 해당하는 코인의 정보를 보여줍니다.',

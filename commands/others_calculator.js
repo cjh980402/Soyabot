@@ -38,7 +38,7 @@ function inputExpression(str) {
         .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (all) => `^(${[...all].map((v) => '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(v)).join('')})`);
 }
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: 'ev',
     description: '계산식에 해당하는 결과값을 보여줍니다.',

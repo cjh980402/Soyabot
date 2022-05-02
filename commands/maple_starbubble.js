@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '스타버블',
     description: `엔젤릭버스터의 2번째 노래`

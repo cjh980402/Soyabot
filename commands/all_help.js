@@ -15,7 +15,7 @@ function getHelpEmbed(help, name) {
     return embeds;
 }
 
-export const type = ['메이플', '음악', '기타'];
+export const type = '전체';
 export const commandData = {
     name: 'help',
     description:
@@ -30,7 +30,9 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     const detail = interaction.options.getString('세부항목');
-    if (detail && !type.includes(detail)) {
+    const allType = ['전체', '메이플', '음악', '기타'];
+
+    if (detail && !allType.includes(detail)) {
         const target = interaction.client.commands.get(detail);
         if (target) {
             return interaction.followUp(`**/${target.commandData.name}**\n- ${target.commandData.description}`);
@@ -40,7 +42,7 @@ export async function commandExecute(interaction) {
     }
 
     const descriptions = [...interaction.client.commands.values()]
-        .filter((cmd) => !detail || cmd.type.includes(detail))
+        .filter((cmd) => !detail || cmd.type === detail)
         .map((cmd) => `**/${cmd.commandData.name}**\n- ${cmd.commandData.description}`);
 
     const embeds = getHelpEmbed(descriptions, interaction.client.user.username);

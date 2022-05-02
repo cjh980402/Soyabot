@@ -48,7 +48,7 @@ async function getInfoEmbed(mapleUserInfo, level) {
         ]);
 }
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '정보',
     description: '해당 캐릭터의 전체적인 정보를 출력합니다.',

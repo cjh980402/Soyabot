@@ -1,4 +1,4 @@
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '타일런트',
     description: '타일런트 장비의 스타포스 강화 능력치를 출력합니다.'

@@ -48,7 +48,7 @@ function findLangCode(src, tar) {
     }
 }
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '번역',
     description: '카카오 i를 이용한 언어 번역을 수행합니다.',

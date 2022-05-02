@@ -1,7 +1,7 @@
 import { canModifyQueue } from '../util/soyabot_util.js';
 import { Util } from '../util/Util.js';
 
-export const type = ['음악'];
+export const type = '음악';
 export const commandData = {
     name: 'shuffle',
     description: '대기열 순서를 랜덤하게 섞어줍니다.'

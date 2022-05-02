@@ -3,7 +3,7 @@ import { request } from 'undici';
 import { BOT_SERVER_DOMAIN } from '../soyabot_config.js';
 // import { exec } from '../admin/admin_function.js';
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '그림',
     description: '사진을 흑백 스케치화 해줍니다.',

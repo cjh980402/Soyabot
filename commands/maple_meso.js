@@ -104,7 +104,7 @@ async function getMesoEmbed(server) {
     return { embeds: [mesoEmbed], files: [image] };
 }
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '메소',
     description: '해당 서버의 메소 시세를 알려줍니다.',

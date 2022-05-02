@@ -45,7 +45,7 @@ async function getCoronaEmbed() {
     return [corona1, corona2];
 }
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '코로나',
     description: '최신 기준 코로나 국내 현황 통계를 알려줍니다.'

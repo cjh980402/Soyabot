@@ -1,6 +1,6 @@
 import { request } from 'undici';
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '한강',
     description: '현재 한강의 수온을 알려줍니다.'

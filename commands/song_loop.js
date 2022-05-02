@@ -1,6 +1,6 @@
 import { canModifyQueue } from '../util/soyabot_util.js';
 
-export const type = ['음악'];
+export const type = '음악';
 export const commandData = {
     name: 'loop',
     description: '반복 재생 상태를 전환합니다.'

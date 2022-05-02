@@ -131,7 +131,7 @@ function recommendFood() {
     return `추천 메뉴는 [${foodlist[Math.floor(Math.random() * foodlist.length)]}]입니다.`;
 }
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '추천',
     description: '봇이 할 일이나 메뉴를 추천해줍니다.',

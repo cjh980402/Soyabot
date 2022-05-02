@@ -20,7 +20,7 @@ const picmatch = {
     기타: 'others'
 };
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '추옵',
     description: '해당하는 무기의 추옵표를 출력합니다.',

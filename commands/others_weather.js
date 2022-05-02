@@ -75,7 +75,7 @@ async function getWeatherEmbed(targetLocal) {
     return embeds;
 }
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '날씨',
     description: '입력한 지역의 날씨를 알려줍니다.',

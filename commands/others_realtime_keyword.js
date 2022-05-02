@@ -1,6 +1,6 @@
 import { request } from 'undici';
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '실검',
     description: 'https://www.signal.bz 기준 실시간 검색어를 보여줍니다.'

@@ -81,7 +81,7 @@ function extremePotion(startLev, endLev) {
     return `${rslt}총 ${cnt}개의 익성비를 소모`;
 }
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '익성비',
     description: '익성비 관련 기능을 수행합니다.',

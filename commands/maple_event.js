@@ -25,7 +25,7 @@ function getEventEmbed(links, names, dates) {
     return embeds;
 }
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '이벤트',
     description: '현재 진행 중인 이벤트를 알려줍니다.'

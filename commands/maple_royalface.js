@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { MapleProb } from '../util/maple_probtable.js';
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '성형',
     description: '로얄 성형 관련 기능을 수행합니다.',

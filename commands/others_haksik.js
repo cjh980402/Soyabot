@@ -23,7 +23,7 @@ function getHaksikEmbed(date, haksik) {
     return embeds;
 }
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '학식',
     description: '입력한 요일에 해당하는 학식을 보여줍니다. 요일을 생략 시에는 오늘 학식을 보여줍니다.',

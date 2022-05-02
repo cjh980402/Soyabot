@@ -24,7 +24,7 @@ async function getFineParticlesEmbed() {
     return embeds;
 }
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '미세먼지',
     description: '현재 한국의 미세먼지 현황을 보여줍니다.'

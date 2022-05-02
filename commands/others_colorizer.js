@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { DEEP_API_KEY } from '../soyabot_config.js';
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '채색',
     description: '흑백 사진과 함께 명령어를 사용하면 사진을 채색한 결과를 보여줍니다.',

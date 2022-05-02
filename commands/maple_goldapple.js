@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { MapleProb } from '../util/maple_probtable.js';
 import { sendSplitCode } from '../util/soyabot_util.js';
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '골드애플',
     description: '골드애플 관련 기능을 수행합니다.',

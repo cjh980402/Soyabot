@@ -19,7 +19,7 @@ function getQueueEmbed(songs, thumbnail, name) {
     return embeds;
 }
 
-export const type = ['음악'];
+export const type = '음악';
 export const commandData = {
     name: 'queue',
     description: '대기열과 지금 재생 중인 노래 출력합니다.'

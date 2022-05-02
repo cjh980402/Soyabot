@@ -1,7 +1,7 @@
 import { Attachment, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { MapleUser } from '../classes/MapleParser.js';
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '코디',
     description: '해당 캐릭터가 착용한 코디템과 헤어, 성형을 출력합니다.',

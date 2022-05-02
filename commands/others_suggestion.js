@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { sendAdmin } from '../admin/bot_message.js';
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '건의',
     description: '개발자에게 건의 사항을 전송합니다.',

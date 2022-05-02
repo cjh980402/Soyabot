@@ -20,7 +20,7 @@ const serverEngName = {
     리부트2: 'reboot2'
 };
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '길드',
     description: '입력한 내용에 해당하는 길드의 길드원 정보(직위, 직업, 레벨, 유니온, 무릉)를 보여줍니다.',

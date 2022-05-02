@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { canModifyQueue } from '../util/soyabot_util.js';
 import { Util } from '../util/Util.js';
 
-export const type = ['음악'];
+export const type = '음악';
 export const commandData = {
     name: 'remove',
     description: '대기열에서 지정한 노래를 삭제합니다. (,로 구분하여 여러 노래 삭제 가능)',

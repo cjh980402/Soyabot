@@ -2,7 +2,7 @@ import { EmbedBuilder } from 'discord.js';
 import { splitBar } from 'string-progressbar';
 import { Util } from '../util/Util.js';
 
-export const type = ['음악'];
+export const type = '음악';
 export const commandData = {
     name: 'nowplaying',
     description: '지금 재생 중인 노래를 보여줍니다.'

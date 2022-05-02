@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { MapleProb } from '../util/maple_probtable.js';
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '루나크리스탈',
     description: '루나크리스탈 관련 기능을 수행합니다.',

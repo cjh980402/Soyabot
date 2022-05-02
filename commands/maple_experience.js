@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { levelTable } from '../util/Constant.js';
 import { Util } from '../util/Util.js';
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '경험치',
     description:

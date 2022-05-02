@@ -15,7 +15,7 @@ function getBossEmbed(bossName, bossGrade) {
         .setDescription(`**보상**\n${targetBoss[0].join('\n\n')}\n\n**정보**\n${targetBoss[1].join('\n\n')}`);
 }
 
-export const type = ['메이플'];
+export const type = '메이플';
 export const commandData = {
     name: '보스',
     description: '해당하는 보스의 보상과 체력, 방어율을 알려줍니다.',

@@ -22,7 +22,7 @@ async function shortURL(url) {
     }
 }
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '단축주소',
     description: '입력한 주소를 짧은 형태의 주소로 변환합니다.',

@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ApplicationCommandOptionType } from 'discord.js';
 
-export const type = ['기타'];
+export const type = '기타';
 export const commandData = {
     name: '러시안룰렛',
     description: '러시안룰렛 게임을 수행합니다. 탄환 수가 생략된 경우 자동으로 6발이 됩니다.',

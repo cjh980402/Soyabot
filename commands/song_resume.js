@@ -1,6 +1,6 @@
 import { canModifyQueue } from '../util/soyabot_util.js';
 
-export const type = ['음악'];
+export const type = '음악';
 export const commandData = {
     name: 'resume',
     description: '가장 최근 노래를 다시 재생합니다.'
