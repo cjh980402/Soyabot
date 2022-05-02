@@ -53,9 +53,9 @@ export async function commandExecute(interaction) {
         );
         if (goalhair === -1) {
             return interaction.followUp(
-                `**${usage}**\n현재 로얄 헤어의 시뮬레이션만 수행할 수 있습니다.\n남: ${MapleProb.ROYALHAIR_PROBTABLE[
-                    '남'
-                ].join(', ')}\n여: ${MapleProb.ROYALHAIR_PROBTABLE['여'].join(', ')}`
+                `현재 로얄 헤어의 시뮬레이션만 수행할 수 있습니다.\n남: ${MapleProb.ROYALHAIR_PROBTABLE['남'].join(
+                    ', '
+                )}\n여: ${MapleProb.ROYALHAIR_PROBTABLE['여'].join(', ')}`
             );
         }
         // subcommand은 성별, goalhair는 목표 헤어의 인덱스

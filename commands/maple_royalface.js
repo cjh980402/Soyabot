@@ -53,9 +53,9 @@ export async function commandExecute(interaction) {
         );
         if (goalface === -1) {
             return interaction.followUp(
-                `**${usage}**\n현재 로얄 성형의 시뮬레이션만 수행할 수 있습니다.\n남: ${MapleProb.ROYALFACE_PROBTABLE[
-                    '남'
-                ].join(', ')}\n여: ${MapleProb.ROYALFACE_PROBTABLE['여'].join(', ')}`
+                `현재 로얄 성형의 시뮬레이션만 수행할 수 있습니다.\n남: ${MapleProb.ROYALFACE_PROBTABLE['남'].join(
+                    ', '
+                )}\n여: ${MapleProb.ROYALFACE_PROBTABLE['여'].join(', ')}`
             );
         }
         // subcommand은 성별, goalface는 목표 성형의 인덱스

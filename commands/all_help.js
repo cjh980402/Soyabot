@@ -30,7 +30,7 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     const detail = interaction.options.getString('세부항목');
-    const allType = ['전체', '메이플', '음악', '기타'];
+    const allType = ['메이플', '음악', '기타'];
 
     if (detail && !allType.includes(detail)) {
         const target = interaction.client.commands.get(detail);
