@@ -51,9 +51,7 @@ async function getCoinEmbed(searchRslt, type) {
 
     const { stdout: coinPic } = await exec(
         `python3 ./util/python/make_coin_info.py ${chartURL} '${name} (${code}) ${type}' 원 ${nowPrice} ${changeType} '${changeString}' ${minPrice} ${maxPrice}`,
-        {
-            encoding: 'buffer'
-        }
+        { encoding: 'buffer' }
     );
     // 파이썬 스크립트 실행
 

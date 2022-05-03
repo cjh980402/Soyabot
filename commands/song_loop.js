@@ -6,7 +6,7 @@ export const commandData = {
     description: '반복 재생 상태를 전환합니다.'
 };
 export async function commandExecute(interaction) {
-    if (!interaction.guildId) {
+    if (!interaction.inGuild()) {
         return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
 

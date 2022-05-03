@@ -7,7 +7,7 @@ export const commandData = {
     description: '대기열 순서를 랜덤하게 섞어줍니다.'
 };
 export async function commandExecute(interaction) {
-    if (!interaction.guildId) {
+    if (!interaction.inGuild()) {
         return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
 

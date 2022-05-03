@@ -25,7 +25,7 @@ export const commandData = {
     description: '대기열과 지금 재생 중인 노래 출력합니다.'
 };
 export async function commandExecute(interaction) {
-    if (!interaction.guildId) {
+    if (!interaction.inGuild()) {
         return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
 

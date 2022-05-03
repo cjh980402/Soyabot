@@ -4,7 +4,7 @@ export const commandData = {
     description: '봇의 음악 메시지 자동정리 기능 상태를 전환합니다.'
 };
 export async function commandExecute(interaction) {
-    if (!interaction.guildId) {
+    if (!interaction.inGuild()) {
         return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     }
 

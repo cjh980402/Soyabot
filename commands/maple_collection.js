@@ -33,9 +33,7 @@ export async function commandExecute(interaction) {
             `python3 ./util/python/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(
                 ' '
             )} ${collection[1].join(' ')}`,
-            {
-                encoding: 'buffer'
-            }
+            { encoding: 'buffer' }
         );
         const image = new Attachment(collectionPic, 'collection.png');
         await interaction.followUp({ content: `${mapleUserInfo.Name}님의 코디 컬렉션`, files: [image] });

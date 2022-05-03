@@ -15,7 +15,7 @@ export const commandData = {
     ]
 };
 export async function commandExecute(interaction) {
-    if (!interaction.guildId) {
+    if (!interaction.inGuild()) {
         return interaction.followUp('사용이 불가능한 채널입니다.'); // 길드 여부 체크
     } else if (interaction.guild.memberCount < 3) {
         return interaction.followUp(
