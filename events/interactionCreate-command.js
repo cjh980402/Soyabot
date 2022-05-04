@@ -2,7 +2,6 @@ import { setTimeout } from 'node:timers/promises';
 import { sendAdmin } from '../admin/bot_message.js';
 import { MapleError } from '../classes/MapleParser.js';
 import { commandCount } from '../util/soyabot_util.js';
-const promiseTimeout = (promise, ms) => Promise.race([promise, setTimeout(ms)]);
 
 export const name = 'interactionCreate';
 export async function listener(interaction) {
@@ -26,7 +25,7 @@ export async function listener(interaction) {
             const { commandExecute } = interaction.client.commands.get(interaction.commandName);
 
             commandCount(interaction.client.db, interaction.commandName);
-            await promiseTimeout(commandExecute(interaction), 300000); // 명령어 수행 부분
+            await Promise.race([commandExecute(interaction), setTimeout(300000)]); // 명령어 수행 부분 (최대 5분 대기)
 
             interaction.client.cooldowns.delete(interaction.commandName); // 명령어 수행 끝나면 쿨타임 삭제
         } catch (err) {

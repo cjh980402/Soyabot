@@ -10,7 +10,7 @@ async function getWeatherEmbed(targetLocal) {
     const $ = load(await body.text());
     const nowWeather = $('.weather_area');
     const weatherDesc = [
-        `현재 날씨\n\n현재온도: ${nowWeather.find('.current').contents()[1].data}° (${nowWeather
+        `현재 날씨\n\n현재온도: ${nowWeather.find('.current').contents()[2].data}° (${nowWeather
             .find('.summary > .weather')
             .text()})`,
         '날씨 예보\n'
@@ -18,31 +18,10 @@ async function getWeatherEmbed(targetLocal) {
 
     if (targetLocal[1][0].includes('WD')) {
         // 해외 날씨
-        const summaryTerm = nowWeather.find('.summary_list > .term');
-        const summaryDesc = nowWeather.find('.summary_list > .desc');
+        const summaryTerm = nowWeather.find('.weather_table td dt');
+        const summaryDesc = nowWeather.find('.weather_table td dd');
         for (let i = 0; i < summaryTerm.length; i++) {
             weatherDesc[0] += `${i % 2 ? '│' : '\n'}${summaryTerm.eq(i).text()}: ${summaryDesc.eq(i).text()}`;
-        }
-
-        const todayInfo = $('.today_chart_list .item_inner');
-        for (let i = 0; i < todayInfo.length; i++) {
-            weatherDesc[0] += `${i % 2 ? '│' : '\n'}${todayInfo.eq(i).find('.ttl').text()}: ${todayInfo
-                .eq(i)
-                .find('.level_text')
-                .text()}`;
-        }
-
-        const weather = $('.time_list > .item_time');
-        const rain = $('div[data-name="rain"] .row_graph.row_rain > .data');
-        const humidity = $('div[data-name="humidity"] .row_graph > .data');
-        const wind = $('div[data-name="wind"] .row_graph > .data');
-        for (let i = 0; i < weather.length - 1; i++) {
-            weatherDesc[1] += `\n${weather.eq(i).find('.time').text()}: ${weather.eq(i).attr('data-tmpr')}° (${weather
-                .eq(i)
-                .attr('data-wetr-txt')})│강수량: ${rain.eq(i).text().trim()}㎜│습도: ${humidity
-                .eq(i)
-                .text()
-                .trim()}%│풍속: ${wind.eq(i).text().trim()}㎧`;
         }
     } else {
         // 국내 날씨
@@ -53,13 +32,13 @@ async function getWeatherEmbed(targetLocal) {
 체감: ${summary.nowFcast.stmpr}°
 미세먼지: ${summary.airFcast.stationPM10Legend1 || '-'}│초미세먼지: ${summary.airFcast.stationPM25Legend1 || '-'}
 자외선: ${summary.uv.labelText}`;
+    }
 
-        const castList = JSON.parse(/var\s+townFcastListJson\s*=\s*(\[.+?\])\s*;/s.exec($.html())[1]);
-        for (let i = 0; i < castList.length - 1; i++) {
-            weatherDesc[1] += `\n${+castList[i].aplTm}시: ${castList[i].tmpr}° (${castList[i + 1].wetrTxt})│강수량: ${
-                castList[i + 1].rainAmt
-            }㎜│습도: ${castList[i + 1].humd}%│풍속: ${castList[i + 1].windSpd}㎧`;
-        }
+    const castList = JSON.parse(/var\s+hourlyFcastListJson\s*=\s*(\[.+?\])\s*;/s.exec($.html())[1]);
+    for (let i = 0; i < castList.length; i++) {
+        weatherDesc[1] += `\n${+castList[i].aplTm}시: ${castList[i].tmpr}° (${
+            castList[i].wetrTxt ?? castList[i].wetrTxtNew
+        })│강수량: ${castList[i].rainAmt}㎜│습도: ${castList[i].humd}%│풍속: ${castList[i].windSpd}㎧`;
     }
 
     const embeds = [];
