@@ -26,12 +26,9 @@ async function getWeatherEmbed(targetLocal) {
     } else {
         // 국내 날씨
         const summary = JSON.parse(/var\s+weatherSummary\s*=\s*({.+?})\s*;/s.exec($.html())[1]);
-        weatherDesc[0] += `\n습도: ${summary.nowFcast.humd}%│${summary.nowFcast.windDrctnName}: ${
-            summary.nowFcast.windSpd
-        }m/s
-체감: ${summary.nowFcast.stmpr}°
-미세먼지: ${summary.airFcast.stationPM10Legend1 || '-'}│초미세먼지: ${summary.airFcast.stationPM25Legend1 || '-'}
-자외선: ${summary.uv.labelText}`;
+        weatherDesc[0] += `\n체감: ${summary.nowFcast.stmpr}°│자외선: ${summary.uv.labelText}
+습도: ${summary.nowFcast.humd}%│${summary.nowFcast.windDrctnName}: ${summary.nowFcast.windSpd}m/s
+미세먼지: ${summary.airFcast.stationPM10Legend1 || '-'}│초미세먼지: ${summary.airFcast.stationPM25Legend1 || '-'}`;
     }
 
     const castList = JSON.parse(/var\s+hourlyFcastListJson\s*=\s*(\[.+?\])\s*;/s.exec($.html())[1]);
