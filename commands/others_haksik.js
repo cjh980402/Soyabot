@@ -15,7 +15,7 @@ function getHaksikEmbed(date, haksik) {
                     .get(i + 1)
                     .children.map((v) => v.data ?? '\n')
                     .join('')
-                    .trim()
+                    .trim() || '학식이 제공되지 않습니다.'
             )
             .setTimestamp();
         embeds.push(embed);
@@ -45,9 +45,7 @@ export async function commandExecute(interaction) {
     }
 
     const { body } = await request('https://www.uos.ac.kr/food/placeList.do?epTicket=LOG', {
-        headers: {
-            'user-agent': 'undici'
-        }
+        headers: { 'user-agent': 'undici' }
     });
     const data = load(await body.text())('#week tr');
     if (data.length > 0) {
