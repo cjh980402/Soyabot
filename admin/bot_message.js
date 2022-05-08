@@ -6,7 +6,7 @@ export async function sendBotNotice(client, data, isMaple = false) {
     try {
         if (isMaple) {
             // 메이플 공지는 공지용 채널에만 전송
-            const message = await sendChannelID(client.channels, NOTICE_CHANNEL_ID, data);
+            const message = await client.channels.cache.get(NOTICE_CHANNEL_ID)?.send(data);
             await message?.crosspost(); // 커뮤니티 서버의 공지 채널인 경우 발행 기능을 사용 가능
         } else {
             // 일반 공지는 전체 전송

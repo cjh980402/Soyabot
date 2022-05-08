@@ -27,11 +27,11 @@ export function listener(oldState, newState) {
                     oldState.channel?.members.filter((v) => !v.user.bot).size === 0
                 ) {
                     // 봇만 음성 채널에 있는 경우
+                    queue.setLeave();
                     if (queue.playing) {
                         queue.player.pause();
                         queue.sendMessage('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
                     }
-                    queue.setLeave();
                 }
             }
         }
