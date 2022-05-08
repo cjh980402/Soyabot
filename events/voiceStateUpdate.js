@@ -31,7 +31,7 @@ export function listener(oldState, newState) {
                         queue.player.pause();
                         queue.sendMessage('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
                     }
-                    queue.setLeave(oldState);
+                    queue.setLeave();
                 }
             }
         }
