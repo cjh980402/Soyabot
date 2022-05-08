@@ -24,7 +24,7 @@ export function listener(oldState, newState) {
                 } else if (
                     queue?.player.state.resource &&
                     oldState.channelId === queue.voiceChannel.id &&
-                    oldState.channel.members.filter((v) => !v.user.bot).size === 0
+                    oldState.channel?.members.filter((v) => !v.user.bot).size === 0
                 ) {
                     // 봇만 음성 채널에 있는 경우
                     if (queue.playing) {
@@ -32,18 +32,20 @@ export function listener(oldState, newState) {
                         queue.sendMessage('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
                     }
                     queue.leaveTimer = setTimeout(() => {
-                        const afterQueue = oldState.client.queues.get(oldState.guild.id);
-                        if (
-                            afterQueue?.player.state.resource &&
-                            oldState.channelId === afterQueue.voiceChannel.id &&
-                            oldState.channel.members.filter((v) => !v.user.bot).size === 0
-                        ) {
-                            // 5분이 지나도 봇만 음성 채널에 있는 경우
-                            afterQueue.sendMessage(
-                                `5분 동안 ${oldState.client.user.username}이 비활성화 되어 대기열을 끝냅니다.`
-                            );
-                            afterQueue.clearStop();
-                        }
+                        try {
+                            const afterQueue = oldState.client.queues.get(oldState.guild.id);
+                            if (
+                                afterQueue?.player.state.resource &&
+                                oldState.channelId === afterQueue.voiceChannel.id &&
+                                oldState.channel?.members.filter((v) => !v.user.bot).size === 0
+                            ) {
+                                // 5분이 지나도 봇만 음성 채널에 있는 경우
+                                afterQueue.sendMessage(
+                                    `5분 동안 ${oldState.client.user.username}이 비활성화 되어 대기열을 끝냅니다.`
+                                );
+                                afterQueue.clearStop();
+                            }
+                        } catch {}
                     }, 300000);
                 }
             }
