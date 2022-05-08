@@ -11,7 +11,7 @@ export function listener(oldState, newState) {
                     newState.channel.members.filter((v) => !v.user.bot).size === 1
                 ) {
                     // 봇만 있던 음성 채널에 1명이 새로 들어온 경우
-                    clearTimeout(queue.leaveTimer);
+                    queue.deleteLeave();
                     queue.player.unpause();
                     queue.sendMessage('대기열을 다시 재생합니다.');
                 }
@@ -31,22 +31,7 @@ export function listener(oldState, newState) {
                         queue.player.pause();
                         queue.sendMessage('모든 사용자가 음성채널을 떠나서 대기열을 일시정지합니다.');
                     }
-                    queue.leaveTimer = setTimeout(() => {
-                        try {
-                            const afterQueue = oldState.client.queues.get(oldState.guild.id);
-                            if (
-                                afterQueue?.player.state.resource &&
-                                oldState.channelId === afterQueue.voiceChannel.id &&
-                                oldState.channel?.members.filter((v) => !v.user.bot).size === 0
-                            ) {
-                                // 5분이 지나도 봇만 음성 채널에 있는 경우
-                                afterQueue.sendMessage(
-                                    `5분 동안 ${oldState.client.user.username}이 비활성화 되어 대기열을 끝냅니다.`
-                                );
-                                afterQueue.clearStop();
-                            }
-                        } catch {}
-                    }, 300000);
+                    queue.setLeave(oldState);
                 }
             }
         }

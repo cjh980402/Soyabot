@@ -8,13 +8,13 @@ import { DEFAULT_VOLUME } from '../soyabot_config.js';
 
 export class QueueElement {
     #subscription;
+    #leaveTimer = null;
     textChannel;
     voiceChannel;
     songs;
     volume = DEFAULT_VOLUME;
     loop = false;
     playingMessage = null;
-    leaveTimer = null;
 
     constructor(textChannel, voiceChannel, connection, songs) {
         this.#subscription = connection.subscribe(
@@ -66,13 +66,41 @@ export class QueueElement {
     }
 
     clearStop() {
-        clearTimeout(this.leaveTimer);
+        this.deleteLeave();
         this.voiceChannel.client.queues.delete(this.voiceChannel.guildId);
         this.songs = [];
         this.#subscription.unsubscribe();
         this.player.stop(true);
         if (this.connection.state.status !== VoiceConnectionStatus.Destroyed) {
             this.connection.destroy();
+        }
+    }
+
+    setLeave(voiceState, timeout = 300000) {
+        this.#leaveTimer ??= setTimeout(() => {
+            try {
+                const leaveQueue = voiceState.client.queues.get(voiceState.guild.id);
+                if (
+                    leaveQueue?.player.state.resource &&
+                    voiceState.channelId === leaveQueue.voiceChannel.id &&
+                    voiceState.channel?.members.filter((v) => !v.user.bot).size === 0
+                ) {
+                    // timeout만큼 시간이 지나도 봇만 음성 채널에 있는 경우
+                    leaveQueue.sendMessage(
+                        `${timeout / 60000}분 동안 ${
+                            voiceState.client.user.username
+                        }이 비활성화 되어 대기열을 끝냅니다.`
+                    );
+                    leaveQueue.clearStop();
+                }
+            } catch {}
+        }, timeout);
+    }
+
+    deleteLeave() {
+        if (this.#leaveTimer) {
+            clearTimeout(this.#leaveTimer);
+            this.#leaveTimer = null;
         }
     }
 
