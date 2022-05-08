@@ -79,19 +79,18 @@ export class QueueElement {
     setLeave(voiceState, timeout = 300000) {
         this.#leaveTimer ??= setTimeout(() => {
             try {
-                const leaveQueue = voiceState.client.queues.get(voiceState.guild.id);
                 if (
-                    leaveQueue?.player.state.resource &&
-                    voiceState.channelId === leaveQueue.voiceChannel.id &&
+                    this?.player.state.resource &&
+                    voiceState.channelId === this.voiceChannel.id &&
                     voiceState.channel?.members.filter((v) => !v.user.bot).size === 0
                 ) {
                     // timeout만큼 시간이 지나도 봇만 음성 채널에 있는 경우
-                    leaveQueue.sendMessage(
+                    this.sendMessage(
                         `${timeout / 60000}분 동안 ${
                             voiceState.client.user.username
                         }이 비활성화 되어 대기열을 끝냅니다.`
                     );
-                    leaveQueue.clearStop();
+                    this.clearStop();
                 }
             } catch {}
         }, timeout);
