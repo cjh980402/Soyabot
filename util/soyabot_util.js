@@ -65,8 +65,11 @@ export async function joinVoice(channel) {
 
     try {
         await entersState(connection, VoiceConnectionStatus.Ready, 30000); // 연결될 때까지 최대 30초 대기
-        if (channel.isStage() && channel.permissionsFor(channel.guild.me).has(PermissionsBitField.StageModerator)) {
-            await channel.guild.me.voice.setSuppressed(false); // 스테이지 채널이면서 관리 권한이 있으면 봇을 speaker로 설정
+        if (
+            channel.isStage() &&
+            channel.permissionsFor(channel.guild.members.me).has(PermissionsBitField.StageModerator)
+        ) {
+            await channel.guild.members.me.voice.setSuppressed(false); // 스테이지 채널이면서 관리 권한이 있으면 봇을 speaker로 설정
         }
         return connection;
     } catch (err) {
@@ -76,7 +79,7 @@ export async function joinVoice(channel) {
 }
 
 export function canModifyQueue(member) {
-    const botChannelId = member.guild.me.voice.channelId;
+    const botChannelId = member.guild.members.me.voice.channelId;
     if (!botChannelId) {
         throw new Error('봇이 음성채널에 참가하지 않은 상태입니다.');
     }

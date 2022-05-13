@@ -38,8 +38,8 @@ export async function listener(interaction) {
                     queue.sendMessage(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
                     break;
                 case 'mute':
-                    const muted = queue.voiceChannel.guild.me.voice.serverMute;
-                    await queue.voiceChannel.guild.me.voice.setMute(!muted);
+                    const muted = queue.voiceChannel.guild.members.me.voice.serverMute;
+                    await queue.voiceChannel.guild.members.me.voice.setMute(!muted);
                     queue.sendMessage(
                         muted
                             ? `${interaction.user} 🔊 음소거를 해제했습니다.`

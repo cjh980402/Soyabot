@@ -28,7 +28,7 @@ export async function commandExecute(interaction) {
     if (!channel) {
         return interaction.followUp('음성 채널에 먼저 참가해주세요!');
     }
-    if (serverQueue && channel.id !== interaction.guild.me.voice.channelId) {
+    if (serverQueue && channel.id !== interaction.guild.members.me.voice.channelId) {
         return interaction.followUp(`${interaction.client.user}과 같은 음성 채널에 참가해주세요!`);
     }
 
