@@ -55,8 +55,7 @@ export class NormalItem {
     #initial = 0;
 
     doingStarforce(data) {
-        const len = data.length;
-        if (!data.every((v) => !isNaN(v)) || len < 3 || len > 6) {
+        if (data.some((v) => isNaN(v)) || data.length < 3 || data.length > 6) {
             return '잘못된 형식입니다.';
         } else if (data[2] === 25) {
             return '과부하 방지를 위해 24성까지로 제한합니다.';

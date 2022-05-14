@@ -35,8 +35,7 @@ export class SuperialItem {
     #initial = 0;
 
     doingStarforce(data) {
-        const len = data.length;
-        if (!data.every((v) => !isNaN(v)) || (len !== 3 && len !== 2)) {
+        if (data.some((v) => isNaN(v)) || (data.length !== 3 && data.length !== 2)) {
             return '잘못된 형식입니다.';
         } else if (data[1] === 15) {
             return '과부하 방지를 위해 14성까지로 제한합니다.';
