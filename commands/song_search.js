@@ -86,7 +86,7 @@ export async function commandExecute(interaction) {
                                 song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
                             }]`
                     )
-                    .join('\n')}\n를 대기열에 추가했습니다.`
+                    .join('\n')}\n을 대기열에 추가했습니다.`
             );
         }
 

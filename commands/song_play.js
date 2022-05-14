@@ -62,7 +62,7 @@ export async function commandExecute(interaction) {
         return interaction.followUp(
             `✅ ${interaction.user}가\n**${song.title}** [${
                 song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
-            }]\n를 대기열에 추가했습니다.`
+            }]\n을 대기열에 추가했습니다.`
         );
     }
 

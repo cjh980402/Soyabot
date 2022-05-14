@@ -32,23 +32,16 @@ export async function commandExecute(interaction) {
     }
 
     const songRemove = Util.deduplication(interaction.options.getString('대기열_번호').split(',').map(Math.trunc));
-    const removed = [];
     if (songRemove.every((v) => !isNaN(v) && 2 <= v && v <= queue.songs.length)) {
-        queue.songs = queue.songs.filter((v, i) => {
-            if (songRemove.includes(i + 1)) {
-                removed.push(v);
-                return false;
-            } else {
-                return true;
-            }
-        });
-    } else {
-        return interaction.followUp(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래를 삭제할 수 있습니다.`);
-    }
+        const removed = songRemove.map((v) => queue.songs[v - 1]);
+        queue.songs = queue.songs.filter((_, i) => !songRemove.includes(i + 1));
 
-    await interaction.followUp(
-        `❌ ${interaction.user}가 대기열에서 ${removed
-            .map((song, i) => `**${songRemove[i]}. ${song.title}**`)
-            .join(', ')}을 삭제했습니다.`
-    );
+        await interaction.followUp(
+            `❌ ${interaction.user}가 대기열에서\n${removed
+                .map((song, i) => `**${songRemove[i]}. ${song.title}**`)
+                .join('\n')}\n을 삭제했습니다.`
+        );
+    } else {
+        await interaction.followUp(`현재 대기열에서 2 ~ ${queue.songs.length}번째 노래를 삭제할 수 있습니다.`);
+    }
 }
