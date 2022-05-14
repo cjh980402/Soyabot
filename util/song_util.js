@@ -37,7 +37,6 @@ export async function getSongInfo(url, search) {
         };
     } else {
         const videoID = YtUtil.getVideoId(url, true) ?? (await ytsr(search, { type: 'video', limit: 1 }))[0]?.id;
-        // (await youtube.searchVideos(search, 1))[0]?.id;
         if (!videoID) {
             return null;
         }
@@ -67,7 +66,6 @@ export async function getPlaylistInfo(url, search) {
         return { title, url: permalink_url, songs };
     } else {
         const playlistID = YtUtil.getListId(url, true) ?? (await ytsr(search, { type: 'playlist', limit: 1 }))[0]?.id;
-        // (await youtube.searchPlaylists(search, 1))[0]?.id;
         if (!playlistID) {
             return null;
         }
@@ -102,14 +100,4 @@ export async function songDownload(url) {
         inputType: type
         // inlineVolume: true
     });
-}
-
-export async function youtubeSearch(search, limit = 10) {
-    const results = await ytsr(search, { type: 'video', limit });
-    // const results = await youtube.searchVideos(search, limit);
-    if (results.length === 0) {
-        return null;
-    } else {
-        return results;
-    }
 }

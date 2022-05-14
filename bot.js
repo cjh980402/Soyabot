@@ -16,9 +16,7 @@ try {
     for (const file of readdirSync('./commands')) {
         const cmd = await import(`./commands/${file}`);
         client.commands.set(cmd.commandData.name, cmd);
-        if (cmd.commandData) {
-            datas.push(cmd.commandData);
-        }
+        datas.push(cmd.commandData);
     }
 
     await client.start(); // 클라이언트 작동 시작

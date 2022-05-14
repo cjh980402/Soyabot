@@ -24,16 +24,16 @@ export async function commandExecute(interaction) {
     }
 
     const { channel } = interaction.member.voice;
-    const serverQueue = interaction.client.queues.get(interaction.guildId);
+    const guildQueue = interaction.client.queues.get(interaction.guildId);
     if (!channel) {
         return interaction.followUp('음성 채널에 먼저 참가해주세요!');
     }
-    if (serverQueue && channel.id !== interaction.guild.members.me.voice.channelId) {
+    if (guildQueue && channel.id !== interaction.guild.members.me.voice.channelId) {
         return interaction.followUp(`${interaction.client.user}과 같은 음성 채널에 참가해주세요!`);
     }
 
     if (!channel.joinable) {
-        return interaction.followUp('권한이 존재하지 않아 음성 채널에 연결할 수 없습니다.');
+        return interaction.followUp('권한이 존재하지 않아 음성 채널에 참가할 수 없습니다.');
     }
     if (channel.isVoice() && !channel.speakable) {
         return interaction.followUp('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
@@ -56,9 +56,9 @@ export async function commandExecute(interaction) {
         return interaction.followUp('재생할 수 없는 영상입니다.');
     }
 
-    if (serverQueue) {
-        serverQueue.textChannel = interaction.channel;
-        serverQueue.songs.push(song);
+    if (guildQueue) {
+        guildQueue.textChannel = interaction.channel;
+        guildQueue.songs.push(song);
         return interaction.followUp(
             `✅ ${interaction.user}가\n**${song.title}** [${
                 song.duration === 0 ? '⊚ LIVE' : Util.toDurationString(song.duration)
@@ -79,6 +79,6 @@ export async function commandExecute(interaction) {
             interaction.client.users,
             `작성자: ${interaction.user.username}\n방 ID: ${interaction.channelId}\n채팅 내용: ${interaction}\n에러 내용: ${err.stack}`
         );
-        await interaction.followUp(`채널에 참가할 수 없습니다: ${err.message}`);
+        await interaction.followUp(`노래를 재생할 수 없습니다: ${err.message}`);
     }
 }
