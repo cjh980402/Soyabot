@@ -27,7 +27,7 @@ export class QueueElement {
         this.songs = songs;
 
         this.connection.removeAllListeners('error');
-        this.connection.once('error', () => this.clearStop());
+        this.connection.on('error', () => this.clearStop());
 
         this.player
             .on(AudioPlayerStatus.Idle, async () => {
