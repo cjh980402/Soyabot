@@ -85,6 +85,13 @@ export class SoyaClient extends Client {
 
         await MapleProb.fetchAllProb();
         await this.login();
-        await this.application.fetch();
+    }
+
+    async createCommand() {
+        if (this.application.partial) {
+            await this.application.fetch();
+        }
+
+        await this.application.commands.set([...this.commands.values()].map((cmd) => cmd.commandData));
     }
 }

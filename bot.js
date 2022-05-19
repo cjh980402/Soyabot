@@ -12,17 +12,12 @@ try {
         client.on(event.name, event.listener);
     }
     // 봇 커맨드 추가
-    const datas = [];
     for (const file of readdirSync('./commands')) {
         const cmd = await import(`./commands/${file}`);
         client.commands.set(cmd.commandData.name, cmd);
-        datas.push(cmd.commandData);
     }
 
     await client.start(); // 클라이언트 작동 시작
-    if (client.shard.ids.includes(0)) {
-        // await client.application.commands.set(datas); // 인터랙션 데이터 변경 시에만 활성화하기
-    }
 } catch (err) {
     console.error('로그인 에러 발생:', err);
 }
