@@ -81,6 +81,7 @@ export async function joinVoice(channel) {
 export function canModifyQueue(member) {
     const botChannelId = member.guild.members.me.voice.channelId;
     if (!botChannelId) {
+        member.client.queues.get(member.guild.id)?.clearStop(); // 미삭제된 대기열 객체 삭제
         throw new Error('봇이 음성채널에 참가하지 않은 상태입니다.');
     }
     return botChannelId === member.voice.channelId; // 봇이 참가한 음성채널과 다른 경우 false 반환
