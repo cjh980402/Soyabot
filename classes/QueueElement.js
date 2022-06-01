@@ -70,6 +70,7 @@ export class QueueElement {
         this.voiceChannel.client.queues.delete(this.voiceChannel.guildId);
         this.songs = [];
         this.#subscription.unsubscribe();
+        this.player.stop(true);
         if (this.connection.state.status !== VoiceConnectionStatus.Destroyed) {
             this.connection.destroy();
         }
