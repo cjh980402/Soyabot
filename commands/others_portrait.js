@@ -18,7 +18,7 @@ export const commandData = {
 };
 export async function commandExecute(interaction) {
     const attachment = interaction.options.getAttachment('사진');
-    const imageURL = attachment.height ? attachment.url : null;
+    const imageURL = attachment.height ? attachment.attachment : null;
     if (!imageURL) {
         await interaction.followUp('사진과 함께 명령어를 사용해주세요.');
     } else {
