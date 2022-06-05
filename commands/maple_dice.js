@@ -1,4 +1,4 @@
-import { Attachment, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { AttachmentBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { exec } from '../admin/admin_function.js';
 
 async function getDiceAttachment(nickname) {
@@ -8,7 +8,7 @@ async function getDiceAttachment(nickname) {
     );
     // 파이썬 스크립트 실행, 쉘에서 작은 따옴표로 감싸서 쉘 특수문자 이스케이핑, 닉네임의 작은 따옴표는 별도로 이스케이핑
 
-    return new Attachment(dicePic, 'dice.png');
+    return new AttachmentBuilder(dicePic, { name: 'dice.png' });
 }
 
 export const type = '메이플';

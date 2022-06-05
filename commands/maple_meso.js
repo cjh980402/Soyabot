@@ -1,4 +1,4 @@
-import { Attachment, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
+import { AttachmentBuilder, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import renderChart from '../util/chartjs_rendering.js';
 const serverList = {
@@ -90,7 +90,7 @@ async function getMesoEmbed(server) {
         }
     };
 
-    const image = new Attachment(await renderChart(config, 1200, 975), 'meso.png');
+    const image = new AttachmentBuilder(await renderChart(config, 1200, 975), { name: 'meso.png' });
     const mesoEmbed = new EmbedBuilder()
         .setTitle(`**${server} 서버 메소 시세**`)
         .setColor('#FF9999')

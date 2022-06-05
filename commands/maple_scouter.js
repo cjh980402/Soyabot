@@ -1,4 +1,4 @@
-import { Attachment, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
+import { AttachmentBuilder, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { MapleUser } from '../classes/MapleParser.js';
 const scoreGrade = [
     [0, '메린이'],
@@ -98,6 +98,6 @@ export async function commandExecute(interaction) {
         await interaction.followUp('제한시간 내에 갱신 작업을 실패했습니다.');
     }
 
-    const image = new Attachment(mapleUserInfo.userImg(), 'character.png');
+    const image = new AttachmentBuilder(mapleUserInfo.userImg(), { name: 'character.png' });
     await interaction.followUp({ embeds: [getScouterEmbed(mapleUserInfo, union)], files: [image] });
 }

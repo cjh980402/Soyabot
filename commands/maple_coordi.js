@@ -1,4 +1,4 @@
-import { Attachment, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
+import { AttachmentBuilder, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { MapleUser } from '../classes/MapleParser.js';
 
 export const type = '메이플';
@@ -28,7 +28,7 @@ export async function commandExecute(interaction) {
     if (!coordi) {
         await interaction.followUp(`[${mapleUserInfo.Name}]\n코디 정보가 없습니다.`);
     } else {
-        const image = new Attachment(mapleUserInfo.userImg(), 'character.png');
+        const image = new AttachmentBuilder(mapleUserInfo.userImg(), { name: 'character.png' });
         const coordiEmbed = new EmbedBuilder()
             .setTitle(`**${mapleUserInfo.Name}님의 코디**`)
             .setColor('#FF9999')

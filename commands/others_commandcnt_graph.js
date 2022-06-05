@@ -1,4 +1,4 @@
-import { Attachment } from 'discord.js';
+import { AttachmentBuilder } from 'discord.js';
 import renderChart from '../util/chartjs_rendering.js';
 
 async function getCommandCountGraph(client) {
@@ -68,7 +68,7 @@ async function getCommandCountGraph(client) {
         }
     };
 
-    return new Attachment(await renderChart(config, 2000, height), 'chart.png');
+    return new AttachmentBuilder(await renderChart(config, 2000, height), { name: 'chart.png' });
 }
 
 export const type = '기타';

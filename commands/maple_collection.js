@@ -1,4 +1,4 @@
-import { Attachment, ApplicationCommandOptionType } from 'discord.js';
+import { AttachmentBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { exec } from '../admin/admin_function.js';
 import { MapleUser } from '../classes/MapleParser.js';
 
@@ -35,7 +35,7 @@ export async function commandExecute(interaction) {
             )} ${collection[1].join(' ')}`,
             { encoding: 'buffer' }
         );
-        const image = new Attachment(collectionPic, 'collection.png');
+        const image = new AttachmentBuilder(collectionPic, { name: 'collection.png' });
         await interaction.followUp({ content: `${mapleUserInfo.Name}님의 코디 컬렉션`, files: [image] });
     }
 }

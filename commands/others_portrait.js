@@ -1,4 +1,4 @@
-import { Attachment, ApplicationCommandOptionType } from 'discord.js';
+import { AttachmentBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { BOT_SERVER_DOMAIN } from '../soyabot_config.js';
 // import { exec } from '../admin/admin_function.js';
@@ -23,7 +23,7 @@ export async function commandExecute(interaction) {
         await interaction.followUp('사진과 함께 명령어를 사용해주세요.');
     } else {
         /*const { stdout: portraitPic } = await exec(`python3 ./util/python/gl2face_portrait.py ${imageURL}`, { encoding: 'buffer' }); // 파이썬 스크립트 실행
-        const image = new Attachment(portraitPic, 'portrait.png');*/
+        const image = new AttachmentBuilder(portraitPic, { name: 'portrait.png' });*/
         const { statusCode, body } = await request(
             `http://${BOT_SERVER_DOMAIN}/portrait/${encodeURIComponent(imageURL)}`,
             {
@@ -31,7 +31,7 @@ export async function commandExecute(interaction) {
             }
         ); // 그림 작업은 오래걸리므로 시간 제한을 4분으로 변경
         if (200 <= statusCode && statusCode <= 299) {
-            const image = new Attachment(Buffer.from(await body.arrayBuffer()), 'portrait.png');
+            const image = new AttachmentBuilder(Buffer.from(await body.arrayBuffer()), { name: 'portrait.png' });
             await interaction.followUp({ files: [image] });
         } else {
             await interaction.followUp('그림 작업을 실패했습니다.');

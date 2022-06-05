@@ -1,4 +1,4 @@
-import { Attachment, EmbedBuilder } from 'discord.js';
+import { AttachmentBuilder, EmbedBuilder } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { sendPageMessage } from '../util/soyabot_util.js';
@@ -51,7 +51,7 @@ export const commandData = {
     description: '최신 기준 코로나 국내 현황 통계를 알려줍니다.'
 };
 export async function commandExecute(interaction) {
-    const thumbnail = new Attachment('./pictures/mohw.png');
+    const thumbnail = new AttachmentBuilder('./pictures/mohw.png');
     const embeds = await getCoronaEmbed();
     await sendPageMessage(interaction, embeds, { files: [thumbnail] });
 }

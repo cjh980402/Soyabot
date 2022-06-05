@@ -1,4 +1,4 @@
-import { Attachment, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
+import { AttachmentBuilder, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { exec } from '../admin/admin_function.js';
 import { Util } from '../util/Util.js';
@@ -55,7 +55,7 @@ async function getCoinEmbed(searchRslt, type) {
     );
     // 파이썬 스크립트 실행
 
-    const image = new Attachment(coinPic, `${code}.png`);
+    const image = new AttachmentBuilder(coinPic, { name: `${code}.png` });
     const coinEmbed = new EmbedBuilder()
         .setTitle(`**${name} (${code}) ${type}**`)
         .setColor('#FF9999')

@@ -1,4 +1,4 @@
-import { Attachment, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
+import { AttachmentBuilder, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { exec } from '../admin/admin_function.js';
 const chartType = {
@@ -74,7 +74,7 @@ async function getStockEmbed(search, searchRslt, type) {
             { encoding: 'buffer' }
         );
         // 파이썬 스크립트 실행
-        image = new Attachment(stockPic, `${code}.png`);
+        image = new AttachmentBuilder(stockPic, { name: `${code}.png` });
 
         stockEmbed.addFields([
             { name: '**거래량**', value: data.totalInfos['거래량'], inline: true },
@@ -121,7 +121,7 @@ async function getStockEmbed(search, searchRslt, type) {
             { encoding: 'buffer' }
         );
         // 파이썬 스크립트 실행
-        image = new Attachment(stockPic, `${code}.png`);
+        image = new AttachmentBuilder(stockPic, { name: `${code}.png` });
     } else if (stockfind[2][0] === '코스피' || stockfind[2][0] === '코스닥' || stockfind[2][0] === '코넥스') {
         // 국내 주식
         const { body } = await request(`https://m.stock.naver.com/api/stock/${identifer}/integration`);
@@ -151,7 +151,7 @@ async function getStockEmbed(search, searchRslt, type) {
             { encoding: 'buffer' }
         );
         // 파이썬 스크립트 실행
-        image = new Attachment(stockPic, `${code}.png`);
+        image = new AttachmentBuilder(stockPic, { name: `${code}.png` });
 
         stockEmbed.addFields([
             { name: '**거래량**', value: data.totalInfos['거래량'], inline: true },
@@ -204,7 +204,7 @@ async function getStockEmbed(search, searchRslt, type) {
             { encoding: 'buffer' }
         );
         // 파이썬 스크립트 실행
-        image = new Attachment(stockPic, `${code}.png`);
+        image = new AttachmentBuilder(stockPic, { name: `${code}.png` });
 
         stockEmbed.addFields([
             { name: '**거래량**', value: data.stockItemTotalInfos['거래량'], inline: true },

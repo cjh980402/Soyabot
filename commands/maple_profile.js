@@ -1,4 +1,4 @@
-import { Attachment, ApplicationCommandOptionType } from 'discord.js';
+import { AttachmentBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { exec } from '../admin/admin_function.js';
 import { MapleUser } from '../classes/MapleParser.js';
 
@@ -44,6 +44,6 @@ export async function commandExecute(interaction) {
         }' '${seed ? seed[1] : '기록없음'}' '${seed ? seed[2] : ' '}'`,
         { encoding: 'buffer' }
     );
-    const image = new Attachment(profilePic, 'profile.png');
+    const image = new AttachmentBuilder(profilePic, { name: 'profile.png' });
     await interaction.followUp({ content: `${mapleUserInfo.Name}님의 프로필`, files: [image] });
 }
