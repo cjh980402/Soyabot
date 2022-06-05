@@ -3,9 +3,7 @@
 db/
 log/
 node_modules/
-other_source/
 
 # file
-*.log
 *.tflite
 soyabot_config.js
