@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, ButtonStyle } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, ButtonStyle, ChannelType } from 'discord.js';
 import { AudioPlayerStatus, createAudioPlayer, NoSubscriberBehavior, VoiceConnectionStatus } from '@discordjs/voice';
 import { FormatError } from 'youtube-dlsr';
 import { sendAdmin } from '../admin/bot_message.js';
@@ -159,7 +159,7 @@ export class QueueElement {
             try {
                 const channels = this.textChannel.guild.channels.cache;
                 if (!channels.has(this.textChannel.id)) {
-                    this.textChannel = channels.find((v) => v.isText()) ?? this.textChannel;
+                    this.textChannel = channels.find((v) => v.type === ChannelType.GuildText) ?? this.textChannel;
                 }
                 return await this.textChannel.send(data);
             } catch {}

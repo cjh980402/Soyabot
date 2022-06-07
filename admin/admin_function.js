@@ -27,7 +27,7 @@ export async function adminChat(message) {
         // 원하는 방에 봇으로 채팅 전송 (텍스트 채널 ID 이용)
         const rslt = await sendChannelID(message.client.channels, targetId, fullContent.slice(targetId.length + 3));
         await message.channel.send(rslt ? '채팅이 전송되었습니다.' : '존재하지 않는 방입니다.');
-    } else if (message.channel.isDM() && message.reference) {
+    } else if (message.channel.isDMBased() && message.reference) {
         // 건의 답변 기능
         const suggestRefer = await message.fetchReference();
         const channelId = /^(\d+)\n/.exec(suggestRefer.content)?.[1];

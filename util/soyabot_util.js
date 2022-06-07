@@ -5,7 +5,8 @@ import {
     ActionRowBuilder,
     ButtonBuilder,
     PermissionsBitField,
-    ButtonStyle
+    ButtonStyle,
+    ChannelType
 } from 'discord.js';
 import { request } from 'undici';
 import { joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
@@ -66,7 +67,7 @@ export async function joinVoice(channel) {
     try {
         await entersState(connection, VoiceConnectionStatus.Ready, 30000); // 연결될 때까지 최대 30초 대기
         if (
-            channel.isStage() &&
+            channel.type === ChannelType.GuildStageVoice &&
             channel.permissionsFor(channel.guild.members.me).has(PermissionsBitField.StageModerator)
         ) {
             await channel.guild.members.me.voice.setSuppressed(false); // 스테이지 채널이면서 관리 권한이 있으면 봇을 speaker로 설정

@@ -1,4 +1,4 @@
-import { EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
+import { EmbedBuilder, ApplicationCommandOptionType, ChannelType } from 'discord.js';
 import { sendAdmin } from '../admin/bot_message.js';
 import { QueueElement } from '../classes/QueueElement.js';
 import { isValidPlaylist, isValidVideo, getPlaylistInfo } from '../util/song_util.js';
@@ -35,7 +35,7 @@ export async function commandExecute(interaction) {
     if (!channel.joinable) {
         return interaction.followUp('권한이 존재하지 않아 음성 채널에 참가할 수 없습니다.');
     }
-    if (channel.isVoice() && !channel.speakable) {
+    if (channel.type === ChannelType.GuildVoice && !channel.speakable) {
         return interaction.followUp('권한이 존재하지 않아 음성 채널에서 노래를 재생할 수 없습니다.');
     }
 

@@ -27,7 +27,7 @@
     "chartjs-node-canvas": "^4.1.6",
     "chartjs-plugin-datalabels": "^2.0.0",
     "cheerio": "^1.0.0-rc.11",
-    "discord.js": "^14.0.0-dev.1654461564-6aa6232",
+    "discord.js": "^14.0.0-dev.1654603515-769ea0b",
     "entities": "^4.3.0",
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^4.4.1",
