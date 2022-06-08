@@ -9,10 +9,11 @@ import { DEFAULT_VOLUME } from '../soyabot_config.js';
 export class QueueElement {
     #subscription;
     #leaveTimer = null;
+    #mute = false;
+    #volume = DEFAULT_VOLUME;
     textChannel;
     voiceChannel;
     songs;
-    volume = DEFAULT_VOLUME;
     loop = false;
     playingMessage = null;
 
@@ -63,6 +64,28 @@ export class QueueElement {
             this.player.state.status === AudioPlayerStatus.Buffering ||
             this.player.state.status === AudioPlayerStatus.Playing
         );
+    }
+
+    get mute() {
+        return this.#mute;
+    }
+
+    set mute(value) {
+        this.#mute = value;
+        this.#setVolume((this.mute ? 0 : 1) * (this.#volume / 100));
+    }
+
+    get volume() {
+        return this.#volume;
+    }
+
+    set volume(value) {
+        this.#volume = value;
+        this.#setVolume((this.mute ? 0 : 1) * (this.#volume / 100));
+    }
+
+    #setVolume(value) {
+        this.player.state.resource.volume.setVolume(value);
     }
 
     clearStop() {
@@ -135,7 +158,7 @@ export class QueueElement {
 
             this.playingMessage = await this.sendMessage({ embeds: [embed], components: [row1, row2] });
             this.player.play(await songDownload(song.url));
-            // this.player.state.resource.volume.setVolume(this.volume / 100);
+            this.#setVolume(this.#volume / 100);
         } catch (err) {
             if (err instanceof FormatError) {
                 this.sendMessage('재생할 수 없는 영상입니다.');

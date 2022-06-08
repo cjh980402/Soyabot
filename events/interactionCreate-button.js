@@ -38,25 +38,20 @@ export async function listener(interaction) {
                     queue.sendMessage(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
                     break;
                 case 'mute':
-                    const muted = queue.voiceChannel.guild.members.me.voice.serverMute;
-                    await queue.voiceChannel.guild.members.me.voice.setMute(!muted);
+                    queue.mute = !queue.mute;
                     queue.sendMessage(
-                        muted
-                            ? `${interaction.user} 🔊 음소거를 해제했습니다.`
-                            : `${interaction.user} 🔇 노래를 음소거 했습니다.`
+                        queue.mute
+                            ? `${interaction.user} 🔇 노래를 음소거 했습니다.`
+                            : `${interaction.user} 🔊 음소거를 해제했습니다.`
                     );
                     break;
                 case 'volume_down':
-                    queue.sendMessage('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
-                    /*queue.volume = Math.max(queue.volume - 10, 0);
-                    queue.player.state.resource.volume.setVolume(queue.volume / 100);
-                    queue.sendMessage(`${interaction.user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);*/
+                    queue.volume = Math.max(queue.volume - 10, 0);
+                    queue.sendMessage(`${interaction.user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
                     break;
                 case 'volume_up':
-                    queue.sendMessage('현재 메모리 이슈로 인해 볼륨 조절 기능은 사용할 수 없습니다.');
-                    /*queue.volume = Math.min(queue.volume + 10, 100);
-                    queue.player.state.resource.volume.setVolume(queue.volume / 100);
-                    queue.sendMessage(`${interaction.user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);*/
+                    queue.volume = Math.min(queue.volume + 10, 100);
+                    queue.sendMessage(`${interaction.user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
                     break;
                 case 'shuffle':
                     Util.shuffle(queue.songs, 1); // 첫번째 노래를 제외하고 섞기
