@@ -80,6 +80,7 @@ export class QueueElement {
     }
 
     set volume(value) {
+        this.#mute = false;
         this.#volume = value;
         this.#setVolume(value);
     }
