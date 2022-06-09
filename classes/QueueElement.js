@@ -72,7 +72,7 @@ export class QueueElement {
 
     set mute(value) {
         this.#mute = value;
-        this.#setVolume((value ? 0 : 1) * this.volume);
+        this.#setVolume(value ? 0 : this.volume);
     }
 
     get volume() {
@@ -81,7 +81,7 @@ export class QueueElement {
 
     set volume(value) {
         this.#volume = value;
-        this.#setVolume((this.mute ? 0 : 1) * value);
+        this.#setVolume(value);
     }
 
     #setVolume(value) {
