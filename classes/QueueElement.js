@@ -61,8 +61,8 @@ export class QueueElement {
 
     get playing() {
         return (
-            this.player.state.status === AudioPlayerStatus.Buffering ||
-            this.player.state.status === AudioPlayerStatus.Playing
+            this.player.state.status === AudioPlayerStatus.Playing ||
+            this.player.state.status === AudioPlayerStatus.Buffering
         );
     }
 
@@ -72,7 +72,7 @@ export class QueueElement {
 
     set mute(value) {
         this.#mute = value;
-        this.#setVolume((this.mute ? 0 : 1) * (this.#volume / 100));
+        this.#setVolume((value ? 0 : 1) * this.volume);
     }
 
     get volume() {
@@ -81,11 +81,11 @@ export class QueueElement {
 
     set volume(value) {
         this.#volume = value;
-        this.#setVolume((this.mute ? 0 : 1) * (this.#volume / 100));
+        this.#setVolume((this.mute ? 0 : 1) * value);
     }
 
     #setVolume(value) {
-        this.player.state.resource.volume.setVolume(value);
+        this.player.state.resource.volume.setVolume(value / 100);
     }
 
     clearStop() {
@@ -158,7 +158,7 @@ export class QueueElement {
 
             this.playingMessage = await this.sendMessage({ embeds: [embed], components: [row1, row2] });
             this.player.play(await songDownload(song.url));
-            this.#setVolume(this.#volume / 100);
+            this.#setVolume(this.volume);
         } catch (err) {
             if (err instanceof FormatError) {
                 this.sendMessage('재생할 수 없는 영상입니다.');
