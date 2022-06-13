@@ -159,7 +159,7 @@ export class QueueElement {
 
             this.playingMessage = await this.sendMessage({ embeds: [embed], components: [row1, row2] });
             this.player.play(await songDownload(song.url));
-            this.#setVolume(this.volume);
+            this.#setVolume(this.mute ? 0 : this.volume);
         } catch (err) {
             if (err instanceof FormatError) {
                 this.sendMessage('재생할 수 없는 영상입니다.');
