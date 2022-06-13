@@ -97,7 +97,6 @@ export async function songDownload(url) {
     const { stream, type } = await demuxProbe(source);
     return createAudioResource(stream, {
         metadata: url,
-        inputType: type,
-        inlineVolume: true
+        inputType: type
     });
 }

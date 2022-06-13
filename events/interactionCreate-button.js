@@ -33,25 +33,18 @@ export async function listener(interaction) {
                     queue.sendMessage(`${interaction.user} ⏭️ 노래를 건너뛰었습니다.`);
                     queue.player.stop();
                     break;
-                case 'loop':
-                    queue.loop = !queue.loop;
-                    queue.sendMessage(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
-                    break;
                 case 'mute':
-                    queue.mute = !queue.mute;
+                    const mute = !queue.voiceChannel.guild.members.me.voice.serverMute;
+                    await queue.voiceChannel.guild.members.me.voice.setMute(mute);
                     queue.sendMessage(
-                        queue.mute
+                        mute
                             ? `${interaction.user} 🔇 노래를 음소거 했습니다.`
                             : `${interaction.user} 🔊 음소거를 해제했습니다.`
                     );
                     break;
-                case 'volume_down':
-                    queue.volume = Math.max(queue.volume - 10, 0);
-                    queue.sendMessage(`${interaction.user} 🔉 음량을 낮췄습니다. 현재 음량: ${queue.volume}%`);
-                    break;
-                case 'volume_up':
-                    queue.volume = Math.min(queue.volume + 10, 100);
-                    queue.sendMessage(`${interaction.user} 🔊 음량을 높였습니다. 현재 음량: ${queue.volume}%`);
+                case 'loop':
+                    queue.loop = !queue.loop;
+                    queue.sendMessage(`현재 반복 재생 상태: ${queue.loop ? '**ON**' : '**OFF**'}`);
                     break;
                 case 'shuffle':
                     Util.shuffle(queue.songs, 1); // 첫번째 노래를 제외하고 섞기

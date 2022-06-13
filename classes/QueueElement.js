@@ -4,13 +4,10 @@ import { FormatError } from 'youtube-dlsr';
 import { sendAdmin } from '../admin/bot_message.js';
 import { songDownload } from '../util/song_util.js';
 import { Util } from '../util/Util.js';
-import { DEFAULT_VOLUME } from '../soyabot_config.js';
 
 export class QueueElement {
     #subscription;
     #leaveTimer = null;
-    #mute = false;
-    #volume = DEFAULT_VOLUME;
     textChannel;
     voiceChannel;
     songs;
@@ -64,29 +61,6 @@ export class QueueElement {
             this.player.state.status === AudioPlayerStatus.Playing ||
             this.player.state.status === AudioPlayerStatus.Buffering
         );
-    }
-
-    get mute() {
-        return this.#mute;
-    }
-
-    set mute(value) {
-        this.#mute = value;
-        this.#setVolume(value ? 0 : this.volume);
-    }
-
-    get volume() {
-        return this.#volume;
-    }
-
-    set volume(value) {
-        this.#mute = false;
-        this.#volume = value;
-        this.#setVolume(value);
-    }
-
-    #setVolume(value) {
-        this.player.state.resource.volume.setVolume(value / 100);
     }
 
     clearStop() {
@@ -147,19 +121,16 @@ export class QueueElement {
             const row1 = new ActionRowBuilder().addComponents([
                 new ButtonBuilder().setCustomId('stop').setEmoji('⏹️').setStyle(ButtonStyle.Secondary),
                 new ButtonBuilder().setCustomId('play_pause').setEmoji('⏯️').setStyle(ButtonStyle.Secondary),
-                new ButtonBuilder().setCustomId('skip').setEmoji('⏭️').setStyle(ButtonStyle.Secondary),
-                new ButtonBuilder().setCustomId('loop').setEmoji('🔁').setStyle(ButtonStyle.Secondary)
+                new ButtonBuilder().setCustomId('skip').setEmoji('⏭️').setStyle(ButtonStyle.Secondary)
             ]);
             const row2 = new ActionRowBuilder().addComponents([
                 new ButtonBuilder().setCustomId('mute').setEmoji('🔇').setStyle(ButtonStyle.Secondary),
-                new ButtonBuilder().setCustomId('volume_down').setEmoji('🔉').setStyle(ButtonStyle.Secondary),
-                new ButtonBuilder().setCustomId('volume_up').setEmoji('🔊').setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder().setCustomId('loop').setEmoji('🔁').setStyle(ButtonStyle.Secondary),
                 new ButtonBuilder().setCustomId('shuffle').setEmoji('🔀').setStyle(ButtonStyle.Secondary)
             ]);
 
             this.playingMessage = await this.sendMessage({ embeds: [embed], components: [row1, row2] });
             this.player.play(await songDownload(song.url));
-            this.#setVolume(this.mute ? 0 : this.volume);
         } catch (err) {
             if (err instanceof FormatError) {
                 this.sendMessage('재생할 수 없는 영상입니다.');

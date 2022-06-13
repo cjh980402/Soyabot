@@ -9,7 +9,7 @@ import {
     ChannelType
 } from 'discord.js';
 import { request } from 'undici';
-import { joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
+import { entersState, joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
 import { Util } from './Util.js';
 
 function contentSplitCode(content, options) {
@@ -25,27 +25,6 @@ function contentSplitCode(content, options) {
     }
 
     return splitOptions ? Util.splitMessage(content, splitOptions) : [content];
-}
-
-function entersState(target, status, timeout) {
-    return new Promise((resolve, reject) => {
-        if (target.state.status === status) {
-            return resolve(target);
-        }
-
-        let failTimer = null;
-        const onStatus = () => {
-            clearTimeout(failTimer);
-            resolve(target);
-        };
-
-        failTimer = setTimeout(() => {
-            target.off(status, onStatus);
-            reject(new Error(`Didn't enter state ${status} within ${timeout}ms`));
-        }, timeout);
-
-        target.once(status, onStatus);
-    });
 }
 
 export async function getFullContent(message) {

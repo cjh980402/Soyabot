@@ -2,7 +2,6 @@ export const TOKEN = '';
 export const ADMIN_ID = '';
 export const NOTICE_CHANNEL_ID = '';
 export const MAX_PLAYLIST_SIZE = 20;
-export const DEFAULT_VOLUME = 70;
 export const BOT_SERVER_DOMAIN = '';
 export const NAVER_CLIENT_ID = '';
 export const NAVER_CLIENT_SECRET = '';
