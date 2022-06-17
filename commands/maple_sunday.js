@@ -21,7 +21,7 @@ export async function commandExecute(interaction) {
     const { body: sundayBody } = await request(`https://maplestory.nexon.com${sunday}`);
     const sundayData = load(await sundayBody.text())('.contents_wrap');
     const sundayDate = sundayData.find('.event_date').text();
-    const sundayImg = sundayData.find('img[alt="썬데이 메이플!"]').attr('src');
+    const sundayImg = sundayData.find('img[usemap="#Map1"]').attr('src');
 
     await interaction.followUp({ content: sundayDate, files: [sundayImg] });
 }
