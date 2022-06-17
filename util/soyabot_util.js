@@ -1,12 +1,12 @@
 import {
-    Util as DjsUtil,
     Channel,
     ChatInputCommandInteraction,
     ActionRowBuilder,
     ButtonBuilder,
     PermissionsBitField,
     ButtonStyle,
-    ChannelType
+    ChannelType,
+    cleanCodeBlockContent
 } from 'discord.js';
 import { request } from 'undici';
 import { entersState, joinVoiceChannel, VoiceConnectionStatus } from '@discordjs/voice';
@@ -17,7 +17,7 @@ function contentSplitCode(content, options) {
     const splitOptions = options.split ? { ...options.split } : null; // 옵션을 수정할 수도 있기 때문에 복사본 생성
 
     if (options.code) {
-        content = `\`\`\`${options.code}\n${DjsUtil.cleanCodeBlockContent(content)}\n\`\`\``;
+        content = `\`\`\`${options.code}\n${cleanCodeBlockContent(content)}\n\`\`\``;
         if (splitOptions) {
             splitOptions.prepend = `${splitOptions.prepend ?? ''}\`\`\`${options.code}\n`;
             splitOptions.append = `\n\`\`\`${splitOptions.append ?? ''}`;
