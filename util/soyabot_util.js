@@ -1,5 +1,5 @@
 import {
-    Channel,
+    BaseChannel,
     ChatInputCommandInteraction,
     ActionRowBuilder,
     ButtonBuilder,
@@ -83,7 +83,7 @@ export function commandCount(db, commandName) {
 
 export async function sendSplitCode(target, content, options) {
     for (const c of contentSplitCode(content, options)) {
-        if (target instanceof Channel && target.isTextBased()) {
+        if (target instanceof BaseChannel && target.isTextBased()) {
             await target.send(c);
         } else if (target instanceof ChatInputCommandInteraction) {
             await target.followUp(c);
