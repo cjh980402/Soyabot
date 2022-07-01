@@ -68,7 +68,7 @@ if sys.argv[9] != ' ':  # 직업랭킹
                 '직업랭킹 ', (255, 227, 189), font)
 
 deco_img = Image.open(requests.get(
-    'https://kr-cdn.maple.gg/images/images/card-effect@3x.png', stream=True).raw)
+    'https://maple.gg/images/images/card-effect@3x.png', stream=True).raw)
 image.paste(deco_img, (514 - deco_img.size[0] // 2, 1153), mask=deco_img)
 
 msg = '무릉도장'
