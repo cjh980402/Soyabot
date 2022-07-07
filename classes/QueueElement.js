@@ -100,7 +100,7 @@ export class QueueElement {
     }
 
     async playSong() {
-        if (this.songs.length === 0) {
+        if (this.songs.length === 0 || !this.textChannel.guild.members.me.voice.channelId) {
             this.clearStop();
             return this.sendMessage('🛑 음악 대기열이 끝났습니다.');
         }
