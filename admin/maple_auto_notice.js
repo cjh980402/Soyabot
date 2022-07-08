@@ -160,7 +160,7 @@ export function startTestPatch(client) {
                 patchVersion - 1
             }to01${patchVersion}.patch`;
 
-            const { headers, body } = await request(patchURL);
+            const { headers } = await request(patchURL, { method: 'HEAD' }); // 헤더 정보만 받아옴
             if (headers['content-type'] === 'application/octet-stream') {
                 // 파일이 감지된 경우
                 const fileSize = +headers['content-length'] / 1024 / 1024;
@@ -173,7 +173,6 @@ export function startTestPatch(client) {
                     true
                 );
             }
-            for await (const _ of body); // 메모리 누수 방지를 위한 force consumption of body
         } catch (err) {
             sendAdmin(client.users, `자동알림(테섭파일) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
         }
