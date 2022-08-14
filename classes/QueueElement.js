@@ -101,6 +101,7 @@ export class QueueElement {
 
     async playSong() {
         if (this.songs.length === 0 || !this.textChannel.guild.members.me.voice.channelId) {
+            // 음성 채널에서 나가져도 songs 객체의 원소가 남아있는 경우가 존재하므로 음성 채널도 확인
             this.clearStop();
             return this.sendMessage('🛑 음악 대기열이 끝났습니다.');
         }
