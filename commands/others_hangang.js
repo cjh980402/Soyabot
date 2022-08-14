@@ -22,11 +22,14 @@ export async function commandExecute(interaction) {
     const data = await body.json();
 
     const result = data.resultList.find((v) => v.W_TEMP);
-
-    await interaction.followUp(
-        `지금 한강온도: ${result.W_TEMP}°C\n업데이트 시간: ${result.MSR_DATE.replace(
-            /(\d{4})(\d{2})(\d{2})/,
-            '$1년 $2월 $3일'
-        )} ${result.MSR_TIME.split(':')[0]}시`
-    );
+    if (!result) {
+        await interaction.followUp('측정된 한강 수온 데이터가 없습니다.');
+    } else {
+        await interaction.followUp(
+            `한강 수온: ${result.W_TEMP}°C\n업데이트 시간: ${result.MSR_DATE.replace(
+                /(\d{4})(\d{2})(\d{2})/,
+                '$1년 $2월 $3일'
+            )} ${result.MSR_TIME.split(':')[0]}시`
+        );
+    }
 }
