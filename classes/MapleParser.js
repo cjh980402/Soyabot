@@ -250,7 +250,7 @@ export class MapleUser {
     }
 
     ExpHistory() {
-        const data = JSON.parse(/var\s+expHistoryLabels\s*=\s*(\[.+?\])\s*\n/.exec(this.#ggData.html())?.[1] ?? '[]');
+        const data = JSON.parse(/var\s+expHistoryLabels\s*=\s*(\[.+?\])/.exec(this.#ggData.html())?.[1] ?? '[]');
         if (data.length === 0) {
             return null;
         }
