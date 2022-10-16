@@ -31,7 +31,7 @@ export async function commandExecute(interaction) {
     }
 
     const total_req = [0, 0];
-    const total_meso = [0, 0, 0, 0, 0, 0];
+    const total_meso = [0, 0, 0, 0, 0, 0, 0];
     for (let i = startLev; i < endLev; i++) {
         total_req[0] += i * i + 11; // 요구량 = i^2 + 11
         total_meso[0] += 3110000 + 3960000 * i; // 여로 심볼
@@ -42,6 +42,7 @@ export async function commandExecute(interaction) {
             total_req[1] += 9 * i * i + 20 * i; // 요구량 = 9i^2 + 20i
             total_meso[4] += 96900000 + 88500000 * i; // 세르니움 심볼
             total_meso[5] += 106600000 + 97300000 * i; // 아르크스 심볼
+            total_meso[6] += 117400000 + 107100000 * i; // 오디움 심볼
         }
     }
 
@@ -56,6 +57,7 @@ export async function commandExecute(interaction) {
 어센틱 심볼 Lv.${Math.min(11, startLev)} → Lv.${Math.min(11, endLev)}
 요구량: ${total_req[1]}
 세르니움: ${total_meso[4].toLocaleString()}메소
-아르크스: ${total_meso[5].toLocaleString()}메소`
+아르크스: ${total_meso[5].toLocaleString()}메소
+오디움: ${total_meso[6].toLocaleString()}메소`
     );
 }
