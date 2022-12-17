@@ -11,9 +11,9 @@ const probTable = [
     [55, 0],
     [50, 0],
     [45, 0],
-    [40, 1],
-    [35, 2],
-    [30, 2],
+    [40, 0],
+    [35, 0],
+    [30, 0],
     [30, 3],
     [30, 3],
     [30, 3],
@@ -117,8 +117,6 @@ export class NormalItem {
         let destprob = ((100000 - sucprob) * (1000 * probTable[this.#star][1])) / 100000; // 파괴확률 = 조건부 확률, 백분율 → 십만분율 변환
 
         if (this.#nodest === 1) {
-            startNodest = 12;
-        } else if (this.#nodest === 2) {
             startNodest = 15;
         }
         if (this.#event === 1) {
@@ -142,7 +140,7 @@ export class NormalItem {
             return;
         }
 
-        if (this.#star >= startNodest && this.#star <= 16) {
+        if (destprob && this.#star >= startNodest && this.#star <= 16) {
             // 파괴방지
             this.#sum += (1 + afterSaleRate) * meso(this.#star, this.#lev);
             destprob = 0;

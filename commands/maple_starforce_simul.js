@@ -55,8 +55,7 @@ export const commandData = {
             description: '적용할 파괴 방지의 종류',
             choices: [
                 { name: '파괴 방지 미적용', value: 0 },
-                { name: '파괴 방지 (12 ~ 17성 적용)', value: 1 },
-                { name: '파괴 방지 (15 ~ 17성 적용)', value: 2 }
+                { name: '파괴 방지 (15 ~ 17성 적용)', value: 1 }
             ]
         }
     ]
