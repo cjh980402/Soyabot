@@ -17,8 +17,8 @@ const probTable = [
     [30, 3],
     [30, 3],
     [30, 3],
-    [30, 3],
-    [30, 3],
+    [30, 4],
+    [30, 4],
     [30, 10],
     [30, 10],
     [3, 20],
@@ -30,13 +30,21 @@ const probTable = [
 function meso(star, lev) {
     let coefficient = 0;
     if (star >= 15) {
-        coefficient = Math.pow(star + 1, 2.7) / 200;
-    } else if (star >= 10) {
-        coefficient = Math.pow(star + 1, 2.7) / 400;
+        coefficient = (star + 1) ** 2.7 / 200;
+    } else if (star == 14) {
+        coefficient = (star + 1) ** 2.7 / 75;
+    } else if (star == 13) {
+        coefficient = (star + 1) ** 2.7 / 110;
+    } else if (star == 12) {
+        coefficient = (star + 1) ** 2.7 / 150;
+    } else if (star == 11) {
+        coefficient = (star + 1) ** 2.7 / 220;
+    } else if (star == 10) {
+        coefficient = (star + 1) ** 2.7 / 400;
     } else {
         coefficient = (star + 1) / 25;
     }
-    return Math.round((1000 + Math.pow(lev, 3) * coefficient) / 100) * 100; // 십의자리에서 반올림
+    return Math.round((1000 + lev ** 3 * coefficient) / 100) * 100; // 십의자리에서 반올림
 }
 
 export class NormalItem {
@@ -157,8 +165,8 @@ export class NormalItem {
             this.#checkdown = 0;
         } else {
             // 실패
-            if (this.#star > 10 && this.#star % 5) {
-                // 10성 이하와, 5의 배수구간은 완충 구간
+            if (this.#star > 15 && this.#star % 5) {
+                // 15성 이하와, 5의 배수구간은 완충 구간
                 this.#star--;
                 this.#checkdown--;
             }

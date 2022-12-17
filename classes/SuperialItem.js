@@ -7,7 +7,7 @@ const probTable = [
     [40, 3],
     [40, 5],
     [40, 7],
-    [40, 7],
+    [40, 10],
     [37, 15],
     [35, 20],
     [35, 25],
@@ -18,7 +18,7 @@ const probTable = [
 // 확률을 백분율 수치로 저장
 
 function meso(lev) {
-    return Math.round(Math.pow(lev, 3.56) / 100) * 100; // 십의자리에서 반올림
+    return Math.round(lev ** 3.56 / 100) * 100; // 십의자리에서 반올림
 }
 
 export class SuperialItem {
