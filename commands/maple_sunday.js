@@ -19,9 +19,13 @@ export async function commandExecute(interaction) {
     }
 
     const { body: sundayBody } = await request(`https://maplestory.nexon.com${sunday}`);
-    const sundayData = load(await sundayBody.text())('.contents_wrap');
+    const sunday$ = load(await sundayBody.text());
+    const sundayData = sunday$('.contents_wrap');
     const sundayDate = sundayData.find('.event_date').text();
-    const sundayImg = sundayData.find('.qs_text .new_board_con div div img').last().attr('src');
+    const sundayImg = sundayData
+        .find('.qs_text .new_board_con div div img')
+        .filter((_, v) => sunday$(v).attr('src').endsWith('.jpg'))
+        .attr('src');
 
     await interaction.followUp({ content: sundayDate, files: [sundayImg] });
 }
