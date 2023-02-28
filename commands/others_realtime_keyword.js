@@ -9,7 +9,7 @@ export async function commandExecute(interaction) {
     const { body } = await request('https://api.signal.bz/news/realtime');
     const data = await body.json();
     await interaction.followUp(
-        `[실시간 검색어](<https://www.signal.bz>)\n${new Date().toLocaleString()}\n\n${data.top10
+        `[실시간 검색어(링크)](<https://www.signal.bz>)\n${new Date().toLocaleString()}\n\n${data.top10
             .map((v) => `${v.rank}. ${v.keyword}`)
             .join('\n')}`
     );
