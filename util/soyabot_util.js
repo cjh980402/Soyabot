@@ -43,6 +43,20 @@ export async function joinVoice(channel) {
         adapterCreator: channel.guild.voiceAdapterCreator
     });
 
+    // 디스코드 음성 모듈 오류 해결하는 임시 코드 - https://github.com/discordjs/discord.js/issues/9185
+    connection.on('stateChange', (oldState, newState) => {
+        const oldNetworking = Reflect.get(oldState, 'networking');
+        const newNetworking = Reflect.get(newState, 'networking');
+
+        const networkStateChangeHandler = (_, newNetworkState) => {
+            const newUdp = Reflect.get(newNetworkState, 'udp');
+            clearInterval(newUdp?.keepAliveInterval);
+        };
+
+        oldNetworking?.off('stateChange', networkStateChangeHandler);
+        newNetworking?.on('stateChange', networkStateChangeHandler);
+    });
+
     try {
         await entersState(connection, VoiceConnectionStatus.Ready, 30000); // 연결될 때까지 최대 30초 대기
         if (
@@ -51,6 +65,7 @@ export async function joinVoice(channel) {
         ) {
             await channel.guild.members.me.voice.setSuppressed(false); // 스테이지 채널이면서 관리 권한이 있으면 봇을 speaker로 설정
         }
+
         return connection;
     } catch (err) {
         connection.destroy(); // 에러 발생 시 연결 취소
