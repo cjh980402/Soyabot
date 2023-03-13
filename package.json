@@ -21,13 +21,13 @@
     "pretty": "prettier --config .prettierrc --write '**/*.js'"
   },
   "dependencies": {
-    "@discordjs/voice": "^0.14.0",
-    "better-sqlite3": "^8.1.0",
+    "@discordjs/voice": "^0.15.0",
+    "better-sqlite3": "^8.2.0",
     "bufferutil": "^4.0.7",
     "chartjs-node-canvas": "^4.1.6",
     "chartjs-plugin-datalabels": "^2.2.0",
     "cheerio": "^1.0.0-rc.12",
-    "discord.js": "^14.7.1",
+    "discord.js": "^14.8.0",
     "entities": "^4.4.0",
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^5.1.0",
@@ -38,7 +38,7 @@
     "sodium-native": "^4.0.1",
     "soundcloud.ts": "^0.4.9",
     "string-progressbar": "^1.0.4",
-    "undici": "^5.20.0",
+    "undici": "^5.21.0",
     "utf-8-validate": "^6.0.3",
     "youtube-dlsr": "^2.7.4",
     "zlib-sync": "^0.1.8"
