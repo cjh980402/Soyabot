@@ -333,7 +333,7 @@ export class MapleUser {
     }
 
     serverImg() {
-        return this.#ggData('div.col-lg-8 > h3 > img.align-middle').attr('src');
+        return this.#ggData('div.col-lg-8 > h3 > img.align-middle').attr('src').replace(/^\/\//, 'https://');
     }
 
     serverName() {
