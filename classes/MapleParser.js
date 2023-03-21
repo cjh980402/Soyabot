@@ -333,11 +333,11 @@ export class MapleUser {
     }
 
     serverImg() {
-        return this.#ggData('div.col-lg-8 > h3 > img.align-middle').attr('src').replace(/^\/\//, 'https://');
+        return this.#ggData('div.col-lg-8 h3 img.align-middle').attr('src')?.replace(/^\/\//, 'https://');
     }
 
     serverName() {
-        return this.#ggData('div.col-lg-8 > h3 > img.align-middle').attr('alt');
+        return this.#ggData('div.col-lg-8 h3 img.align-middle').attr('alt');
     }
 
     lastActiveDay() {
