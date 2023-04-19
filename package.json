@@ -39,7 +39,7 @@
     "string-progressbar": "^1.0.4",
     "undici": "^5.21.2",
     "utf-8-validate": "^6.0.3",
-    "youtube-dlsr": "^2.8.0",
+    "youtube-dlsr": "^2.8.1",
     "zlib-sync": "^0.1.8"
   },
   "devDependencies": {
