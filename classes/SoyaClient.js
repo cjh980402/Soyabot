@@ -34,14 +34,6 @@ export class SoyaClient extends Client {
                 ApplicationCommandManager: 0,
                 BaseGuildEmojiManager: 0,
                 GuildEmojiManager: 0,
-                ChannelManager: {
-                    maxSize: 1,
-                    keepOverLimit: (v) => v.isTextBased() || v.isVoiceBased()
-                },
-                GuildChannelManager: {
-                    maxSize: 1,
-                    keepOverLimit: (v) => v.isTextBased() || v.isVoiceBased()
-                },
                 GuildBanManager: 0,
                 GuildInviteManager: 0,
                 GuildScheduledEventManager: 0,
