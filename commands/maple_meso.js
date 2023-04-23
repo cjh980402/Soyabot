@@ -27,8 +27,8 @@ async function getMesoEmbed(server) {
         body: params.toString()
     });
     const data = await body.json();
-    const market = data.dbo;
-    const direct = data.dbo2;
+    const market = data.dbo ?? [];
+    const direct = data.dbo2 ?? [];
     // 각각 배열, 길이는 15, 앞에서부터 과거 날짜
 
     const config = {
