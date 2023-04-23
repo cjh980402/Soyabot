@@ -1,4 +1,4 @@
-import { ActionRowBuilder, SelectMenuBuilder, ApplicationCommandOptionType, ChannelType } from 'discord.js';
+import { ActionRowBuilder, StringSelectMenuBuilder, ApplicationCommandOptionType, ChannelType } from 'discord.js';
 import { search as ytsr } from 'youtube-dlsr';
 import { sendAdmin } from '../admin/bot_message.js';
 import { QueueElement } from '../classes/QueueElement.js';
@@ -46,7 +46,7 @@ export async function commandExecute(interaction) {
     }
 
     const row = new ActionRowBuilder().addComponents([
-        new SelectMenuBuilder()
+        new StringSelectMenuBuilder()
             .setCustomId('select_menu')
             .setPlaceholder(`총 ${results.length}곡이 검색되었습니다.`)
             .setMinValues(1)

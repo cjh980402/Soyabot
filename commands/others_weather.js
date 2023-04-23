@@ -1,4 +1,4 @@
-import { ActionRowBuilder, EmbedBuilder, SelectMenuBuilder, ApplicationCommandOptionType } from 'discord.js';
+import { ActionRowBuilder, EmbedBuilder, StringSelectMenuBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { sendPageMessage } from '../util/soyabot_util.js';
@@ -87,7 +87,7 @@ export async function commandExecute(interaction) {
         targetLocal = searchRslt[0];
     } else {
         const row = new ActionRowBuilder().addComponents([
-            new SelectMenuBuilder()
+            new StringSelectMenuBuilder()
                 .setCustomId('select_menu')
                 .setPlaceholder(`총 ${searchRslt.length}지역이 검색되었습니다.`)
                 .addOptions(
