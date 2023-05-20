@@ -1,7 +1,7 @@
 import { EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { bossData } from '../util/Constant.js';
 
-const bossDifficulty = ['하드', '카오스', '노말', '이지'];
+const bossDifficulty = ['익스트림', '하드', '카오스', '노말', '이지'];
 
 function getBossEmbed(bossName, bossGrade) {
     if (!bossData[bossName][bossGrade]) {
