@@ -1,5 +1,44 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 
+const costConstant = [
+    {
+        default: 80000,
+        diff: 1000
+    },
+    {
+        default: 100000,
+        diff: 1000
+    },
+    {
+        default: 120000,
+        diff: 1000
+    },
+    {
+        default: 140000,
+        diff: 1000
+    },
+    {
+        default: 160000,
+        diff: 1000
+    },
+    {
+        default: 180000,
+        diff: 1000
+    },
+    {
+        default: 1320000,
+        diff: -60000
+    },
+    {
+        default: 1500000,
+        diff: -60000
+    },
+    {
+        default: 1680000,
+        diff: -60000
+    }
+];
+
 export const type = '메이플';
 export const commandData = {
     name: '심볼',
@@ -30,34 +69,38 @@ export async function commandExecute(interaction) {
         return interaction.followUp('시작 레벨 이상의 목표 레벨을 입력해주세요.');
     }
 
-    const total_req = [0, 0];
-    const total_meso = [0, 0, 0, 0, 0, 0, 0];
+    const totalReq = [0, 0];
+    const totalMeso = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     for (let i = startLev; i < endLev; i++) {
-        total_req[0] += i * i + 11; // 요구량 = i^2 + 11
-        total_meso[0] += 3110000 + 3960000 * i; // 여로 심볼
-        total_meso[1] += 6220000 + 4620000 * i; // 츄츄 심볼
-        total_meso[2] += 9330000 + 5280000 * i; // 레헬른 심볼
-        total_meso[3] += 11196000 + 5940000 * i; // 아르카나, 모라스, 에스페라 심볼
+        const arcaneReq = i * i + 11; // 요구량 = i^2 + 11
+        totalReq[0] += arcaneReq;
+        for (let j = 0, req = arcaneReq, div = 10000; j < 6; j++) {
+            totalMeso[j] += Math.floor((req * (costConstant[j].default + i * costConstant[j].diff)) / div) * div;
+        }
+
         if (i < 11) {
-            total_req[1] += 9 * i * i + 20 * i; // 요구량 = 9i^2 + 20i
-            total_meso[4] += 96900000 + 88500000 * i; // 세르니움 심볼
-            total_meso[5] += 106600000 + 97300000 * i; // 아르크스 심볼
-            total_meso[6] += 117400000 + 107100000 * i; // 오디움 심볼
+            const authenticReq = 9 * i * i + 20 * i; // 요구량 = 9i^2 + 20i
+            totalReq[1] += authenticReq;
+            for (let j = 6, req = authenticReq, div = 100000; j < 9; j++) {
+                totalMeso[j] += Math.floor((req * (costConstant[j].default + i * costConstant[j].diff)) / div) * div;
+            }
         }
     }
 
     await interaction.followUp(
         `아케인 심볼 Lv.${startLev} → Lv.${endLev}
-요구량: ${total_req[0]}
-여로: ${total_meso[0].toLocaleString()}메소
-츄츄: ${total_meso[1].toLocaleString()}메소
-레헬른: ${total_meso[2].toLocaleString()}메소
-아르카나 이상: ${total_meso[3].toLocaleString()}메소
+요구량: ${totalReq[0]}
+여로: ${totalMeso[0].toLocaleString()}메소
+츄츄: ${totalMeso[1].toLocaleString()}메소
+레헬른: ${totalMeso[2].toLocaleString()}메소
+아르카나: ${totalMeso[3].toLocaleString()}메소
+모라스: ${totalMeso[4].toLocaleString()}메소
+에스페라: ${totalMeso[5].toLocaleString()}메소
 
 어센틱 심볼 Lv.${Math.min(11, startLev)} → Lv.${Math.min(11, endLev)}
-요구량: ${total_req[1]}
-세르니움: ${total_meso[4].toLocaleString()}메소
-아르크스: ${total_meso[5].toLocaleString()}메소
-오디움: ${total_meso[6].toLocaleString()}메소`
+요구량: ${totalReq[1]}
+세르니움: ${totalMeso[6].toLocaleString()}메소
+아르크스: ${totalMeso[7].toLocaleString()}메소
+오디움: ${totalMeso[8].toLocaleString()}메소`
     );
 }
