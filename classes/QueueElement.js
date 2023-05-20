@@ -2,7 +2,7 @@ import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, ButtonStyle, ChannelType
 import { AudioPlayerStatus, createAudioPlayer, NoSubscriberBehavior, VoiceConnectionStatus } from '@discordjs/voice';
 import { FormatError } from 'youtube-dlsr';
 import { sendAdmin } from '../admin/bot_message.js';
-import { songDownload } from '../util/song_util.js';
+import { songDownload, addYoutubeStatistics } from '../util/song_util.js';
 import { Util } from '../util/Util.js';
 
 export class QueueElement {
@@ -132,6 +132,7 @@ export class QueueElement {
 
             this.playingMessage = await this.sendMessage({ embeds: [embed], components: [row1, row2] });
             this.player.play(await songDownload(song.url));
+            addYoutubeStatistics(song.url);
         } catch (err) {
             if (err instanceof FormatError) {
                 this.sendMessage('재생할 수 없는 영상입니다.');

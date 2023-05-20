@@ -1,10 +1,11 @@
 import SoundcloudAPI from 'soundcloud.ts';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { decodeHTML } from 'entities';
+import { request } from 'undici';
 import { download as ytdl, search as ytsr, Util as YtUtil } from 'youtube-dlsr';
 import { YoutubeAPI } from '../classes/YoutubeAPI.js';
 import { Util } from '../util/Util.js';
-import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY } from '../soyabot_config.js';
+import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY, BOT_SERVER_DOMAIN } from '../soyabot_config.js';
 const scTrackRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/[\w-]+\/?$/;
 const scSetRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/sets\/[\w-]+\/?$/;
 const soundcloud = new SoundcloudAPI.default();
@@ -99,4 +100,35 @@ export async function songDownload(url) {
         metadata: url,
         inputType: type
     });
+}
+
+export async function addYoutubeStatistics(url) {
+    try {
+        const videoID = YtUtil.getVideoId(url, true);
+        if (!videoID) {
+            return false;
+        }
+        await request(`http://${BOT_SERVER_DOMAIN}/youtube/add/${videoID}`);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+export async function getYoutubeStatisticsCountLimit(count = 50) {
+    try {
+        const { body } = await request(`http://${BOT_SERVER_DOMAIN}/youtube/result/count/${count}`);
+        return await body.json();
+    } catch {
+        return [];
+    }
+}
+
+export async function getYoutubeStatisticsDateRange(start, end) {
+    try {
+        const { body } = await request(`http://${BOT_SERVER_DOMAIN}/youtube/result/date/${start}/${end}`);
+        return await body.json();
+    } catch {
+        return [];
+    }
 }
