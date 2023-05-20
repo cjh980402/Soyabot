@@ -2,11 +2,11 @@ import { AttachmentBuilder } from 'discord.js';
 import renderChart from '../util/chartjs_rendering.js';
 import { getYoutubeStatisticsCountLimit } from '../util/song_util.js';
 
-async function getSongCountGraph() {
+async function getSongCountGraph(client) {
     const data = await getYoutubeStatisticsCountLimit(50);
     const songColor = (a) =>
         data.map((v) => {
-            const hash = [...v.song].reduce((acc, cur) => (31 * acc + cur.codePointAt(0)) | 0, 0); // 각 연산 후 signed 32-bit 정수로 변환
+            const hash = [...v.artist].reduce((acc, cur) => (31 * acc + cur.codePointAt(0)) | 0, 0); // 각 연산 후 signed 32-bit 정수로 변환
             let r = (hash >> 16) & 0xff;
             let g = (hash >> 8) & 0xff;
             let b = hash & 0xff;
@@ -23,7 +23,7 @@ async function getSongCountGraph() {
     const config = {
         type: 'bar',
         data: {
-            labels: data.map((v) => v.name),
+            labels: data.map((v) => v.song),
             datasets: [
                 {
                     label: '재생 횟수',
@@ -78,5 +78,5 @@ export const commandData = {
     description: '봇의 노래 통계 상위 50곡을 그래프로 보여줍니다.'
 };
 export async function commandExecute(interaction) {
-    await interaction.followUp({ files: [await getSongCountGraph()] });
+    await interaction.followUp({ files: [await getSongCountGraph(interaction.client)] });
 }
