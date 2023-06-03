@@ -7,10 +7,10 @@ const chartCanvas = new ChartJSNodeCanvas({
         requireLegacy: ['chartjs-plugin-datalabels']
     },
     chartCallback: (ChartJS) => {
-        ChartJS.defaults.font.family = 'NanumBarunGothic, Symbola, CODE2000';
+        ChartJS.defaults.font.family = 'HANDotum, Symbola, CODE2000';
     }
 });
-chartCanvas.registerFont('./fonts/NanumBarunGothic.ttf', { family: 'NanumBarunGothic' });
+chartCanvas.registerFont('./fonts/HANDotum.ttf', { family: 'HANDotum' });
 chartCanvas.registerFont('./fonts/Symbola.ttf', { family: 'Symbola' });
 chartCanvas.registerFont('./fonts/CODE2000.ttf', { family: 'CODE2000' });
 
