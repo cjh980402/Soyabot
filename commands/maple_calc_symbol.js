@@ -50,10 +50,15 @@ const symbolConstant = [
         default: 1860000,
         diff: -60000,
         name: '도원경'
+    },
+    {
+        default: 2040000,
+        diff: -60000,
+        name: '아르테리아'
     }
 ];
 const arcaneCount = 6;
-const authenticCount = 4;
+const authenticCount = 5;
 const arcaneMaxLev = 20;
 const authenticMaxLev = 11;
 
