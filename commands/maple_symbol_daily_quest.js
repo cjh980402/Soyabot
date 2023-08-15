@@ -2,11 +2,13 @@ const odiumDate = '2022-08-25';
 const odiumChangeDate = '2023-06-15';
 const shangrilaDate = '2023-06-15';
 const arteriaDate = '2023-07-13';
+const carcionDate = '2023-08-10';
 
 const odiumStartDate = new Date(odiumDate);
 const odiumChangeStartDate = new Date(odiumChangeDate);
 const shangrilaStartDate = new Date(shangrilaDate);
 const arteriaStartDate = new Date(arteriaDate);
+const carcionStartDate = new Date(carcionDate);
 
 const maxSymbolLevel = 11;
 
@@ -36,6 +38,7 @@ export async function commandExecute(interaction) {
     const odiumDateDiff = calcDate(today, odiumStartDate);
     const shangrilaDateDiff = calcDate(today, shangrilaStartDate);
     const arteriaDateDiff = calcDate(today, arteriaStartDate);
+    const carcionDateDiff = calcDate(today, carcionStartDate);
 
     const odiumChangeDateDiff = calcDate(today, odiumChangeStartDate);
     // 오디움 일퀘 변경 전후에 해당하는 날짜 수 계산
@@ -45,7 +48,8 @@ export async function commandExecute(interaction) {
     const symbolData = {
         오디움: { level: 1, left: 1, req: 29, questTotal: odiumBeforeChange * 5 + odiumAfterChange * 10 + 1 },
         도원경: { level: 1, left: 1, req: 29, questTotal: (shangrilaDateDiff + 1) * 10 + 1 },
-        아르테리아: { level: 1, left: 1, req: 29, questTotal: (arteriaDateDiff + 1) * 10 + 1 }
+        아르테리아: { level: 1, left: 1, req: 29, questTotal: (arteriaDateDiff + 1) * 10 + 1 },
+        카르시온: { level: 1, left: 1, req: 29, questTotal: (carcionDateDiff + 1) * 10 + 1 }
     };
 
     for (let i = 1; i <= maxSymbolLevel; i++) {
