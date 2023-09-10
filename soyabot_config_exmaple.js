@@ -1,6 +1,7 @@
 export const TOKEN = '';
 export const ADMIN_ID = '';
-export const NOTICE_CHANNEL_ID = '';
+export const HOMEPAGE_NOTICE_CHANNEL_ID = '';
+export const CONTENTS_NOTICE_CHANNEL_ID = '';
 export const MAX_PLAYLIST_SIZE = 20;
 export const BOT_SERVER_DOMAIN = '';
 export const NAVER_CLIENT_ID = '';

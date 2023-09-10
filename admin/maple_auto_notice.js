@@ -8,7 +8,7 @@ let testTimer = null;
 let testPatchTimer = null;
 let urusTimer = null;
 
-export function startNotice(client) {
+export function startNotice(client, target) {
     noticeTimer ??= setInterval(async () => {
         try {
             const { body } = await request('https://maplestory.nexon.com/News/Notice');
@@ -38,7 +38,7 @@ export function startNotice(client) {
                     .setDescription(notice.join('\n\n'))
                     .setTimestamp();
 
-                sendBotNotice(client, noticeEmbed, true);
+                sendBotNotice(client, noticeEmbed, target);
             }
         } catch (err) {
             sendAdmin(client.users, `자동알림(공지) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
@@ -53,7 +53,7 @@ export function stopNotice() {
     }
 }
 
-export function startUpdate(client) {
+export function startUpdate(client, target) {
     updateTimer ??= setInterval(async () => {
         try {
             const { body } = await request('https://maplestory.nexon.com/News/Update');
@@ -83,7 +83,7 @@ export function startUpdate(client) {
                     .setDescription(update.join('\n\n'))
                     .setTimestamp();
 
-                sendBotNotice(client, noticeEmbed, true);
+                sendBotNotice(client, noticeEmbed, target);
             }
         } catch (err) {
             sendAdmin(client.users, `자동알림(업데이트) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
@@ -98,7 +98,7 @@ export function stopUpdate() {
     }
 }
 
-export function startTest(client) {
+export function startTest(client, target) {
     testTimer ??= setInterval(async () => {
         try {
             const { body } = await request('https://maplestory.nexon.com/Testworld/Totalnotice');
@@ -136,7 +136,7 @@ export function startTest(client) {
                     .setDescription(test.join('\n\n'))
                     .setTimestamp();
 
-                sendBotNotice(client, noticeEmbed, true);
+                sendBotNotice(client, noticeEmbed, target);
             }
         } catch (err) {
             sendAdmin(client.users, `자동알림(테섭) 파싱 중 에러 발생\n에러 내용: ${err.stack}`);
@@ -151,7 +151,7 @@ export function stopTest() {
     }
 }
 
-export function startTestPatch(client) {
+export function startTestPatch(client, target) {
     testPatchTimer ??= setInterval(async () => {
         try {
             const lastPatch = client.db.get('SELECT * FROM test_patch ORDER BY version DESC LIMIT 1');
@@ -170,7 +170,7 @@ export function startTestPatch(client) {
                     `[Tver 1.2.${patchVersion}]\n테스트월드 패치 파일이 발견되었습니다.\n파일 크기: ${fileSize.toFixed(
                         2
                     )}MB\n패치파일 주소: ${patchURL}`,
-                    true
+                    target
                 );
             }
         } catch (err) {
@@ -186,16 +186,16 @@ export function stopTestPatch() {
     }
 }
 
-export function startUrus(client) {
+export function startUrus(client, target) {
     const now = new Date();
     const urusDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 22, 30); // 우르스 알림 시간 객체 저장
     if (now > urusDate) {
         urusDate.setDate(now.getDate() + 1); // 우르스 알림 시간 지났으면 다음 날로 알림 설정
     }
     urusTimer ??= setTimeout(() => {
-        sendBotNotice(client, '우르스 메소 2배 종료까지 30분 남았습니다!', true);
+        sendBotNotice(client, '우르스 메소 2배 종료까지 30분 남았습니다!', target);
         // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
-        urusTimer = setInterval(sendBotNotice, 86400000, client, '우르스 메소 2배 종료까지 30분 남았습니다!', true); // 24시간 주기
+        urusTimer = setInterval(sendBotNotice, 86400000, client, '우르스 메소 2배 종료까지 30분 남았습니다!', target); // 24시간 주기
     }, urusDate - now);
 }
 
