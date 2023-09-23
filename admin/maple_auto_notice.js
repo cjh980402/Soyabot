@@ -7,6 +7,8 @@ let updateTimer = null;
 let testTimer = null;
 let testPatchTimer = null;
 let urusTimer = null;
+let flagTimer = null;
+let culvertTimer = null;
 
 export function startNotice(client, target) {
     noticeTimer ??= setInterval(async () => {
@@ -155,7 +157,7 @@ export function startTestPatch(client, target) {
     testPatchTimer ??= setInterval(async () => {
         try {
             const lastPatch = client.db.get('SELECT * FROM test_patch ORDER BY version DESC LIMIT 1');
-            const patchVersion = (lastPatch?.version ?? 139) + 1; // 새로 가져올 패치의 버전
+            const patchVersion = (lastPatch?.version ?? 161) + 1; // 새로 가져올 패치의 버전
             const patchURL = `http://maplestory.dn.nexoncdn.co.kr/PatchT/01${patchVersion}/01${
                 patchVersion - 1
             }to01${patchVersion}.patch`;
@@ -188,9 +190,9 @@ export function stopTestPatch() {
 
 export function startUrus(client, target) {
     const now = new Date();
-    const urusDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 22, 30); // 우르스 알림 시간 객체 저장
+    const urusDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 22, 30);
     if (now > urusDate) {
-        urusDate.setDate(now.getDate() + 1); // 우르스 알림 시간 지났으면 다음 날로 알림 설정
+        urusDate.setDate(urusDate.getDate() + 1); // 우르스 알림 시간 지났으면 다음 날로 알림 설정
     }
     urusTimer ??= setTimeout(() => {
         sendBotNotice(client, '우르스 메소 2배 종료까지 30분 남았습니다!', target);
@@ -203,5 +205,59 @@ export function stopUrus() {
     if (urusTimer) {
         clearInterval(urusTimer); // clearInterval과 clearTimeout은 동일한 동작 수행
         urusTimer = null;
+    }
+}
+
+export function startCulvert(client, target) {
+    const now = new Date();
+    const culvertDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 0);
+    culvertDate.setDate(culvertDate.getDate() - culvertDate.getDay()); // 날짜를 같은 주 일요일로 변경
+    if (now > culvertDate) {
+        culvertDate.setDate(culvertDate.getDate() + 7); // 수로 알림 시간 지났으면 다음 주로 알림 설정
+    }
+    culvertTimer ??= setTimeout(() => {
+        sendBotNotice(client, '지하 수로 입장 마감까지 30분 남았습니다!', target);
+        // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
+        culvertTimer = setInterval(
+            sendBotNotice,
+            604800000,
+            client,
+            '지하 수로 입장 마감까지 30분 남았습니다!',
+            target
+        ); // 일주일 주기
+    }, culvertDate - now);
+}
+
+export function stopCulvert() {
+    if (culvertTimer) {
+        clearInterval(culvertTimer); // clearInterval과 clearTimeout은 동일한 동작 수행
+        culvertTimer = null;
+    }
+}
+
+export function startFlag(client, target) {
+    const now = new Date();
+    const flagDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 30);
+    flagDate.setDate(flagDate.getDate() - flagDate.getDay()); // 날짜를 같은 주 일요일로 변경
+    if (now > flagDate) {
+        flagDate.setDate(flagDate.getDate() + 7); // 플래그 알림 시간 지났으면 다음 주로 알림 설정
+    }
+    flagTimer ??= setTimeout(() => {
+        sendBotNotice(client, '플래그 레이스 입장 마감까지 30분 남았습니다!', target);
+        // setInterval은 즉시 수행은 안되므로 1번 공지를 내보내고 setInterval을 한다
+        flagTimer = setInterval(
+            sendBotNotice,
+            604800000,
+            client,
+            '플래그 레이스 입장 마감까지 30분 남았습니다!',
+            target
+        ); // 일주일 주기
+    }, flagDate - now);
+}
+
+export function stopFlag() {
+    if (flagTimer) {
+        clearInterval(flagTimer); // clearInterval과 clearTimeout은 동일한 동작 수행
+        flagTimer = null;
     }
 }
