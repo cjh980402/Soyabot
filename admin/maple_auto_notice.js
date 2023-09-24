@@ -210,7 +210,7 @@ export function stopUrus() {
 
 export function startCulvert(client, target) {
     const now = new Date();
-    const culvertDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 0);
+    const culvertDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 22, 30);
     culvertDate.setDate(culvertDate.getDate() - culvertDate.getDay()); // 날짜를 같은 주 일요일로 변경
     if (now > culvertDate) {
         culvertDate.setDate(culvertDate.getDate() + 7); // 수로 알림 시간 지났으면 다음 주로 알림 설정
@@ -237,7 +237,7 @@ export function stopCulvert() {
 
 export function startFlag(client, target) {
     const now = new Date();
-    const flagDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 30);
+    const flagDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 0);
     flagDate.setDate(flagDate.getDate() - flagDate.getDay()); // 날짜를 같은 주 일요일로 변경
     if (now > flagDate) {
         flagDate.setDate(flagDate.getDate() + 7); // 플래그 알림 시간 지났으면 다음 주로 알림 설정
