@@ -35,18 +35,18 @@ function getTotalInfoObj(totalInfos) {
 
 async function getStockEmbed(search, searchRslt, type) {
     const stockfind =
-        searchRslt.find((v) => v[0][0].toLowerCase() === search || v[1][0].toLowerCase() === search) ?? searchRslt[0]; // 내용과 일치하거나 첫번째 항목
-    const code = stockfind[0][0];
-    const name = stockfind[1][0];
-    const link = getRedirectURL(stockfind[3][0]); // 리다이렉트 로직 반영
-    const identifer = stockfind[4][0];
+        searchRslt.find((v) => v.code.toLowerCase() === search || v.name.toLowerCase() === search) ?? searchRslt[0]; // 내용과 일치하거나 첫번째 항목
+    const code = stockfind.code;
+    const name = stockfind.name;
+    const link = getRedirectURL(stockfind.url); // 리다이렉트 로직 반영
+    const identifer = stockfind.reutersCode;
     let image = null;
 
     const stockEmbed = new EmbedBuilder()
         .setTitle(`**${name} (${code}) ${type}**`)
         .setColor('#FF9999')
         .setURL(`https://m.stock.naver.com${link}`);
-    if (stockfind[2][0] === '국내지수') {
+    if (stockfind.typeName === '국내지수' || stockfind.typeName === '국내지수선물') {
         // 국내 지수
         const { body } = await request(`https://m.stock.naver.com/api/index/${identifer}/integration`);
         const data = await body.json();
@@ -97,7 +97,7 @@ async function getStockEmbed(search, searchRslt, type) {
                 }
             ]);
         }
-    } else if (stockfind[2][0] === '해외지수') {
+    } else if (stockfind.typeName === '해외지수') {
         // 해외 지수
         const { body } = await request(`https://api.stock.naver.com/index/${identifer}/basic`);
         const data = await body.json();
@@ -122,7 +122,7 @@ async function getStockEmbed(search, searchRslt, type) {
         );
         // 파이썬 스크립트 실행
         image = new AttachmentBuilder(stockPic, { name: `${code}.png` });
-    } else if (stockfind[2][0] === '코스피' || stockfind[2][0] === '코스닥' || stockfind[2][0] === '코넥스') {
+    } else if (stockfind.typeName === '코스피' || stockfind.typeName === '코스닥' || stockfind.typeName === '코넥스') {
         // 국내 주식
         const { body } = await request(`https://m.stock.naver.com/api/stock/${identifer}/integration`);
         const data = await body.json();
@@ -284,13 +284,15 @@ export async function commandExecute(interaction) {
     const type = interaction.options.getString('차트_종류') ?? '일봉'; // 차트 종류
     const search = interaction.options.getString('검색_내용');
     const { body } = await request(
-        `https://ac.finance.naver.com/ac?q=${encodeURIComponent(search)}&t_koreng=1&st=111&r_lt=111`
+        `https://m.stock.naver.com/front-api/v1/search/autoComplete?query=${encodeURIComponent(
+            search
+        )}&target=stock%2Cindex%2Cmarketindicator%2Ccoin`
     );
-    const searchRslt = (await body.json()).items[0];
+    const searchRslt = await body.json();
 
-    if (!searchRslt?.length) {
+    if (!searchRslt.isSuccess || !searchRslt.result?.items?.length) {
         await interaction.followUp('검색 내용에 해당하는 주식의 정보를 조회할 수 없습니다.');
     } else {
-        await interaction.followUp(await getStockEmbed(search, searchRslt, type));
+        await interaction.followUp(await getStockEmbed(search, searchRslt.result.items, type));
     }
 }
