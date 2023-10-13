@@ -2,13 +2,13 @@ import { request } from 'undici';
 import { load } from 'cheerio';
 import { setTimeout } from 'node:timers/promises';
 
-async function requestCheerio(url) {
-    const { body } = await request(url);
+async function requestCheerio(url, options = {}) {
+    const { body } = await request(url, options);
     return load(await body.text());
 }
 
-async function requestJSON(url) {
-    const { body } = await request(url);
+async function requestJSON(url, options = {}) {
+    const { body } = await request(url, options);
     return body.json();
 }
 
@@ -147,7 +147,11 @@ export class MapleUser {
         const start = Date.now();
         while (1) {
             try {
-                const rslt = await requestJSON(`${this.#ggURL}/sync`);
+                const rslt = await requestJSON(`${this.#ggURL}/sync`, {
+                    headers: {
+                        referer: this.#ggURL
+                    }
+                });
                 if (rslt.error) {
                     return false; // 갱신실패
                 } else if (rslt.done) {
@@ -415,7 +419,11 @@ export class MapleGuild {
         const start = Date.now();
         while (1) {
             try {
-                const rslt = await requestJSON(`${this.#ggURL}/sync`);
+                const rslt = await requestJSON(`${this.#ggURL}/sync`, {
+                    headers: {
+                        referer: this.#ggURL
+                    }
+                });
                 if (rslt.error) {
                     return false; // 갱신실패
                 } else if (rslt.done) {
