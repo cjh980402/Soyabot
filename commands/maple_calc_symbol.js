@@ -70,7 +70,7 @@ const authenticMaxLev = 11;
 export const type = '메이플';
 export const commandData = {
     name: '심볼',
-    description: '시작 레벨부터 목표 레벨까지의 심볼 요구갯수, 강화비용을 계산합니다.',
+    description: '시작 레벨부터 목표 레벨까지의 심볼 요구 개수, 강화비용을 계산합니다.',
     options: [
         {
             name: '시작_레벨',
