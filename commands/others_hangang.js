@@ -12,7 +12,7 @@ export async function commandExecute(interaction) {
     params.set('currentPage', 1);
     params.set('siteId', '노량진_자동');
 
-    const { body } = await request('http://swo.seoul.go.kr/water/waterMesntkInfoResult.do', {
+    const { body } = await request('https://swo.seoul.go.kr/water/waterMesntkInfoResult.do', {
         method: 'POST',
         headers: {
             'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'
