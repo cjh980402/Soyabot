@@ -57,21 +57,21 @@ export class MapleUser {
             throw new MapleError('공식 홈페이지가 서비스 점검 중입니다.');
         }
 
-        if (this.#homeLevelData('tr[class]').length !== 10) {
+        if (this.#homeLevelData('.rank_table tbody > tr[class]').length !== 10) {
             this.#homeLevelURL += '&w=254'; // 리부트 서버 목록
             this.#homeLevelData = await requestCheerio(this.#homeLevelURL);
         }
-        if (len < 1 || len > 12 || this.#homeLevelData('tr[class]').length !== 10) {
+        if (len < 1 || len > 12 || this.#homeLevelData('.rank_table tbody > tr[class]').length !== 10) {
             return null; // 없는 캐릭터
         }
 
         let data = this.#homeLevelData('.search_com_chk > td');
         if (data.length === 0) {
-            const nickList = this.#homeLevelData('tr[class] > td.left > dl > dt > a'); // 순위 리스트의 닉네임
+            const nickList = this.#homeLevelData('.rank_table tbody > tr[class] > td.left > dl > dt > a'); // 순위 리스트의 닉네임
             for (let i = 0; i < 10; i++) {
                 if (this.#name.toLowerCase() === nickList.eq(i).text().toLowerCase()) {
                     this.#name = nickList.eq(i).text(); // 대소문자 정확한 이름으로 갱신
-                    data = this.#homeLevelData('tr[class]').eq(i).find('td');
+                    data = this.#homeLevelData('.rank_table tbody > tr[class]').eq(i).find('td');
                     break;
                 }
             }
@@ -96,19 +96,17 @@ export class MapleUser {
             throw new MapleError('공식 홈페이지가 서비스 점검 중입니다.');
         }
 
-        if (len < 1 || len > 12 || this.#homeUnionData('tr').length !== 12) {
+        if (len < 1 || len > 12 || this.#homeUnionData('.rank_table tbody > tr').length !== 10) {
             return null; // 유니온 기록이 없음
         }
 
         let data = this.#homeUnionData('.search_com_chk > td');
         if (data.length === 0) {
-            const nickList = this.#homeUnionData('tr > td.left > dl > dt > a'); // 순위 리스트의 닉네임
+            const nickList = this.#homeUnionData('.rank_table tbody > tr > td.left > dl > dt > a'); // 순위 리스트의 닉네임
             for (let i = 0; i < 10; i++) {
                 if (this.#name.toLowerCase() === nickList.eq(i).text().toLowerCase()) {
                     this.#name = nickList.eq(i).text(); // 대소문자 정확한 이름으로 갱신
-                    data = this.#homeUnionData('tr')
-                        .eq(i + 2)
-                        .find('td');
+                    data = this.#homeUnionData('.rank_table tbody >  tr').eq(i).find('td');
                     break;
                 }
             }
