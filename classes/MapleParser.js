@@ -34,8 +34,8 @@ export class MapleUser {
     constructor(name) {
         this.#name = name;
         this.#ggURL = `https://maple.gg/u/${encodeURIComponent(name)}`; // encodeURIComponent는 한글 주소의 경우 필수
-        this.#homeLevelURL = `https://maplestory.nexon.com/Ranking/World/Total?c=${encodeURIComponent(name)}`; // 초기값은 일반 서버
-        this.#homeUnionURL = `https://maplestory.nexon.com/Ranking/Union?c=${encodeURIComponent(name)}`;
+        this.#homeLevelURL = `https://maplestory.nexon.com/N23Ranking/World/Total?c=${encodeURIComponent(name)}`; // 초기값은 일반 서버
+        this.#homeUnionURL = `https://maplestory.nexon.com/N23Ranking/World/Union?c=${encodeURIComponent(name)}`;
     }
     // getter
     get Name() {
