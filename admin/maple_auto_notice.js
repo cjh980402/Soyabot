@@ -103,7 +103,7 @@ export function stopUpdate() {
 export function startTest(client, target) {
     testTimer ??= setInterval(async () => {
         try {
-            const { body } = await request('https://maplestory.nexon.com/Testworld/Totalnotice');
+            const { body } = await request('https://maplestory.nexon.com/Testworld/News/All');
             const data = load(await body.text())('.news_board li > p');
 
             const test = [];
@@ -157,7 +157,7 @@ export function startTestPatch(client, target) {
     testPatchTimer ??= setInterval(async () => {
         try {
             const lastPatch = client.db.get('SELECT * FROM test_patch ORDER BY version DESC LIMIT 1');
-            const patchVersion = (lastPatch?.version ?? 161) + 1; // 새로 가져올 패치의 버전
+            const patchVersion = (lastPatch?.version ?? 164) + 1; // 새로 가져올 패치의 버전
             const patchURL = `http://maplestory.dn.nexoncdn.co.kr/PatchT/01${patchVersion}/01${
                 patchVersion - 1
             }to01${patchVersion}.patch`;
