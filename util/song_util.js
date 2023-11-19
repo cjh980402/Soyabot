@@ -2,7 +2,7 @@ import SoundcloudAPI from 'soundcloud.ts';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { decodeHTML } from 'entities';
 import { request } from 'undici';
-import ytdl from 'youtube-dlsr';
+import ytdl from 'ytdl-core';
 import { /*download as ytdl, */ search as ytsr, Util as YtUtil } from 'youtube-dlsr';
 import { YoutubeAPI } from '../classes/YoutubeAPI.js';
 import { Util } from '../util/Util.js';
