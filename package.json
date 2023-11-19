@@ -15,7 +15,7 @@
   "scripts": {
     "prepublish": "npm run pretty",
     "restart": "forever restart index.js",
-    "start": "forever start -o ./log/out.log -e ./log/err.log index.js",
+    "start": "forever start --killSignal=SIGTERM -o ./log/out.log -e ./log/err.log index.js",
     "stop": "forever stop index.js",
     "pretty": "prettier --config .prettierrc --write '**/*.js'"
   },
