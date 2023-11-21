@@ -1,9 +1,7 @@
-import { PassThrough } from 'node:stream';
 import SoundcloudAPI from 'soundcloud.ts';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { decodeHTML } from 'entities';
 import { request } from 'undici';
-import { Innertube, UniversalCache, Utils } from 'youtubei.js';
 import { download as ytdl, search as ytsr, Util as YtUtil } from 'youtube-dlsr';
 import { YoutubeAPI } from '../classes/YoutubeAPI.js';
 import { Util } from '../util/Util.js';
@@ -12,7 +10,6 @@ const scTrackRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/[\w-]+\/?$/;
 const scSetRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/sets\/[\w-]+\/?$/;
 const soundcloud = new SoundcloudAPI.default();
 const youtube = new YoutubeAPI(GOOGLE_API_KEY);
-const yt = await Innertube.create({ cache: new UniversalCache(false) });
 
 export function isValidVideo(url) {
     if (scTrackRegex.test(url) || YtUtil.getVideoId(url, true)) {
@@ -92,13 +89,7 @@ export async function getPlaylistInfo(url, search) {
 export async function songDownload(url) {
     let source = null;
     if (url.includes('youtube.com')) {
-        source = new PassThrough();
-        (async () => {
-            const stream = await yt.download(YtUtil.getVideoId(url, true), { type: 'audio', quality: 'best' });
-            for await (const chunk of Utils.streamToIterable(stream)) {
-                source.write(chunk);
-            }
-        })();
+        source = await ytdl(url);
     } else if (url.includes('soundcloud.com')) {
         source = await soundcloud.util.streamTrack(url);
     } else {
