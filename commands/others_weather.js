@@ -8,43 +8,20 @@ async function getWeatherEmbed(targetLocal) {
     const targetURL = `https://weather.naver.com/today/${targetLocal[1][0]}`;
     const { body } = await request(targetURL);
     const $ = load(await body.text());
-    const nowWeather = $('.weather_area');
-    const weatherDesc = [
-        `현재 날씨\n\n현재온도: ${nowWeather.find('.current').contents()[2].data}° (${nowWeather
-            .find('.summary > .weather')
-            .text()})`,
-        '날씨 예보\n'
-    ];
+    const weatherDesc = ['날씨 예보\n', '날씨 예보\n', '날씨 예보\n'];
 
-    if (targetLocal[1][0].includes('WD')) {
-        // 해외 날씨
-        const summaryTerm = nowWeather.find('.weather_table td dt');
-        const summaryDesc = nowWeather.find('.weather_table td dd');
-        for (let i = 0; i < summaryTerm.length; i++) {
-            weatherDesc[0] += `${i % 2 ? '│' : '\n'}${summaryTerm.eq(i).text()}: ${summaryDesc.eq(i).text()}`;
-        }
-    } else {
-        // 국내 날씨
-        const summary = JSON.parse(/var\s+weatherSummary\s*=\s*({.+?})\s*;/s.exec($.html())[1]);
-        weatherDesc[0] += `\n체감: ${summary.nowFcast.stmpr}°│자외선: ${summary.uv.labelText}
-습도: ${summary.nowFcast.humd}%│${summary.nowFcast.windDrctnName}: ${summary.nowFcast.windSpd}m/s
-미세먼지: ${
-            summary.airFcast.stationPM10Legend1
-                ? `${summary.airFcast.stationPM10Legend1} (${summary.airFcast.stationPM10}㎍/㎥)`
-                : '-'
-        }
-초미세먼지: ${
-            summary.airFcast.stationPM25Legend1
-                ? `${summary.airFcast.stationPM25Legend1} (${summary.airFcast.stationPM25}㎍/㎥)`
-                : '-'
-        }`;
-    }
+    const castListReg = targetLocal[1][0].includes('WD')
+        ? /"overseasHourlyFcastList"\s*:\s*(\[.+?\])\s*/s
+        : /"domesticHourlyFcastList"\s*:\s*(\[.+?\])\s*/s;
 
-    const castList = JSON.parse(/var\s+hourlyFcastListJson\s*=\s*(\[.+?\])\s*;/s.exec($.html())[1]);
+    const castList = JSON.parse(castListReg.exec($.html())[1]);
+    const descLength = Math.ceil(castList.length / weatherDesc.length);
     for (let i = 0; i < castList.length; i++) {
-        weatherDesc[1] += `\n${+castList[i].aplTm}시: ${castList[i].tmpr}° (${
-            castList[i].wetrTxt ?? castList[i].wetrTxtNew
-        })│강수량: ${castList[i].rainAmt}㎜│습도: ${castList[i].humd}%│풍속: ${castList[i].windSpd}㎧`;
+        weatherDesc[Math.floor(i / descLength)] += `\n${+castList[i].aplYmd} ${+castList[i].aplTm}시: ${
+            castList[i].tmpr
+        }° (${castList[i].wetrTxt ?? castList[i].wetrTxtNew})│강수량: ${
+            castList[i].rainAmt ?? castList[i].oneHourRainAmt
+        }㎜│습도: ${castList[i].humd}%│풍속: ${castList[i].windSpd}㎧`;
     }
 
     const embeds = [];
