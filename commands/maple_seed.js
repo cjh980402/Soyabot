@@ -29,9 +29,9 @@ export async function commandExecute(interaction) {
         await interaction.followUp(`[${mapleUserInfo.Name}]\n기록이 없습니다.`);
     } else {
         await interaction.followUp(
-            `[${mapleUserInfo.Name}]\nLv. ${seed[0]} / ${seed[1]}\n기록: ${seed[2]}층\n시간: ${
-                seed[3]
-            }\n날짜: ${new Date(seed[4]).toLocaleDateString()}`
+            `[${mapleUserInfo.Name}]\nLv.${seed[0]} / ${seed[1]}\n기록: ${seed[2]}층\n시간: ${Math.floor(
+                seed[3] / 60
+            )}분 ${seed[3] % 60}초\n날짜: ${new Date(seed[4]).toLocaleDateString()}`
         );
     }
 }

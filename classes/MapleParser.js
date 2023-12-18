@@ -9,28 +9,52 @@ const serverData = [
             id: 0,
             key: 'scania',
             name: '스카니아',
-            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_scania.gif'
+            iconUrl: 'https://cdn.maple.gg/images/maplestory/world/ico_world_scania.gif'
         }
     ],
-    [1, { id: 1, key: 'bera', name: '베라', iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_bera.gif' }],
-    [3, { id: 3, key: 'luna', name: '루나', iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_luna.gif' }],
+    [
+        1,
+        { id: 1, key: 'bera', name: '베라', iconUrl: 'https://cdn.maple.gg/images/maplestory/world/ico_world_bera.gif' }
+    ],
+    [
+        3,
+        { id: 3, key: 'luna', name: '루나', iconUrl: 'https://cdn.maple.gg/images/maplestory/world/ico_world_luna.gif' }
+    ],
     [
         4,
-        { id: 4, key: 'zenith', name: '제니스', iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_zenith.gif' }
+        {
+            id: 4,
+            key: 'zenith',
+            name: '제니스',
+            iconUrl: 'https://cdn.maple.gg/images/maplestory/world/ico_world_zenith.gif'
+        }
     ],
-    [5, { id: 5, key: 'croa', name: '크로아', iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_croa.gif' }],
+    [
+        5,
+        {
+            id: 5,
+            key: 'croa',
+            name: '크로아',
+            iconUrl: 'https://cdn.maple.gg/images/maplestory/world/ico_world_croa.gif'
+        }
+    ],
     [
         16,
         {
             id: 16,
             key: 'elysium',
             name: '엘리시움',
-            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_elysium.gif'
+            iconUrl: 'https://cdn.maple.gg/images/maplestory/world/ico_world_elysium.gif'
         }
     ],
     [
         10,
-        { id: 10, key: 'union', name: '유니온', iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_union.gif' }
+        {
+            id: 10,
+            key: 'union',
+            name: '유니온',
+            iconUrl: 'https://cdn.maple.gg/images/maplestory/world/ico_world_union.gif'
+        }
     ],
     [
         29,
@@ -38,17 +62,20 @@ const serverData = [
             id: 29,
             key: 'enosis',
             name: '이노시스',
-            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_enosis.gif'
+            iconUrl: 'https://cdn.maple.gg/images/maplestory/world/ico_world_enosis.gif'
         }
     ],
-    [43, { id: 43, key: 'red', name: '레드', iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_red.gif' }],
+    [
+        43,
+        { id: 43, key: 'red', name: '레드', iconUrl: 'https://cdn.maple.gg/images/maplestory/world/ico_world_red.gif' }
+    ],
     [
         44,
         {
             id: 44,
             key: 'aurora',
             name: '오로라',
-            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_aurora.gif'
+            iconUrl: 'https://cdn.maple.gg/images/maplestory/world/ico_world_aurora.gif'
         }
     ],
     [
@@ -57,7 +84,7 @@ const serverData = [
             id: 45,
             key: 'reboot',
             name: '리부트',
-            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_reboot.gif',
+            iconUrl: 'https://cdn.maple.gg/images/maplestory/world/ico_world_reboot.gif',
             isReboot: true
         }
     ],
@@ -67,7 +94,7 @@ const serverData = [
             id: 46,
             key: 'reboot2',
             name: '리부트2',
-            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_reboot2.gif',
+            iconUrl: 'https://cdn.maple.gg/images/maplestory/world/ico_world_reboot2.gif',
             isReboot: true
         }
     ],
@@ -77,7 +104,7 @@ const serverData = [
             id: 48,
             key: 'burning2',
             name: '버닝2',
-            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_burning.gif',
+            iconUrl: 'https://cdn.maple.gg/images/maplestory/world/ico_world_burning.gif',
             isBurning: true
         }
     ],
@@ -87,7 +114,7 @@ const serverData = [
             id: 49,
             key: 'burning',
             name: '버닝',
-            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_burning.gif',
+            iconUrl: 'https://cdn.maple.gg/images/maplestory/world/ico_world_burning.gif',
             isBurning: true
         }
     ],
@@ -97,10 +124,18 @@ const serverData = [
             id: 50,
             key: 'arcane',
             name: '아케인',
-            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_arcane.gif'
+            iconUrl: 'https://cdn.maple.gg/images/maplestory/world/ico_world_arcane.gif'
         }
     ],
-    [51, { id: 51, key: 'nova', name: '노바', iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_nova.gif' }],
+    [
+        51,
+        {
+            id: 51,
+            key: 'nova',
+            name: '노바',
+            iconUrl: 'https://cdn.maple.gg/images/maplestory/world/ico_world_nova.gif'
+        }
+    ],
     [
         -1,
         {
@@ -437,6 +472,10 @@ export class MapleUser {
 
     Murung() {
         const murung = this.#ggData.profile.dojangRank;
+        if (!murung) {
+            return null;
+        }
+
         const murungdate = murung.date; // 무릉 최고기록 날짜
         const murungtime = murung.duration; // 무릉 클리어 시간 (초 단위)
         const murungfl = murung.floor; // 무릉 최고 층수
@@ -448,10 +487,14 @@ export class MapleUser {
 
     Seed() {
         const seed = this.#ggData.profile.seedRank;
+        if (!seed) {
+            return null;
+        }
+
         const seeddate = seed.date; // 시드 최고기록 날짜
         const seedtime = seed.duration; // 시드 클리어 시간 (초 단위)
         const seedfl = seed.floor; // 시드 최고 층수
-        const seedjob = getJobName(murung.detailJobId); // 유저 직업
+        const seedjob = getJobName(seed.detailJobId); // 유저 직업
         const seedlev = this.Level(); // 유저 레벨
 
         return [seedlev, seedjob, seedfl, seedtime, seeddate];
@@ -459,6 +502,10 @@ export class MapleUser {
 
     Union() {
         const union = this.#ggData.profile.unionRank;
+        if (!union) {
+            return null;
+        }
+
         const lev = union.n4level; // 유니온 레벨
         const stat = union.dps; // 유니온 전투력
         const coin = Math.floor(stat * 0.000000864); // 일일 코인 수급량
@@ -469,6 +516,10 @@ export class MapleUser {
 
     Achieve() {
         const achieve = this.#ggData.profile.achievementRank;
+        if (!achieve) {
+            return null;
+        }
+
         const grade = ''; // 업적 등급
         const score = achieve.score; // 업적 점수
         const worldrank = achieve.worldRank; // 월드랭킹
@@ -478,7 +529,11 @@ export class MapleUser {
     }
 
     Rank() {
-        const [totalRank, jobRank] = this.#ggData.profile;
+        const totalRank = this.#ggData.profile.totalRank;
+        const jobRank = this.#ggData.profile.jobRank;
+        if (!totalRank || !jobRank) {
+            return null;
+        }
 
         return [totalRank.rank, totalRank.worldRank, jobRank.rank, jobRank.worldRank];
     }

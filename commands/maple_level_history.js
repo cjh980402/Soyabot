@@ -25,7 +25,7 @@ export async function commandExecute(interaction) {
     }
 
     const data = mapleUserInfo.LevelHistory();
-    if (!data) {
+    if (!data || data.length === 0) {
         await interaction.followUp(`[${mapleUserInfo.Name}]\n레벨 히스토리를 가져오지 못했습니다.`);
     } else {
         let rslt = `[${mapleUserInfo.Name}]`;
