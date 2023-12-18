@@ -22,7 +22,7 @@ for i in range(count):  # 2 ~ 1+argv[1]: 이미지 주소
 drawer = ImageDraw.Draw(image)
 font = ImageFont.truetype('./fonts/CookieRun Regular.ttf', 12)
 for i in range(count):  # 2+argv[1] ~ 1+2*argv[1]: 날짜
-    msg = f'{sys.argv[2 + count + i]}일 전'
+    msg = f'{sys.argv[2 + count + i]}'
     w, h = drawer.textsize(msg, font)  # 텍스트의 사이즈를 반환
     drawer.text((180 * (i % 2) + 90 - w // 2, 160 + 180 *
                 (i // 2)), msg, (150, 150, 150), font)

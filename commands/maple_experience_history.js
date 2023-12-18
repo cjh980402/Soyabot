@@ -30,7 +30,7 @@ export async function commandExecute(interaction) {
     } else {
         let rslt = `[${mapleUserInfo.Name}]`;
         for (const expData of data) {
-            rslt += `\n${expData.date}: Lv.${expData.level} (${expData.exp}%)`;
+            rslt += `\n[${new Date(expData[0]).toLocaleDateString()}]: Lv.${expData[1]} (${expData[2]}%)`;
         }
         await interaction.followUp(rslt);
     }

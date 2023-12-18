@@ -31,15 +31,15 @@ function meso(star, lev) {
     let coefficient = 0;
     if (star >= 15) {
         coefficient = (star + 1) ** 2.7 / 200;
-    } else if (star == 14) {
+    } else if (star === 14) {
         coefficient = (star + 1) ** 2.7 / 75;
-    } else if (star == 13) {
+    } else if (star === 13) {
         coefficient = (star + 1) ** 2.7 / 110;
-    } else if (star == 12) {
+    } else if (star === 12) {
         coefficient = (star + 1) ** 2.7 / 150;
-    } else if (star == 11) {
+    } else if (star === 11) {
         coefficient = (star + 1) ** 2.7 / 220;
-    } else if (star == 10) {
+    } else if (star === 10) {
         coefficient = (star + 1) ** 2.7 / 400;
     } else {
         coefficient = (star + 1) / 25;

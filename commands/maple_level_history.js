@@ -28,10 +28,9 @@ export async function commandExecute(interaction) {
     if (!data) {
         await interaction.followUp(`[${mapleUserInfo.Name}]\n레벨 히스토리를 가져오지 못했습니다.`);
     } else {
-        const len = data[0].length;
         let rslt = `[${mapleUserInfo.Name}]`;
-        for (let i = 1; i < len; i++) {
-            rslt += `\nLv.${data[1][i]} 달성일: ${data[0][i]}`;
+        for (const expData of data) {
+            rslt += `\nLv.${expData[1]} 달성일: ${new Date(expData[0]).toLocaleDateString()}`;
         }
         await interaction.followUp(rslt);
     }

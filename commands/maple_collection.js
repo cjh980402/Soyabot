@@ -30,9 +30,9 @@ export async function commandExecute(interaction) {
         await interaction.followUp(`${mapleUserInfo.Name}님의 코디 컬렉션을 가져오지 못했습니다.`);
     } else {
         const { stdout: collectionPic } = await exec(
-            `python3 ./util/python/maple_coordi_collection.py ${collection[0].length} ${collection[0].join(
-                ' '
-            )} ${collection[1].join(' ')}`,
+            `python3 ./util/python/maple_coordi_collection.py ${collection.length} ${collection
+                .map((v) => v[1].replace('Character/', 'Character/180/'))
+                .join(' ')} ${collection.map((v) => `'${new Date(v[0]).toLocaleDateString()}'`).join(' ')}`,
             { encoding: 'buffer' }
         );
         const image = new AttachmentBuilder(collectionPic, { name: 'collection.png' });

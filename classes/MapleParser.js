@@ -2,6 +2,259 @@ import { request } from 'undici';
 import { load } from 'cheerio';
 import { setTimeout } from 'node:timers/promises';
 
+const serverData = [
+    [
+        0,
+        {
+            id: 0,
+            key: 'scania',
+            name: '스카니아',
+            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_scania.gif'
+        }
+    ],
+    [1, { id: 1, key: 'bera', name: '베라', iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_bera.gif' }],
+    [3, { id: 3, key: 'luna', name: '루나', iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_luna.gif' }],
+    [
+        4,
+        { id: 4, key: 'zenith', name: '제니스', iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_zenith.gif' }
+    ],
+    [5, { id: 5, key: 'croa', name: '크로아', iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_croa.gif' }],
+    [
+        16,
+        {
+            id: 16,
+            key: 'elysium',
+            name: '엘리시움',
+            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_elysium.gif'
+        }
+    ],
+    [
+        10,
+        { id: 10, key: 'union', name: '유니온', iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_union.gif' }
+    ],
+    [
+        29,
+        {
+            id: 29,
+            key: 'enosis',
+            name: '이노시스',
+            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_enosis.gif'
+        }
+    ],
+    [43, { id: 43, key: 'red', name: '레드', iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_red.gif' }],
+    [
+        44,
+        {
+            id: 44,
+            key: 'aurora',
+            name: '오로라',
+            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_aurora.gif'
+        }
+    ],
+    [
+        45,
+        {
+            id: 45,
+            key: 'reboot',
+            name: '리부트',
+            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_reboot.gif',
+            isReboot: true
+        }
+    ],
+    [
+        46,
+        {
+            id: 46,
+            key: 'reboot2',
+            name: '리부트2',
+            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_reboot2.gif',
+            isReboot: true
+        }
+    ],
+    [
+        48,
+        {
+            id: 48,
+            key: 'burning2',
+            name: '버닝2',
+            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_burning.gif',
+            isBurning: true
+        }
+    ],
+    [
+        49,
+        {
+            id: 49,
+            key: 'burning',
+            name: '버닝',
+            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_burning.gif',
+            isBurning: true
+        }
+    ],
+    [
+        50,
+        {
+            id: 50,
+            key: 'arcane',
+            name: '아케인',
+            iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_arcane.gif'
+        }
+    ],
+    [51, { id: 51, key: 'nova', name: '노바', iconUrl: '//cdn.maple.gg/images/maplestory/world/ico_world_nova.gif' }],
+    [
+        -1,
+        {
+            id: -1,
+            key: 'all',
+            name: '전체',
+            iconUrl: 'https://cdn.dak.gg/maple/images/page/rank/icon/ico-world-all.png'
+        }
+    ]
+];
+
+const jobData = [
+    [
+        1,
+        { id: 1, name: '기사단', key: null, shortName: '$undefined', classStart: '$undefined', classEnd: '$undefined' }
+    ],
+    [2, { id: 2, name: '소울마스터', key: 'soulmaster', shortName: '소마', classStart: 1, classEnd: 5 }],
+    [3, { id: 3, name: '도적', key: null, shortName: '$undefined', classStart: '$undefined', classEnd: '$undefined' }],
+    [4, { id: 4, name: '듀얼블레이더', key: 'dualblader', shortName: '듀블', classStart: 4, classEnd: 5 }],
+    [
+        5,
+        { id: 5, name: '마법사', key: null, shortName: '$undefined', classStart: '$undefined', classEnd: '$undefined' }
+    ],
+    [6, { id: 6, name: '비숍', key: 'bishop', shortName: '$undefined', classStart: 4, classEnd: 5 }],
+    [7, { id: 7, name: '나이트로드', key: 'nightlord', shortName: '나로', classStart: 4, classEnd: 5 }],
+    [8, { id: 8, name: '제로', key: 'zero', shortName: '$undefined', classStart: 1, classEnd: 5 }],
+    [9, { id: 9, name: '해적', key: 'pirate', shortName: '$undefined', classStart: 1, classEnd: 1 }],
+    [10, { id: 10, name: '바이퍼', key: 'viper', shortName: '$undefined', classStart: 4, classEnd: 5 }],
+    [
+        11,
+        {
+            id: 11,
+            name: '레지스탕스',
+            key: null,
+            shortName: '$undefined',
+            classStart: '$undefined',
+            classEnd: '$undefined'
+        }
+    ],
+    [12, { id: 12, name: '아크메이지(썬,콜)', key: 'arkmagetc', shortName: '썬콜', classStart: 4, classEnd: 5 }],
+    [13, { id: 13, name: '아란', key: 'aran', shortName: '$undefined', classStart: 1, classEnd: 5 }],
+    [14, { id: 14, name: '데몬 슬레이어', key: 'demonslayer', shortName: '데슬', classStart: 1, classEnd: 5 }],
+    [15, { id: 15, name: '와일드헌터', key: 'wildhunter', shortName: '와헌', classStart: 1, classEnd: 5 }],
+    [16, { id: 16, name: '메르세데스', key: 'mercedes', shortName: '메르', classStart: 1, classEnd: 5 }],
+    [17, { id: 17, name: '팬텀', key: 'phantom', shortName: '$undefined', classStart: 1, classEnd: 5 }],
+    [
+        18,
+        { id: 18, name: '궁수', key: null, shortName: '$undefined', classStart: '$undefined', classEnd: '$undefined' }
+    ],
+    [19, { id: 19, name: '보우마스터', key: 'bowmaster', shortName: '보마', classStart: 4, classEnd: 5 }],
+    [20, { id: 20, name: '카이저', key: 'kaiser', shortName: '$undefined', classStart: 1, classEnd: 5 }],
+    [21, { id: 21, name: '배틀메이지', key: 'battlemage', shortName: '배메', classStart: 1, classEnd: 5 }],
+    [
+        22,
+        { id: 22, name: '전사', key: null, shortName: '$undefined', classStart: '$undefined', classEnd: '$undefined' }
+    ],
+    [23, { id: 23, name: '다크나이트', key: 'darkknight', shortName: '닼나', classStart: 4, classEnd: 5 }],
+    [24, { id: 24, name: '아크', key: 'ark', shortName: '$undefined', classStart: 1, classEnd: 5 }],
+    [25, { id: 25, name: '스트라이커', key: 'striker', shortName: '스커', classStart: 1, classEnd: 5 }],
+    [26, { id: 26, name: '아크메이지(불,독)', key: 'arkmagefp', shortName: '불독', classStart: 4, classEnd: 5 }],
+    [27, { id: 27, name: '윈드브레이커', key: 'windbreaker', shortName: '윈브', classStart: 1, classEnd: 5 }],
+    [28, { id: 28, name: '플레임위자드', key: 'flamewizard', shortName: '플위', classStart: 1, classEnd: 5 }],
+    [29, { id: 29, name: '캐논마스터', key: 'cannonmaster', shortName: '캐논', classStart: 4, classEnd: 5 }],
+    [30, { id: 30, name: '히어로', key: 'hero', shortName: '$undefined', classStart: 4, classEnd: 5 }],
+    [31, { id: 31, name: '은월', key: 'shade', shortName: '$undefined', classStart: 1, classEnd: 5 }],
+    [32, { id: 32, name: '팔라딘', key: 'paladin', shortName: '$undefined', classStart: 4, classEnd: 5 }],
+    [33, { id: 33, name: '메카닉', key: 'mechanic', shortName: '$undefined', classStart: 1, classEnd: 5 }],
+    [34, { id: 34, name: '루미너스', key: 'luminous', shortName: '루미', classStart: 1, classEnd: 5 }],
+    [35, { id: 35, name: '키네시스', key: 'kinesis', shortName: '키네', classStart: 1, classEnd: 5 }],
+    [36, { id: 36, name: '섀도어', key: 'shadower', shortName: '$undefined', classStart: 4, classEnd: 5 }],
+    [37, { id: 37, name: '나이트워커', key: 'nightwalker', shortName: '나워', classStart: 1, classEnd: 5 }],
+    [38, { id: 38, name: '엔젤릭버스터', key: 'angelicbuster', shortName: '엔버', classStart: 1, classEnd: 5 }],
+    [39, { id: 39, name: '신궁', key: 'marks', shortName: '$undefined', classStart: 4, classEnd: 5 }],
+    [40, { id: 40, name: '에반', key: 'evan', shortName: '$undefined', classStart: 1, classEnd: 5 }],
+    [41, { id: 41, name: '캡틴', key: 'captain', shortName: '$undefined', classStart: 4, classEnd: 5 }],
+    [42, { id: 42, name: '카데나', key: 'cadena', shortName: '$undefined', classStart: 1, classEnd: 5 }],
+    [43, { id: 43, name: '블래스터', key: 'blaster', shortName: '$undefined', classStart: 1, classEnd: 5 }],
+    [44, { id: 44, name: '일리움', key: 'illium', shortName: '$undefined', classStart: 1, classEnd: 5 }],
+    [45, { id: 45, name: '시티즌(초보자)', key: null, shortName: '$undefined', classStart: 0, classEnd: 0 }],
+    [46, { id: 46, name: '노블레스', key: null, shortName: '$undefined', classStart: 0, classEnd: 0 }],
+    [47, { id: 47, name: '초보자', key: null, shortName: '$undefined', classStart: 0, classEnd: 0 }],
+    [48, { id: 48, name: '핑크빈', key: 'pinkbeen', shortName: '$undefined', classStart: 1, classEnd: 4 }],
+    [49, { id: 49, name: '클레릭', key: 'cleric', shortName: '$undefined', classStart: 3, classEnd: 3 }],
+    [50, { id: 50, name: '프리스트', key: 'priest', shortName: '$undefined', classStart: 3, classEnd: 3 }],
+    [51, { id: 51, name: '헌터', key: 'hunter', shortName: '$undefined', classStart: 2, classEnd: 2 }],
+    [52, { id: 52, name: '어쌔신', key: 'assassin', shortName: '$undefined', classStart: 2, classEnd: 2 }],
+    [53, { id: 53, name: '레인저', key: 'ranger', shortName: '$undefined', classStart: 3, classEnd: 3 }],
+    [54, { id: 54, name: '파이터', key: 'fighter', shortName: '$undefined', classStart: 2, classEnd: 2 }],
+    [55, { id: 55, name: '나이트', key: 'knight', shortName: '$undefined', classStart: 3, classEnd: 3 }],
+    [56, { id: 56, name: '메이지(썬,콜)', key: 'magetc', shortName: '썬콜', classStart: 3, classEnd: 3 }],
+    [57, { id: 57, name: '페이지', key: 'page', shortName: '$undefined', classStart: 2, classEnd: 2 }],
+    [58, { id: 58, name: '위자드(썬,콜)', key: 'wizardtc', shortName: '썬콜', classStart: 2, classEnd: 2 }],
+    [59, { id: 59, name: '허밋', key: 'hermit', shortName: '$undefined', classStart: 3, classEnd: 3 }],
+    [60, { id: 60, name: '검사', key: 'swordman', shortName: '$undefined', classStart: 1, classEnd: 1 }],
+    [61, { id: 61, name: '매지션', key: 'magician', shortName: '$undefined', classStart: 1, classEnd: 1 }],
+    [62, { id: 62, name: '메이지(불,독)', key: 'magefp', shortName: '불독', classStart: 3, classEnd: 3 }],
+    [63, { id: 63, name: '인파이터', key: 'infighter', shortName: '인파', classStart: 2, classEnd: 2 }],
+    [64, { id: 64, name: '아처', key: 'archer', shortName: '$undefined', classStart: 1, classEnd: 1 }],
+    [65, { id: 65, name: '캐논슈터', key: 'cannonshooter', shortName: '캐슈', classStart: 1, classEnd: 2 }],
+    [66, { id: 66, name: '시프', key: 'thief', shortName: '$undefined', classStart: 2, classEnd: 2 }],
+    [67, { id: 67, name: '위자드(불,독)', key: 'wizardfp', shortName: '불독', classStart: 2, classEnd: 2 }],
+    [68, { id: 68, name: '로그', key: 'rogue', shortName: '$undefined', classStart: 1, classEnd: 1 }],
+    [69, { id: 69, name: '듀어러', key: 'dualer', shortName: '$undefined', classStart: 2, classEnd: 2 }],
+    [70, { id: 70, name: '버서커', key: 'berserker', shortName: '$undefined', classStart: 3, classEnd: 3 }],
+    [71, { id: 71, name: '시프마스터', key: 'thiefmaster', shortName: '$undefined', classStart: 3, classEnd: 3 }],
+    [72, { id: 72, name: '크루세이더', key: 'crusader', shortName: '$undefined', classStart: 3, classEnd: 3 }],
+    [73, { id: 73, name: '건슬링거', key: 'gunslinger', shortName: '건슬', classStart: 2, classEnd: 2 }],
+    [74, { id: 74, name: '슬래셔', key: 'slasher', shortName: '$undefined', classStart: 3, classEnd: 3 }],
+    [75, { id: 75, name: '캐논블래스터', key: 'cannonblaster', shortName: '$undefined', classStart: 3, classEnd: 3 }],
+    [76, { id: 76, name: '버커니어', key: 'buccaneer', shortName: '$undefined', classStart: 3, classEnd: 3 }],
+    [77, { id: 77, name: '발키리', key: 'valkyrie', shortName: '$undefined', classStart: 3, classEnd: 3 }],
+    [78, { id: 78, name: '스피어맨', key: 'spearman', shortName: '$undefined', classStart: 2, classEnd: 2 }],
+    [79, { id: 79, name: '세미듀어러', key: 'semidualer', shortName: '$undefined', classStart: 1.5, classEnd: 1.5 }],
+    [80, { id: 80, name: '저격수', key: 'sniper', shortName: '$undefined', classStart: 3, classEnd: 3 }],
+    [81, { id: 81, name: '사수', key: 'marksman', shortName: '$undefined', classStart: 2, classEnd: 2 }],
+    [82, { id: 82, name: '듀얼마스터', key: 'dualmaster', shortName: '$undefined', classStart: 2.5, classEnd: 2.5 }],
+    [83, { id: 83, name: '', key: null, shortName: '$undefined', classStart: '$undefined', classEnd: '$undefined' }],
+    [84, { id: 84, name: '제논', key: 'xenon', shortName: '$undefined', classStart: 1, classEnd: 5 }],
+    [85, { id: 85, name: '데몬 어벤져', key: 'demonavenger', shortName: '데벤져', classStart: 1, classEnd: 5 }],
+    [86, { id: 86, name: '미하일', key: 'mihile', shortName: '$undefined', classStart: 1, classEnd: 5 }],
+    [87, { id: 87, name: '시티즌', key: null, shortName: '$undefined', classStart: 0, classEnd: 0 }],
+    [90, { id: 90, name: '패스파인더', key: 'pathfinder', shortName: '패파', classStart: 4, classEnd: 5 }],
+    [91, { id: 91, name: '에인션트아처', key: null, shortName: '$undefined', classStart: 2, classEnd: 2 }],
+    [92, { id: 92, name: '체이서', key: null, shortName: '$undefined', classStart: 3, classEnd: 3 }],
+    [93, { id: 93, name: '아처(패스파인더)', key: null, shortName: '$undefined', classStart: 1, classEnd: 1 }],
+    [94, { id: 94, name: '호영', key: 'hoyoung', shortName: '$undefined', classStart: 0, classEnd: 5 }],
+    [95, { id: 95, name: '아델', key: 'adele', shortName: '$undefined', classStart: 0, classEnd: 5 }],
+    [96, { id: 96, name: '카인', key: 'kain', shortName: '$undefined', classStart: 0, classEnd: 5 }],
+    [97, { id: 97, name: '라라', key: 'lara', shortName: '$undefined', classStart: 0, classEnd: 5 }],
+    [98, { id: 98, name: '칼리', key: 'khali', shortName: '$undefined', classStart: 0, classEnd: 5 }],
+    [
+        99,
+        {
+            id: 99,
+            name: '프렌즈 월드',
+            key: null,
+            shortName: '$undefined',
+            classStart: '$undefined',
+            classEnd: '$undefined'
+        }
+    ],
+    [
+        100,
+        {
+            id: 100,
+            name: '초월자',
+            key: null,
+            shortName: '$undefined',
+            classStart: '$undefined',
+            classEnd: '$undefined'
+        }
+    ]
+];
+
 async function requestCheerio(url, options = {}) {
     const { body } = await request(url, options);
     return load(await body.text());
@@ -10,6 +263,18 @@ async function requestCheerio(url, options = {}) {
 async function requestJSON(url, options = {}) {
     const { body } = await request(url, options);
     return body.json();
+}
+
+function getJobName(jobId) {
+    return jobData.find((v) => v[0] == jobId)?.[1].name;
+}
+
+function getServerName(worldId) {
+    return serverData.find((v) => v[0] == worldId)?.[1].name;
+}
+
+function getServerImage(worldId) {
+    return serverData.find((v) => v[0] == worldId)?.[1].iconUrl;
 }
 
 export class MapleError extends Error {
@@ -126,7 +391,7 @@ export class MapleUser {
     async isLatest() {
         const updateResult = await this.#updateUser();
 
-        this.#ggData = await requestCheerio(this.#ggURL); // this.#ggData는 함수
+        this.#ggData = await requestCheerio(this.#ggURL);
         if (this.#ggData('img[alt="검색결과 없음"]').length !== 0) {
             throw new MapleError('maple.GG에서 캐릭터 정보를 가져올 수 없습니다.');
         } else if (this.#ggData('div.alert.alert-warning.mt-3').length !== 0) {
@@ -137,6 +402,7 @@ export class MapleUser {
         ) {
             throw new MapleError('maple.GG 서버에 에러가 발생했습니다.');
         }
+        this.#ggData = JSON.parse(/({\\"profile\\":.+?})\]\\n/s.exec(this.#ggData.html())[1].replace(/\\"/g, '"'));
 
         return updateResult;
     }
@@ -144,15 +410,19 @@ export class MapleUser {
     async #updateUser() {
         const start = Date.now();
         while (1) {
+            let rslt = null;
             try {
-                const rslt = await requestJSON(`${this.#ggURL}/sync`, {
-                    headers: {
-                        referer: this.#ggURL
+                rslt = await requestJSON(
+                    `https://maple.dakgg.io/api/v1/characters/${encodeURIComponent(this.#name)}/sync`,
+                    {
+                        headers: {
+                            referer: this.#ggURL
+                        }
                     }
-                });
+                );
                 if (rslt.error) {
                     return false; // 갱신실패
-                } else if (rslt.done) {
+                } else if (rslt.state === 200) {
                     return true; // 갱신성공
                 }
             } catch {
@@ -161,193 +431,106 @@ export class MapleUser {
             if (Date.now() - start >= 10000) {
                 return false; // 10초가 지나도 갱신 못했으면 갱신실패 판정
             }
-            await setTimeout(500);
+            await setTimeout(rslt?.retryAfter ?? 1000);
         }
     }
 
     Murung() {
-        const murung = this.#ggData('.col-lg-3.col-6.mt-3.px-1').eq(0); // murung은 cheerio객체
-        const nomurung = murung.find('.user-summary-no-data').length; // 0이면 기록 있고 1이면 기록 없음
-        if (murung.length === 0 || nomurung) {
-            return null;
-        }
+        const murung = this.#ggData.profile.dojangRank;
+        const murungdate = murung.date; // 무릉 최고기록 날짜
+        const murungtime = murung.duration; // 무릉 클리어 시간 (초 단위)
+        const murungfl = murung.floor; // 무릉 최고 층수
+        const murungjob = getJobName(murung.detailJobId); // 유저 직업
+        const murunglev = this.Level(); // 유저 레벨
 
-        const murungdate = murung.find('.user-summary-date > span').text().replace('기준일: ', ''); // 무릉 최고기록 날짜
-        const murungtime = murung.find('.user-summary-duration').text(); // 무릉 클리어 시간 (0분 0초 형식)
-        const murungfl = murung.find('.user-summary-floor.font-weight-bold').text().replace(/\s+/g, ''); // 무릉 최고 층수 (0층 형식)
-        const murungjob = murung.find('.d-block.mb-1 > span').text().replace(/\s+/g, '').replace('/', ' / '); // 유저 레벨, 직업
-
-        return [murungjob, murungfl, murungtime, murungdate];
+        return [murunglev, murungjob, murungfl, murungtime, murungdate];
     }
 
     Seed() {
-        const seed = this.#ggData('.col-lg-3.col-6.mt-3.px-1').eq(1);
-        const noseed = seed.find('.user-summary-no-data').length; // 0이면 기록 있고 1이면 기록 없음
-        if (seed.length === 0 || noseed) {
-            return null;
-        }
+        const seed = this.#ggData.profile.seedRank;
+        const seeddate = seed.date; // 시드 최고기록 날짜
+        const seedtime = seed.duration; // 시드 클리어 시간 (초 단위)
+        const seedfl = seed.floor; // 시드 최고 층수
+        const seedjob = getJobName(murung.detailJobId); // 유저 직업
+        const seedlev = this.Level(); // 유저 레벨
 
-        const seeddate = seed.find('.user-summary-date > span').text().replace('기준일: ', ''); // 시드 최고기록 날짜
-        const seedtime = seed.find('.user-summary-duration').text(); // 시드 클리어 시간 (0분 0초 형식)
-        const seedfl = seed.find('.user-summary-floor.font-weight-bold').text().replace(/\s+/g, ''); // 시드 최고 층수 (0층 형식)
-        const seedjob = seed.find('.d-block.mb-1 > span').text().replace(/\s+/g, '').replace('/', ' / '); // 유저 레벨, 직업
-
-        return [seedjob, seedfl, seedtime, seeddate];
+        return [seedlev, seedjob, seedfl, seedtime, seeddate];
     }
 
     Union() {
-        const union = this.#ggData('.col-lg-3.col-6.mt-3.px-1').eq(2);
-        const nounion = union.find('.user-summary-no-data').length; // 0이면 기록 있고 1이면 기록 없음
-        if (union.length === 0 || nounion) {
-            return null;
-        }
-
-        const lev = +union.find('.user-summary-level').text().slice(3); // 유니온 레벨, 숫자값
-        const stat = +union.find('.d-block.mb-1 > span').contents().last().text().replace(/[\s,]/g, ''); // 유니온 전투력, 숫자값
-        const coin = Math.floor(stat * 0.000000864); // 일일 코인 수급량, 숫자값
-        const grade = union.find('.user-summary-tier-string.font-weight-bold').text(); // 유니온 등급
+        const union = this.#ggData.profile.unionRank;
+        const lev = union.n4level; // 유니온 레벨
+        const stat = union.dps; // 유니온 전투력
+        const coin = Math.floor(stat * 0.000000864); // 일일 코인 수급량
+        const grade = ''; // 유니온 등급
 
         return [lev, stat, coin, grade];
     }
 
     Achieve() {
-        const achieve = this.#ggData('.col-lg-3.col-6.mt-3.px-1').eq(3);
-        const noachieve = achieve.find('.user-summary-no-data').length; // 0이면 기록 있고 1이면 기록 없음
-        if (achieve.length === 0 || noachieve) {
-            return null;
-        }
-
-        const grade = achieve.find('.user-summary-tier-string.font-weight-bold').text(); // 업적 등급
-        const score = achieve.find('.user-summary-level').text().slice(5); // 업적 점수
-        const worldrank = achieve.find('.mb-2 > span').eq(0).text().replace(/\s+/g, ''); // 월드랭킹
-        const allrank = achieve.find('.mb-2 > span').eq(1).text(); // 전체랭킹
+        const achieve = this.#ggData.profile.achievementRank;
+        const grade = ''; // 업적 등급
+        const score = achieve.score; // 업적 점수
+        const worldrank = achieve.worldRank; // 월드랭킹
+        const allrank = achieve.rank; // 전체랭킹
 
         return [grade, score, worldrank, allrank];
     }
 
     Rank() {
-        const rank = this.#ggData('.col-lg-2.col-md-4.col-sm-4.col-6.mt-3 > span');
-        if (rank.length === 0) {
-            return null;
-        }
+        const [totalRank, jobRank] = this.#ggData.profile;
 
-        const rslt = [];
-        for (let i = 0; i < rank.length; i++) {
-            rslt.push(rank.eq(i).text().replace(/\s+/g, '')); // 0위 형식
-        }
-        return rslt;
+        return [totalRank.rank, totalRank.worldRank, jobRank.rank, jobRank.worldRank];
     }
 
     Coordi() {
-        const coordi = this.#ggData('.character-coord__item-name');
-        if (coordi.length === 0) {
-            return null;
-        }
-
-        const rslt = [];
-        for (let i = 0; i < coordi.length; i++) {
-            rslt.push(coordi.eq(i).text());
-        }
-        return rslt;
+        return this.#ggData.profile.avatarInfo;
     }
 
     ExpHistory() {
-        const data = JSON.parse(/var\s+expHistoryLabels\s*=\s*(\[.+?\])/.exec(this.#ggData.html())?.[1] ?? '[]');
-        if (data.length === 0) {
-            return null;
-        }
-        const date = JSON.parse(
-            /columns\s*:\s*(\[\["x".+?\],\s*\["exp".+?\]\])\s*,/.exec(this.#ggData.html())?.[1] ?? '[]'
-        );
-        if (date.length === 0) {
-            return null;
-        }
-
-        date[0].slice(1).forEach((v, i) => (data[i].date = v));
-
-        return data; // 배열의 원소 구성: date, level, exp
+        return this.#ggData.profile.characterExpLogs; // 배열의 원소 구성: date, level, exp(%), exp
     }
 
     LevelHistory() {
-        const data = JSON.parse(
-            /columns\s*:\s*(\[\["x".+?\],\s*\["level".+?\]\])\s*,/.exec(this.#ggData.html())?.[1] ?? '[]'
-        );
-        if (data.length === 0) {
-            return null;
-        }
-
-        return data; // 0번째 배열 = 날짜, 1번째 배열 = 레벨 (각각 0번 인덱스는 제외 필요)
+        return this.#ggData.profile.characterLevelLogs; // 배열의 원소 구성: date, level
     }
 
     MurungHistory() {
-        const data = this.#ggData('.text-center.px-2.font-size-14.align-middle');
-        if (data.length === 0) {
-            return null;
-        }
-
-        const date = [],
-            murung = [];
-        for (let i = 0; i < data.length; i += 6) {
-            date.push(`${data.eq(i).find('span').text()}${data.eq(i).find('b').text()}`); // 날짜
-            murung.push(
-                `${data
-                    .eq(i + 1)
-                    .find('h5')
-                    .text()} (${data
-                    .eq(i + 1)
-                    .find('span')
-                    .text()})`
-            ); // 무릉 기록
-        }
-        return [date, murung];
+        return this.#ggData.profile.dojangLogs; // 배열의 원소 구성: date, floor
     }
 
     Collection() {
-        const collection = this.#ggData('section.box.mt-3 .avatar-collection-item.col-lg-2.col-md-4.col-6');
-        if (collection.length === 0) {
-            return null;
-        }
-
-        const coordi = [],
-            date = [];
-        for (let i = 0; i < collection.length; i++) {
-            coordi.push(collection.eq(i).find('img').attr('src')?.replace('Character/', 'Character/180/')); // 코디 이미지
-            date.push(+/\d+/.exec(collection.eq(i).text())); // 날짜
-        }
-        return [coordi, date];
+        return this.#ggData.profile.avatarLogs; // 배열의 원소 구성: date, url, data
     }
 
     Level() {
-        return +/\d+/.exec(this.#ggData('.user-summary-item').eq(0).text());
+        return this.#ggData.profile.character.level;
     }
 
     Job() {
-        return this.#ggData('.user-summary-item').eq(1).text();
+        const detailJobId = this.#ggData.profile.character.detailJobId;
+        return jobData.find((v) => v[0] == detailJobId)?.[1].name;
     }
 
     Popularity() {
-        return this.#ggData('.user-summary-item > span').eq(1).text();
+        return this.#ggData.profile.character.popular;
     }
 
     userImg(full = true) {
-        const img = this.#ggData('meta[property="og:image"]').attr('content');
+        const img = this.#ggData.profile.character.imageUrl;
         return full ? img?.replace('Character/', 'Character/180/') : img;
     }
 
     serverImg() {
-        return this.#ggData('div.col-lg-8 h3 img.align-middle').attr('src')?.replace(/^\/\//, 'https://');
+        return getServerImage(this.#ggData.profile.character.worldId);
     }
 
     serverName() {
-        return this.#ggData('div.col-lg-8 h3 img.align-middle').attr('alt');
+        return getServerName(this.#ggData.profile.character.worldId);
     }
 
     lastActiveDay() {
-        return (
-            this.#ggData('.col-6.col-md-8.col-lg-6 .font-size-12.text-white')
-                .text()
-                .replace(/(\d+)\s+/, '$1') || '마지막 활동일: 알 수 없음'
-        );
+        return this.#ggData.profile.character.latestDataChangedAt;
     }
 }
 
@@ -416,15 +599,16 @@ export class MapleGuild {
     async #updateGuild() {
         const start = Date.now();
         while (1) {
+            let rslt = null;
             try {
-                const rslt = await requestJSON(`${this.#ggURL}/sync`, {
+                rslt = await requestJSON(`${this.#ggURL}/sync`, {
                     headers: {
                         referer: this.#ggURL
                     }
                 });
                 if (rslt.error) {
                     return false; // 갱신실패
-                } else if (rslt.done) {
+                } else if (rslt.state === 200) {
                     return true; // 갱신성공
                 }
             } catch {
@@ -433,7 +617,7 @@ export class MapleGuild {
             if (Date.now() - start >= 10000) {
                 return false; // 10초가 지나도 갱신 못했으면 갱신실패 판정
             }
-            await setTimeout(500);
+            await setTimeout(rslt?.retryAfter ?? 1000);
         }
     }
 }

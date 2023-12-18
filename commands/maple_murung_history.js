@@ -29,8 +29,8 @@ export async function commandExecute(interaction) {
         await interaction.followUp(`[${mapleUserInfo.Name}]\n기록이 없습니다.`);
     } else {
         let rslt = `[${mapleUserInfo.Name}]`;
-        for (let i = data[0].length - 1; i >= 0; i--) {
-            rslt += `\n${data[0][i]}: ${data[1][i]}`;
+        for (const murungData of data) {
+            rslt += `\n[${new Date(murungData[0]).toLocaleDateString()}]: ${murungData[1]}층`;
         }
         await interaction.followUp(rslt);
     }
