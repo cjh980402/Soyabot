@@ -27,7 +27,7 @@ export async function commandExecute(interaction) {
     }
 
     const rank = mapleUserInfo.Rank();
-    const rankString = rank[2] === '-위' ? ' ' : `월드 ${rank[2]} (전체 ${rank[3]})`;
+    const rankString = rank ? `월드 ${rank[2].toLocaleString()}위 (전체 ${rank[3].toLocaleString()}위)` : ' ';
     const murung = mapleUserInfo.Murung();
     const union = mapleUserInfo.Union();
     const seed = mapleUserInfo.Seed();
@@ -38,10 +38,12 @@ export async function commandExecute(interaction) {
         } ${mapleUserInfo.serverName()} ${level[0]} '${
             level[4]
         }' ${mapleUserInfo.serverImg()} ${level[2].toLocaleString()} '${level[3] || '(없음)'}' '${rankString}' '${
-            murung ? murung[1] : '기록없음'
-        }' '${murung ? murung[2] : ' '}' '${union ? union[3] : '기록없음'}' '${
-            union ? `Lv.${union[0].toLocaleString()}` : ' '
-        }' '${seed ? seed[1] : '기록없음'}' '${seed ? seed[2] : ' '}'`,
+            murung ? `${murung[2]}층` : '기록없음'
+        }' '${murung ? `${Math.floor(murung[3] / 60)}분 ${murung[3] % 60}초` : ' '}' '${
+            union ? union[3] : '기록없음'
+        }' '${union ? `Lv.${union[0].toLocaleString()}` : ' '}' '${seed ? `${seed[2]}층` : '기록없음'}' '${
+            seed ? `${Math.floor(seed[3] / 60)}분 ${seed[3] % 60}초` : ' '
+        }'`,
         { encoding: 'buffer' }
     );
     const image = new AttachmentBuilder(profilePic, { name: 'profile.png' });

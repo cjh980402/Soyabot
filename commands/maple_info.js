@@ -33,16 +33,32 @@ async function getInfoEmbed(mapleUserInfo, level) {
                     : '-',
                 inline: true
             },
-            { name: '**무릉 기록**', value: char_murung ? `${char_murung[1]} (${char_murung[2]})` : '-', inline: true },
-            { name: '**시드 기록**', value: char_seed ? `${char_seed[1]} (${char_seed[2]})` : '-', inline: true },
+            {
+                name: '**무릉 기록**',
+                value: char_murung
+                    ? `${char_murung[2]}층 (${Math.floor(char_murung[3] / 60)}분 ${char_murung[3] % 60}초)`
+                    : '-',
+                inline: true
+            },
+            {
+                name: '**시드 기록**',
+                value: char_seed
+                    ? `${char_seed[2]}층 (${Math.floor(char_seed[3] / 60)}분 ${char_seed[3] % 60}초)`
+                    : '-',
+                inline: true
+            },
             {
                 name: '**종합 랭킹**',
-                value: char_rank ? `전체: ${char_rank[0]}\n월드: ${char_rank[1]}` : '-',
+                value: char_rank
+                    ? `전체: ${char_rank[0].toLocaleString()}위\n월드: ${char_rank[1].toLocaleString()}위`
+                    : '-',
                 inline: true
             },
             {
                 name: '**직업 랭킹**',
-                value: char_rank ? `전체: ${char_rank[3]}\n월드: ${char_rank[2]}` : '-',
+                value: char_rank
+                    ? `전체: ${char_rank[3].toLocaleString()}위\n월드: ${char_rank[2].toLocaleString()}위`
+                    : '-',
                 inline: true
             }
         ]);

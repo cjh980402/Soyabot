@@ -26,9 +26,10 @@ function getScouterEmbed(mapleUserInfo, union) {
         sec = 0;
         time = 900;
     } else {
-        murungfl = +/\d+/.exec(murung[1]);
-        [min, sec] = murung[2].match(/\d+/g).map(Number);
-        time = min * 60 + sec;
+        murungfl = murung[2];
+        min = Math.floor(murung[3] / 60);
+        sec = murung[3] % 60;
+        time = murung[3];
     }
 
     const score = Math.floor(

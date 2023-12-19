@@ -3,8 +3,7 @@ from io import BytesIO
 import requests
 import sys
 
-image = Image.open(requests.get(
-    'https://maple.gg/images/images/bg-character-card@3x.png', stream=True).raw).convert('RGB')
+image = Image.open('./pictures/character_frame.png').convert('RGB')
 
 try:
     char_img = Image.open(requests.get(sys.argv[1], stream=True).raw).resize(
@@ -66,10 +65,6 @@ if sys.argv[9] != ' ':  # 직업랭킹
     font = ImageFont.truetype('./fonts/CookieRun Bold.ttf', 43)
     drawer.text((514 - (w1 + w2) // 2, 1104 - h2 // 2),
                 '직업랭킹 ', (255, 227, 189), font)
-
-deco_img = Image.open(requests.get(
-    'https://maple.gg/images/images/card-effect@3x.png', stream=True).raw)
-image.paste(deco_img, (514 - deco_img.size[0] // 2, 1153), mask=deco_img)
 
 msg = '무릉도장'
 font = ImageFont.truetype('./fonts/CookieRun Bold.ttf', 46)
