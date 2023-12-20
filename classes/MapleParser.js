@@ -300,6 +300,17 @@ async function requestJSON(url, options = {}) {
     return body.json();
 }
 
+function isEmpty(obj) {
+    if (!obj) {
+        return true;
+    } else if (Array.isArray(obj)) {
+        return obj.length === 0;
+    } else if (Object.getOwnPropertyNames(obj).length === 0) {
+        return true;
+    }
+    return false;
+}
+
 function getJobName(jobId) {
     return jobData.find((v) => v[0] == jobId)?.[1].name;
 }
@@ -471,8 +482,8 @@ export class MapleUser {
     }
 
     Murung() {
-        const murung = this.#ggData.profile.dojangRank;
-        if (!murung) {
+        const murung = this.#ggData?.profile.dojangRank;
+        if (isEmpty(murung)) {
             return null;
         }
 
@@ -486,8 +497,8 @@ export class MapleUser {
     }
 
     Seed() {
-        const seed = this.#ggData.profile.seedRank;
-        if (!seed) {
+        const seed = this.#ggData?.profile.seedRank;
+        if (isEmpty(seed)) {
             return null;
         }
 
@@ -501,8 +512,8 @@ export class MapleUser {
     }
 
     Union() {
-        const union = this.#ggData.profile.unionRank;
-        if (!union) {
+        const union = this.#ggData?.profile.unionRank;
+        if (isEmpty(union)) {
             return null;
         }
 
@@ -515,8 +526,8 @@ export class MapleUser {
     }
 
     Achieve() {
-        const achieve = this.#ggData.profile.achievementRank;
-        if (!achieve) {
+        const achieve = this.#ggData?.profile.achievementRank;
+        if (isEmpty(achieve)) {
             return null;
         }
 
@@ -529,9 +540,9 @@ export class MapleUser {
     }
 
     Rank() {
-        const totalRank = this.#ggData.profile.totalRank;
-        const jobRank = this.#ggData.profile.jobRank;
-        if (!totalRank || !jobRank) {
+        const totalRank = this.#ggData?.profile.totalRank;
+        const jobRank = this.#ggData?.profile.jobRank;
+        if (isEmpty(totalRank) || isEmpty(jobRank)) {
             return null;
         }
 
@@ -539,53 +550,78 @@ export class MapleUser {
     }
 
     Coordi() {
-        return this.#ggData.profile.avatarInfo;
+        const coordi = this.#ggData?.profile.avatarInfo;
+        if (isEmpty(coordi)) {
+            return null;
+        }
+
+        return coordi;
     }
 
     ExpHistory() {
-        return this.#ggData.profile.characterExpLogs; // 배열의 원소 구성: date, level, exp(%), exp
+        const expHistory = this.#ggData?.profile.characterExpLogs;
+        if (isEmpty(expHistory)) {
+            return null;
+        }
+
+        return expHistory; // 배열의 원소 구성: date, level, exp(%), exp
     }
 
     LevelHistory() {
-        return this.#ggData.profile.characterLevelLogs; // 배열의 원소 구성: date, level
+        const levHistory = this.#ggData?.profile.characterLevelLogs;
+        if (isEmpty(levHistory)) {
+            return null;
+        }
+
+        return levHistory; // 배열의 원소 구성: date, level
     }
 
     MurungHistory() {
-        return this.#ggData.profile.dojangLogs; // 배열의 원소 구성: date, floor
+        const murungHistory = this.#ggData?.profile.dojangLogs;
+        if (isEmpty(murungHistory)) {
+            return null;
+        }
+
+        return murungHistory; // 배열의 원소 구성: date, floor
     }
 
     Collection() {
-        return this.#ggData.profile.avatarLogs; // 배열의 원소 구성: date, url, data
+        const collection = this.#ggData?.profile.avatarLogs;
+        if (isEmpty(collection)) {
+            return null;
+        }
+
+        return collection; // 배열의 원소 구성: date, url, data
     }
 
     Level() {
-        return this.#ggData.profile.character.level;
+        return this.#ggData?.profile.character.level;
     }
 
     Job() {
-        const detailJobId = this.#ggData.profile.character.detailJobId;
+        const detailJobId = this.#ggData?.profile.character.detailJobId;
         return jobData.find((v) => v[0] == detailJobId)?.[1].name;
     }
 
     Popularity() {
-        return this.#ggData.profile.character.popular;
+        return this.#ggData?.profile.character.popular;
     }
 
     userImg(full = true) {
-        const img = this.#ggData.profile.character.imageUrl;
+        const img = this.#ggData?.profile.character.imageUrl;
         return full ? img?.replace('Character/', 'Character/180/') : img;
     }
 
     serverImg() {
-        return getServerImage(this.#ggData.profile.character.worldId);
+        return getServerImage(this.#ggData?.profile.character.worldId);
     }
 
     serverName() {
-        return getServerName(this.#ggData.profile.character.worldId);
+        return getServerName(this.#ggData?.profile.character.worldId);
     }
 
     lastActiveDay() {
-        return this.#ggData.profile.character.latestDataChangedAt;
+        return this.#ggData?.profile.character.latestDataChangedAt;
     }
 }
 

@@ -29,7 +29,7 @@ export async function commandExecute(interaction) {
         await interaction.followUp(`[${mapleUserInfo.Name}]\n랭킹 정보를 가져오지 못했습니다.`);
     } else {
         await interaction.followUp(
-            `[${mapleUserInfo.Name}]\n종합 랭킹(전체): ${rank[0]}위\n종합 랭킹(월드): ${rank[1]}위\n직업 랭킹(전체): ${rank[3]}위\n직업 랭킹(월드): ${rank[2]}위`
+            `[${mapleUserInfo.Name}]\n종합 랭킹(전체): ${rank[0]}위\n종합 랭킹(월드): ${rank[1]}위\n직업 랭킹(전체): ${rank[2]}위\n직업 랭킹(월드): ${rank[3]}위`
         );
     }
 }

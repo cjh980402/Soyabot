@@ -27,7 +27,7 @@ export async function commandExecute(interaction) {
     }
 
     const rank = mapleUserInfo.Rank();
-    const rankString = rank ? `월드 ${rank[2].toLocaleString()}위 (전체 ${rank[3].toLocaleString()}위)` : ' ';
+    const rankString = rank ? `월드 ${rank[3].toLocaleString()}위 (전체 ${rank[2].toLocaleString()}위)` : ' ';
     const murung = mapleUserInfo.Murung();
     const union = mapleUserInfo.Union();
     const seed = mapleUserInfo.Seed();

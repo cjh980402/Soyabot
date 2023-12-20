@@ -57,7 +57,7 @@ async function getInfoEmbed(mapleUserInfo, level) {
             {
                 name: '**직업 랭킹**',
                 value: char_rank
-                    ? `전체: ${char_rank[3].toLocaleString()}위\n월드: ${char_rank[2].toLocaleString()}위`
+                    ? `전체: ${char_rank[2].toLocaleString()}위\n월드: ${char_rank[3].toLocaleString()}위`
                     : '-',
                 inline: true
             }
