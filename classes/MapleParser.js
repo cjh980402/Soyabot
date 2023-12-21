@@ -291,12 +291,12 @@ const jobData = [
 ];
 
 async function requestCheerio(url, options = {}) {
-    const { body } = await request(url, options);
+    const { body } = await request(url, { ...options, maxRedirections: 10 });
     return load(await body.text());
 }
 
 async function requestJSON(url, options = {}) {
-    const { body } = await request(url, options);
+    const { body } = await request(url, { ...options, maxRedirections: 10 });
     return body.json();
 }
 
