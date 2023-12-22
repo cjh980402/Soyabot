@@ -448,7 +448,9 @@ export class MapleUser {
         ) {
             throw new MapleError('maple.GG 서버에 에러가 발생했습니다.');
         }
-        this.#ggData = JSON.parse(/({\\"profile\\":.+?})\]\\n/s.exec(this.#ggData.html())[1].replace(/\\"/g, '"'));
+        this.#ggData = JSON.parse(
+            /({\\"profile\\":.+?})\]\\n/s.exec(this.#ggData.html())[1].replace(/\\"/g, '"').replace(/\\"/g, "\\'")
+        );
 
         return updateResult;
     }
