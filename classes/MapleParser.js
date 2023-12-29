@@ -1,6 +1,7 @@
 import { request } from 'undici';
 import { load } from 'cheerio';
 import { setTimeout } from 'node:timers/promises';
+import { NEXON_API_KEY } from '../soyabot_config.js';
 
 const serverData = [
     [
@@ -329,6 +330,65 @@ export class MapleError extends Error {
     constructor(message) {
         super(message);
         this.message ||= '메이플스토리 기능에서 에러가 발생했습니다.';
+    }
+}
+
+export class MapleAPI {
+    #name;
+    #ocid = null;
+    #apiKey = NEXON_API_KEY;
+    #apiURL = 'https://open.api.nexon.com/maplestory/v1';
+
+    constructor(name) {
+        this.#name = name;
+    }
+
+    get Name() {
+        return this.#name;
+    }
+
+    async Init() {
+        const params = new URLSearchParams();
+        params.set('character_name', this.#name);
+        const rslt = await requestJSON(`${this.#apiURL}/id?${params}`, {
+            method: 'GET',
+            headers: {
+                'accept': 'application/json',
+                'x-nxopen-api-key': this.#apiKey
+            }
+        });
+
+        if (rslt.error) {
+            throw new MapleError('존재하지 않거나 현재 정보를 조회할 수 없는 캐릭터입니다.');
+        }
+
+        this.#ocid = rslt.ocid;
+    }
+
+    async ApiRequest(url) {
+        if (!this.#ocid) {
+            await this.Init();
+        }
+
+        const yesterDay = new Date();
+        yesterDay.setDate(yesterDay.getDate() - 1);
+        const params = new URLSearchParams();
+        params.set('ocid', this.#ocid);
+        params.set('date', yesterDay.toISOString().substring(0, 10));
+
+        const rslt = await requestJSON(`${this.#apiURL}/${url}?${params}`, {
+            method: 'GET',
+            headers: {
+                'accept': 'application/json',
+                'x-nxopen-api-key': this.#apiKey
+            }
+        });
+
+        if (rslt.error) {
+            throw new MapleError('존재하지 않거나 현재 정보를 조회할 수 없는 캐릭터입니다.');
+        }
+
+        return rslt;
     }
 }
 
