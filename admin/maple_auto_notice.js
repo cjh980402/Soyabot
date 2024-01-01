@@ -123,10 +123,10 @@ export function startTest(client, target) {
                     const type = picurl.endsWith('1.png')
                         ? '[공지]'
                         : picurl.endsWith('2.png')
-                        ? '[GM]'
-                        : picurl.endsWith('3.png')
-                        ? '[점검]'
-                        : '[패치]';
+                          ? '[GM]'
+                          : picurl.endsWith('3.png')
+                            ? '[점검]'
+                            : '[패치]';
                     test.push(`${type} [${title}](${url})`);
                 }
             }
