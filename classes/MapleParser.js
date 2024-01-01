@@ -335,12 +335,14 @@ export class MapleError extends Error {
 
 export class MapleAPI {
     #name;
-    #ocid = null;
+    #worldName;
+    #oid = null;
     #apiKey = NEXON_API_KEY;
     #apiURL = 'https://open.api.nexon.com/maplestory/v1';
 
-    constructor(name) {
+    constructor(name, worldName = null) {
         this.#name = name;
+        this.#worldName = worldName;
     }
 
     get Name() {
@@ -349,8 +351,17 @@ export class MapleAPI {
 
     async Init() {
         const params = new URLSearchParams();
-        params.set('character_name', this.#name);
-        const rslt = await requestJSON(`${this.#apiURL}/id?${params}`, {
+        let url = null;
+        if (this.#worldName) {
+            params.set('world_name', this.#worldName);
+            params.set('guild_name', this.#name);
+            url = `${this.#apiURL}/guild/id?${params}`;
+        } else {
+            params.set('character_name', this.#name);
+            url = `${this.#apiURL}/id?${params}`;
+        }
+
+        const rslt = await requestJSON(url, {
             method: 'GET',
             headers: {
                 'accept': 'application/json',
@@ -359,21 +370,23 @@ export class MapleAPI {
         });
 
         if (rslt.error) {
-            throw new MapleError('존재하지 않거나 현재 정보를 조회할 수 없는 캐릭터입니다.');
+            throw new MapleError(
+                `존재하지 않거나 현재 정보를 조회할 수 없는 ${this.#worldName ? '길드' : '캐릭터'}입니다.`
+            );
         }
 
-        this.#ocid = rslt.ocid;
+        this.#oid = this.#worldName ? rslt.oguild_id : rslt.ocid;
     }
 
     async ApiRequest(url) {
-        if (!this.#ocid) {
+        if (!this.#oid) {
             await this.Init();
         }
 
         const yesterDay = new Date();
         yesterDay.setDate(yesterDay.getDate() - 1);
         const params = new URLSearchParams();
-        params.set('ocid', this.#ocid);
+        params.set(this.#worldName ? 'oguild_id' : 'ocid', this.#oid);
         params.set('date', yesterDay.toISOString().substring(0, 10));
 
         const rslt = await requestJSON(`${this.#apiURL}/${url}?${params}`, {
@@ -385,7 +398,9 @@ export class MapleAPI {
         });
 
         if (rslt.error) {
-            throw new MapleError('존재하지 않거나 현재 정보를 조회할 수 없는 캐릭터입니다.');
+            throw new MapleError(
+                `존재하지 않거나 현재 정보를 조회할 수 없는 ${this.#worldName ? '길드' : '캐릭터'}입니다.`
+            );
         }
 
         return rslt;
@@ -684,93 +699,5 @@ export class MapleUser {
 
     lastActiveDay() {
         return this.#ggData?.profile.character.latestDataChangedAt;
-    }
-}
-
-export class MapleGuild {
-    // private property
-    #server;
-    #name;
-    #ggURL;
-    #ggData = null;
-    #memberData = null;
-    // 생성자
-    constructor(server, name) {
-        this.#server = server;
-        this.#name = name;
-        this.#ggURL = `https://maple.gg/guild/${server}/${encodeURIComponent(name)}`; // encodeURIComponent는 한글 주소의 경우 필수
-    }
-    // getter
-    get Server() {
-        return this.#server;
-    }
-
-    get Name() {
-        return this.#name;
-    }
-
-    get MemberCount() {
-        return this.#memberData?.length ?? 0;
-    }
-    // 메소드
-    async isLatest() {
-        const updateResult = await this.#updateGuild();
-
-        this.#ggData = await requestCheerio(`${this.#ggURL}/members?sort=level`); // this.#ggData는 함수
-        if (this.#ggData('img[alt="404 ERROR"]').length !== 0) {
-            throw new MapleError('maple.GG에서 길드 정보를 가져올 수 없습니다.');
-        } else if (this.#ggData('div.alert.alert-warning.mt-3').length !== 0) {
-            throw new MapleError('maple.GG 서버가 점검 중입니다.');
-        } else if (
-            /Bad Gateway|Error/.test(this.#ggData('title').text()) ||
-            this.#ggData('div.flex-center.position-ref.full-height').length !== 0
-        ) {
-            throw new MapleError('maple.GG 서버에 에러가 발생했습니다.');
-        }
-
-        this.#memberData = this.#ggData('.pt-2.bg-white.rounded.border.font-size-0.line-height-1');
-        return updateResult;
-    }
-
-    async memberDataList() {
-        const rslt = [];
-        const memberList = this.#memberData.map((_, v) => new MapleUser(this.#ggData(v).find('.mb-2 a').eq(1).text()));
-        const updateRslt = await Promise.all(memberList.map((_, v) => v.isLatest()));
-        for (let i = 0; i < this.MemberCount; i++) {
-            rslt.push(
-                `[갱신 ${updateRslt[i] ? '성공' : '실패'}] ${
-                    this.#memberData.eq(i).find('header > span').text() || '길드원'
-                }: ${memberList[i].Name}, ${memberList[i].Job()} / Lv.${memberList[i].Level()}, 유니온: ${
-                    memberList[i].Union()?.[0].toLocaleString() ?? '-'
-                }, 무릉: ${memberList[i].Murung()?.[1] ?? '-'} (${memberList[i].lastActiveDay()})`
-            );
-        }
-
-        return rslt;
-    }
-
-    async #updateGuild() {
-        const start = Date.now();
-        while (1) {
-            let rslt = null;
-            try {
-                rslt = await requestJSON(`${this.#ggURL}/sync`, {
-                    headers: {
-                        referer: this.#ggURL
-                    }
-                });
-                if (rslt.error) {
-                    return false; // 갱신실패
-                } else if (rslt.state === 200) {
-                    return true; // 갱신성공
-                }
-            } catch {
-                return false; // 갱신실패
-            }
-            if (Date.now() - start >= 10000) {
-                return false; // 10초가 지나도 갱신 못했으면 갱신실패 판정
-            }
-            await setTimeout(rslt?.retryAfter ?? 1000);
-        }
     }
 }
