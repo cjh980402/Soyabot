@@ -324,6 +324,76 @@ function getServerImage(worldId) {
     return serverData.find((v) => v[0] == worldId)?.[1].iconUrl;
 }
 
+function getUnionGradeName(level) {
+    if (level < 1000) {
+        return '노비스 I';
+    } else if (level < 1500) {
+        return '노비스 II';
+    } else if (level < 2000) {
+        return '노비스 III';
+    } else if (level < 2500) {
+        return '노비스 IV';
+    } else if (level < 3000) {
+        return '노비스 V';
+    } else if (level < 3500) {
+        return '베테랑 I';
+    } else if (level < 4000) {
+        return '베테랑 II';
+    } else if (level < 4500) {
+        return '베테랑 III';
+    } else if (level < 5000) {
+        return '베테랑 IV';
+    } else if (level < 5500) {
+        return '베테랑 V';
+    } else if (level < 6000) {
+        return '마스터 I';
+    } else if (level < 6500) {
+        return '마스터 II';
+    } else if (level < 7000) {
+        return '마스터 III';
+    } else if (level < 7500) {
+        return '마스터 IV';
+    } else if (level < 8000) {
+        return '마스터 V';
+    } else if (level < 8500) {
+        return '그랜드마스터 I';
+    } else if (level < 9000) {
+        return '그랜드마스터 II';
+    } else if (level < 9500) {
+        return '그랜드마스터 III';
+    } else if (level < 10000) {
+        return '그랜드마스터 IV';
+    } else if (level < 10500) {
+        return '그랜드마스터 V';
+    } else if (level < 11000) {
+        return '슈프림 I';
+    } else if (level < 11500) {
+        return '슈프림 II';
+    } else if (level < 12000) {
+        return '슈프림 III';
+    } else if (level < 12500) {
+        return '슈프림 IV';
+    } else {
+        return '슈프림 V';
+    }
+}
+
+function getAchieveGradeName(score, rank) {
+    if (score >= 30000 && rank <= 100) {
+        return '마스터';
+    } else if (score < 5000) {
+        return '브론즈';
+    } else if (score < 20000) {
+        return '실버';
+    } else if (score < 30000) {
+        return '골드';
+    } else if (score < 36000) {
+        return '플래티넘';
+    } else {
+        return '다이아몬드';
+    }
+}
+
 export class MapleError extends Error {
     name = 'MapleError';
     code = 'MAPLE_ERR';
@@ -597,7 +667,7 @@ export class MapleUser {
         const lev = union.n4level; // 유니온 레벨
         const stat = union.dps; // 유니온 전투력
         const coin = Math.floor(stat * 0.000000864); // 일일 코인 수급량
-        const grade = ''; // 유니온 등급
+        const grade = getUnionGradeName(lev); // 유니온 등급
 
         return [lev, stat, coin, grade];
     }
@@ -608,10 +678,10 @@ export class MapleUser {
             return null;
         }
 
-        const grade = ''; // 업적 등급
         const score = achieve.score; // 업적 점수
         const worldrank = achieve.worldRank; // 월드랭킹
         const allrank = achieve.rank; // 전체랭킹
+        const grade = getAchieveGradeName(score, allrank); // 업적 등급
 
         return [grade, score, worldrank, allrank];
     }

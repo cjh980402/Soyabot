@@ -29,7 +29,9 @@ export async function commandExecute(interaction) {
         await interaction.followUp(`[${mapleUserInfo.Name}]\n기록이 없습니다.`);
     } else {
         await interaction.followUp(
-            `[${mapleUserInfo.Name}]\n등급: ${rslt[0]}\n업적점수: ${rslt[1]}\n월드랭킹: ${rslt[2]}\n전체랭킹: ${rslt[3]}`
+            `[${mapleUserInfo.Name}]\n등급: ${
+                rslt[0]
+            }\n업적점수: ${rslt[1].toLocaleString()}\n월드랭킹: ${rslt[2].toLocaleString()}\n전체랭킹: ${rslt[3].toLocaleString()}`
         );
     }
 }
