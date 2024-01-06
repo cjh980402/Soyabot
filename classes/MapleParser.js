@@ -582,20 +582,18 @@ export class MapleUser {
     async isLatest() {
         const updateResult = await this.#updateUser();
 
-        this.#ggData = await requestCheerio(this.#ggURL);
-        if (this.#ggData('img[alt="검색결과 없음"]').length !== 0) {
+        try {
+            this.#ggData = await requestJSON(
+                `https://maple.dakgg.io/api/v1/characters/${encodeURIComponent(this.#name)}/profile`,
+                {
+                    headers: {
+                        referer: this.#ggURL
+                    }
+                }
+            );
+        } catch {
             throw new MapleError('maple.GG에서 캐릭터 정보를 가져올 수 없습니다.');
-        } else if (this.#ggData('div.alert.alert-warning.mt-3').length !== 0) {
-            throw new MapleError('maple.GG 서버가 점검 중입니다.');
-        } else if (
-            /Bad Gateway|Error/.test(this.#ggData('title').text()) ||
-            this.#ggData('div.flex-center.position-ref.full-height').length !== 0
-        ) {
-            throw new MapleError('maple.GG 서버에 에러가 발생했습니다.');
         }
-        this.#ggData = JSON.parse(
-            /({\\"profile\\":.+?})\]\\n/s.exec(this.#ggData.html())[1].replace(/\\"/g, '"').replace(/\\"/g, "\\'")
-        );
 
         return updateResult;
     }
@@ -629,7 +627,7 @@ export class MapleUser {
     }
 
     Murung() {
-        const murung = this.#ggData?.profile.dojangRank;
+        const murung = this.#ggData.dojangRank;
         if (isEmpty(murung)) {
             return null;
         }
@@ -644,7 +642,7 @@ export class MapleUser {
     }
 
     Seed() {
-        const seed = this.#ggData?.profile.seedRank;
+        const seed = this.#ggData.seedRank;
         if (isEmpty(seed)) {
             return null;
         }
@@ -659,7 +657,7 @@ export class MapleUser {
     }
 
     Union() {
-        const union = this.#ggData?.profile.unionRank;
+        const union = this.#ggData.unionRank;
         if (isEmpty(union)) {
             return null;
         }
@@ -673,7 +671,7 @@ export class MapleUser {
     }
 
     Achieve() {
-        const achieve = this.#ggData?.profile.achievementRank;
+        const achieve = this.#ggData.achievementRank;
         if (isEmpty(achieve)) {
             return null;
         }
@@ -687,8 +685,8 @@ export class MapleUser {
     }
 
     Rank() {
-        const totalRank = this.#ggData?.profile.totalRank;
-        const jobRank = this.#ggData?.profile.jobRank;
+        const totalRank = this.#ggData.totalRank;
+        const jobRank = this.#ggData.jobRank;
         if (isEmpty(totalRank) || isEmpty(jobRank)) {
             return null;
         }
@@ -697,7 +695,7 @@ export class MapleUser {
     }
 
     Coordi() {
-        const coordi = this.#ggData?.profile.avatarInfo;
+        const coordi = this.#ggData.avatarInfo;
         if (isEmpty(coordi)) {
             return null;
         }
@@ -706,7 +704,7 @@ export class MapleUser {
     }
 
     ExpHistory() {
-        const expHistory = this.#ggData?.profile.characterExpLogs;
+        const expHistory = this.#ggData.characterExpLogs;
         if (isEmpty(expHistory)) {
             return null;
         }
@@ -715,7 +713,7 @@ export class MapleUser {
     }
 
     LevelHistory() {
-        const levHistory = this.#ggData?.profile.characterLevelLogs;
+        const levHistory = this.#ggData.characterLevelLogs;
         if (isEmpty(levHistory)) {
             return null;
         }
@@ -724,7 +722,7 @@ export class MapleUser {
     }
 
     MurungHistory() {
-        const murungHistory = this.#ggData?.profile.dojangLogs;
+        const murungHistory = this.#ggData.dojangLogs;
         if (isEmpty(murungHistory)) {
             return null;
         }
@@ -733,7 +731,7 @@ export class MapleUser {
     }
 
     Collection() {
-        const collection = this.#ggData?.profile.avatarLogs;
+        const collection = this.#ggData.avatarLogs;
         if (isEmpty(collection)) {
             return null;
         }
@@ -742,32 +740,32 @@ export class MapleUser {
     }
 
     Level() {
-        return this.#ggData?.profile.character.level;
+        return this.#ggData.character?.level;
     }
 
     Job() {
-        const detailJobId = this.#ggData?.profile.character.detailJobId;
+        const detailJobId = this.#ggData.character?.detailJobId;
         return jobData.find((v) => v[0] == detailJobId)?.[1].name;
     }
 
     Popularity() {
-        return this.#ggData?.profile.character.popular;
+        return this.#ggData.character?.popular;
     }
 
     userImg(full = true) {
-        const img = this.#ggData?.profile.character.imageUrl;
+        const img = this.#ggData.character?.imageUrl;
         return full ? img?.replace('Character/', 'Character/180/') : img;
     }
 
     serverImg() {
-        return getServerImage(this.#ggData?.profile.character.worldId);
+        return getServerImage(this.#ggData.character?.worldId);
     }
 
     serverName() {
-        return getServerName(this.#ggData?.profile.character.worldId);
+        return getServerName(this.#ggData.character?.worldId);
     }
 
     lastActiveDay() {
-        return this.#ggData?.profile.character.latestDataChangedAt;
+        return this.#ggData.character?.latestDataChangedAt;
     }
 }
