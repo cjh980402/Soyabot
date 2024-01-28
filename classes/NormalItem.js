@@ -32,17 +32,17 @@ function meso(star, lev) {
     if (star >= 15) {
         coefficient = (star + 1) ** 2.7 / 200;
     } else if (star === 14) {
-        coefficient = (star + 1) ** 2.7 / 75;
+        coefficient = (star + 1) ** 2.7 / 107;
     } else if (star === 13) {
-        coefficient = (star + 1) ** 2.7 / 110;
+        coefficient = (star + 1) ** 2.7 / 157;
     } else if (star === 12) {
-        coefficient = (star + 1) ** 2.7 / 150;
+        coefficient = (star + 1) ** 2.7 / 214;
     } else if (star === 11) {
-        coefficient = (star + 1) ** 2.7 / 220;
+        coefficient = (star + 1) ** 2.7 / 314;
     } else if (star === 10) {
-        coefficient = (star + 1) ** 2.7 / 400;
+        coefficient = (star + 1) ** 2.7 / 571;
     } else {
-        coefficient = (star + 1) / 25;
+        coefficient = (star + 1) / 36;
     }
     return Math.round((1000 + lev ** 3 * coefficient) / 100) * 100; // 십의자리에서 반올림
 }
