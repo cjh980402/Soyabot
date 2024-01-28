@@ -4,7 +4,6 @@ import {
     startUpdate,
     startTest,
     startTestPatch,
-    startUrus,
     startCulvert,
     startFlag
 } from '../admin/maple_auto_notice.js';
@@ -20,7 +19,6 @@ export function listener(client) {
         startTestPatch(client, HOMEPAGE_NOTICE_CHANNEL_ID); // 테섭 패치 감지 기능
     }
     if (client.channels.cache.has(CONTENTS_NOTICE_CHANNEL_ID)) {
-        startUrus(client, CONTENTS_NOTICE_CHANNEL_ID); // 우르스 2배 종료 30분 전 알림
         startCulvert(client, CONTENTS_NOTICE_CHANNEL_ID); // 지하 수로 입장 마감 30분 전 알림
         startFlag(client, CONTENTS_NOTICE_CHANNEL_ID); // 플래그 레이스 입장 마감 30분 전 알림
     }
