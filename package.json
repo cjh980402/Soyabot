@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@discordjs/voice": "^0.16.1",
-    "better-sqlite3": "^9.2.2",
+    "better-sqlite3": "^9.3.0",
     "bufferutil": "^4.0.8",
     "chartjs-node-canvas": "^4.1.6",
     "chartjs-plugin-datalabels": "^2.2.0",
@@ -31,19 +31,19 @@
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^5.2.0",
     "hangul-js": "^0.2.6",
-    "mathjs": "^12.2.1",
+    "mathjs": "^12.3.0",
     "opusscript": "^0.1.1",
     "simple-youtube-api": "^5.2.1",
-    "sodium-native": "^4.0.4",
+    "sodium-native": "^4.0.6",
     "soundcloud.ts": "^0.5.2",
     "string-progressbar": "^1.0.4",
-    "undici": "^6.2.1",
+    "undici": "^6.5.0",
     "utf-8-validate": "^6.0.3",
     "youtube-dlsr": "^2.8.3",
     "zlib-sync": "^0.1.9"
   },
   "devDependencies": {
-    "prettier": "^3.1.1"
+    "prettier": "^3.2.4"
   },
   "keywords": [
     "Discord",
