@@ -1,6 +1,17 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { levelTable } from '../util/Constant.js';
 const probTable = [
+    [0, 0, 0, 0, 0, 0, 0, 5, 5, 90],
+    [0, 0, 0, 0, 0, 0, 5, 5, 10, 80],
+    [0, 0, 0, 0, 0, 5, 5, 5, 15, 70],
+    [0, 0, 0, 0, 5, 5, 5, 5, 10, 60],
+    [0, 0, 0, 5, 5, 5, 5, 10, 15, 55],
+    [0, 0, 5, 5, 5, 5, 5, 10, 15, 50],
+    [0, 0, 5, 5, 5, 5, 10, 15, 20, 35],
+    [0, 0, 5, 5, 5, 5, 10, 15, 20, 35],
+    [0, 5, 5, 5, 5, 10, 10, 15, 20, 25],
+    [0, 5, 5, 5, 5, 10, 10, 15, 20, 25],
+    [5, 5, 5, 5, 5, 5, 5, 20, 20, 25],
     [5, 5, 5, 5, 5, 5, 10, 20, 20, 20],
     [5, 5, 5, 5, 5, 10, 10, 20, 20, 15],
     [5, 5, 5, 5, 5, 10, 20, 15, 15, 15],
@@ -71,7 +82,7 @@ function extremePotion(startLev, endLev) {
         let sum = 0,
             i = 0;
         for (i = 0; i < 10; i++) {
-            sum += probTable[lev - 141][i];
+            sum += probTable[lev - 130][i];
             if (now <= sum) {
                 break;
             }
@@ -95,7 +106,7 @@ export const commandData = {
                     name: '대상_레벨',
                     type: ApplicationCommandOptionType.Integer,
                     description: '익성비 확률을 출력할 레벨',
-                    min_value: 141,
+                    min_value: 130,
                     max_value: 199,
                     required: true
                 }
@@ -111,7 +122,7 @@ export const commandData = {
                     name: '시작_레벨',
                     type: ApplicationCommandOptionType.Integer,
                     description: '익성비 시뮬의 시작 레벨',
-                    min_value: 141,
+                    min_value: 130,
                     max_value: 299,
                     required: true
                 },
@@ -119,7 +130,7 @@ export const commandData = {
                     name: '목표_레벨',
                     type: ApplicationCommandOptionType.Integer,
                     description: '익성비 시뮬의 목표 레벨',
-                    min_value: 141,
+                    min_value: 130,
                     max_value: 200
                 }
             ]
@@ -134,7 +145,7 @@ export async function commandExecute(interaction) {
 
         let rslt = `<${targetLev}레벨 기준 확률>`;
         for (let i = 0; i < 10; i++) {
-            rslt += `\n${i + 1} 레벨업 확률: ${probTable[targetLev - 141][i]}%`;
+            rslt += `\n${i + 1} 레벨업 확률: ${probTable[targetLev - 130][i]}%`;
         }
         await interaction.followUp(rslt);
     } else if (subcommand === '시뮬') {
