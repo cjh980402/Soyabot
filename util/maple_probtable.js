@@ -4,7 +4,11 @@ import { load } from 'cheerio';
 async function getRawProbData(url) {
     const { body } = await request(url);
     const $ = load(await body.text());
-    return $('.contents_wrap .my_page_tb2 tr > td').filter((_, v) => !$(v).attr('rowspan'));
+    return $('.contents_wrap .my_page_tb2')
+        .contents()
+        .last()
+        .find('tr > td')
+        .filter((_, v) => !$(v).attr('rowspan'));
 }
 
 export class MapleProb extends null {
@@ -29,13 +33,13 @@ export class MapleProb extends null {
             await Promise.all([
                 MapleProb.fetchGoldApple(),
                 MapleProb.fetchLunaCrystal(),
-                MapleProb.fetchRoyalFace(),
-                MapleProb.fetchRoyalHair(),
                 MapleProb.fetchRoyalStyle(),
                 MapleProb.fetchWonderBerry()
             ]);
             setTimeout(MapleProb.fetchAllProb, 7200000); // 2시간 후에 재실행
-        } catch {}
+        } catch (err) {
+            console.error('메이플 확률표 파싱 에러 발생:', err);
+        }
     }
 
     static async fetchGoldApple() {
@@ -47,9 +51,11 @@ export class MapleProb extends null {
 
         MapleProb.GOLDAPPLE_PROBTABLE = {};
         for (let i = 0; i < appleData.length; i += 2) {
-            const prob = +appleData
+            const prob = +(+appleData
                 .eq(i + 1)
                 .text()
+                .slice(0, -1))
+                .toFixed(10)
                 .replace(/\D+/g, '');
             MapleProb.GOLDAPPLE_PROBTABLE[appleData.eq(i).text()] = prob;
         }
@@ -66,11 +72,13 @@ export class MapleProb extends null {
 
         MapleProb.LUNACRYSTAL_PROBTABLE['스윗'] = {};
         for (let i = 0; i < sweetData.length; i += 2) {
-            const prob = +sweetData
+            const prob = +(+sweetData
                 .eq(i + 1)
                 .text()
+                .slice(0, -1))
+                .toFixed(10)
                 .replace(/\D+/g, '');
-            if (prob === 388) {
+            if (prob === 38800000000) {
                 MapleProb.LUNACRYSTAL_PROBTABLE['스윗'][`[루나 쁘띠] ${sweetData.eq(i).text()}`] = prob;
             } else {
                 MapleProb.LUNACRYSTAL_PROBTABLE['스윗'][sweetData.eq(i).text()] = prob;
@@ -86,53 +94,17 @@ export class MapleProb extends null {
 
         MapleProb.LUNACRYSTAL_PROBTABLE['드림'] = {};
         for (let i = 0; i < dreamData.length; i += 2) {
-            const prob = +dreamData
+            const prob = +(+dreamData
                 .eq(i + 1)
                 .text()
+                .slice(0, -1))
+                .toFixed(10)
                 .replace(/\D+/g, '');
-            if (prob === 680) {
+            if (prob === 68000000000) {
                 MapleProb.LUNACRYSTAL_PROBTABLE['드림'][`[루나 쁘띠] ${dreamData.eq(i).text()}`] = prob;
             } else {
                 MapleProb.LUNACRYSTAL_PROBTABLE['드림'][dreamData.eq(i).text()] = prob;
             }
-        }
-    }
-
-    static async fetchRoyalFace() {
-        // 로얄 성형 파싱
-        const faceData = await getRawProbData(
-            'https://maplestory.nexon.com/Guide/CashShop/Probability/RoyalPlasticSurgeryCoupon'
-        );
-        if (faceData.length < 4) {
-            return;
-        }
-
-        MapleProb.ROYALFACE_PROBTABLE['남'] = [];
-        for (let i = 0; i < faceData.length / 2; i += 2) {
-            MapleProb.ROYALFACE_PROBTABLE['남'].push(faceData.eq(i).text());
-        }
-        MapleProb.ROYALFACE_PROBTABLE['여'] = [];
-        for (let i = faceData.length / 2; i < faceData.length; i += 2) {
-            MapleProb.ROYALFACE_PROBTABLE['여'].push(faceData.eq(i).text());
-        }
-    }
-
-    static async fetchRoyalHair() {
-        // 로얄 헤어 파싱
-        const hairData = await getRawProbData(
-            'https://maplestory.nexon.com/Guide/CashShop/Probability/RoyalHairCoupon'
-        );
-        if (hairData.length < 4) {
-            return;
-        }
-
-        MapleProb.ROYALHAIR_PROBTABLE['남'] = [];
-        for (let i = 0; i < hairData.length / 2; i += 2) {
-            MapleProb.ROYALHAIR_PROBTABLE['남'].push(hairData.eq(i).text());
-        }
-        MapleProb.ROYALHAIR_PROBTABLE['여'] = [];
-        for (let i = hairData.length / 2; i < hairData.length; i += 2) {
-            MapleProb.ROYALHAIR_PROBTABLE['여'].push(hairData.eq(i).text());
         }
     }
 
@@ -145,9 +117,11 @@ export class MapleProb extends null {
 
         MapleProb.ROYALSTYLE_PROBTABLE = {};
         for (let i = 0; i < royalData.length; i += 2) {
-            const prob = +royalData
+            const prob = +(+royalData
                 .eq(i + 1)
                 .text()
+                .slice(0, -1))
+                .toFixed(10)
                 .replace(/\D+/g, '');
             MapleProb.ROYALSTYLE_PROBTABLE[royalData.eq(i).text()] = prob;
         }
@@ -164,11 +138,13 @@ export class MapleProb extends null {
 
         MapleProb.WONDERBERRY_PROBTABLE = {};
         for (let i = 0; i < wonderData.length; i += 2) {
-            const prob = +wonderData
+            const prob = +(+wonderData
                 .eq(i + 1)
                 .text()
+                .slice(0, -1))
+                .toFixed(10)
                 .replace(/\D+/g, '');
-            if (prob === 332) {
+            if (prob === 33200000000) {
                 MapleProb.WONDERBERRY_PROBTABLE[`[원더 블랙] ${wonderData.eq(i).text()}`] = prob;
             } else {
                 MapleProb.WONDERBERRY_PROBTABLE[wonderData.eq(i).text()] = prob;

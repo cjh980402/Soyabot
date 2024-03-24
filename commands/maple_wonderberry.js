@@ -33,7 +33,7 @@ export async function commandExecute(interaction) {
     if (subcommand === '확률') {
         let rslt = '<원더베리 확률>';
         for (const key in MapleProb.WONDERBERRY_PROBTABLE) {
-            rslt += `\n${key}: ${MapleProb.WONDERBERRY_PROBTABLE[key] / 100}%`;
+            rslt += `\n${key}: ${MapleProb.WONDERBERRY_PROBTABLE[key] / 10000000000}%`;
         }
         await interaction.followUp(rslt);
     } else if (subcommand === '시뮬') {

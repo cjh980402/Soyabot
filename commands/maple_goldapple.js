@@ -34,7 +34,7 @@ export async function commandExecute(interaction) {
     if (subcommand === '확률') {
         let rslt = `<골드애플 확률>`;
         for (const key in MapleProb.GOLDAPPLE_PROBTABLE) {
-            rslt += `\n${key}: ${MapleProb.GOLDAPPLE_PROBTABLE[key] / 100000}%`;
+            rslt += `\n${key}: ${MapleProb.GOLDAPPLE_PROBTABLE[key] / 10000000000}%`;
         }
         await sendSplitCode(interaction, rslt, { split: true });
     } else if (subcommand === '시뮬') {

@@ -33,7 +33,7 @@ export async function commandExecute(interaction) {
     if (subcommand === '확률') {
         let rslt = '<로얄스타일 확률>';
         for (const key in MapleProb.ROYALSTYLE_PROBTABLE) {
-            rslt += `\n${key}: ${MapleProb.ROYALSTYLE_PROBTABLE[key] / 10}%`;
+            rslt += `\n${key}: ${MapleProb.ROYALSTYLE_PROBTABLE[key] / 10000000000}%`;
         }
         await interaction.followUp(rslt);
     } else if (subcommand === '시뮬') {

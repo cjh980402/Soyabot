@@ -50,7 +50,7 @@ export async function commandExecute(interaction) {
     if (subcommand === '확률') {
         let rslt = `<루나크리스탈 ${category} 확률>`;
         for (const key in MapleProb.LUNACRYSTAL_PROBTABLE[category]) {
-            rslt += `\n${key}: ${MapleProb.LUNACRYSTAL_PROBTABLE[category][key] / 100}%`;
+            rslt += `\n${key}: ${MapleProb.LUNACRYSTAL_PROBTABLE[category][key] / 10000000000}%`;
         }
         await interaction.followUp(rslt);
     } else if (subcommand === '시뮬') {
