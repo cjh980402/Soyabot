@@ -448,16 +448,16 @@ export class MapleAPI {
         this.#oid = this.#worldName ? rslt.oguild_id : rslt.ocid;
     }
 
-    async ApiRequest(url) {
+    async ApiRequest(url, date = null) {
         if (!this.#oid) {
             await this.Init();
         }
 
-        const yesterDay = new Date();
-        yesterDay.setDate(yesterDay.getDate() - 1);
         const params = new URLSearchParams();
         params.set(this.#worldName ? 'oguild_id' : 'ocid', this.#oid);
-        params.set('date', yesterDay.toISOString().substring(0, 10));
+        if (date && /\d{4}-\d{2}-\d{2}/.test(date)) {
+            params.set('date', date);
+        }
 
         const rslt = await requestJSON(`${this.#apiURL}/${url}?${params}`, {
             method: 'GET',
