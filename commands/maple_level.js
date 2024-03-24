@@ -1,12 +1,12 @@
 import { ApplicationCommandOptionType } from 'discord.js';
-import { MapleUser } from '../classes/MapleParser.js';
+import { MapleAPI } from '../classes/MapleParser.js';
 import { levelTable } from '../util/Constant.js';
 import { Util } from '../util/Util.js';
 
 export const type = '메이플';
 export const commandData = {
     name: '레벨',
-    description: '캐릭터의 공식 홈페이지의 레벨과 경험치를 기준으로 250, 275, 300까지 남은 경험치량을 계산합니다.',
+    description: '캐릭터의 OPEN API 실시간 조회 레벨과 경험치를 기준으로 250, 275, 300까지 남은 경험치량을 계산합니다.',
     options: [
         {
             name: '닉네임',
@@ -17,17 +17,14 @@ export const commandData = {
     ]
 };
 export async function commandExecute(interaction) {
-    const mapleUserInfo = new MapleUser(interaction.options.getString('닉네임'));
+    const nickname = interaction.options.getString('닉네임');
 
-    const level = await mapleUserInfo.homeLevel();
-    if (!level) {
-        return interaction.followUp(`[${mapleUserInfo.Name}]\n존재하지 않는 캐릭터입니다.`);
-    }
+    const mapleApiInfo = new MapleAPI(nickname);
+    const basicInfo = await mapleApiInfo.ApiRequest('character/basic');
+    const char_lv = basicInfo.character_level;
+    const char_ex = basicInfo.character_exp;
 
-    const char_lv = level[0];
-    const char_ex = level[1];
-
-    let rslt = `[${mapleUserInfo.Name}]\n직업: ${level[4]}\n현재: Lv.${char_lv}`;
+    let rslt = `[${basicInfo.character_name}]\n직업: ${basicInfo.character_class}\n현재: Lv.${char_lv}`;
     if (char_lv < 300) {
         const sumExp = levelTable[char_lv - 1] + char_ex;
         const percentage = ((char_ex / (levelTable[char_lv] - levelTable[char_lv - 1])) * 100).toFixed(3);
