@@ -90,7 +90,7 @@ export async function getPlaylistInfo(url, search) {
 export async function songDownload(url) {
     let source = null;
     if (url.includes('youtube.com')) {
-        source = ytdl(url, { filter: 'audio' });
+        source = ytdl(url, { filter: 'audio', liveBuffer: 2000, highWaterMark: 1 << 25 });
     } else if (url.includes('soundcloud.com')) {
         source = await soundcloud.util.streamTrack(url);
     } else {
