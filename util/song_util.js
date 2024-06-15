@@ -4,7 +4,6 @@ import { decodeHTML } from 'entities';
 import { request } from 'undici';
 import { search as ytsr, Util as YtUtil } from 'youtube-dlsr';
 import ytdl from '@distube/ytdl-core';
-import { setTimeout } from 'node:timers/promises';
 import { YoutubeAPI } from '../classes/YoutubeAPI.js';
 import { Util } from '../util/Util.js';
 import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY, BOT_SERVER_DOMAIN } from '../soyabot_config.js';

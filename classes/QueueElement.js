@@ -1,6 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, ButtonStyle, ChannelType } from 'discord.js';
 import { AudioPlayerStatus, createAudioPlayer, NoSubscriberBehavior, VoiceConnectionStatus } from '@discordjs/voice';
-import { FormatError } from 'youtube-dlsr';
 import { sendAdmin } from '../admin/bot_message.js';
 import { songDownload, addYoutubeStatistics } from '../util/song_util.js';
 import { Util } from '../util/Util.js';
@@ -134,15 +133,11 @@ export class QueueElement {
             this.player.play(await songDownload(song.url));
             addYoutubeStatistics(song.url);
         } catch (err) {
-            if (err instanceof FormatError) {
-                this.sendMessage('재생할 수 없는 영상입니다.');
-            } else {
-                this.sendMessage('노래 시작을 실패했습니다.');
-                sendAdmin(
-                    this.voiceChannel.client.users,
-                    `노래 시작 에러\nsong 객체: ${JSON.stringify(song, null, 4)}\n에러 내용: ${err.stack}`
-                );
-            }
+            this.sendMessage('노래 시작을 실패했습니다.');
+            sendAdmin(
+                this.voiceChannel.client.users,
+                `노래 시작 에러\nsong 객체: ${JSON.stringify(song, null, 4)}\n에러 내용: ${err.stack}`
+            );
             await this.deleteMessage();
             this.songs.shift();
             this.playSong();
