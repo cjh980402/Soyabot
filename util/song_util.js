@@ -2,7 +2,8 @@ import SoundcloudAPI from 'soundcloud.ts';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { decodeHTML } from 'entities';
 import { request } from 'undici';
-import { download as ytdl, search as ytsr, Util as YtUtil } from 'youtube-dlsr';
+import { search as ytsr, Util as YtUtil } from 'youtube-dlsr';
+import ytdl from '@distube/ytdl-core';
 import { YoutubeAPI } from '../classes/YoutubeAPI.js';
 import { Util } from '../util/Util.js';
 import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY, BOT_SERVER_DOMAIN } from '../soyabot_config.js';
@@ -89,7 +90,7 @@ export async function getPlaylistInfo(url, search) {
 export async function songDownload(url) {
     let source = null;
     if (url.includes('youtube.com')) {
-        source = await ytdl(url);
+        source = ytdl(url);
     } else if (url.includes('soundcloud.com')) {
         source = await soundcloud.util.streamTrack(url);
     } else {
