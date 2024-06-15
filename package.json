@@ -1,6 +1,6 @@
 {
   "name": "soyabot",
-  "version": "9.5.0",
+  "version": "9.6.0",
   "description": "MapleStory, Music Discord Bot",
   "license": "MIT",
   "author": "cjh980402 <9804cjh@naver.com> (https://github.com/cjh980402)",
@@ -20,31 +20,31 @@
     "pretty": "prettier --config .prettierrc --write '**/*.js'"
   },
   "dependencies": {
-    "@discordjs/voice": "^0.16.1",
+    "@discordjs/voice": "^0.17.0",
     "@distube/ytdl-core": "^4.13.4",
-    "better-sqlite3": "^9.5.0",
+    "better-sqlite3": "^11.0.0",
     "bufferutil": "^4.0.8",
     "chartjs-node-canvas": "^4.1.6",
     "chartjs-plugin-datalabels": "^2.2.0",
     "cheerio": "^1.0.0-rc.12",
-    "discord.js": "^14.14.1",
+    "discord.js": "^14.15.3",
     "entities": "^4.5.0",
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^5.2.0",
     "hangul-js": "^0.2.6",
-    "mathjs": "^12.4.1",
+    "mathjs": "^13.0.0",
     "opusscript": "^0.1.1",
     "simple-youtube-api": "^5.2.1",
     "sodium-native": "^4.1.1",
-    "soundcloud.ts": "^0.5.2",
+    "soundcloud.ts": "^0.5.3",
     "string-progressbar": "^1.0.4",
-    "undici": "^6.13.0",
-    "utf-8-validate": "^6.0.3",
+    "undici": "^6.19.0",
+    "utf-8-validate": "^6.0.4",
     "youtube-dlsr": "^2.8.3",
     "zlib-sync": "^0.1.9"
   },
   "devDependencies": {
-    "prettier": "^3.2.5"
+    "prettier": "^3.3.2"
   },
   "keywords": [
     "Discord",
