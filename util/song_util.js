@@ -4,6 +4,7 @@ import { decodeHTML } from 'entities';
 import { request } from 'undici';
 import { search as ytsr, Util as YtUtil } from 'youtube-dlsr';
 import ytdl from '@distube/ytdl-core';
+import { PassThrough } from 'node:stream';
 import { YoutubeAPI } from '../classes/YoutubeAPI.js';
 import { Util } from '../util/Util.js';
 import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY, BOT_SERVER_DOMAIN } from '../soyabot_config.js';
@@ -87,10 +88,63 @@ export async function getPlaylistInfo(url, search) {
     }
 }
 
+async function createYTStream(
+    url,
+    options = { filter: 'audio', liveBuffer: 2000, highWaterMark: 1 << 25, dlChunkSize: 0 },
+    chunkSize = 512 * 1024
+) {
+    const stream = new PassThrough();
+    const info = await ytdl.getInfo(url);
+    let format = null,
+        contentLength = 0;
+    try {
+        if (!info.formats.length) {
+            stream.emit('error', Error('This video is unavailable'));
+            return stream;
+        }
+        format = ytdl.chooseFormat(info.formats, options);
+        contentLength = Number(format.contentLength);
+    } catch (e) {
+        stream.emit('error', e);
+        return stream;
+    }
+
+    if (contentLength < chunkSize || format.isHLS || format.isDashMPD) {
+        return ytdl.downloadFromInfo(info, options);
+    } else {
+        let current = -1;
+        const pipeNextStream = () => {
+            current++;
+            let end = chunkSize * (current + 1) - 1;
+            if (end >= contentLength) {
+                end = undefined;
+            }
+            const nextStream = ytdl.downloadFromInfo(info, {
+                ...options,
+                range: {
+                    start: chunkSize * current,
+                    end
+                }
+            });
+            ['abort', 'request', 'response', 'error', 'redirect', 'retry', 'reconnect'].forEach((event) => {
+                nextStream.prependListener(event, stream.emit.bind(stream, event));
+            });
+            nextStream.pipe(stream, { end: end === undefined });
+            if (end !== undefined) {
+                nextStream.on('end', () => {
+                    pipeNextStream();
+                });
+            }
+        };
+        pipeNextStream();
+    }
+    return stream;
+}
+
 export async function songDownload(url) {
     let source = null;
     if (url.includes('youtube.com')) {
-        source = ytdl(url, { filter: 'audio', liveBuffer: 2000, highWaterMark: 1 << 25 });
+        source = await createYTStream(url);
     } else if (url.includes('soundcloud.com')) {
         source = await soundcloud.util.streamTrack(url);
     } else {
