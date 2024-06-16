@@ -91,7 +91,7 @@ export async function getPlaylistInfo(url, search) {
 async function createYTStream(
     url,
     options = { filter: 'audio', liveBuffer: 2000, highWaterMark: 1 << 25, dlChunkSize: 0 },
-    chunkSize = 512 * 1024
+    chunkSize = 1 << 19
 ) {
     const stream = new PassThrough();
     const info = await ytdl.getInfo(url);
