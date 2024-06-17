@@ -93,28 +93,20 @@ async function createYTStream(
     options = { filter: 'audio', liveBuffer: 2000, highWaterMark: 1 << 25, dlChunkSize: 0 },
     chunkSize = 1 << 19
 ) {
-    const stream = new PassThrough();
     const info = await ytdl.getInfo(url);
-    let format = null,
-        contentLength = 0;
-    try {
-        if (!info.formats.length) {
-            stream.emit('error', Error('This video is unavailable'));
-            return stream;
-        }
-        format = ytdl.chooseFormat(info.formats, options);
-        contentLength = Number(format.contentLength);
-    } catch (e) {
-        stream.emit('error', e);
-        return stream;
+    if (!info.formats.length) {
+        throw new Error('This video is unavailable');
     }
+
+    const format = ytdl.chooseFormat(info.formats, options);
+    const contentLength = Number(format.contentLength);
 
     if (contentLength < chunkSize || format.isHLS || format.isDashMPD) {
         return ytdl.downloadFromInfo(info, options);
     } else {
-        let current = -1;
+        let current = 0;
+        const stream = new PassThrough();
         const pipeNextStream = () => {
-            current++;
             let end = chunkSize * (current + 1) - 1;
             if (end >= contentLength) {
                 end = undefined;
@@ -132,13 +124,14 @@ async function createYTStream(
             nextStream.pipe(stream, { end: end === undefined });
             if (end !== undefined) {
                 nextStream.on('end', () => {
+                    current++;
                     pipeNextStream();
                 });
             }
         };
         pipeNextStream();
+        return stream;
     }
-    return stream;
 }
 
 export async function songDownload(url) {
