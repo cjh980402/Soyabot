@@ -4,6 +4,7 @@ import { decodeHTML } from 'entities';
 import { request } from 'undici';
 import { search as ytsr, Util as YtUtil } from 'youtube-dlsr';
 import ytdl from '@distube/ytdl-core';
+import { HeaderGenerator, PRESETS } from 'header-generator';
 import { PassThrough } from 'node:stream';
 import { YoutubeAPI } from '../classes/YoutubeAPI.js';
 import { Util } from '../util/Util.js';
@@ -12,6 +13,7 @@ const scTrackRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/[\w-]+\/?$/;
 const scSetRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/sets\/[\w-]+\/?$/;
 const soundcloud = new SoundcloudAPI.default();
 const youtube = new YoutubeAPI(GOOGLE_API_KEY);
+const headerGenerator = new HeaderGenerator(PRESETS.MODERN_DESKTOP);
 
 export function isValidVideo(url) {
     if (scTrackRegex.test(url) || YtUtil.getVideoId(url, true)) {
@@ -88,18 +90,22 @@ export async function getPlaylistInfo(url, search) {
     }
 }
 
-async function createYTStream(
-    url,
-    options = { filter: 'audio', liveBuffer: 2000, highWaterMark: 1 << 25, dlChunkSize: 0 },
-    chunkSize = 1 << 19
-) {
+async function createYTStream(url) {
     const info = await ytdl.getInfo(url);
     if (!info.formats.length) {
         throw new Error('This video is unavailable');
     }
 
+    const options = {
+        filter: 'audio',
+        liveBuffer: 2000,
+        highWaterMark: 1 << 25,
+        dlChunkSize: 0,
+        requestOptions: { headers: headerGenerator.getHeaders() }
+    };
     const format = ytdl.chooseFormat(info.formats, options);
     const contentLength = Number(format.contentLength);
+    const chunkSize = 1 << 19;
 
     if (contentLength < chunkSize || format.isHLS || format.isDashMPD) {
         return ytdl.downloadFromInfo(info, options);

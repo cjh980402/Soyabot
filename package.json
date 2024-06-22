@@ -32,6 +32,7 @@
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^5.2.0",
     "hangul-js": "^0.2.6",
+    "header-generator": "^2.1.52",
     "mathjs": "^13.0.0",
     "opusscript": "^0.1.1",
     "simple-youtube-api": "^5.2.1",
