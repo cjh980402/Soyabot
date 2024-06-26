@@ -2,21 +2,55 @@ import SoundcloudAPI from 'soundcloud.ts';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { decodeHTML } from 'entities';
 import { request } from 'undici';
-import { search as ytsr, Util as YtUtil } from 'youtube-dlsr';
-import ytdl from '@distube/ytdl-core';
-import { HeaderGenerator, PRESETS } from 'header-generator';
-import { PassThrough } from 'node:stream';
+import { Innertube } from 'youtubei.js';
+import { Readable } from 'node:stream';
 import { YoutubeAPI } from '../classes/YoutubeAPI.js';
 import { Util } from '../util/Util.js';
 import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY, BOT_SERVER_DOMAIN } from '../soyabot_config.js';
 const scTrackRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/[\w-]+\/?$/;
 const scSetRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/sets\/[\w-]+\/?$/;
+const ytVideoRegex = /^[\w-]{11}$/;
+const ytListRegex = /^[A-Z]{2}[\w-]{10,}$/;
+const ytValidPathDomains = /^https?:\/\/(youtu\.be\/|(www\.)?youtube\.com\/(embed|v|shorts|live)\/)/;
+const ytValidQueryDomains = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com'];
 const soundcloud = new SoundcloudAPI.default();
 const youtube = new YoutubeAPI(GOOGLE_API_KEY);
-const headerGenerator = new HeaderGenerator(PRESETS.MODERN_DESKTOP);
+export const innertube = await Innertube.create();
+
+function getVideoId(urlOrId, checkUrl = false) {
+    try {
+        if (ytVideoRegex.test(urlOrId) && !checkUrl) {
+            return urlOrId;
+        }
+        const url = new URL(urlOrId);
+        let id = url.searchParams.get('v');
+        if (ytValidPathDomains.test(urlOrId) && !id) {
+            const paths = url.pathname.split('/');
+            id = paths[url.hostname === 'youtu.be' ? 1 : 2].slice(0, 11);
+        } else if (!ytValidQueryDomains.includes(url.hostname)) {
+            return null;
+        }
+        return ytVideoRegex.test(id ?? '') ? id : null;
+    } catch {
+        return null;
+    }
+}
+
+function getListId(urlOrId, checkUrl = false) {
+    try {
+        if (ytListRegex.test(urlOrId) && !checkUrl) {
+            return urlOrId;
+        }
+        const url = new URL(urlOrId);
+        const id = url.searchParams.get('list');
+        return ytValidQueryDomains.includes(url.hostname) && ytListRegex.test(id ?? '') ? id : null;
+    } catch {
+        return null;
+    }
+}
 
 export function isValidVideo(url) {
-    if (scTrackRegex.test(url) || YtUtil.getVideoId(url, true)) {
+    if (scTrackRegex.test(url) || getVideoId(url, true)) {
         return true;
     } else {
         return false;
@@ -24,7 +58,7 @@ export function isValidVideo(url) {
 }
 
 export function isValidPlaylist(url) {
-    if (scSetRegex.test(url) || YtUtil.getListId(url, true)) {
+    if (scSetRegex.test(url) || getListId(url, true)) {
         return true;
     } else {
         return false;
@@ -41,7 +75,7 @@ export async function getSongInfo(url, search) {
             thumbnail: artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
         };
     } else {
-        const videoID = YtUtil.getVideoId(url, true) ?? (await ytsr(search, { type: 'video', limit: 1 }))[0]?.id;
+        const videoID = getVideoId(url, true) ?? (await innertube.search(search, { type: 'video' })).videos[0]?.id;
         if (!videoID) {
             return null;
         }
@@ -70,7 +104,8 @@ export async function getPlaylistInfo(url, search) {
             }));
         return { title, url: permalink_url, songs };
     } else {
-        const playlistID = YtUtil.getListId(url, true) ?? (await ytsr(search, { type: 'playlist', limit: 1 }))[0]?.id;
+        const playlistID =
+            getListId(url, true) ?? (await innertube.search(search, { type: 'playlist' })).playlists[0]?.id;
         if (!playlistID) {
             return null;
         }
@@ -90,66 +125,10 @@ export async function getPlaylistInfo(url, search) {
     }
 }
 
-async function createYTStream(url) {
-    const info = await ytdl.getInfo(url);
-    if (!info.formats.length) {
-        throw new Error('This video is unavailable');
-    }
-
-    const options = {
-        filter: 'audio',
-        liveBuffer: 2000,
-        highWaterMark: 1 << 25,
-        dlChunkSize: 0,
-        requestOptions: {
-            headers: {
-                ...headerGenerator.getHeaders(),
-                origin: 'https://www.youtube.com',
-                referer: 'https://www.youtube.com/'
-            }
-        }
-    };
-    const format = ytdl.chooseFormat(info.formats, options);
-    const contentLength = Number(format.contentLength);
-    const chunkSize = 1 << 19;
-
-    if (contentLength < chunkSize || format.isHLS || format.isDashMPD) {
-        return ytdl.downloadFromInfo(info, options);
-    } else {
-        let current = 0;
-        const stream = new PassThrough();
-        const pipeNextStream = () => {
-            let end = chunkSize * (current + 1) - 1;
-            if (end >= contentLength) {
-                end = undefined;
-            }
-            const nextStream = ytdl.downloadFromInfo(info, {
-                ...options,
-                range: {
-                    start: chunkSize * current,
-                    end
-                }
-            });
-            ['abort', 'request', 'response', 'error', 'redirect', 'retry', 'reconnect'].forEach((event) => {
-                nextStream.prependListener(event, stream.emit.bind(stream, event));
-            });
-            nextStream.pipe(stream, { end: end === undefined });
-            if (end !== undefined) {
-                nextStream.on('end', () => {
-                    current++;
-                    pipeNextStream();
-                });
-            }
-        };
-        pipeNextStream();
-        return stream;
-    }
-}
-
 export async function songDownload(url) {
     let source = null;
     if (url.includes('youtube.com')) {
-        source = await createYTStream(url);
+        source = Readable.fromWeb(await innertube.download(getVideoId(url, true), { type: 'audio', quality: 'best' }));
     } else if (url.includes('soundcloud.com')) {
         source = await soundcloud.util.streamTrack(url);
     } else {
@@ -164,7 +143,7 @@ export async function songDownload(url) {
 
 export async function addYoutubeStatistics(url) {
     try {
-        const videoID = YtUtil.getVideoId(url, true);
+        const videoID = getVideoId(url, true);
         if (!videoID) {
             return false;
         }

@@ -1,7 +1,7 @@
 import { ActionRowBuilder, StringSelectMenuBuilder, ApplicationCommandOptionType, ChannelType } from 'discord.js';
-import { search as ytsr } from 'youtube-dlsr';
 import { sendAdmin } from '../admin/bot_message.js';
 import { QueueElement } from '../classes/QueueElement.js';
+import { innertube } from '../util/song_util.js';
 import { joinVoice } from '../util/soyabot_util.js';
 import { Util } from '../util/Util.js';
 
@@ -40,7 +40,7 @@ export async function commandExecute(interaction) {
     }
 
     const search = interaction.options.getString('영상_제목');
-    const results = await ytsr(search, { type: 'video', limit: 10 });
+    const results = (await innertube.search(search, { type: 'video' })).videos.slice(0, 10);
     if (results.length === 0) {
         return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
     }
@@ -53,8 +53,8 @@ export async function commandExecute(interaction) {
             .setMaxValues(results.length)
             .addOptions(
                 results.map((v, i) => ({
-                    label: v.title.slice(0, 100),
-                    description: `[${v.duration === 0 ? '⊚ LIVE' : v.durationText}]`,
+                    label: v.title.toString().slice(0, 100),
+                    description: `[${v.duration.seconds === 0 ? '⊚ LIVE' : v.duration.text}]`,
                     value: String(i)
                 }))
             )
@@ -69,10 +69,10 @@ export async function commandExecute(interaction) {
         await choiceMenu.deferUpdate();
 
         const songs = choiceMenu.values.map((v) => ({
-            title: results[v].title,
-            url: results[v].url,
-            duration: Math.ceil(results[v].duration / 1000),
-            thumbnail: results[v].thumbnails.at(-1).url
+            title: results[v].title.toString(),
+            url: `https://www.youtube.com/watch?v=${results[v].id}`,
+            duration: results[v].duration.seconds,
+            thumbnail: results[v].thumbnails[0].url
         }));
 
         if (guildQueue) {
