@@ -101,7 +101,13 @@ async function createYTStream(url) {
         liveBuffer: 2000,
         highWaterMark: 1 << 25,
         dlChunkSize: 0,
-        requestOptions: { headers: headerGenerator.getHeaders() }
+        requestOptions: {
+            headers: {
+                ...headerGenerator.getHeaders(),
+                origin: 'https://www.youtube.com',
+                referer: 'https://www.youtube.com/'
+            }
+        }
     };
     const format = ytdl.chooseFormat(info.formats, options);
     const contentLength = Number(format.contentLength);
