@@ -2,7 +2,8 @@ import SoundcloudAPI from 'soundcloud.ts';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { decodeHTML } from 'entities';
 import { request } from 'undici';
-import { Innertube } from 'youtubei.js';
+import { Innertube, Constants } from 'youtubei.js';
+import m3u8stream from 'm3u8stream';
 import { Readable } from 'node:stream';
 import { YoutubeAPI } from '../classes/YoutubeAPI.js';
 import { Util } from '../util/Util.js';
@@ -125,10 +126,28 @@ export async function getPlaylistInfo(url, search) {
     }
 }
 
+async function createYTStream(url) {
+    const info = await innertube.getBasicInfo(getVideoId(url, true));
+    if (info.streaming_data.hls_manifest_url) {
+        const { body } = await request(info.streaming_data.hls_manifest_url);
+        const streamUrl = (await body.text()).split('\n').filter((line) => /^https?:\/\//.test(line))[0];
+
+        return m3u8stream(streamUrl, {
+            chunkReadahead: info.basic_info.live_chunk_readahead,
+            begin: Date.now(),
+            liveBuffer: 2000,
+            requestOptions: { headers: Constants.STREAM_HEADERS },
+            parser: 'm3u8'
+        });
+    } else {
+        return Readable.fromWeb(await info.download({ type: 'audio', quality: 'best' }));
+    }
+}
+
 export async function songDownload(url) {
     let source = null;
     if (url.includes('youtube.com')) {
-        source = Readable.fromWeb(await innertube.download(getVideoId(url, true), { type: 'audio', quality: 'best' }));
+        source = await createYTStream(url);
     } else if (url.includes('soundcloud.com')) {
         source = await soundcloud.util.streamTrack(url);
     } else {

@@ -54,7 +54,7 @@ export async function commandExecute(interaction) {
             .addOptions(
                 results.map((v, i) => ({
                     label: v.title.toString().slice(0, 100),
-                    description: `[${v.duration.seconds === 0 ? '⊚ LIVE' : v.duration.text}]`,
+                    description: `[${!v.duration.seconds ? '⊚ LIVE' : v.duration.text}]`,
                     value: String(i)
                 }))
             )
@@ -71,7 +71,7 @@ export async function commandExecute(interaction) {
         const songs = choiceMenu.values.map((v) => ({
             title: results[v].title.toString(),
             url: `https://www.youtube.com/watch?v=${results[v].id}`,
-            duration: results[v].duration.seconds,
+            duration: results[v].duration.seconds || 0,
             thumbnail: results[v].thumbnails[0].url
         }));
 
