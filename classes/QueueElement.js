@@ -113,10 +113,7 @@ export class QueueElement {
                 .setImage(song.thumbnail)
                 .setDescription(`**${song.title}**\n${song.url}`)
                 .setFooter({
-                    text:
-                        song.duration === 0
-                            ? '⊚ 실시간 방송'
-                            : `전체 재생 시간: ${Util.toDurationString(song.duration)}`
+                    text: song.duration === 0 ? '⊚ LIVE' : `전체 재생 시간: ${Util.toDurationString(song.duration)}`
                 });
             const row1 = new ActionRowBuilder().addComponents([
                 new ButtonBuilder().setCustomId('stop').setEmoji('⏹️').setStyle(ButtonStyle.Secondary),
