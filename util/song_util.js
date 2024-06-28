@@ -20,11 +20,12 @@ Platform.shim.Request = Request;
 export const innertube = await Innertube.create({
     fetch: async (input, init = undefined) => {
         const response = await fetch(input, init);
-        if (!response.ok)
-            throw new Utils.InnertubeError('The server responded with a non 2xx status code', {
+        if (!response.ok) {
+            throw new Utils.InnertubeError(`The server responded with a ${response.status} status code`, {
                 error_type: 'FETCH_FAILED',
                 response
             });
+        }
         return response;
     }
 });
