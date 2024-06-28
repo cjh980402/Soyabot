@@ -2,7 +2,7 @@ import SoundcloudAPI from 'soundcloud.ts';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { decodeHTML } from 'entities';
 import { request } from 'undici';
-import { Innertube, Constants } from 'youtubei.js';
+import { Innertube, Constants, Utils, Platform } from 'youtubei.js';
 import m3u8stream from 'm3u8stream';
 import { Readable } from 'node:stream';
 import { YoutubeAPI } from '../classes/YoutubeAPI.js';
@@ -16,7 +16,18 @@ const ytValidPathDomains = /^https?:\/\/(youtu\.be\/|(www\.)?youtube\.com\/(embe
 const ytValidQueryDomains = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com'];
 const soundcloud = new SoundcloudAPI.default();
 const youtube = new YoutubeAPI(GOOGLE_API_KEY);
-export const innertube = await Innertube.create();
+Platform.shim.Request = Request;
+export const innertube = await Innertube.create({
+    fetch: async (input, init = undefined) => {
+        const response = await fetch(input, init);
+        if (!response.ok)
+            throw new Utils.InnertubeError('The server responded with a non 2xx status code', {
+                error_type: 'FETCH_FAILED',
+                response
+            });
+        return response;
+    }
+});
 
 function getVideoId(urlOrId, checkUrl = false) {
     try {
