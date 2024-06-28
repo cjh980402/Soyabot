@@ -139,19 +139,28 @@ export async function getPlaylistInfo(url, search) {
 
 async function createYTStream(url) {
     const info = await innertube.getBasicInfo(getVideoId(url, true));
-    if (info.streaming_data.hls_manifest_url) {
-        const { body } = await request(info.streaming_data.hls_manifest_url);
-        const streamUrl = (await body.text()).split('\n').filter((line) => /^https?:\/\//.test(line))[0];
+    if (info.basic_info.is_live) {
+        if (info.streaming_data.hls_manifest_url) {
+            const { body } = await request(info.streaming_data.hls_manifest_url);
+            const streamUrl = (await body.text()).split('\n').filter((line) => /^https?:\/\//.test(line))[0];
 
-        return m3u8stream(streamUrl, {
-            chunkReadahead: info.basic_info.live_chunk_readahead,
-            begin: Date.now(),
-            liveBuffer: 2000,
-            requestOptions: { headers: Constants.STREAM_HEADERS },
-            parser: 'm3u8'
-        });
+            return m3u8stream(streamUrl, {
+                chunkReadahead: info.basic_info.live_chunk_readahead,
+                begin: Date.now(),
+                liveBuffer: 2000,
+                requestOptions: { headers: Constants.STREAM_HEADERS },
+                parser: 'm3u8'
+            });
+        } else {
+            throw new Utils.InnertubeError('No matching formats found');
+        }
     } else {
-        return Readable.fromWeb(await info.download({ type: 'audio', quality: 'best' }));
+        const formats = [...(info.streaming_data.formats || []), ...(info.streaming_data.adaptive_formats || [])];
+        const hasOpus = formats.some((v) => v.mime_type.includes('opus'));
+
+        return Readable.fromWeb(
+            await info.download({ type: 'audio', quality: 'best', format: hasOpus ? 'opus' : 'mp4' })
+        );
     }
 }
 
