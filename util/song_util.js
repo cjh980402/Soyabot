@@ -155,7 +155,7 @@ async function createYTStream(url) {
             throw new Utils.InnertubeError('No matching formats found');
         }
     } else {
-        const formats = [...(info.streaming_data.formats || []), ...(info.streaming_data.adaptive_formats || [])];
+        const formats = [...(info.streaming_data?.formats ?? []), ...(info.streaming_data?.adaptive_formats ?? [])];
         const hasOpus = formats.some((v) => v.mime_type.includes('opus'));
 
         return Readable.fromWeb(
