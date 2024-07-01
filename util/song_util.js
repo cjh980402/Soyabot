@@ -20,8 +20,9 @@ const youtube = new YoutubeAPI(GOOGLE_API_KEY);
 Platform.shim.Request = Request;
 export const innertube = await Innertube.create({
     fetch: async (input, init = undefined) => {
+        let response = null;
         for (let i = 0; i < 3; i++) {
-            const response = await fetch(input, init);
+            response = await fetch(input, init);
             if (response.ok) {
                 return response;
             }
