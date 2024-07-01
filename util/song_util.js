@@ -5,6 +5,7 @@ import { request } from 'undici';
 import { Innertube, Constants, Utils, Platform } from 'youtubei.js';
 import m3u8stream from 'm3u8stream';
 import { Readable } from 'node:stream';
+import { setTimeout } from 'node:timers/promises';
 import { YoutubeAPI } from '../classes/YoutubeAPI.js';
 import { Util } from '../util/Util.js';
 import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY, BOT_SERVER_DOMAIN } from '../soyabot_config.js';
@@ -19,14 +20,17 @@ const youtube = new YoutubeAPI(GOOGLE_API_KEY);
 Platform.shim.Request = Request;
 export const innertube = await Innertube.create({
     fetch: async (input, init = undefined) => {
-        const response = await fetch(input, init);
-        if (!response.ok) {
-            throw new Utils.InnertubeError(`The server responded with a ${response.status} status code`, {
-                error_type: 'FETCH_FAILED',
-                response
-            });
+        for (let i = 0; i < 3; i++) {
+            const response = await fetch(input, init);
+            if (response.ok) {
+                return response;
+            }
+            await setTimeout(1000);
         }
-        return response;
+        throw new Utils.InnertubeError(`The server responded with a ${response.status} status code`, {
+            error_type: 'FETCH_FAILED',
+            response
+        });
     }
 });
 
