@@ -46,6 +46,9 @@
   "devDependencies": {
     "prettier": "^3.3.2"
   },
+  "overrides": {
+    "undici": "^6.19.0"
+  },
   "keywords": [
     "Discord",
     "MapleStory",

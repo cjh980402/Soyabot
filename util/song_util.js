@@ -1,8 +1,8 @@
 import SoundcloudAPI from 'soundcloud.ts';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { decodeHTML } from 'entities';
-import { request } from 'undici';
-import { Innertube, Constants, Utils, Platform } from 'youtubei.js';
+import { request, fetch } from 'undici';
+import { Innertube, Constants, Utils } from 'youtubei.js';
 import m3u8stream from 'm3u8stream';
 import { Readable } from 'node:stream';
 import { setTimeout } from 'node:timers/promises';
@@ -17,7 +17,6 @@ const ytValidPathDomains = /^https?:\/\/(youtu\.be\/|(www\.)?youtube\.com\/(embe
 const ytValidQueryDomains = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com'];
 const soundcloud = new SoundcloudAPI.default();
 const youtube = new YoutubeAPI(GOOGLE_API_KEY);
-Platform.shim.Request = Request;
 export const innertube = await Innertube.create({
     fetch: async (input, init = undefined) => {
         let response = null;
