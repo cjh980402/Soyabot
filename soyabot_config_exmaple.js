@@ -10,3 +10,4 @@ export const GOOGLE_API_KEY = '';
 export const DEEP_API_KEY = '';
 export const KAKAO_API_KEY = '';
 export const NEXON_API_KEY = '';
+export const KOREAEXIM_API_KEY = '';

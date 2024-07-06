@@ -313,15 +313,15 @@ function isEmpty(obj) {
 }
 
 function getJobName(jobId) {
-    return jobData.find((v) => v[0] == jobId)?.[1].name;
+    return jobData.find((v) => v[0] === jobId)?.[1].name;
 }
 
 function getServerName(worldId) {
-    return serverData.find((v) => v[0] == worldId)?.[1].name;
+    return serverData.find((v) => v[0] === worldId)?.[1].name;
 }
 
 function getServerImage(worldId) {
-    return serverData.find((v) => v[0] == worldId)?.[1].iconUrl;
+    return serverData.find((v) => v[0] === worldId)?.[1].iconUrl;
 }
 
 function getUnionGradeName(level) {

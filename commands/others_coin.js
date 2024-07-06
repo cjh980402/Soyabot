@@ -1,5 +1,7 @@
 import { AttachmentBuilder, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
-import { request } from 'undici';
+import { request, Agent } from 'undici';
+import crypto from 'crypto';
+import { KOREAEXIM_API_KEY } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
 import { Util } from '../util/Util.js';
 const chartType = {
@@ -27,9 +29,26 @@ async function getCoinBinancePrice(code) {
 }
 
 async function usdToKRW(usd) {
-    const { body } = await request('https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD');
-    const usdData = await body.json();
-    return usd * usdData[0].basePrice;
+    let ttb = 0;
+    for (let i = 0; i < 10 && ttb === 0; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const searchDate = date.toISOString().slice(0, 10).replace(/-/g, '');
+        const { body } = await request(
+            `https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey=${KOREAEXIM_API_KEY}&searchdate=${searchDate}&data=AP01`,
+            {
+                dispatcher: new Agent({
+                    connect: {
+                        rejectUnauthorized: false,
+                        secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT
+                    }
+                })
+            }
+        );
+        const exchangeData = await body.json();
+        ttb = +(exchangeData.find((v) => v.result === 1 && v.cur_unit === 'USD')?.ttb.replace(/,/g, '') ?? 0);
+    }
+    return usd * ttb;
 }
 
 async function getCoinEmbed(searchRslt, type) {
