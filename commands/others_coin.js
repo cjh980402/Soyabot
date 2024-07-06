@@ -28,7 +28,7 @@ async function getCoinBinancePrice(code) {
     return -1; // 바이낸스 미상장인 경우
 }
 
-async function usdToKRW(usd) {
+async function usdToKRW() {
     let ttb = 0;
     for (let i = 0; i < 10 && ttb === 0; i++) {
         const date = new Date();
@@ -48,7 +48,7 @@ async function usdToKRW(usd) {
         const exchangeData = await body.json();
         ttb = +(exchangeData.find((v) => v.result === 1 && v.cur_unit === 'USD')?.ttb.replace(/,/g, '') ?? 0);
     }
-    return usd * ttb;
+    return ttb;
 }
 
 async function getCoinEmbed(searchRslt, type) {
@@ -83,8 +83,9 @@ async function getCoinEmbed(searchRslt, type) {
         .addFields([{ name: '**거래대금**', value: `${amount}원`, inline: true }]);
 
     const binancePrice = await getCoinBinancePrice(code);
-    if (binancePrice !== -1) {
-        const binanceKRW = await usdToKRW(binancePrice);
+    const usdTTB = await usdToKRW();
+    if (binancePrice !== -1 && usdTTB !== 0) {
+        const binanceKRW = binancePrice * usdTTB;
         const kimPre = todayData.trade_price - binanceKRW;
         const kimPrePercent = 100 * (kimPre / binanceKRW);
         coinEmbed.addFields([
@@ -93,7 +94,8 @@ async function getCoinEmbed(searchRslt, type) {
                 value: `${binancePrice.toLocaleString()}$\n${binanceKRW.toLocaleString()}원`,
                 inline: true
             },
-            { name: '**김프**', value: `${kimPre.toLocaleString()}원 (${kimPrePercent.toFixed(2)}%)`, inline: true }
+            { name: '**김프**', value: `${kimPre.toLocaleString()}원 (${kimPrePercent.toFixed(2)}%)`, inline: true },
+            { name: '**기준 환율**', value: `1 USD = ${usdTTB} KRW`, inline: true }
         ]);
     }
 
