@@ -284,7 +284,7 @@ export async function commandExecute(interaction) {
     const type = interaction.options.getString('차트_종류') ?? '일봉'; // 차트 종류
     const search = interaction.options.getString('검색_내용');
     const { body } = await request(
-        `https://m.stock.naver.com/front-api/v1/search/autoComplete?query=${encodeURIComponent(
+        `https://m.stock.naver.com/front-api/search/autoComplete?query=${encodeURIComponent(
             search
         )}&target=stock%2Cindex%2Cmarketindicator%2Ccoin`
     );
