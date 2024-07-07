@@ -1,6 +1,5 @@
 import { AttachmentBuilder, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
-import { request, Agent } from 'undici';
-import crypto from 'crypto';
+import { request } from 'undici';
 import { KOREAEXIM_API_KEY } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
 import { Util } from '../util/Util.js';
@@ -36,15 +35,7 @@ async function usdToKRW() {
         const searchDate = date.toISOString().slice(0, 10);
         try {
             const { body } = await request(
-                `https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey=${KOREAEXIM_API_KEY}&searchdate=${searchDate}&data=AP01`,
-                {
-                    dispatcher: new Agent({
-                        connect: {
-                            rejectUnauthorized: false,
-                            secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT
-                        }
-                    })
-                }
+                `https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey=${KOREAEXIM_API_KEY}&searchdate=${searchDate}&data=AP01`
             );
             const exchangeData = await body.json();
             ttb = +(exchangeData.find((v) => v.result === 1 && v.cur_unit === 'USD')?.ttb.replace(/,/g, '') ?? 0);
@@ -86,19 +77,33 @@ async function getCoinEmbed(searchRslt, type) {
 
     const binancePrice = await getCoinBinancePrice(code);
     const usdTTB = await usdToKRW();
-    if (binancePrice !== -1 && usdTTB !== 0) {
-        const binanceKRW = binancePrice * usdTTB;
-        const kimPre = todayData.trade_price - binanceKRW;
-        const kimPrePercent = 100 * (kimPre / binanceKRW);
-        coinEmbed.addFields([
-            {
-                name: '**바이낸스**',
-                value: `${binancePrice.toLocaleString()}$\n${binanceKRW.toLocaleString()}원`,
-                inline: true
-            },
-            { name: '**김프**', value: `${kimPre.toLocaleString()}원 (${kimPrePercent.toFixed(2)}%)`, inline: true },
-            { name: '**기준 환율**', value: `1 USD = ${usdTTB} KRW`, inline: true }
-        ]);
+    if (binancePrice !== -1) {
+        if (usdTTB === 0) {
+            coinEmbed.addFields([
+                {
+                    name: '**바이낸스**',
+                    value: `${binancePrice.toLocaleString()}$`,
+                    inline: true
+                }
+            ]);
+        } else {
+            const binanceKRW = binancePrice * usdTTB;
+            const kimPre = todayData.trade_price - binanceKRW;
+            const kimPrePercent = 100 * (kimPre / binanceKRW);
+            coinEmbed.addFields([
+                {
+                    name: '**바이낸스**',
+                    value: `${binancePrice.toLocaleString()}$\n${binanceKRW.toLocaleString()}원`,
+                    inline: true
+                },
+                {
+                    name: '**김프**',
+                    value: `${kimPre.toLocaleString()}원 (${kimPrePercent.toFixed(2)}%)`,
+                    inline: true
+                },
+                { name: '**기준 환율**', value: `1 USD = ${usdTTB} KRW`, inline: true }
+            ]);
+        }
     }
 
     return { embeds: [coinEmbed], files: [image] };
