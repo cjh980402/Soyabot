@@ -33,20 +33,22 @@ async function usdToKRW() {
     for (let i = 0; i < 10 && ttb === 0; i++) {
         const date = new Date();
         date.setDate(date.getDate() - i);
-        const searchDate = date.toISOString().slice(0, 10).replace(/-/g, '');
-        const { body } = await request(
-            `https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey=${KOREAEXIM_API_KEY}&searchdate=${searchDate}&data=AP01`,
-            {
-                dispatcher: new Agent({
-                    connect: {
-                        rejectUnauthorized: false,
-                        secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT
-                    }
-                })
-            }
-        );
-        const exchangeData = await body.json();
-        ttb = +(exchangeData.find((v) => v.result === 1 && v.cur_unit === 'USD')?.ttb.replace(/,/g, '') ?? 0);
+        const searchDate = date.toISOString().slice(0, 10);
+        try {
+            const { body } = await request(
+                `https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey=${KOREAEXIM_API_KEY}&searchdate=${searchDate}&data=AP01`,
+                {
+                    dispatcher: new Agent({
+                        connect: {
+                            rejectUnauthorized: false,
+                            secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT
+                        }
+                    })
+                }
+            );
+            const exchangeData = await body.json();
+            ttb = +(exchangeData.find((v) => v.result === 1 && v.cur_unit === 'USD')?.ttb.replace(/,/g, '') ?? 0);
+        } catch {}
     }
     return ttb;
 }
