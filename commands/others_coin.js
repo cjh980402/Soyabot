@@ -1,6 +1,5 @@
 import { AttachmentBuilder, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { request } from 'undici';
-import { KOREAEXIM_API_KEY } from '../soyabot_config.js';
 import { exec } from '../admin/admin_function.js';
 import { Util } from '../util/Util.js';
 const chartType = {
@@ -28,20 +27,11 @@ async function getCoinBinancePrice(code) {
 }
 
 async function usdToKRW() {
-    let ttb = 0;
-    for (let i = 0; i < 10 && ttb === 0; i++) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        const searchDate = date.toISOString().slice(0, 10);
-        try {
-            const { body } = await request(
-                `https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey=${KOREAEXIM_API_KEY}&searchdate=${searchDate}&data=AP01`
-            );
-            const exchangeData = await body.json();
-            ttb = +(exchangeData.find((v) => v.result === 1 && v.cur_unit === 'USD')?.ttb.replace(/,/g, '') ?? 0);
-        } catch {}
-    }
-    return ttb;
+    const { body } = await request(
+        'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json'
+    );
+    const exchangeData = await body.json();
+    return exchangeData.usd?.krw ?? -1;
 }
 
 async function getCoinEmbed(searchRslt, type) {
@@ -78,7 +68,7 @@ async function getCoinEmbed(searchRslt, type) {
     const binancePrice = await getCoinBinancePrice(code);
     const usdTTB = await usdToKRW();
     if (binancePrice !== -1) {
-        if (usdTTB === 0) {
+        if (usdTTB === -1) {
             coinEmbed.addFields([
                 {
                     name: '**바이낸스**',
