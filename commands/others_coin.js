@@ -88,10 +88,10 @@ async function getCoinEmbed(searchRslt, type) {
                 },
                 {
                     name: '**김프**',
-                    value: `${kimPre.toLocaleString()}원 (${kimPrePercent.toFixed(2)}%)`,
+                    value: `${kimPre.toLocaleString()}원 (${kimPrePercent.toLocaleString()}%)`,
                     inline: true
                 },
-                { name: '**기준 환율**', value: `1 USD = ${usdTTB} KRW`, inline: true }
+                { name: '**기준 환율**', value: `1 USD = ${usdTTB.toLocaleString()} KRW`, inline: true }
             ]);
         }
     }
