@@ -44,8 +44,11 @@ export async function commandExecute(interaction) {
         return interaction.followUp('주말은 학식이 제공되지 않습니다.');
     }
 
-    const { body } = await request('https://www.uos.ac.kr/food/placeList.do?epTicket=LOG', {
-        headers: { 'user-agent': 'undici' }
+    const { body } = await request('https://www.uos.ac.kr/food/placeList.do?identified=anonymous&', {
+        headers: {
+            'user-agent':
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0'
+        }
     });
     const data = load(await body.text())('#week tr');
     if (data.length > 0) {
