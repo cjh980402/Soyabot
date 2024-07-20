@@ -18,6 +18,7 @@ const ytValidQueryDomains = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 
 const soundcloud = new SoundcloudAPI.default();
 const youtube = new YoutubeAPI(GOOGLE_API_KEY);
 export const innertube = await Innertube.create({
+    enable_session_cache: false,
     fetch: async (input, init = undefined) => {
         let response = null;
         for (let i = 0; i < 3; i++) {
