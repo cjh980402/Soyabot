@@ -3,10 +3,12 @@ import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { decodeHTML } from 'entities';
 import { request, fetch } from 'undici';
 import { Innertube, Constants, Utils } from 'youtubei.js';
+import ytdl from '@distube/ytdl-core';
 import m3u8stream from 'm3u8stream';
-import { Readable } from 'node:stream';
+import { PassThrough, Readable } from 'node:stream';
 import { setTimeout } from 'node:timers/promises';
 import { YoutubeAPI } from '../classes/YoutubeAPI.js';
+import { liveValue } from '../classes/SoyaClient.js';
 import { Util } from '../util/Util.js';
 import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY, BOT_SERVER_DOMAIN } from '../soyabot_config.js';
 const scTrackRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/[\w-]+\/?$/;
@@ -143,7 +145,7 @@ export async function getPlaylistInfo(url, search) {
     }
 }
 
-async function createYTStream(url) {
+async function createYTStreamYoutubei(url) {
     const info = await innertube.getBasicInfo(getVideoId(url, true));
     if (info.basic_info.is_live) {
         if (info.streaming_data.hls_manifest_url) {
@@ -170,10 +172,66 @@ async function createYTStream(url) {
     }
 }
 
+async function createYTStreamYtdl(url) {
+    const info = await ytdl.getInfo(url);
+    if (!info.formats.length) {
+        throw new Error('This video is unavailable');
+    }
+
+    const hasOpus = info.formats.some((v) => v.mimeType.includes('opus'));
+    const options = {
+        filter: (v) => (hasOpus ? v.mimeType.includes('opus') : v.hasAudio),
+        liveBuffer: 2000,
+        highWaterMark: 1 << 25,
+        dlChunkSize: 0,
+        requestOptions: {
+            headers: {
+                origin: 'https://www.youtube.com',
+                referer: 'https://www.youtube.com/'
+            }
+        }
+    };
+    const format = ytdl.chooseFormat(info.formats, options);
+    const contentLength = Number(format.contentLength);
+    const chunkSize = 1 << 19;
+
+    if (contentLength < chunkSize || format.isHLS || format.isDashMPD) {
+        return ytdl.downloadFromInfo(info, options);
+    } else {
+        let current = 0;
+        const stream = new PassThrough();
+        const pipeNextStream = () => {
+            let end = chunkSize * (current + 1) - 1;
+            if (end >= contentLength) {
+                end = undefined;
+            }
+            const nextStream = ytdl.downloadFromInfo(info, {
+                ...options,
+                range: {
+                    start: chunkSize * current,
+                    end
+                }
+            });
+            ['abort', 'request', 'response', 'error', 'redirect', 'retry', 'reconnect'].forEach((event) => {
+                nextStream.prependListener(event, stream.emit.bind(stream, event));
+            });
+            nextStream.pipe(stream, { end: end === undefined });
+            if (end !== undefined) {
+                nextStream.on('end', () => {
+                    current++;
+                    pipeNextStream();
+                });
+            }
+        };
+        pipeNextStream();
+        return stream;
+    }
+}
+
 export async function songDownload(url) {
     let source = null;
     if (url.includes('youtube.com')) {
-        source = await createYTStream(url);
+        source = await (liveValue.get('youtubeModule') ? createYTStreamYoutubei(url) : createYTStreamYtdl(url));
     } else if (url.includes('soundcloud.com')) {
         source = await soundcloud.util.streamTrack(url);
     } else {
