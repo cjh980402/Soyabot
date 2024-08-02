@@ -146,7 +146,7 @@ export async function getPlaylistInfo(url, search) {
 }
 
 async function createYTStreamYoutubei(url) {
-    const info = await innertube.getBasicInfo(getVideoId(url, true));
+    const info = await innertube.getBasicInfo(getVideoId(url, true), 'ANDROID');
     if (info.basic_info.is_live) {
         if (info.streaming_data.hls_manifest_url) {
             const { body } = await request(info.streaming_data.hls_manifest_url);
@@ -231,7 +231,7 @@ async function createYTStreamYtdl(url) {
 export async function songDownload(url) {
     let source = null;
     if (url.includes('youtube.com')) {
-        source = await (liveValue.get('youtubeModule') ? createYTStreamYoutubei(url) : createYTStreamYtdl(url));
+        source = await (liveValue.get('youtubeModule') ? createYTStreamYtdl(url) : createYTStreamYoutubei(url));
     } else if (url.includes('soundcloud.com')) {
         source = await soundcloud.util.streamTrack(url);
     } else {
