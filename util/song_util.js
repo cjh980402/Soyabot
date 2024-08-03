@@ -146,7 +146,7 @@ export async function getPlaylistInfo(url, search) {
 }
 
 async function createYTStreamYoutubei(url) {
-    const info = await innertube.getBasicInfo(getVideoId(url, true), 'ANDROID');
+    const info = await innertube.getBasicInfo(getVideoId(url, true), 'TV_EMBEDDED');
     if (info.basic_info.is_live) {
         if (info.streaming_data.hls_manifest_url) {
             const { body } = await request(info.streaming_data.hls_manifest_url);
