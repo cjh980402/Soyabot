@@ -97,7 +97,7 @@ export async function getSongInfo(url, search) {
     } else {
         const videoIDs = [
             getVideoId(url, true),
-            ...(await innertube.search(search, { type: 'video' })).videos.map((v) => v.id)
+            ...(await innertube.search(search, { type: 'video' })).videos.slice(0, 10).map((v) => v.id)
         ];
         for (const id of videoIDs) {
             if (id) {
