@@ -95,17 +95,24 @@ export async function getSongInfo(url, search) {
             thumbnail: artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
         };
     } else {
-        const videoID = getVideoId(url, true) ?? (await innertube.search(search, { type: 'video' })).videos[0]?.id;
-        if (!videoID) {
-            return null;
+        const videoIDs = [
+            getVideoId(url, true),
+            ...(await innertube.search(search, { type: 'video' })).videos.map((v) => v.id)
+        ];
+        for (const id of videoIDs) {
+            if (id) {
+                const info = await innertube.getBasicInfo(id, 'TV_EMBEDDED');
+                if (info.playability_status.status == 'OK') {
+                    return {
+                        title: info.basic_info.title,
+                        url: `https://www.youtube.com/watch?v=${info.basic_info.id}`,
+                        duration: info.basic_info.duration,
+                        thumbnail: info.basic_info.thumbnail[0].url
+                    };
+                }
+            }
         }
-        const { title, url: songURL, durationSeconds, maxRes } = await youtube.getVideoByID(videoID);
-        return {
-            title: decodeHTML(title),
-            url: songURL,
-            duration: durationSeconds,
-            thumbnail: maxRes.url
-        };
+        return null;
     }
 }
 
@@ -150,7 +157,7 @@ async function createYTStreamYoutubei(url) {
     if (info.basic_info.is_live) {
         if (info.streaming_data.hls_manifest_url) {
             const { body } = await request(info.streaming_data.hls_manifest_url);
-            const streamUrl = (await body.text()).split('\n').filter((line) => /^https?:\/\//.test(line))[0];
+            const streamUrl = (await body.text()).split('\n').find((line) => /^https?:\/\//.test(line));
 
             return m3u8stream(streamUrl, {
                 chunkReadahead: info.basic_info.live_chunk_readahead,
