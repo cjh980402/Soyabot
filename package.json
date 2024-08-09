@@ -41,7 +41,7 @@
     "string-progressbar": "^1.0.4",
     "undici": "^6.19.2",
     "utf-8-validate": "^6.0.4",
-    "youtubei.js": "^10.3.0",
+    "youtubei.js": "github:LuanRT/YouTube.js#494299263054b5557d25107bf09647a1e03abf0f",
     "zlib-sync": "^0.1.9"
   },
   "devDependencies": {

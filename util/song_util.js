@@ -20,6 +20,8 @@ const ytValidQueryDomains = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 
 const soundcloud = new SoundcloudAPI.default();
 const youtube = new YoutubeAPI(GOOGLE_API_KEY);
 export const innertube = await Innertube.create({
+    visitor_data: '',
+    po_token: '',
     enable_session_cache: false,
     fetch: async (input, init = undefined) => {
         let response = null;
@@ -101,7 +103,7 @@ export async function getSongInfo(url, search) {
         ];
         for (const id of videoIDs) {
             if (id) {
-                const info = await innertube.getBasicInfo(id, 'TV_EMBEDDED');
+                const info = await innertube.getBasicInfo(id);
                 if (info.playability_status.status == 'OK') {
                     return {
                         title: info.basic_info.title,
@@ -153,7 +155,7 @@ export async function getPlaylistInfo(url, search) {
 }
 
 async function createYTStreamYoutubei(url) {
-    const info = await innertube.getBasicInfo(getVideoId(url, true), 'TV_EMBEDDED');
+    const info = await innertube.getBasicInfo(getVideoId(url, true));
     if (info.basic_info.is_live) {
         if (info.streaming_data.hls_manifest_url) {
             const { body } = await request(info.streaming_data.hls_manifest_url);
