@@ -1,0 +1,4 @@
+pillow==9.1.1
+requests==2.22.0
+numpy==1.21.2
+tflite-runtime==2.13.0
