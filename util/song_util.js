@@ -1,15 +1,13 @@
 import SoundcloudAPI from 'soundcloud.ts';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { decodeHTML } from 'entities';
-import { request, fetch } from 'undici';
-import { Innertube, Constants, Utils } from 'youtubei.js';
-import ytdl from '@distube/ytdl-core';
+import { request } from 'undici';
+import { Constants, Utils } from 'youtubei.js';
 import m3u8stream from 'm3u8stream';
-import { PassThrough, Readable } from 'node:stream';
-import { setTimeout } from 'node:timers/promises';
+import { Readable } from 'node:stream';
 import { YoutubeAPI } from '../classes/YoutubeAPI.js';
-import { liveValue } from '../classes/SoyaClient.js';
-import { Util } from '../util/Util.js';
+import { innertube } from './innertube_create.js';
+import { Util } from './Util.js';
 import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY, BOT_SERVER_DOMAIN } from '../soyabot_config.js';
 const scTrackRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/[\w-]+\/?$/;
 const scSetRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/sets\/[\w-]+\/?$/;
@@ -19,25 +17,6 @@ const ytValidPathDomains = /^https?:\/\/(youtu\.be\/|(www\.)?youtube\.com\/(embe
 const ytValidQueryDomains = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com'];
 const soundcloud = new SoundcloudAPI.default();
 const youtube = new YoutubeAPI(GOOGLE_API_KEY);
-export const innertube = await Innertube.create({
-    visitor_data: '',
-    po_token: '',
-    enable_session_cache: false,
-    fetch: async (input, init = undefined) => {
-        let response = null;
-        for (let i = 0; i < 3; i++) {
-            response = await fetch(input, init);
-            if (response.ok) {
-                return response;
-            }
-            await setTimeout(1000);
-        }
-        throw new Utils.InnertubeError(`The server responded with a ${response.status} status code`, {
-            error_type: 'FETCH_FAILED',
-            response
-        });
-    }
-});
 
 function getVideoId(urlOrId, checkUrl = false) {
     try {
@@ -181,66 +160,10 @@ async function createYTStreamYoutubei(url) {
     }
 }
 
-async function createYTStreamYtdl(url) {
-    const info = await ytdl.getInfo(url);
-    if (!info.formats.length) {
-        throw new Error('This video is unavailable');
-    }
-
-    const hasOpus = info.formats.some((v) => v.mimeType.includes('opus'));
-    const options = {
-        filter: (v) => (hasOpus ? v.mimeType.includes('opus') : v.hasAudio),
-        liveBuffer: 2000,
-        highWaterMark: 1 << 25,
-        dlChunkSize: 0,
-        requestOptions: {
-            headers: {
-                origin: 'https://www.youtube.com',
-                referer: 'https://www.youtube.com/'
-            }
-        }
-    };
-    const format = ytdl.chooseFormat(info.formats, options);
-    const contentLength = Number(format.contentLength);
-    const chunkSize = 1 << 19;
-
-    if (contentLength < chunkSize || format.isHLS || format.isDashMPD) {
-        return ytdl.downloadFromInfo(info, options);
-    } else {
-        let current = 0;
-        const stream = new PassThrough();
-        const pipeNextStream = () => {
-            let end = chunkSize * (current + 1) - 1;
-            if (end >= contentLength) {
-                end = undefined;
-            }
-            const nextStream = ytdl.downloadFromInfo(info, {
-                ...options,
-                range: {
-                    start: chunkSize * current,
-                    end
-                }
-            });
-            ['abort', 'request', 'response', 'error', 'redirect', 'retry', 'reconnect'].forEach((event) => {
-                nextStream.prependListener(event, stream.emit.bind(stream, event));
-            });
-            nextStream.pipe(stream, { end: end === undefined });
-            if (end !== undefined) {
-                nextStream.on('end', () => {
-                    current++;
-                    pipeNextStream();
-                });
-            }
-        };
-        pipeNextStream();
-        return stream;
-    }
-}
-
 export async function songDownload(url) {
     let source = null;
     if (url.includes('youtube.com')) {
-        source = await (liveValue.get('youtubeModule') ? createYTStreamYtdl(url) : createYTStreamYoutubei(url));
+        source = await createYTStreamYoutubei(url);
     } else if (url.includes('soundcloud.com')) {
         source = await soundcloud.util.streamTrack(url);
     } else {

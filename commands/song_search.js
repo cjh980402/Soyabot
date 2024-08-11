@@ -1,7 +1,7 @@
 import { ActionRowBuilder, StringSelectMenuBuilder, ApplicationCommandOptionType, ChannelType } from 'discord.js';
 import { sendAdmin } from '../admin/bot_message.js';
 import { QueueElement } from '../classes/QueueElement.js';
-import { innertube } from '../util/song_util.js';
+import { innertube } from '../util/innertube_create.js';
 import { joinVoice } from '../util/soyabot_util.js';
 import { Util } from '../util/Util.js';
 
