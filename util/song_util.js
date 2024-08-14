@@ -78,22 +78,24 @@ export async function getSongInfo(url, search) {
     } else {
         const videoIDs = [
             getVideoId(url, true),
-            ...(await innertube.search(search, { type: 'video' })).videos.slice(0, 10).map((v) => v.id)
-        ];
+            ...(await innertube.search(search, { type: 'video' })).videos.slice(0, 10).map((v) => v?.id)
+        ].flatMap((v) => (v ? v : []));
         for (const id of videoIDs) {
-            if (id) {
-                const info = await innertube.getBasicInfo(id);
-                if (info.playability_status.status == 'OK') {
-                    return {
-                        title: info.basic_info.title,
-                        url: `https://www.youtube.com/watch?v=${info.basic_info.id}`,
-                        duration: info.basic_info.duration,
-                        thumbnail: info.basic_info.thumbnail[0].url
-                    };
-                }
+            const info = await innertube.getBasicInfo(id);
+            if (info.playability_status.status == 'OK') {
+                return {
+                    title: info.basic_info.title,
+                    url: `https://www.youtube.com/watch?v=${info.basic_info.id}`,
+                    duration: info.basic_info.duration,
+                    thumbnail: info.basic_info.thumbnail[0].url
+                };
             }
         }
-        return null;
+        if (videoIDs.length == 0) {
+            return null;
+        } else {
+            throw new Utils.InnertubeError(`Search query(${search}) is unavailable`);
+        }
     }
 }
 

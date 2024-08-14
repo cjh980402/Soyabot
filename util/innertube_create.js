@@ -3,6 +3,16 @@ import { Innertube, Utils } from 'youtubei.js';
 import { setTimeout } from 'node:timers/promises';
 import { exec } from '../admin/admin_function.js';
 
+export let innertube = await createInnertube();
+
+export async function refreshInnertube() {
+    try {
+        innertube = await createInnertube();
+    } catch (err) {
+        console.error('유튜브 모듈 재생성 에러 발생:', err);
+    }
+}
+
 async function getYoutubePoToken() {
     const { stdout: data } = await exec('python3 ./util/python/youtube-trusted-session-generator.py', {
         encoding: 'utf-8'
@@ -38,12 +48,4 @@ async function createInnertube() {
     });
 }
 
-export let innertube = await createInnertube();
-
-setInterval(async () => {
-    try {
-        innertube = await createInnertube();
-    } catch (err) {
-        console.error('innertube create error: ', err);
-    }
-}, 14400000); // 4시간 후에 재실행
+setInterval(refreshInnertube, 7200000); // 2시간 후에 재실행
