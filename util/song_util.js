@@ -80,6 +80,9 @@ export async function getSongInfo(url, search) {
             getVideoId(url, true),
             ...(await innertube.search(search, { type: 'video' })).videos.slice(0, 10).map((v) => v?.id)
         ].flatMap((v) => (v ? v : []));
+        if (videoIDs.length == 0) {
+            return null;
+        }
         for (const id of videoIDs) {
             const info = await innertube.getBasicInfo(id);
             if (info.playability_status.status == 'OK') {
@@ -91,11 +94,7 @@ export async function getSongInfo(url, search) {
                 };
             }
         }
-        if (videoIDs.length == 0) {
-            return null;
-        } else {
-            throw new Utils.InnertubeError(`Search query(${search}) is unavailable`);
-        }
+        throw new Utils.InnertubeError(`Search query(${search}) is unavailable`);
     }
 }
 

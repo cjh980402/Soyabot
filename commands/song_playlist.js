@@ -46,15 +46,9 @@ export async function commandExecute(interaction) {
         return interaction.client.commands.get('play').commandExecute(interaction);
     }
 
-    let playlist = null;
-    try {
-        playlist = await getPlaylistInfo(urlOrSearch, urlOrSearch);
-        if (!playlist) {
-            return interaction.followUp('검색 내용에 해당하는 재생목록을 찾지 못했습니다.');
-        }
-    } catch (err) {
-        console.error('재생목록 파싱 에러 발생:', err);
-        return interaction.followUp('재생할 수 없는 재생목록입니다.');
+    const playlist = await getPlaylistInfo(urlOrSearch, urlOrSearch);
+    if (!playlist) {
+        return interaction.followUp('검색 내용에 해당하는 재생목록을 찾지 못했습니다.');
     }
 
     const playlistEmbed = new EmbedBuilder()

@@ -46,15 +46,9 @@ export async function commandExecute(interaction) {
         return interaction.client.commands.get('playlist').commandExecute(interaction);
     }
 
-    let song = null;
-    try {
-        song = await getSongInfo(urlOrSearch, urlOrSearch);
-        if (!song) {
-            return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
-        }
-    } catch (err) {
-        console.error('노래 파싱 에러 발생:', err);
-        return interaction.followUp('재생할 수 없는 영상입니다.');
+    const song = await getSongInfo(urlOrSearch, urlOrSearch);
+    if (!song) {
+        return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
     }
 
     if (guildQueue) {
