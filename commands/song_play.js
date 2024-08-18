@@ -46,7 +46,7 @@ export async function commandExecute(interaction) {
         return interaction.client.commands.get('playlist').commandExecute(interaction);
     }
 
-    const song = await getSongInfo(urlOrSearch, urlOrSearch);
+    const song = await getSongInfo(urlOrSearch);
     if (!song) {
         return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
     }

@@ -66,9 +66,9 @@ export function isValidPlaylist(url) {
     }
 }
 
-export async function getSongInfo(url, search) {
-    if (scTrackRegex.test(url)) {
-        const { title, permalink_url, duration, artwork_url } = await soundcloud.tracks.getV2(url);
+export async function getSongInfo(urlOrSearch) {
+    if (scTrackRegex.test(urlOrSearch)) {
+        const { title, permalink_url, duration, artwork_url } = await soundcloud.tracks.getV2(urlOrSearch);
         return {
             title,
             url: permalink_url,
@@ -77,8 +77,8 @@ export async function getSongInfo(url, search) {
         };
     } else {
         const videoIDs = [
-            getVideoId(url, true),
-            ...(await innertube.search(search, { type: 'video' })).videos.slice(0, 10).map((v) => v?.id)
+            getVideoId(urlOrSearch, true),
+            ...(await innertube.search(urlOrSearch, { type: 'video' })).videos.slice(0, 10).map((v) => v?.id)
         ].flatMap((v) => (v ? v : []));
         if (videoIDs.length == 0) {
             return null;
@@ -98,9 +98,9 @@ export async function getSongInfo(url, search) {
     }
 }
 
-export async function getPlaylistInfo(url, search) {
-    if (scSetRegex.test(url)) {
-        const { tracks, title, permalink_url } = await soundcloud.playlists.getV2(url);
+export async function getPlaylistInfo(urlOrSearch) {
+    if (scSetRegex.test(urlOrSearch)) {
+        const { tracks, title, permalink_url } = await soundcloud.playlists.getV2(urlOrSearch);
         const songs = Util.shuffle(
             tracks.filter((track) => track.sharing === 'public') // 비공개 또는 삭제된 영상 제외하기
         )
@@ -114,7 +114,8 @@ export async function getPlaylistInfo(url, search) {
         return { title, url: permalink_url, songs };
     } else {
         const playlistID =
-            getListId(url, true) ?? (await innertube.search(search, { type: 'playlist' })).playlists[0]?.id;
+            getListId(urlOrSearch, true) ??
+            (await innertube.search(urlOrSearch, { type: 'playlist' })).playlists[0]?.id;
         if (!playlistID) {
             return null;
         }
