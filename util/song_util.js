@@ -94,7 +94,7 @@ export async function getSongInfo(urlOrSearch) {
                 };
             }
         }
-        throw new Utils.InnertubeError(`Search query(${search}) is unavailable`);
+        throw new Utils.InnertubeError(`Search query(${urlOrSearch}) is unavailable`);
     }
 }
 
