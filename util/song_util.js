@@ -130,19 +130,17 @@ export async function getPlaylistInfo(urlOrSearch) {
         if (!playlistID) {
             return null;
         }
-        const playlist = await youtube.getPlaylistByID(playlistID);
-        const videoIds = Util.shuffle(
-            (await playlist.getVideos(200)).filter((video) => video.raw.status.privacyStatus === 'public') // 비공개 또는 삭제된 영상 제외하기
-        )
+        const playlist = await innertube.getPlaylist(playlistID);
+        const videoIDs = Util.shuffle(playlist.items.filter((video) => video.is_playable))
             .slice(0, MAX_PLAYLIST_SIZE)
             .map((video) => video.id);
-        const songs = (await youtube.getVideosByIDs(videoIds)).map((video) => ({
+        const songs = (await youtube.getVideosByIDs(videoIDs)).map((video) => ({
             title: decodeHTML(video.title),
             url: video.url,
             duration: video.durationSeconds,
             thumbnail: video.maxRes.url
         }));
-        return { title: decodeHTML(playlist.title), url: playlist.url, songs };
+        return { title: playlist.info.title, url: `https://www.youtube.com/playlist?list=${playlistID}`, songs };
     }
 }
 
