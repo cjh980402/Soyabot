@@ -76,10 +76,21 @@ export async function getSongInfo(urlOrSearch) {
             thumbnail: artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
         };
     } else {
-        const videoIDs = [
-            getVideoId(urlOrSearch, true),
-            ...(await innertube.search(urlOrSearch, { type: 'video' })).videos.slice(0, 10).map((v) => v?.id)
-        ].flatMap((v) => (v ? v : []));
+        const videoID = getVideoId(urlOrSearch, true);
+        if (videoID) {
+            const info = await innertube.getBasicInfo(videoID);
+            if (info.playability_status.status == 'OK') {
+                return {
+                    title: info.basic_info.title,
+                    url: `https://www.youtube.com/watch?v=${info.basic_info.id}`,
+                    duration: info.basic_info.duration,
+                    thumbnail: info.basic_info.thumbnail[0].url
+                };
+            }
+            urlOrSearch = info.basic_info.title;
+        }
+
+        const videoIDs = (await innertube.search(urlOrSearch, { type: 'video' })).videos.slice(0, 10).map((v) => v?.id);
         if (videoIDs.length == 0) {
             return null;
         }
