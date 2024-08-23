@@ -1,4 +1,4 @@
-import SoundcloudAPI from 'soundcloud.ts';
+import { Soundcloud } from 'soundcloud.ts';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { decodeHTML } from 'entities';
 import { request } from 'undici';
@@ -15,7 +15,7 @@ const ytVideoRegex = /^[\w-]{11}$/;
 const ytListRegex = /^[A-Z]{2}[\w-]{10,}$/;
 const ytValidPathDomains = /^https?:\/\/(youtu\.be\/|(www\.)?youtube\.com\/(embed|v|shorts|live)\/)/;
 const ytValidQueryDomains = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com'];
-const soundcloud = new SoundcloudAPI.default();
+const soundcloud = new Soundcloud();
 const youtube = new YoutubeAPI(GOOGLE_API_KEY);
 
 function getVideoId(urlOrId, checkUrl = false) {
@@ -68,7 +68,7 @@ export function isValidPlaylist(url) {
 
 export async function getSongInfo(urlOrSearch) {
     if (scTrackRegex.test(urlOrSearch)) {
-        const { title, permalink_url, duration, artwork_url } = await soundcloud.tracks.getV2(urlOrSearch);
+        const { title, permalink_url, duration, artwork_url } = await soundcloud.tracks.get(urlOrSearch);
         return {
             title,
             url: permalink_url,
@@ -100,7 +100,7 @@ export async function getSongInfo(urlOrSearch) {
 
 export async function getPlaylistInfo(urlOrSearch) {
     if (scSetRegex.test(urlOrSearch)) {
-        const { tracks, title, permalink_url } = await soundcloud.playlists.getV2(urlOrSearch);
+        const { tracks, title, permalink_url } = await soundcloud.playlists.get(urlOrSearch);
         const songs = Util.shuffle(
             tracks.filter((track) => track.sharing === 'public') // 비공개 또는 삭제된 영상 제외하기
         )

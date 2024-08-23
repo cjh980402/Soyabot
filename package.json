@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@discordjs/voice": "^0.17.0",
-    "better-sqlite3": "^11.1.2",
+    "better-sqlite3": "^11.2.1",
     "bufferutil": "^4.0.8",
     "chartjs-node-canvas": "^4.1.6",
     "chartjs-plugin-datalabels": "^2.2.0",
@@ -36,9 +36,9 @@
     "opusscript": "^0.1.1",
     "simple-youtube-api": "^5.2.1",
     "sodium-native": "^4.1.1",
-    "soundcloud.ts": "^0.5.5",
+    "soundcloud.ts": "^0.6.0",
     "string-progressbar": "^1.0.4",
-    "undici": "^6.19.7",
+    "undici": "^6.19.8",
     "utf-8-validate": "^6.0.4",
     "youtubei.js": "github:LuanRT/YouTube.js#bb6e647b8c88753669acde43d0d648aaf11caba6",
     "zlib-sync": "^0.1.9"
@@ -47,7 +47,7 @@
     "prettier": "^3.3.3"
   },
   "overrides": {
-    "undici": "^6.19.7"
+    "undici": "^6.19.8"
   },
   "keywords": [
     "Discord",
