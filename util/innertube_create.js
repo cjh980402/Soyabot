@@ -1,5 +1,5 @@
 import { fetch } from 'undici';
-import { Innertube, Utils } from 'youtubei.js';
+import { Innertube, Utils, Log } from 'youtubei.js';
 import { setTimeout } from 'node:timers/promises';
 import { exec } from '../admin/admin_function.js';
 
@@ -48,4 +48,5 @@ async function createInnertube() {
     });
 }
 
+Log.setLevel(Log.Level.NONE);
 setInterval(refreshInnertube, 7200000); // 2시간 후에 재실행
