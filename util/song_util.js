@@ -115,7 +115,7 @@ export async function getPlaylistInfo(urlOrSearch) {
                 title: track.title,
                 url: track.permalink_url,
                 duration: Math.ceil(track.duration / 1000),
-                thumbnail: track.artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
+                thumbnail: track.artwork_url?.replace(/-large\.(\w+)$/, '-t500x500.$1')
             }));
         return { title, url: permalink_url, songs };
     } else {
@@ -132,7 +132,7 @@ export async function getPlaylistInfo(urlOrSearch) {
                 title: video.title.text,
                 url: `https://www.youtube.com/watch?v=${video.id}`,
                 duration: video.duration.seconds,
-                thumbnail: video.thumbnails[0].url.replace(/(hqdefault.jpg)\?.+$/, '$1')
+                thumbnail: video.thumbnails[0].url.replace(/(\w+\.\w+)\?.+$/, '$1')
             }));
         return { title: playlist.info.title, url: `https://www.youtube.com/playlist?list=${playlistID}`, songs };
     }
