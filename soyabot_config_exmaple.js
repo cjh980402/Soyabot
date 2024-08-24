@@ -6,7 +6,6 @@ export const MAX_PLAYLIST_SIZE = 20;
 export const BOT_SERVER_DOMAIN = '';
 export const NAVER_CLIENT_ID = '';
 export const NAVER_CLIENT_SECRET = '';
-export const GOOGLE_API_KEY = '';
 export const DEEP_API_KEY = '';
 export const KAKAO_API_KEY = '';
 export const NEXON_API_KEY = '';

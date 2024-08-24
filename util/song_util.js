@@ -1,14 +1,12 @@
 import { Soundcloud } from 'soundcloud.ts';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
-import { decodeHTML } from 'entities';
 import { request } from 'undici';
 import { Constants, Utils } from 'youtubei.js';
 import m3u8stream from 'm3u8stream';
 import { Readable } from 'node:stream';
-import { YoutubeAPI } from '../classes/YoutubeAPI.js';
 import { innertube } from './innertube_create.js';
 import { Util } from './Util.js';
-import { MAX_PLAYLIST_SIZE, GOOGLE_API_KEY, BOT_SERVER_DOMAIN } from '../soyabot_config.js';
+import { MAX_PLAYLIST_SIZE, BOT_SERVER_DOMAIN } from '../soyabot_config.js';
 const scTrackRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/[\w-]+\/?/;
 const scSetRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/sets\/[\w-]+\/?/;
 const ytVideoRegex = /^[\w-]{11}$/;
@@ -16,7 +14,6 @@ const ytListRegex = /^[A-Z]{2}[\w-]{10,}$/;
 const ytValidPathDomains = /^https?:\/\/(youtu\.be\/|(www\.)?youtube\.com\/(embed|v|shorts|live)\/)/;
 const ytValidQueryDomains = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com'];
 const soundcloud = new Soundcloud();
-const youtube = new YoutubeAPI(GOOGLE_API_KEY);
 
 function getVideoId(urlOrId, checkUrl = false) {
     try {
@@ -112,9 +109,7 @@ export async function getSongInfo(urlOrSearch) {
 export async function getPlaylistInfo(urlOrSearch) {
     if (scSetRegex.test(urlOrSearch)) {
         const { tracks, title, permalink_url } = await soundcloud.playlists.get(urlOrSearch);
-        const songs = Util.shuffle(
-            tracks.filter((track) => track.sharing === 'public') // 비공개 또는 삭제된 영상 제외하기
-        )
+        const songs = Util.shuffle(tracks.filter((track) => track.sharing === 'public')) // 비공개 또는 삭제된 영상 제외하기
             .slice(0, MAX_PLAYLIST_SIZE)
             .map((track) => ({
                 title: track.title,
@@ -131,15 +126,14 @@ export async function getPlaylistInfo(urlOrSearch) {
             return null;
         }
         const playlist = await innertube.getPlaylist(playlistID);
-        const videoIDs = Util.shuffle(playlist.items.filter((video) => video.is_playable))
+        const songs = Util.shuffle(playlist.items.filter((video) => video.is_playable)) // 재생 불가능한 영상 제외하기
             .slice(0, MAX_PLAYLIST_SIZE)
-            .map((video) => video.id);
-        const songs = (await youtube.getVideosByIDs(videoIDs)).map((video) => ({
-            title: decodeHTML(video.title),
-            url: video.url,
-            duration: video.durationSeconds,
-            thumbnail: video.maxRes.url
-        }));
+            .map((video) => ({
+                title: video.title.text,
+                url: `https://www.youtube.com/watch?v=${video.id}`,
+                duration: video.duration.seconds,
+                thumbnail: video.thumbnails[0].url.replace(/(hqdefault.jpg)\?.+$/, '$1')
+            }));
         return { title: playlist.info.title, url: `https://www.youtube.com/playlist?list=${playlistID}`, songs };
     }
 }
