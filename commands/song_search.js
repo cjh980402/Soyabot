@@ -72,7 +72,7 @@ export async function commandExecute(interaction) {
             title: results[v].title.toString(),
             url: `https://www.youtube.com/watch?v=${results[v].id}`,
             duration: results[v].duration.seconds || 0,
-            thumbnail: results[v].thumbnails[0].url
+            thumbnail: results[v].thumbnails[0].url.replace(/(\w+\.\w+)\?.+$/, '$1')
         }));
 
         if (guildQueue) {

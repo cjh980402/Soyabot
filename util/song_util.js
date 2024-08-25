@@ -131,7 +131,7 @@ export async function getPlaylistInfo(urlOrSearch) {
             .map((video) => ({
                 title: video.title.text,
                 url: `https://www.youtube.com/watch?v=${video.id}`,
-                duration: video.duration.seconds,
+                duration: video.duration.seconds || 0,
                 thumbnail: video.thumbnails[0].url.replace(/(\w+\.\w+)\?.+$/, '$1')
             }));
         return { title: playlist.info.title, url: `https://www.youtube.com/playlist?list=${playlistID}`, songs };
