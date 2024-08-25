@@ -129,7 +129,7 @@ export async function getPlaylistInfo(urlOrSearch) {
         const songs = Util.shuffle(playlist.items.filter((video) => video.is_playable)) // 재생 불가능한 영상 제외하기
             .slice(0, MAX_PLAYLIST_SIZE)
             .map((video) => ({
-                title: video.title.text,
+                title: video.title.toString(),
                 url: `https://www.youtube.com/watch?v=${video.id}`,
                 duration: video.duration.seconds || 0,
                 thumbnail: video.thumbnails[0].url.replace(/(\w+\.\w+)\?.+$/, '$1')
