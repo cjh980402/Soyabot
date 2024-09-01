@@ -132,7 +132,7 @@ export async function getPlaylistInfo(urlOrSearch) {
         if (!playlistID) {
             return null;
         }
-        if (urlListID.startsWith('RD')) {
+        if (urlListID?.startsWith('RD')) {
             const playlist = (await innertube.getInfo(await innertube.resolveURL(urlOrSearch))).playlist;
             const songs = Util.shuffle(playlist.contents)
                 .slice(0, MAX_PLAYLIST_SIZE)
