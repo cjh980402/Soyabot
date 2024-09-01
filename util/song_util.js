@@ -41,7 +41,15 @@ function getListId(urlOrId, checkUrl = false) {
         }
         const url = new URL(urlOrId);
         const id = url.searchParams.get('list');
-        return ytValidQueryDomains.includes(url.hostname) && ytListRegex.test(id ?? '') ? id : null;
+        if (ytValidQueryDomains.includes(url.hostname) && ytListRegex.test(id ?? '')) {
+            if (id.startsWith('RD')) {
+                return url.searchParams.get('v') ? id : null;
+            } else {
+                return id;
+            }
+        } else {
+            return null;
+        }
     } catch {
         return null;
     }
