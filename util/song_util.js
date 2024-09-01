@@ -119,22 +119,34 @@ export async function getPlaylistInfo(urlOrSearch) {
             }));
         return { title, url: permalink_url, songs };
     } else {
-        const playlistID =
-            getListId(urlOrSearch, true) ??
-            (await innertube.search(urlOrSearch, { type: 'playlist' })).playlists[0]?.id;
+        const urlListID = getListId(urlOrSearch, true);
+        const playlistID = urlListID ?? (await innertube.search(urlOrSearch, { type: 'playlist' })).playlists[0]?.id;
         if (!playlistID) {
             return null;
         }
-        const playlist = await innertube.getPlaylist(playlistID);
-        const songs = Util.shuffle(playlist.items.filter((video) => video.is_playable)) // 재생 불가능한 영상 제외하기
-            .slice(0, MAX_PLAYLIST_SIZE)
-            .map((video) => ({
-                title: video.title.toString(),
-                url: `https://www.youtube.com/watch?v=${video.id}`,
-                duration: video.duration.seconds || 0,
-                thumbnail: video.thumbnails[0].url.replace(/(\w+\.\w+)\?.+$/, '$1')
-            }));
-        return { title: playlist.info.title, url: `https://www.youtube.com/playlist?list=${playlistID}`, songs };
+        if (urlListID.startsWith('RD')) {
+            const playlist = (await innertube.getInfo(await innertube.resolveURL(urlOrSearch))).playlist;
+            const songs = Util.shuffle(playlist.contents)
+                .slice(0, MAX_PLAYLIST_SIZE)
+                .map((video) => ({
+                    title: video.title.toString(),
+                    url: `https://www.youtube.com/watch?v=${video.video_id}`,
+                    duration: video.duration.seconds || 0,
+                    thumbnail: video.thumbnail[0].url.replace(/(\w+\.\w+)\?.+$/, '$1')
+                }));
+            return { title: playlist.title, url: urlOrSearch, songs };
+        } else {
+            const playlist = await innertube.getPlaylist(playlistID);
+            const songs = Util.shuffle(playlist.items.filter((video) => video.is_playable)) // 재생 불가능한 영상 제외하기
+                .slice(0, MAX_PLAYLIST_SIZE)
+                .map((video) => ({
+                    title: video.title.toString(),
+                    url: `https://www.youtube.com/watch?v=${video.id}`,
+                    duration: video.duration.seconds || 0,
+                    thumbnail: video.thumbnails[0].url.replace(/(\w+\.\w+)\?.+$/, '$1')
+                }));
+            return { title: playlist.info.title, url: `https://www.youtube.com/playlist?list=${playlistID}`, songs };
+        }
     }
 }
 
