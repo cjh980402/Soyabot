@@ -38,15 +38,15 @@ export async function commandExecute(interaction) {
             levelTable[endLev - 1] - levelTable[startLev - 1]
         ).toLocaleString()}
 (${Util.toUnitString(levelTable[endLev - 1] - levelTable[startLev - 1])})
-진행률 (~250): ${(Math.min(levelTable[endLev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
-진행률 (~275): ${(Math.min(levelTable[endLev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
+진행률 (~250): ${((levelTable[endLev - 1] / levelTable[249]) * 100).toFixed(3)}%
+진행률 (~275): ${((levelTable[endLev - 1] / levelTable[274]) * 100).toFixed(3)}%
 진행률 (~300): ${((levelTable[endLev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
         await interaction.followUp(rslt);
     } else {
         const rslt = `Lv.${startLev} 경험치통: ${(levelTable[startLev] - levelTable[startLev - 1]).toLocaleString()}
 (${Util.toUnitString(levelTable[startLev] - levelTable[startLev - 1])})
-진행률 (~250): ${(Math.min(levelTable[startLev - 1] / levelTable[249], 1) * 100).toFixed(3)}%
-진행률 (~275): ${(Math.min(levelTable[startLev - 1] / levelTable[274], 1) * 100).toFixed(3)}%
+진행률 (~250): ${((levelTable[startLev - 1] / levelTable[249]) * 100).toFixed(3)}%
+진행률 (~275): ${((levelTable[startLev - 1] / levelTable[274]) * 100).toFixed(3)}%
 진행률 (~300): ${((levelTable[startLev - 1] / levelTable[299]) * 100).toFixed(3)}%`;
         await interaction.followUp(rslt);
     }
