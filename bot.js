@@ -2,6 +2,7 @@ import { readdirSync } from 'node:fs';
 import { SoyaClient } from './classes/SoyaClient.js';
 const client = new SoyaClient('./db/soyabot_data.db');
 
+process.on('uncaughtException', (err) => console.error('Uncaught Exception:', err));
 // node.js v15부터 Unhandled promise rejection이 발생하면 프로세스를 비정상 종료시키므로 처리를 해야함
 process.on('unhandledRejection', (err) => console.error('Unhandled promise rejection:', err));
 
