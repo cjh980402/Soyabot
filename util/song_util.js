@@ -83,7 +83,7 @@ export async function getSongInfo(urlOrSearch) {
     } else {
         const videoID = getVideoId(urlOrSearch, true);
         if (videoID) {
-            const info = await innertube.getBasicInfo(videoID);
+            const info = await innertube.getBasicInfo(videoID, 'TV_EMBEDDED');
             if (info.playability_status.status == 'OK') {
                 return {
                     title: info.basic_info.title,
@@ -94,6 +94,18 @@ export async function getSongInfo(urlOrSearch) {
             }
             urlOrSearch = info.basic_info.title;
         }
+
+        const tracks = await soundcloud.tracks.search({ q: urlOrSearch });
+        if (tracks.collection.length == 0) {
+            return null;
+        }
+        const { title, permalink_url, duration, artwork_url } = tracks.collection[0];
+        return {
+            title,
+            url: permalink_url,
+            duration: Math.ceil(duration / 1000),
+            thumbnail: artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
+        };
 
         const videoIDs = (await innertube.search(urlOrSearch, { type: 'video' })).videos.slice(0, 10).map((v) => v?.id);
         if (videoIDs.length == 0) {
@@ -127,6 +139,21 @@ export async function getPlaylistInfo(urlOrSearch) {
             }));
         return { title, url: permalink_url, songs };
     } else {
+        const playlists = await soundcloud.playlists.search({ q: urlOrSearch });
+        if (playlists.collection.length == 0) {
+            return null;
+        }
+        const { tracks, title, permalink_url } = await soundcloud.playlists.get(playlists.collection[0].id);
+        const songs = Util.shuffle(tracks.filter((track) => track.sharing === 'public')) // 비공개 또는 삭제된 영상 제외하기
+            .slice(0, MAX_PLAYLIST_SIZE)
+            .map((track) => ({
+                title: track.title,
+                url: track.permalink_url,
+                duration: Math.ceil(track.duration / 1000),
+                thumbnail: track.artwork_url?.replace(/-large\.(\w+)$/, '-t500x500.$1')
+            }));
+        return { title, url: permalink_url, songs };
+
         const urlListID = getListId(urlOrSearch, true);
         const playlistID = urlListID ?? (await innertube.search(urlOrSearch, { type: 'playlist' })).playlists[0]?.id;
         if (!playlistID) {
