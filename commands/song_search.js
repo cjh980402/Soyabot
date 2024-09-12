@@ -1,7 +1,7 @@
 import { ActionRowBuilder, StringSelectMenuBuilder, ApplicationCommandOptionType, ChannelType } from 'discord.js';
 import { sendAdmin } from '../admin/bot_message.js';
 import { QueueElement } from '../classes/QueueElement.js';
-import { innertube } from '../util/innertube_create.js';
+import { innertube, soundcloud } from '../util/music_create.js';
 import { joinVoice } from '../util/soyabot_util.js';
 import { Util } from '../util/Util.js';
 
@@ -40,25 +40,48 @@ export async function commandExecute(interaction) {
     }
 
     const search = interaction.options.getString('영상_제목');
-    const results = (await innertube.search(search, { type: 'video' })).videos.slice(0, 10);
-    if (results.length === 0) {
-        return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
-    }
+    let row = null;
+    if (process.env.USE_YOUTUBE) {
+        const results = (await innertube.search(search, { type: 'video' })).videos.slice(0, 10);
+        if (results.length === 0) {
+            return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
+        }
 
-    const row = new ActionRowBuilder().addComponents([
-        new StringSelectMenuBuilder()
-            .setCustomId('select_menu')
-            .setPlaceholder(`총 ${results.length}곡이 검색되었습니다.`)
-            .setMinValues(1)
-            .setMaxValues(results.length)
-            .addOptions(
-                results.map((v, i) => ({
-                    label: v.title.toString().slice(0, 100),
-                    description: `[${!v.duration.seconds ? '⊚ LIVE' : v.duration.text}]`,
-                    value: String(i)
-                }))
-            )
-    ]);
+        row = new ActionRowBuilder().addComponents([
+            new StringSelectMenuBuilder()
+                .setCustomId('select_menu')
+                .setPlaceholder(`총 ${results.length}곡이 검색되었습니다.`)
+                .setMinValues(1)
+                .setMaxValues(results.length)
+                .addOptions(
+                    results.map((v, i) => ({
+                        label: v.title.toString().slice(0, 100),
+                        description: `[${!v.duration.seconds ? '⊚ LIVE' : v.duration.text}]`,
+                        value: String(i)
+                    }))
+                )
+        ]);
+    } else {
+        const results = await soundcloud.tracks.search({ q: search }).collection;
+        if (results.length == 0) {
+            return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
+        }
+
+        row = new ActionRowBuilder().addComponents([
+            new StringSelectMenuBuilder()
+                .setCustomId('select_menu')
+                .setPlaceholder(`총 ${results.length}곡이 검색되었습니다.`)
+                .setMinValues(1)
+                .setMaxValues(results.length)
+                .addOptions(
+                    results.map((v, i) => ({
+                        label: v.title.slice(0, 100),
+                        description: Math.ceil(v.duration / 1000),
+                        value: String(i)
+                    }))
+                )
+        ]);
+    }
 
     const list = await interaction.followUp({ content: '재생할 노래를 선택해주세요.', components: [row] });
     try {
@@ -68,12 +91,22 @@ export async function commandExecute(interaction) {
         });
         await choiceMenu.deferUpdate();
 
-        const songs = choiceMenu.values.map((v) => ({
-            title: results[v].title.toString(),
-            url: `https://www.youtube.com/watch?v=${results[v].id}`,
-            duration: results[v].duration.seconds || 0,
-            thumbnail: results[v].thumbnails[0].url.replace(/(\w+\.\w+)\?.+$/, '$1')
-        }));
+        let songs = null;
+        if (process.env.USE_YOUTUBE) {
+            songs = choiceMenu.values.map((v) => ({
+                title: results[v].title.toString(),
+                url: `https://www.youtube.com/watch?v=${results[v].id}`,
+                duration: results[v].duration.seconds || 0,
+                thumbnail: results[v].thumbnails[0].url.replace(/(\w+\.\w+)\?.+$/, '$1')
+            }));
+        } else {
+            songs = choiceMenu.values.map((v) => ({
+                title: results[v].title,
+                url: results[v].permalink_url,
+                duration: Math.ceil(results[v].duration / 1000),
+                thumbnail: results[v].artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
+            }));
+        }
 
         if (guildQueue) {
             guildQueue.textChannel = interaction.channel;

@@ -1,10 +1,9 @@
-import { Soundcloud } from 'soundcloud.ts';
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { request } from 'undici';
 import { Constants, Utils } from 'youtubei.js';
 import m3u8stream from 'm3u8stream';
 import { Readable } from 'node:stream';
-import { innertube } from './innertube_create.js';
+import { innertube, soundcloud } from './music_create.js';
 import { Util } from './Util.js';
 import { MAX_PLAYLIST_SIZE, BOT_SERVER_DOMAIN } from '../soyabot_config.js';
 const scTrackRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/[\w-]+\/?/;
@@ -13,7 +12,6 @@ const ytVideoRegex = /^[\w-]{11}$/;
 const ytListRegex = /^[A-Z]{2}[\w-]{10,}$/;
 const ytValidPathDomains = /^https?:\/\/(youtu\.be\/|(www\.)?youtube\.com\/(embed|v|shorts|live)\/)/;
 const ytValidQueryDomains = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com'];
-const soundcloud = new Soundcloud();
 
 function getVideoId(urlOrId, checkUrl = false) {
     try {
@@ -81,48 +79,52 @@ export async function getSongInfo(urlOrSearch) {
             thumbnail: artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
         };
     } else {
-        const videoID = getVideoId(urlOrSearch, true);
-        if (videoID) {
-            const info = await innertube.getBasicInfo(videoID, 'TV_EMBEDDED');
-            if (info.playability_status.status == 'OK') {
-                return {
-                    title: info.basic_info.title,
-                    url: `https://www.youtube.com/watch?v=${info.basic_info.id}`,
-                    duration: info.basic_info.duration,
-                    thumbnail: info.basic_info.thumbnail[0].url
-                };
+        if (process.env.USE_YOUTUBE) {
+            const videoID = getVideoId(urlOrSearch, true);
+            if (videoID) {
+                const info = await innertube.getBasicInfo(videoID);
+                if (info.playability_status.status == 'OK') {
+                    return {
+                        title: info.basic_info.title,
+                        url: `https://www.youtube.com/watch?v=${info.basic_info.id}`,
+                        duration: info.basic_info.duration,
+                        thumbnail: info.basic_info.thumbnail[0].url
+                    };
+                }
+                urlOrSearch = info.basic_info.title;
             }
-            urlOrSearch = info.basic_info.title;
-        }
 
-        const tracks = await soundcloud.tracks.search({ q: urlOrSearch });
-        if (tracks.collection.length == 0) {
-            return null;
-        }
-        const { title, permalink_url, duration, artwork_url } = tracks.collection[0];
-        return {
-            title,
-            url: permalink_url,
-            duration: Math.ceil(duration / 1000),
-            thumbnail: artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
-        };
-
-        const videoIDs = (await innertube.search(urlOrSearch, { type: 'video' })).videos.slice(0, 10).map((v) => v?.id);
-        if (videoIDs.length == 0) {
-            return null;
-        }
-        for (const id of videoIDs) {
-            const info = await innertube.getBasicInfo(id);
-            if (info.playability_status.status == 'OK') {
-                return {
-                    title: info.basic_info.title,
-                    url: `https://www.youtube.com/watch?v=${info.basic_info.id}`,
-                    duration: info.basic_info.duration,
-                    thumbnail: info.basic_info.thumbnail[0].url
-                };
+            const videoIDs = (await innertube.search(urlOrSearch, { type: 'video' })).videos
+                .slice(0, 10)
+                .map((v) => v?.id);
+            if (videoIDs.length == 0) {
+                return null;
             }
+            for (const id of videoIDs) {
+                const info = await innertube.getBasicInfo(id);
+                if (info.playability_status.status == 'OK') {
+                    return {
+                        title: info.basic_info.title,
+                        url: `https://www.youtube.com/watch?v=${info.basic_info.id}`,
+                        duration: info.basic_info.duration,
+                        thumbnail: info.basic_info.thumbnail[0].url
+                    };
+                }
+            }
+            throw new Utils.InnertubeError(`Search query(${urlOrSearch}) is unavailable`);
+        } else {
+            const tracks = await soundcloud.tracks.search({ q: urlOrSearch });
+            if (tracks.collection.length == 0) {
+                return null;
+            }
+            const { title, permalink_url, duration, artwork_url } = tracks.collection[0];
+            return {
+                title,
+                url: permalink_url,
+                duration: Math.ceil(duration / 1000),
+                thumbnail: artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
+            };
         }
-        throw new Utils.InnertubeError(`Search query(${urlOrSearch}) is unavailable`);
     }
 }
 
@@ -139,53 +141,60 @@ export async function getPlaylistInfo(urlOrSearch) {
             }));
         return { title, url: permalink_url, songs };
     } else {
-        const playlists = await soundcloud.playlists.search({ q: urlOrSearch });
-        if (playlists.collection.length == 0) {
-            return null;
-        }
-        const { tracks, title, permalink_url } = await soundcloud.playlists.get(playlists.collection[0].id);
-        const songs = Util.shuffle(tracks.filter((track) => track.sharing === 'public')) // 비공개 또는 삭제된 영상 제외하기
-            .slice(0, MAX_PLAYLIST_SIZE)
-            .map((track) => ({
-                title: track.title,
-                url: track.permalink_url,
-                duration: Math.ceil(track.duration / 1000),
-                thumbnail: track.artwork_url?.replace(/-large\.(\w+)$/, '-t500x500.$1')
-            }));
-        return { title, url: permalink_url, songs };
-
-        const urlListID = getListId(urlOrSearch, true);
-        const playlistID = urlListID ?? (await innertube.search(urlOrSearch, { type: 'playlist' })).playlists[0]?.id;
-        if (!playlistID) {
-            return null;
-        }
-        if (urlListID?.startsWith('RD')) {
-            const playlist = (await innertube.getInfo(await innertube.resolveURL(urlOrSearch))).playlist;
-            const songs = Util.shuffle(playlist.contents)
-                .slice(0, MAX_PLAYLIST_SIZE)
-                .map((video) => ({
-                    title: video.title.toString(),
-                    url: `https://www.youtube.com/watch?v=${video.video_id}`,
-                    duration: video.duration.seconds || 0,
-                    thumbnail: video.thumbnail[0].url.replace(/(\w+\.\w+)\?.+$/, '$1')
-                }));
-            return { title: playlist.title, url: urlOrSearch, songs };
+        if (process.env.USE_YOUTUBE) {
+            const urlListID = getListId(urlOrSearch, true);
+            const playlistID =
+                urlListID ?? (await innertube.search(urlOrSearch, { type: 'playlist' })).playlists[0]?.id;
+            if (!playlistID) {
+                return null;
+            }
+            if (urlListID?.startsWith('RD')) {
+                const playlist = (await innertube.getInfo(await innertube.resolveURL(urlOrSearch))).playlist;
+                const songs = Util.shuffle(playlist.contents)
+                    .slice(0, MAX_PLAYLIST_SIZE)
+                    .map((video) => ({
+                        title: video.title.toString(),
+                        url: `https://www.youtube.com/watch?v=${video.video_id}`,
+                        duration: video.duration.seconds || 0,
+                        thumbnail: video.thumbnail[0].url.replace(/(\w+\.\w+)\?.+$/, '$1')
+                    }));
+                return { title: playlist.title, url: urlOrSearch, songs };
+            } else {
+                const playlist = await innertube.getPlaylist(playlistID);
+                const songs = Util.shuffle(playlist.items.filter((video) => video.is_playable)) // 재생 불가능한 영상 제외하기
+                    .slice(0, MAX_PLAYLIST_SIZE)
+                    .map((video) => ({
+                        title: video.title.toString(),
+                        url: `https://www.youtube.com/watch?v=${video.id}`,
+                        duration: video.duration.seconds || 0,
+                        thumbnail: video.thumbnails[0].url.replace(/(\w+\.\w+)\?.+$/, '$1')
+                    }));
+                return {
+                    title: playlist.info.title,
+                    url: `https://www.youtube.com/playlist?list=${playlistID}`,
+                    songs
+                };
+            }
         } else {
-            const playlist = await innertube.getPlaylist(playlistID);
-            const songs = Util.shuffle(playlist.items.filter((video) => video.is_playable)) // 재생 불가능한 영상 제외하기
+            const playlists = await soundcloud.playlists.search({ q: urlOrSearch });
+            if (playlists.collection.length == 0) {
+                return null;
+            }
+            const { tracks, title, permalink_url } = await soundcloud.playlists.get(playlists.collection[0].id);
+            const songs = Util.shuffle(tracks.filter((track) => track.sharing === 'public')) // 비공개 또는 삭제된 영상 제외하기
                 .slice(0, MAX_PLAYLIST_SIZE)
-                .map((video) => ({
-                    title: video.title.toString(),
-                    url: `https://www.youtube.com/watch?v=${video.id}`,
-                    duration: video.duration.seconds || 0,
-                    thumbnail: video.thumbnails[0].url.replace(/(\w+\.\w+)\?.+$/, '$1')
+                .map((track) => ({
+                    title: track.title,
+                    url: track.permalink_url,
+                    duration: Math.ceil(track.duration / 1000),
+                    thumbnail: track.artwork_url?.replace(/-large\.(\w+)$/, '-t500x500.$1')
                 }));
-            return { title: playlist.info.title, url: `https://www.youtube.com/playlist?list=${playlistID}`, songs };
+            return { title, url: permalink_url, songs };
         }
     }
 }
 
-async function createYTStreamYoutubei(url) {
+async function createYTStream(url) {
     const info = await innertube.getBasicInfo(getVideoId(url, true));
     if (info.basic_info.is_live) {
         if (info.streaming_data.hls_manifest_url) {
@@ -212,12 +221,16 @@ async function createYTStreamYoutubei(url) {
     }
 }
 
+async function createSCStream(url) {
+    return await soundcloud.util.streamTrack(url);
+}
+
 export async function songDownload(url) {
     let source = null;
     if (url.includes('youtube.com')) {
-        source = await createYTStreamYoutubei(url);
+        source = await createYTStream(url);
     } else if (url.includes('soundcloud.com')) {
-        source = await soundcloud.util.streamTrack(url);
+        source = await createSCStream(url);
     } else {
         throw new Error('지원하지 않는 영상 주소입니다.');
     }

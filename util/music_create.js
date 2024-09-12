@@ -1,9 +1,11 @@
 import { fetch } from 'undici';
+import { Soundcloud } from 'soundcloud.ts';
 import { Innertube, Utils, Log } from 'youtubei.js';
 import { setTimeout } from 'node:timers/promises';
 import { exec } from '../admin/admin_function.js';
 
 export let innertube = await createInnertube();
+export const soundcloud = new Soundcloud();
 
 export async function refreshInnertube() {
     try {
