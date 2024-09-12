@@ -234,19 +234,19 @@ async function createSCStream(url) {
 }
 
 export async function songDownload(url) {
-    let source = null;
     if (url.includes('youtube.com')) {
-        source = await createYTStream(url);
+        const { stream, type } = await demuxProbe(await createYTStream(url));
+        return createAudioResource(stream, {
+            metadata: url,
+            inputType: type
+        });
     } else if (url.includes('soundcloud.com')) {
-        source = await createSCStream(url);
+        return createAudioResource(await createSCStream(url), {
+            metadata: url
+        });
     } else {
         throw new Error('지원하지 않는 영상 주소입니다.');
     }
-    const { stream, type } = await demuxProbe(source);
-    return createAudioResource(stream, {
-        metadata: url,
-        inputType: type
-    });
 }
 
 export async function addYoutubeStatistics(url) {
