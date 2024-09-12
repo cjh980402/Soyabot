@@ -1,5 +1,5 @@
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
-import { request } from 'undici';
+import { request, fetch } from 'undici';
 import { Constants, Utils } from 'youtubei.js';
 import m3u8stream from 'm3u8stream';
 import { Readable } from 'node:stream';
@@ -222,7 +222,15 @@ async function createYTStream(url) {
 }
 
 async function createSCStream(url) {
-    return await soundcloud.util.streamTrack(url);
+    const streamUrl = await soundcloud.util.streamLink(url, 'progressive');
+    if (streamUrl) {
+        const res = await fetch(streamUrl, { headers: soundcloud.util.api.headers });
+        const clone = res.clone();
+        return Readable.fromWeb(clone.body);
+    } else {
+        const { stream } = await soundcloud.util.m3uReadableStream(url);
+        return stream;
+    }
 }
 
 export async function songDownload(url) {
