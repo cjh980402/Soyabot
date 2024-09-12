@@ -40,9 +40,10 @@ export async function commandExecute(interaction) {
     }
 
     const search = interaction.options.getString('영상_제목');
-    let row = null;
+    let results = null,
+        row = null;
     if (process.env.USE_YOUTUBE) {
-        const results = (await innertube.search(search, { type: 'video' })).videos.slice(0, 10);
+        results = (await innertube.search(search, { type: 'video' })).videos.slice(0, 10);
         if (results.length === 0) {
             return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
         }
@@ -62,7 +63,7 @@ export async function commandExecute(interaction) {
                 )
         ]);
     } else {
-        const results = await soundcloud.tracks.search({ q: search }).collection;
+        results = (await soundcloud.tracks.search({ q: search })).collection.slice(0, 10);
         if (results.length == 0) {
             return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
         }
@@ -76,7 +77,7 @@ export async function commandExecute(interaction) {
                 .addOptions(
                     results.map((v, i) => ({
                         label: v.title.slice(0, 100),
-                        description: Math.ceil(v.duration / 1000),
+                        description: `[${Util.toDurationString(Math.ceil(v.duration / 1000))}]`,
                         value: String(i)
                     }))
                 )
