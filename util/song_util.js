@@ -1,8 +1,8 @@
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
-import { request, fetch } from 'undici';
+import { request } from 'undici';
 import { Constants, Utils } from 'youtubei.js';
 import m3u8stream from 'm3u8stream';
-import { Readable } from 'node:stream';
+import { Readable, PassThrough } from 'node:stream';
 import { innertube, soundcloud } from './music_create.js';
 import { Util } from './Util.js';
 import { MAX_PLAYLIST_SIZE, BOT_SERVER_DOMAIN } from '../soyabot_config.js';
@@ -224,9 +224,44 @@ async function createYTStream(url) {
 async function createSCStream(url) {
     const streamUrl = await soundcloud.util.streamLink(url, 'progressive');
     if (streamUrl) {
-        const res = await fetch(streamUrl, { headers: soundcloud.util.api.headers });
-        const clone = res.clone();
-        return Readable.fromWeb(clone.body);
+        const stream = new PassThrough();
+        try {
+            const chunkSize = 512 * 1024;
+            const { headers } = await request(streamUrl, { headers: soundcloud.util.api.headers, method: 'HEAD' });
+            const contentLength = +headers['content-length'];
+
+            let current = -1;
+            const pipeNextStream = async () => {
+                current++;
+                let end = chunkSize * (current + 1) - 1;
+                if (end >= contentLength) {
+                    end = undefined;
+                }
+                try {
+                    const { body: nextStream } = await request(streamUrl, {
+                        headers: {
+                            ...soundcloud.util.api.headers,
+                            range: `bytes=${chunkSize * current}-${end ? end : ''}`
+                        }
+                    });
+                    ['abort', 'request', 'response', 'error', 'redirect', 'retry', 'reconnect'].forEach((event) => {
+                        nextStream.prependListener(event, stream.emit.bind(stream, event));
+                    });
+                    nextStream.pipe(stream, { end: end === undefined });
+                    if (end !== undefined) {
+                        nextStream.on('end', () => {
+                            pipeNextStream();
+                        });
+                    }
+                } catch (err) {
+                    stream.emit('error', err);
+                }
+            };
+            pipeNextStream();
+        } catch (err) {
+            stream.emit('error', err);
+        }
+        return stream;
     } else {
         const { stream } = await soundcloud.util.m3uReadableStream(url);
         return stream;
