@@ -71,12 +71,12 @@ export function isValidPlaylist(url) {
 
 export async function getSongInfo(urlOrSearch) {
     if (scTrackRegex.test(urlOrSearch)) {
-        const { title, permalink_url, duration, artwork_url } = await soundcloud.tracks.get(urlOrSearch);
+        const track = await soundcloud.tracks.get(urlOrSearch);
         return {
-            title,
-            url: permalink_url,
-            duration: Math.ceil(duration / 1000),
-            thumbnail: artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
+            title: track.title,
+            url: track.permalink_url,
+            duration: Math.ceil(track.duration / 1000),
+            thumbnail: (track.artwork_url ?? track.user?.avatar_url)?.replace(/-large.(\w+)$/, '-t500x500.$1')
         };
     } else {
         if (process.env.USE_YOUTUBE) {
@@ -117,12 +117,12 @@ export async function getSongInfo(urlOrSearch) {
             if (tracks.collection.length == 0) {
                 return null;
             }
-            const { title, permalink_url, duration, artwork_url } = tracks.collection[0];
+            const track = tracks.collection[0];
             return {
-                title,
-                url: permalink_url,
-                duration: Math.ceil(duration / 1000),
-                thumbnail: artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
+                title: track.title,
+                url: track.permalink_url,
+                duration: Math.ceil(track.duration / 1000),
+                thumbnail: (track.artwork_url ?? track.user?.avatar_url)?.replace(/-large.(\w+)$/, '-t500x500.$1')
             };
         }
     }
@@ -137,7 +137,7 @@ export async function getPlaylistInfo(urlOrSearch) {
                 title: track.title,
                 url: track.permalink_url,
                 duration: Math.ceil(track.duration / 1000),
-                thumbnail: track.artwork_url?.replace(/-large\.(\w+)$/, '-t500x500.$1')
+                thumbnail: (track.artwork_url ?? track.user?.avatar_url)?.replace(/-large\.(\w+)$/, '-t500x500.$1')
             }));
         return { title, url: permalink_url, songs };
     } else {
@@ -187,7 +187,7 @@ export async function getPlaylistInfo(urlOrSearch) {
                     title: track.title,
                     url: track.permalink_url,
                     duration: Math.ceil(track.duration / 1000),
-                    thumbnail: track.artwork_url?.replace(/-large\.(\w+)$/, '-t500x500.$1')
+                    thumbnail: (track.artwork_url ?? track.user?.avatar_url)?.replace(/-large\.(\w+)$/, '-t500x500.$1')
                 }));
             return { title, url: permalink_url, songs };
         }

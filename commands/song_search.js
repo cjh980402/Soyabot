@@ -105,7 +105,10 @@ export async function commandExecute(interaction) {
                 title: results[v].title,
                 url: results[v].permalink_url,
                 duration: Math.ceil(results[v].duration / 1000),
-                thumbnail: results[v].artwork_url?.replace(/-large.(\w+)$/, '-t500x500.$1')
+                thumbnail: (results[v].artwork_url ?? results[v].user?.avatar_url)?.replace(
+                    /-large.(\w+)$/,
+                    '-t500x500.$1'
+                )
             }));
         }
 
