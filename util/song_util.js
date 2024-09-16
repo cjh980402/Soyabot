@@ -6,7 +6,7 @@ import { Readable, PassThrough } from 'node:stream';
 import { innertube, soundcloud } from './music_create.js';
 import { Util } from './Util.js';
 import { MAX_PLAYLIST_SIZE, BOT_SERVER_DOMAIN } from '../soyabot_config.js';
-const scTrackRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/[\w-]+\/?/;
+const scTrackRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/(?!\bsets\b)[\w-]+\/?/;
 const scSetRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/sets\/[\w-]+\/?/;
 const ytVideoRegex = /^[\w-]{11}$/;
 const ytListRegex = /^[A-Z]{2}[\w-]{10,}$/;
