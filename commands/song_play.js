@@ -48,7 +48,7 @@ export async function commandExecute(interaction) {
 
     const song = await getSongInfo(urlOrSearch);
     if (!song) {
-        return interaction.followUp('검색 내용에 해당하는 영상을 찾지 못했습니다.');
+        return interaction.followUp('검색 내용에 해당하는 재생 가능한 영상을 찾지 못했습니다.');
     }
 
     if (guildQueue) {

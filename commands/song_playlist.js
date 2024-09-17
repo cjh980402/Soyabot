@@ -48,7 +48,7 @@ export async function commandExecute(interaction) {
 
     const playlist = await getPlaylistInfo(urlOrSearch);
     if (!playlist) {
-        return interaction.followUp('검색 내용에 해당하는 재생목록을 찾지 못했습니다.');
+        return interaction.followUp('검색 내용에 해당하는 재생 가능한 재생목록을 찾지 못했습니다.');
     }
 
     const playlistEmbed = new EmbedBuilder()

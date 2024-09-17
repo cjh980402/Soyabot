@@ -72,6 +72,9 @@ export function isValidPlaylist(url) {
 export async function getSongInfo(urlOrSearch) {
     if (scTrackRegex.test(urlOrSearch)) {
         const track = await soundcloud.tracks.get(urlOrSearch);
+        if (track.media?.transcodings.length === 0) {
+            return null;
+        }
         return {
             title: track.title,
             url: track.permalink_url,
@@ -113,11 +116,10 @@ export async function getSongInfo(urlOrSearch) {
             }
             throw new Utils.InnertubeError(`Search query(${urlOrSearch}) is unavailable`);
         } else {
-            const tracks = await soundcloud.tracks.search({ q: urlOrSearch });
-            if (tracks.collection.length == 0) {
+            const track = (await soundcloud.tracks.search({ q: urlOrSearch })).collection[0];
+            if (track?.media?.transcodings.length === 0) {
                 return null;
             }
-            const track = tracks.collection[0];
             return {
                 title: track.title,
                 url: track.permalink_url,
@@ -131,7 +133,9 @@ export async function getSongInfo(urlOrSearch) {
 export async function getPlaylistInfo(urlOrSearch) {
     if (scSetRegex.test(urlOrSearch)) {
         const { tracks, title, permalink_url } = await soundcloud.playlists.get(urlOrSearch);
-        const songs = Util.shuffle(tracks.filter((track) => track.sharing === 'public')) // 비공개 또는 삭제된 영상 제외하기
+        const songs = Util.shuffle(
+            tracks.filter((track) => track.sharing === 'public' && track.media?.transcodings.length)
+        ) // 재생 불가능한 영상 제외하기
             .slice(0, MAX_PLAYLIST_SIZE)
             .map((track) => ({
                 title: track.title,
@@ -139,6 +143,9 @@ export async function getPlaylistInfo(urlOrSearch) {
                 duration: Math.ceil(track.duration / 1000),
                 thumbnail: (track.artwork_url ?? track.user?.avatar_url)?.replace(/-large\.(\w+)$/, '-t500x500.$1')
             }));
+        if (songs.length === 0) {
+            return null;
+        }
         return { title, url: permalink_url, songs };
     } else {
         if (process.env.USE_YOUTUBE) {
@@ -158,6 +165,9 @@ export async function getPlaylistInfo(urlOrSearch) {
                         duration: video.duration.seconds || 0,
                         thumbnail: video.thumbnail[0].url.replace(/(\w+\.\w+)\?.+$/, '$1')
                     }));
+                if (songs.length === 0) {
+                    return null;
+                }
                 return { title: playlist.title, url: urlOrSearch, songs };
             } else {
                 const playlist = await innertube.getPlaylist(playlistID);
@@ -169,6 +179,9 @@ export async function getPlaylistInfo(urlOrSearch) {
                         duration: video.duration.seconds || 0,
                         thumbnail: video.thumbnails[0].url.replace(/(\w+\.\w+)\?.+$/, '$1')
                     }));
+                if (songs.length === 0) {
+                    return null;
+                }
                 return {
                     title: playlist.info.title,
                     url: `https://www.youtube.com/playlist?list=${playlistID}`,
@@ -181,7 +194,9 @@ export async function getPlaylistInfo(urlOrSearch) {
                 return null;
             }
             const { tracks, title, permalink_url } = await soundcloud.playlists.get(playlists.collection[0].id);
-            const songs = Util.shuffle(tracks.filter((track) => track.sharing === 'public')) // 비공개 또는 삭제된 영상 제외하기
+            const songs = Util.shuffle(
+                tracks.filter((track) => track.sharing === 'public' && track.media?.transcodings.length)
+            ) // 재생 불가능한 영상 제외하기
                 .slice(0, MAX_PLAYLIST_SIZE)
                 .map((track) => ({
                     title: track.title,
@@ -189,6 +204,9 @@ export async function getPlaylistInfo(urlOrSearch) {
                     duration: Math.ceil(track.duration / 1000),
                     thumbnail: (track.artwork_url ?? track.user?.avatar_url)?.replace(/-large\.(\w+)$/, '-t500x500.$1')
                 }));
+            if (songs.length === 0) {
+                return null;
+            }
             return { title, url: permalink_url, songs };
         }
     }
