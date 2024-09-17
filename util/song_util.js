@@ -117,7 +117,7 @@ export async function getSongInfo(urlOrSearch) {
             throw new Utils.InnertubeError(`Search query(${urlOrSearch}) is unavailable`);
         } else {
             const track = (await soundcloud.tracks.search({ q: urlOrSearch })).collection[0];
-            if (track?.media?.transcodings.length === 0) {
+            if (!track?.media?.transcodings.length) {
                 return null;
             }
             return {
