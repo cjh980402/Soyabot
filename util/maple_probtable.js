@@ -48,6 +48,7 @@ export class MapleProb extends null {
             const prob = +(+appleData
                 .eq(i + 1)
                 .text()
+                .trim()
                 .slice(0, -1))
                 .toFixed(10)
                 .replace(/\D+/g, '');
@@ -67,6 +68,7 @@ export class MapleProb extends null {
             const prob = +(+appleData
                 .eq(i + 1)
                 .text()
+                .trim()
                 .slice(0, -1))
                 .toFixed(10)
                 .replace(/\D+/g, '');
@@ -88,6 +90,7 @@ export class MapleProb extends null {
             const prob = +(+sweetData
                 .eq(i + 1)
                 .text()
+                .trim()
                 .slice(0, -1))
                 .toFixed(10)
                 .replace(/\D+/g, '');
@@ -110,6 +113,7 @@ export class MapleProb extends null {
             const prob = +(+dreamData
                 .eq(i + 1)
                 .text()
+                .trim()
                 .slice(0, -1))
                 .toFixed(10)
                 .replace(/\D+/g, '');
@@ -133,6 +137,7 @@ export class MapleProb extends null {
             const prob = +(+royalData
                 .eq(i + 1)
                 .text()
+                .trim()
                 .slice(0, -1))
                 .toFixed(10)
                 .replace(/\D+/g, '');
@@ -154,6 +159,7 @@ export class MapleProb extends null {
             const prob = +(+wonderData
                 .eq(i + 1)
                 .text()
+                .trim()
                 .slice(0, -1))
                 .toFixed(10)
                 .replace(/\D+/g, '');
