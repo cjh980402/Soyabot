@@ -13,18 +13,11 @@ async function getRawProbData(url) {
 
 export class MapleProb extends null {
     static GOLDAPPLE_PROBTABLE = {};
+    static PLATINUMAPPLE_PROBTABLE = {};
     static LUNACRYSTAL_PROBTABLE = {
         스윗: {},
         드림: {}
     };
-    static ROYALFACE_PROBTABLE = {
-        남: [],
-        여: []
-    }; // 성형은 모두 동일 확률이므로 배열을 이용
-    static ROYALHAIR_PROBTABLE = {
-        남: [],
-        여: []
-    }; // 헤어는 모두 동일 확률이므로 배열을 이용
     static ROYALSTYLE_PROBTABLE = {};
     static WONDERBERRY_PROBTABLE = {};
 
@@ -32,6 +25,7 @@ export class MapleProb extends null {
         try {
             await Promise.all([
                 MapleProb.fetchGoldApple(),
+                MapleProb.fetchPlatinumApple(),
                 MapleProb.fetchLunaCrystal(),
                 MapleProb.fetchRoyalStyle(),
                 MapleProb.fetchWonderBerry()
@@ -58,6 +52,25 @@ export class MapleProb extends null {
                 .toFixed(10)
                 .replace(/\D+/g, '');
             MapleProb.GOLDAPPLE_PROBTABLE[appleData.eq(i).text()] = prob;
+        }
+    }
+
+    static async fetchPlatinumApple() {
+        // 플래티넘애플 파싱
+        const appleData = await getRawProbData('https://maplestory.nexon.com/Guide/CashShop/Probability/PlatinumApple');
+        if (appleData.length < 2) {
+            return;
+        }
+
+        MapleProb.PLATINUMAPPLE_PROBTABLE = {};
+        for (let i = 0; i < appleData.length; i += 2) {
+            const prob = +(+appleData
+                .eq(i + 1)
+                .text()
+                .slice(0, -1))
+                .toFixed(10)
+                .replace(/\D+/g, '');
+            MapleProb.PLATINUMAPPLE_PROBTABLE[appleData.eq(i).text()] = prob;
         }
     }
 

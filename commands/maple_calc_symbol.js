@@ -60,10 +60,15 @@ const symbolConstant = [
         default: 2220000,
         diff: -60000,
         name: '카르시온'
+    },
+    {
+        default: 3980000,
+        diff: -60000,
+        name: '탈라하트'
     }
 ];
 const arcaneCount = 6;
-const authenticCount = 6;
+const authenticCount = 7;
 const arcaneMaxLev = 20;
 const authenticMaxLev = 11;
 
