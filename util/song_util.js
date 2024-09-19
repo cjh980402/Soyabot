@@ -156,8 +156,7 @@ export async function getPlaylistInfo(urlOrSearch) {
                 return null;
             }
             if (urlListID?.startsWith('RD')) {
-                const playlist = (await innertube.getInfo(await innertube.resolveURL(urlOrSearch), 'WEB_EMBEDDED'))
-                    .playlist;
+                const { playlist } = await innertube.getInfo(await innertube.resolveURL(urlOrSearch), 'WEB_EMBEDDED');
                 const songs = Util.shuffle(playlist.contents)
                     .slice(0, MAX_PLAYLIST_SIZE)
                     .map((video) => ({
