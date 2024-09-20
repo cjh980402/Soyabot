@@ -1,6 +1,7 @@
 import { fetch } from 'undici';
 import { Soundcloud } from 'soundcloud.ts';
 import { Innertube, Utils, Log } from 'youtubei.js';
+import { generate } from 'youtube-po-token-generator';
 import { setTimeout } from 'node:timers/promises';
 import { exec } from '../admin/admin_function.js';
 
@@ -16,17 +17,25 @@ export async function refreshInnertube() {
 }
 
 async function getYoutubePoToken() {
-    const { stdout: data } = await exec('python3 ./util/python/youtube-trusted-session-generator.py', {
-        encoding: 'utf-8'
-    }); // 파이썬 스크립트 실행
-    const parse = /visitor_data: (.+?)\npo_token: (.+?)\n/.exec(data);
-    const token = {
-        visitor_data: parse?.[1] ?? '',
-        po_token: parse?.[2] ?? ''
-    };
-    console.log(token);
+    if (process.env.USE_POTOKEN_SCRIPT) {
+        const { stdout: data } = await exec('python3 ./util/python/youtube-trusted-session-generator.py', {
+            encoding: 'utf-8'
+        }); // 파이썬 스크립트 실행
+        const parse = /visitor_data: (.+?)\npo_token: (.+?)\n/.exec(data);
+        const token = {
+            visitor_data: parse?.[1] ?? '',
+            po_token: parse?.[2] ?? ''
+        };
+        console.log(token);
 
-    return token;
+        return token;
+    } else {
+        const { visitorData: visitor_data, poToken: po_token } = await generate();
+        const token = { visitor_data, po_token };
+        console.log(token);
+
+        return token;
+    }
 }
 
 async function createInnertube() {

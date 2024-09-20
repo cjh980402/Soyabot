@@ -94,7 +94,11 @@ export async function getSongInfo(urlOrSearch) {
                         thumbnail: info.basic_info.thumbnail[0].url
                     };
                 }
-                urlOrSearch = info.basic_info.title;
+                if (info.basic_info.title) {
+                    urlOrSearch = info.basic_info.title;
+                } else {
+                    throw new Utils.InnertubeError(`URL(${urlOrSearch}) is unavailable`);
+                }
             }
 
             const videoIDs = (await innertube.search(urlOrSearch, { type: 'video' })).videos

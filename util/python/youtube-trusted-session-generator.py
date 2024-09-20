@@ -14,6 +14,8 @@ async def main():
     tab.add_handler(cdp.network.RequestWillBeSent, send_handler)
     page = await browser.get('https://www.youtube.com/embed/jNQXAC9IVRw')
     await tab.wait(cdp.network.RequestWillBeSent)
+    print("[INFO] waiting 10 seconds for the page to fully load.")
+    await tab.sleep(10)
     button_play = await tab.select('#movie_player')
     await button_play.click()
     await tab.wait(cdp.network.RequestWillBeSent)
