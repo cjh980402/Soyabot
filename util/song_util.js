@@ -3,7 +3,7 @@ import { request } from 'undici';
 import { Constants, Utils } from 'youtubei.js';
 import m3u8stream from 'm3u8stream';
 import { Readable, PassThrough } from 'node:stream';
-import { innertube, soundcloud } from './music_create.js';
+import { innertube, soundcloud, refreshInnertube } from './music_create.js';
 import { Util } from './Util.js';
 import { MAX_PLAYLIST_SIZE, BOT_SERVER_DOMAIN } from '../soyabot_config.js';
 const scTrackRegex = /^https?:\/\/soundcloud\.com\/[\w-]+\/(?!sets\/)[\w-]+\/?/;
@@ -83,6 +83,10 @@ export async function getSongInfo(urlOrSearch) {
         };
     } else {
         if (process.env.USE_YOUTUBE) {
+            if (!innertube.session.po_token) {
+                await refreshInnertube();
+            }
+
             const videoID = getVideoId(urlOrSearch, true);
             if (videoID) {
                 const info = await innertube.getBasicInfo(videoID, 'WEB_EMBEDDED');
@@ -217,6 +221,10 @@ export async function getPlaylistInfo(urlOrSearch) {
 }
 
 async function createYTStream(url) {
+    if (!innertube.session.po_token) {
+        await refreshInnertube();
+    }
+
     const info = await innertube.getBasicInfo(getVideoId(url, true), 'WEB_EMBEDDED');
     if (info.basic_info.is_live) {
         if (info.streaming_data.hls_manifest_url) {

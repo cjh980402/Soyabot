@@ -60,4 +60,3 @@ async function getYoutubePoToken() {
 }
 
 Log.setLevel(Log.Level.NONE);
-await refreshInnertube();
