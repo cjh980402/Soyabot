@@ -2,17 +2,38 @@ import { fetch } from 'undici';
 import { Soundcloud } from 'soundcloud.ts';
 import { Innertube, Utils, Log } from 'youtubei.js';
 import { generate } from 'youtube-po-token-generator';
-import { setTimeout } from 'node:timers/promises';
+import { setTimeout as sleep } from 'node:timers/promises';
 import { exec } from '../admin/admin_function.js';
 
-export let innertube = await createInnertube();
+export const innertube = await Innertube.create({
+    enable_session_cache: false,
+    fetch: async (input, init = undefined) => {
+        let response = null;
+        for (let i = 0; i < 3; i++) {
+            response = await fetch(input, init);
+            if (response.ok) {
+                return response;
+            }
+            await sleep(1000);
+        }
+        throw new Utils.InnertubeError(`The server responded with a ${response.status} status code`, {
+            error_type: 'FETCH_FAILED',
+            response
+        });
+    }
+});
 export const soundcloud = new Soundcloud();
+let refreshTimer = null;
 
 export async function refreshInnertube() {
     try {
-        innertube = await createInnertube();
+        clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(refreshInnertube, 7200000);
+        const token = await getYoutubePoToken();
+        innertube.session.po_token = token.po_token;
+        innertube.session.context.client.visitorData = token.visitor_data;
     } catch (err) {
-        console.error('유튜브 모듈 재생성 에러 발생:', err);
+        console.error('유튜브 토큰 재생성 에러 발생:', err);
     }
 }
 
@@ -38,26 +59,5 @@ async function getYoutubePoToken() {
     }
 }
 
-async function createInnertube() {
-    return await Innertube.create({
-        ...(await getYoutubePoToken()),
-        enable_session_cache: false,
-        fetch: async (input, init = undefined) => {
-            let response = null;
-            for (let i = 0; i < 3; i++) {
-                response = await fetch(input, init);
-                if (response.ok) {
-                    return response;
-                }
-                await setTimeout(1000);
-            }
-            throw new Utils.InnertubeError(`The server responded with a ${response.status} status code`, {
-                error_type: 'FETCH_FAILED',
-                response
-            });
-        }
-    });
-}
-
 Log.setLevel(Log.Level.NONE);
-setInterval(refreshInnertube, 7200000); // 2시간 후에 재실행
+await refreshInnertube();
