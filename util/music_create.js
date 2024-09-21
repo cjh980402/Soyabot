@@ -4,6 +4,7 @@ import { Innertube, Utils, Log } from 'youtubei.js';
 import { generate } from 'youtube-po-token-generator';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { exec } from '../admin/admin_function.js';
+import { sendAdmin } from '../admin/bot_message.js';
 
 export const innertube = await Innertube.create({
     enable_session_cache: false,
@@ -25,7 +26,29 @@ export const innertube = await Innertube.create({
 export const soundcloud = new Soundcloud();
 let refreshTimer = null;
 
+export async function signinInnertube(client) {
+    innertube.session.on('auth-pending', (data) => {
+        sendAdmin(client.users, `인증 주소: ${data.verification_url}\n인증 코드: ${data.user_code}`);
+    });
+
+    innertube.session.on('auth', ({ credentials }) => {
+        console.log('Sign in successful:', credentials);
+    });
+
+    innertube.session.on('update-credentials', async ({ credentials }) => {
+        console.log('Credentials updated:', credentials);
+        await innertube.session.oauth.cacheCredentials();
+    });
+
+    await innertube.session.signIn();
+    delete innertube.session.po_token;
+}
+
 export async function refreshInnertube() {
+    if (innertube.session.logged_in) {
+        return;
+    }
+
     try {
         clearTimeout(refreshTimer);
         refreshTimer = setTimeout(refreshInnertube, 7200000);
