@@ -89,7 +89,7 @@ export async function getSongInfo(urlOrSearch) {
 
             const videoID = getVideoId(urlOrSearch, true);
             if (videoID) {
-                const info = await innertube.getBasicInfo(videoID, 'WEB_EMBEDDED');
+                const info = await innertube.getBasicInfo(videoID);
                 if (info.playability_status.status == 'OK') {
                     return {
                         title: info.basic_info.title,
@@ -112,7 +112,7 @@ export async function getSongInfo(urlOrSearch) {
                 return null;
             }
             for (const id of videoIDs) {
-                const info = await innertube.getBasicInfo(id, 'WEB_EMBEDDED');
+                const info = await innertube.getBasicInfo(id);
                 if (info.playability_status.status == 'OK') {
                     return {
                         title: info.basic_info.title,
@@ -164,7 +164,7 @@ export async function getPlaylistInfo(urlOrSearch) {
                 return null;
             }
             if (urlListID?.startsWith('RD')) {
-                const { playlist } = await innertube.getInfo(await innertube.resolveURL(urlOrSearch), 'WEB_EMBEDDED');
+                const { playlist } = await innertube.getInfo(await innertube.resolveURL(urlOrSearch));
                 const songs = Util.shuffle(playlist.contents)
                     .slice(0, MAX_PLAYLIST_SIZE)
                     .map((video) => ({
@@ -225,7 +225,7 @@ async function createYTStream(url) {
         await refreshInnertube();
     }
 
-    const info = await innertube.getBasicInfo(getVideoId(url, true), 'WEB_EMBEDDED');
+    const info = await innertube.getBasicInfo(getVideoId(url, true));
     if (info.basic_info.is_live) {
         if (info.streaming_data.hls_manifest_url) {
             const { body } = await request(info.streaming_data.hls_manifest_url);
