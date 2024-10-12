@@ -26,17 +26,17 @@
     "chartjs-node-canvas": "^4.1.6",
     "chartjs-plugin-datalabels": "^2.2.0",
     "cheerio": "^1.0.0",
-    "discord.js": "^14.16.2",
+    "discord.js": "^14.16.3",
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^5.2.0",
     "hangul-js": "^0.2.6",
     "m3u8stream": "^0.8.6",
-    "mathjs": "^13.1.1",
+    "mathjs": "^13.2.0",
     "opusscript": "^0.1.1",
-    "sodium-native": "^4.2.0",
+    "sodium-native": "^4.2.1",
     "soundcloud.ts": "^0.6.1",
     "string-progressbar": "^1.0.4",
-    "undici": "^6.19.8",
+    "undici": "^6.20.0",
     "utf-8-validate": "^6.0.4",
     "youtube-po-token-generator": "^0.2.0",
     "youtubei.js": "^10.5.0",
@@ -46,7 +46,7 @@
     "prettier": "^3.3.3"
   },
   "overrides": {
-    "undici": "^6.19.8"
+    "undici": "^6.20.0"
   },
   "keywords": [
     "Discord",
