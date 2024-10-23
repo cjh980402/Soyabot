@@ -90,7 +90,7 @@ export async function getSongInfo(urlOrSearch) {
             const videoID = getVideoId(urlOrSearch, true);
             if (videoID) {
                 const info = await innertube.getBasicInfo(videoID, 'WEB_EMBEDDED');
-                if (info.playability_status.status == 'OK') {
+                if (info.playability_status?.status == 'OK' && info.playability_status?.embeddable) {
                     return {
                         title: info.basic_info.title,
                         url: `https://www.youtube.com/watch?v=${info.basic_info.id}`,
@@ -113,7 +113,7 @@ export async function getSongInfo(urlOrSearch) {
             }
             for (const id of videoIDs) {
                 const info = await innertube.getBasicInfo(id, 'WEB_EMBEDDED');
-                if (info.playability_status.status == 'OK') {
+                if (info.playability_status?.status == 'OK' && info.playability_status?.embeddable) {
                     return {
                         title: info.basic_info.title,
                         url: `https://www.youtube.com/watch?v=${info.basic_info.id}`,
