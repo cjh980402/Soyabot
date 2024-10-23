@@ -33,7 +33,7 @@
     "m3u8stream": "^0.8.6",
     "mathjs": "^13.2.0",
     "opusscript": "^0.1.1",
-    "sodium-native": "^4.2.1",
+    "sodium-native": "^4.2.0",
     "soundcloud.ts": "^0.6.1",
     "string-progressbar": "^1.0.4",
     "undici": "^6.20.0",
