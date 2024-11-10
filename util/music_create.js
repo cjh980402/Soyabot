@@ -10,16 +10,18 @@ export const innertube = await Innertube.create({
     enable_session_cache: false,
     fetch: async (input, init = undefined) => {
         let response = null;
+        let cloneResponse = null;
         for (let i = 0; i < 3; i++) {
             response = await fetch(input, init);
-            if (response.ok) {
-                return response;
+            cloneResponse = response.clone();
+            if (cloneResponse.ok) {
+                return cloneResponse;
             }
             await sleep(1000);
         }
-        throw new Utils.InnertubeError(`The server responded with a ${response.status} status code`, {
+        throw new Utils.InnertubeError(`The server responded with a ${cloneResponse.status} status code`, {
             error_type: 'FETCH_FAILED',
-            response
+            cloneResponse
         });
     }
 });
