@@ -1,6 +1,6 @@
 {
   "name": "soyabot",
-  "version": "9.10.1",
+  "version": "9.10.2",
   "description": "MapleStory, Music Discord Bot",
   "license": "MIT",
   "author": "cjh980402 <9804cjh@naver.com> (https://github.com/cjh980402)",
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@discordjs/voice": "^0.17.0",
-    "better-sqlite3": "^11.3.0",
+    "better-sqlite3": "^11.5.0",
     "bufferutil": "^4.0.8",
     "chartjs-node-canvas": "^4.1.6",
     "chartjs-plugin-datalabels": "^2.2.0",
@@ -31,22 +31,22 @@
     "ffmpeg-static": "^5.2.0",
     "hangul-js": "^0.2.6",
     "m3u8stream": "^0.8.6",
-    "mathjs": "^13.2.0",
+    "mathjs": "^13.2.1",
     "opusscript": "^0.1.1",
-    "sodium-native": "^4.2.0",
-    "soundcloud.ts": "^0.6.1",
+    "sodium-native": "^4.3.0",
+    "soundcloud.ts": "^0.6.2",
     "string-progressbar": "^1.0.4",
-    "undici": "^6.20.0",
-    "utf-8-validate": "^6.0.4",
-    "youtube-po-token-generator": "^0.2.0",
-    "youtubei.js": "^10.5.0",
+    "undici": "^6.20.1",
+    "utf-8-validate": "^6.0.5",
+    "youtube-po-token-generator": "^0.3.0",
+    "youtubei.js": "^11.0.1",
     "zlib-sync": "^0.1.9"
   },
   "devDependencies": {
     "prettier": "^3.3.3"
   },
   "overrides": {
-    "undici": "^6.20.0"
+    "undici": "^6.20.1"
   },
   "keywords": [
     "Discord",
