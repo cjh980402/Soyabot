@@ -32,7 +32,6 @@
     "ffmpeg-static": "^5.2.0",
     "googleapis": "^144.0.0",
     "hangul-js": "^0.2.6",
-    "http": "^0.0.1-security",
     "jsdom": "^25.0.1",
     "m3u8stream": "^0.8.6",
     "mathjs": "^13.2.1",
