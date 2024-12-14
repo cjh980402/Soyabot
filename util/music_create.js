@@ -3,10 +3,16 @@ import { Soundcloud } from 'soundcloud.ts';
 import { Innertube, Utils, Log } from 'youtubei.js';
 import { BG } from 'bgutils-js';
 import { JSDOM } from 'jsdom';
+import http from 'http';
+import destroyer from 'server-destroy';
+import { google } from 'googleapis';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { exec } from '../admin/admin_function.js';
 import { sendAdmin } from '../admin/bot_message.js';
+import { PORT, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from '../soyabot_config.js';
 
+const redirect_uri = `http://localhost:${PORT}`;
+export const oauth2Client = new google.auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, redirect_uri);
 export const innertube = await Innertube.create({
     enable_session_cache: false,
     fetch: async (input, init = undefined) => {
@@ -29,6 +35,44 @@ export const innertube = await Innertube.create({
 export const soundcloud = new Soundcloud();
 let refreshTimer = null;
 
+export async function authenticate(scopes, client) {
+    return new Promise((resolve, reject) => {
+        const authorizeUrl = oauth2Client.generateAuthUrl({
+            access_type: 'offline',
+            prompt: 'consent',
+            scope: scopes.join(' ')
+        });
+        sendAdmin(client.users, authorizeUrl);
+        const server = http
+            .createServer(async (req, res) => {
+                try {
+                    const qs = new URL(req.url, redirect_uri).searchParams;
+                    res.end('Authentication successful! Please return to the console.');
+                    server.destroy();
+                    const { tokens } = await oauth2Client.getToken(qs.get('code'));
+                    if (tokens.access_token && tokens.refresh_token && tokens.expiry_date) {
+                        await innertube.session.signIn({
+                            access_token: tokens.access_token,
+                            refresh_token: tokens.refresh_token,
+                            expiry_date: new Date(tokens.expiry_date).toISOString(),
+                            client: {
+                                client_id: GOOGLE_CLIENT_ID,
+                                client_secret: GOOGLE_CLIENT_SECRET
+                            }
+                        });
+
+                        await innertube.session.oauth.cacheCredentials();
+                        resolve(innertube);
+                    }
+                } catch (err) {
+                    reject(err);
+                }
+            })
+            .listen(PORT, () => console.log(`${PORT}번 port에 http server를 띄웠습니다.`));
+        destroyer(server);
+    });
+}
+
 export async function signinInnertube(client) {
     innertube.session.on('auth-pending', (data) => {
         sendAdmin(client.users, `인증 주소: ${data.verification_url}\n인증 코드: ${data.user_code}`);
@@ -43,7 +87,7 @@ export async function signinInnertube(client) {
         await innertube.session.oauth.cacheCredentials();
     });
 
-    await innertube.session.signIn();
+    await authenticate(['https://www.googleapis.com/auth/youtube'], client);
     delete innertube.session.po_token;
 }
 
