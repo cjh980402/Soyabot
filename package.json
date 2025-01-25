@@ -31,6 +31,7 @@
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^5.2.0",
     "googleapis": "^144.0.0",
+    "googlevideo": "^2.0.0",
     "hangul-js": "^0.2.6",
     "jsdom": "^26.0.0",
     "m3u8stream": "^0.8.6",

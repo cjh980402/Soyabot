@@ -1,8 +1,9 @@
 import { createAudioResource, demuxProbe } from '@discordjs/voice';
 import { request } from 'undici';
 import { Constants, Utils } from 'youtubei.js';
+import GoogleVideo from 'googlevideo';
 import m3u8stream from 'm3u8stream';
-import { Readable, PassThrough } from 'node:stream';
+import { PassThrough } from 'node:stream';
 import { innertube, soundcloud, refreshInnertube } from './music_create.js';
 import { Util } from './Util.js';
 import { MAX_PLAYLIST_SIZE, BOT_SERVER_DOMAIN } from '../soyabot_config.js';
@@ -242,12 +243,76 @@ async function createYTStream(url) {
             throw new Utils.InnertubeError('No matching formats found');
         }
     } else {
-        const formats = [...(info.streaming_data?.formats ?? []), ...(info.streaming_data?.adaptive_formats ?? [])];
-        const hasOpus = formats.some((v) => v.mime_type.includes('opus'));
+        const durationMs = (info.basic_info?.duration ?? 0) * 1000;
+        const audioOutput = new PassThrough();
 
-        return Readable.fromWeb(
-            await info.download({ type: 'audio', quality: 'best', format: hasOpus ? 'opus' : 'mp4' })
+        const audioFormat = info.chooseFormat({ quality: 'best', format: 'webm', type: 'audio' });
+        const videoFormat = info.chooseFormat({ quality: '720p', format: 'webm', type: 'video' });
+
+        const selectedAudioFormat = {
+            itag: audioFormat.itag,
+            lastModified: audioFormat.last_modified_ms,
+            xtags: audioFormat.xtags
+        };
+
+        const selectedVideoFormat = {
+            itag: videoFormat.itag,
+            lastModified: videoFormat.last_modified_ms,
+            width: videoFormat.width,
+            height: videoFormat.height,
+            xtags: videoFormat.xtags
+        };
+
+        const serverAbrStreamingUrl = innertube.session.player?.decipher(
+            info.page[0].streaming_data?.server_abr_streaming_url
         );
+        const videoPlaybackUstreamerConfig =
+            info.page[0].player_config?.media_common_config.media_ustreamer_request_config
+                ?.video_playback_ustreamer_config;
+
+        if (!videoPlaybackUstreamerConfig) {
+            throw new Utils.InnertubeError('ustreamerConfig not found');
+        }
+
+        if (!serverAbrStreamingUrl) {
+            throw new Utils.InnertubeError('serverAbrStreamingUrl not found');
+        }
+
+        const serverAbrStream = new GoogleVideo.ServerAbrStream({
+            fetch: innertube.session.http.fetch_function,
+            poToken: innertube.session.po_token,
+            serverAbrStreamingUrl,
+            videoPlaybackUstreamerConfig: videoPlaybackUstreamerConfig,
+            durationMs
+        });
+
+        serverAbrStream.on('data', (streamData) => {
+            for (const formatData of streamData.initializedFormats) {
+                const isVideo = formatData.mimeType?.includes('video');
+                const mediaChunks = formatData.mediaChunks;
+
+                if (!isVideo && mediaChunks.length) {
+                    for (const chunk of mediaChunks) {
+                        audioOutput.write(chunk);
+                    }
+                }
+            }
+        });
+
+        serverAbrStream.on('error', (err) => {
+            audioOutput.emit('error', err);
+        });
+
+        serverAbrStream.init({
+            audioFormats: [selectedAudioFormat],
+            videoFormats: [selectedVideoFormat],
+            clientAbrState: {
+                playerTimeMs: 0,
+                enabledTrackTypesBitfield: 0 // 0 = BOTH, 1 = AUDIO (video-only is no longer supported by YouTube)
+            }
+        });
+
+        return audioOutput;
     }
 }
 
