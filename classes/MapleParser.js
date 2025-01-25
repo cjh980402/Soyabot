@@ -595,6 +595,10 @@ export class MapleUser {
             throw new MapleError('maple.GG에서 캐릭터 정보를 가져올 수 없습니다.');
         }
 
+        if (this.#ggData.error) {
+            throw new MapleError('maple.GG에서 캐릭터 정보를 가져올 수 없습니다.');
+        }
+
         return updateResult;
     }
 
