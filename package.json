@@ -20,36 +20,37 @@
     "pretty": "prettier --config .prettierrc --write '**/*.js'"
   },
   "dependencies": {
-    "@discordjs/voice": "^0.17.0",
-    "better-sqlite3": "^11.5.0",
-    "bgutils-js": "^3.1.0",
-    "bufferutil": "^4.0.8",
+    "@discordjs/voice": "^0.18.0",
+    "better-sqlite3": "^11.8.1",
+    "bgutils-js": "^3.1.2",
+    "bufferutil": "^4.0.9",
     "chartjs-node-canvas": "^4.1.6",
     "chartjs-plugin-datalabels": "^2.2.0",
     "cheerio": "^1.0.0",
-    "discord.js": "^14.16.3",
+    "discord.js": "^14.17.3",
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^5.2.0",
     "googleapis": "^144.0.0",
     "hangul-js": "^0.2.6",
-    "jsdom": "^25.0.1",
+    "jsdom": "^26.0.0",
     "m3u8stream": "^0.8.6",
-    "mathjs": "^13.2.1",
+    "mathjs": "^14.1.0",
     "opusscript": "^0.1.1",
     "server-destroy": "^1.0.1",
     "sodium-native": "4.2.0",
     "soundcloud.ts": "^0.6.2",
     "string-progressbar": "^1.0.4",
-    "undici": "^6.20.1",
+    "undici": "^6.21.1",
     "utf-8-validate": "^6.0.5",
-    "youtubei.js": "^12.2.0",
+    "youtubei.js": "^13.0.0",
     "zlib-sync": "^0.1.9"
   },
   "devDependencies": {
-    "prettier": "^3.3.3"
+    "prettier": "^3.4.2"
   },
   "overrides": {
-    "undici": "^6.20.1"
+    "undici": "^6.21.1",
+    "canvas": "^3.1.0"
   },
   "keywords": [
     "Discord",
@@ -57,6 +58,6 @@
     "Music"
   ],
   "engines": {
-    "node": ">=18.17.0"
+    "node": ">=20"
   }
 }
