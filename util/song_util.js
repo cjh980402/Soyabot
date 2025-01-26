@@ -246,8 +246,11 @@ async function createYTStream(url) {
         const durationMs = (info.basic_info?.duration ?? 0) * 1000;
         const audioOutput = new PassThrough();
 
-        const audioFormat = info.chooseFormat({ quality: 'best', format: 'webm', type: 'audio' });
-        const videoFormat = info.chooseFormat({ quality: '720p', format: 'webm', type: 'video' });
+        const formats = [...(info.streaming_data?.formats ?? []), ...(info.streaming_data?.adaptive_formats ?? [])];
+        console.log(formats);
+        const hasWebm = formats.some((v) => v.mime_type.includes('webm'));
+        const audioFormat = info.chooseFormat({ quality: 'best', format: hasWebm ? 'webm' : 'mp4', type: 'audio' });
+        const videoFormat = info.chooseFormat({ quality: 'best', format: hasWebm ? 'webm' : 'mp4', type: 'video' });
 
         const selectedAudioFormat = {
             itag: audioFormat.itag,
