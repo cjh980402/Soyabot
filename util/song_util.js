@@ -249,20 +249,11 @@ async function createYTStream(url) {
         const formats = [...(info.streaming_data?.formats ?? []), ...(info.streaming_data?.adaptive_formats ?? [])];
         const hasWebm = formats.some((v) => v.mime_type.includes('webm'));
         const audioFormat = info.chooseFormat({ quality: 'best', format: hasWebm ? 'webm' : 'mp4', type: 'audio' });
-        const videoFormat = info.chooseFormat({ quality: 'best', format: hasWebm ? 'webm' : 'mp4', type: 'video' });
 
         const selectedAudioFormat = {
             itag: audioFormat.itag,
             lastModified: audioFormat.last_modified_ms,
             xtags: audioFormat.xtags
-        };
-
-        const selectedVideoFormat = {
-            itag: videoFormat.itag,
-            lastModified: videoFormat.last_modified_ms,
-            width: videoFormat.width,
-            height: videoFormat.height,
-            xtags: videoFormat.xtags
         };
 
         const serverAbrStreamingUrl = innertube.session.player?.decipher(
@@ -307,7 +298,7 @@ async function createYTStream(url) {
 
         serverAbrStream.init({
             audioFormats: [selectedAudioFormat],
-            videoFormats: [selectedVideoFormat],
+            videoFormats: [],
             clientAbrState: {
                 playerTimeMs: 0,
                 enabledTrackTypesBitfield: 0 // 0 = BOTH, 1 = AUDIO (video-only is no longer supported by YouTube)
