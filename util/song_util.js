@@ -296,6 +296,10 @@ async function createYTStream(url) {
             audioOutput.emit('error', err);
         });
 
+        serverAbrStream.on('end', () => {
+            audioOutput.end();
+        });
+
         serverAbrStream.init({
             audioFormats: [selectedAudioFormat],
             videoFormats: [],
