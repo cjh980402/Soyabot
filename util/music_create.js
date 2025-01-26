@@ -88,9 +88,14 @@ export async function signinInnertube(client) {
     });
 
     await authenticate(['https://www.googleapis.com/auth/youtube'], client);
+    delete innertube.session.po_token;
 }
 
 export async function refreshInnertube() {
+    if (innertube.session.logged_in) {
+        return;
+    }
+
     try {
         clearTimeout(refreshTimer);
         refreshTimer = setTimeout(refreshInnertube, 7200000);
@@ -112,7 +117,7 @@ async function getYoutubePoToken() {
             visitor_data: parse?.[1] ?? '',
             po_token: parse?.[2] ?? ''
         };
-        console.log('python script:', token);
+        console.log(token);
 
         return token;
     } else {
@@ -154,7 +159,7 @@ async function getYoutubePoToken() {
             bgConfig
         });
         const token = { visitor_data: visitorData, po_token: poTokenResult.poToken };
-        console.log('bgutils-js:', token);
+        console.log(token);
 
         return token;
     }
