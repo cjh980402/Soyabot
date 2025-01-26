@@ -117,7 +117,7 @@ async function getYoutubePoToken() {
             visitor_data: parse?.[1] ?? '',
             po_token: parse?.[2] ?? ''
         };
-        console.log(token);
+        console.log('python script:', token);
 
         return token;
     } else {
@@ -159,7 +159,7 @@ async function getYoutubePoToken() {
             bgConfig
         });
         const token = { visitor_data: visitorData, po_token: poTokenResult.poToken };
-        console.log(token);
+        console.log('bgutils-js:', token);
 
         return token;
     }
