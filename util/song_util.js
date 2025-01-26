@@ -301,7 +301,7 @@ async function createYTStream(url) {
             videoFormats: [],
             clientAbrState: {
                 playerTimeMs: 0,
-                enabledTrackTypesBitfield: 0 // 0 = BOTH, 1 = AUDIO (video-only is no longer supported by YouTube)
+                enabledTrackTypesBitfield: 1 // 0 = BOTH, 1 = AUDIO (video-only is no longer supported by YouTube)
             }
         });
 
