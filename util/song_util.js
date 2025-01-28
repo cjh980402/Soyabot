@@ -279,6 +279,15 @@ async function createYTStream(url) {
             durationMs
         });
 
+        serverAbrStream.previousSequences.rawSet = serverAbrStream.previousSequences.set;
+        serverAbrStream.previousSequences.set = function (key, value) {
+            if (this.has(key) && value instanceof Array) {
+                this.get(key).push(...value);
+            } else {
+                this.rawSet(key, value);
+            }
+        };
+
         serverAbrStream.on('data', (streamData) => {
             for (const formatData of streamData.initializedFormats) {
                 const isVideo = formatData.mimeType?.includes('video');
