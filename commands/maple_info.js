@@ -20,7 +20,11 @@ async function getInfoEmbed(mapleUserInfo, level) {
         .setURL(mapleUserInfo.GGURL)
         .setImage('attachment://character.png')
         .addFields([
-            { name: '**레벨**', value: char_lv < 300 ? `${char_lv} (${char_percent}%)` : char_lv, inline: true },
+            {
+                name: '**레벨**',
+                value: char_lv < 300 ? `${char_lv} (${char_percent}%)` : String(char_lv),
+                inline: true
+            },
             { name: '**직업**', value: char_job, inline: true },
             { name: '**길드**', value: char_guild || '-', inline: true },
             { name: '**인기도**', value: char_popul.toLocaleString(), inline: true },
