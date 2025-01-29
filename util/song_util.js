@@ -340,6 +340,10 @@ async function createSCStream(url) {
 
             let current = -1;
             const pipeNextStream = async () => {
+                if (stream.destroyed || stream.writableEnded) {
+                    return;
+                }
+
                 current++;
                 let end = chunkSize * (current + 1) - 1;
                 if (end >= contentLength) {
