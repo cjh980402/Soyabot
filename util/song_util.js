@@ -261,16 +261,15 @@ async function createYTStream(url) {
         const serverAbrStreamingUrl = innertube.session.player?.decipher(
             info.page[0].streaming_data?.server_abr_streaming_url
         );
+        if (!serverAbrStreamingUrl) {
+            throw new Utils.InnertubeError('serverAbrStreamingUrl not found');
+        }
+
         const videoPlaybackUstreamerConfig =
             info.page[0].player_config?.media_common_config.media_ustreamer_request_config
                 ?.video_playback_ustreamer_config;
-
         if (!videoPlaybackUstreamerConfig) {
             throw new Utils.InnertubeError('ustreamerConfig not found');
-        }
-
-        if (!serverAbrStreamingUrl) {
-            throw new Utils.InnertubeError('serverAbrStreamingUrl not found');
         }
 
         const serverAbrStream = new GoogleVideo.ServerAbrStream({
@@ -297,7 +296,9 @@ async function createYTStream(url) {
 
                 if (!isVideo && mediaChunks.length) {
                     for (const chunk of mediaChunks) {
-                        audioOutput.write(chunk);
+                        if (!audioOutput.destroyed && !audioOutput.writableEnded) {
+                            audioOutput.write(chunk);
+                        }
                     }
                 }
             }
@@ -305,6 +306,11 @@ async function createYTStream(url) {
 
         serverAbrStream.on('error', (err) => {
             audioOutput.emit('error', err);
+        });
+
+        audioOutput.on('close', () => {
+            serverAbrStream.totalDurationMs = 0; // abr stream 요청 멈추기
+            audioOutput.end();
         });
 
         (async () => {
