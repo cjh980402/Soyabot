@@ -232,13 +232,15 @@ async function createYTStream(url) {
             const { body } = await request(info.streaming_data.hls_manifest_url);
             const streamUrl = (await body.text()).split('\n').find((line) => /^https?:\/\//.test(line));
 
-            return m3u8stream(streamUrl, {
+            const audioOutput = m3u8stream(streamUrl, {
                 chunkReadahead: info.basic_info.live_chunk_readahead,
                 begin: Date.now(),
                 liveBuffer: 2000,
                 requestOptions: { headers: Constants.STREAM_HEADERS },
                 parser: 'm3u8'
             });
+
+            return { stream: audioOutput, type: 'arbitrary' };
         } else {
             throw new Utils.InnertubeError('No matching formats found');
         }
@@ -247,8 +249,8 @@ async function createYTStream(url) {
         const audioOutput = new PassThrough();
 
         const formats = [...(info.streaming_data?.formats ?? []), ...(info.streaming_data?.adaptive_formats ?? [])];
-        const hasWebm = formats.some((v) => v.mime_type.includes('webm'));
-        const audioFormat = info.chooseFormat({ quality: 'best', format: hasWebm ? 'webm' : 'mp4', type: 'audio' });
+        const hasOpus = formats.some((v) => v.mime_type.includes('opus'));
+        const audioFormat = info.chooseFormat({ quality: 'best', format: hasOpus ? 'opus' : 'mp4', type: 'audio' });
 
         const selectedAudioFormat = {
             itag: audioFormat.itag,
@@ -317,7 +319,7 @@ async function createYTStream(url) {
             audioOutput.end();
         })();
 
-        return audioOutput;
+        return { stream: audioOutput, type: hasOpus ? 'webm/opus' : 'arbitrary' };
     }
 }
 
@@ -370,7 +372,7 @@ async function createSCStream(url) {
 
 export async function songDownload(url) {
     if (url.includes('youtube.com')) {
-        const { stream, type } = await demuxProbe(await createYTStream(url));
+        const { stream, type } = await createYTStream(url);
         return createAudioResource(stream, {
             metadata: url,
             inputType: type

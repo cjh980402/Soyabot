@@ -56,7 +56,7 @@ export async function commandExecute(interaction) {
                 .setMaxValues(results.length)
                 .addOptions(
                     results.map((v, i) => ({
-                        label: v.title.toString().slice(0, 100),
+                        label: v.title?.toString().slice(0, 100) ?? '-',
                         description: `[${!v.duration.seconds ? '⊚ LIVE' : v.duration.text}]`,
                         value: String(i)
                     }))
