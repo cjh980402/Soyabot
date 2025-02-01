@@ -6,4 +6,5 @@ node_modules/
 
 # file
 *.tflite
+audiofile_*
 soyabot_config.js

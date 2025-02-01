@@ -1,9 +1,11 @@
-import { createAudioResource, demuxProbe } from '@discordjs/voice';
+import { createAudioResource } from '@discordjs/voice';
 import { request } from 'undici';
 import { Constants, Utils } from 'youtubei.js';
 import GoogleVideo from 'googlevideo';
 import m3u8stream from 'm3u8stream';
+import { createReadStream, createWriteStream, writeFileSync, unlinkSync } from 'node:fs';
 import { PassThrough } from 'node:stream';
+import { setTimeout } from 'node:timers/promises';
 import { innertube, soundcloud, refreshInnertube } from './music_create.js';
 import { Util } from './Util.js';
 import { MAX_PLAYLIST_SIZE, BOT_SERVER_DOMAIN } from '../soyabot_config.js';
@@ -246,7 +248,10 @@ async function createYTStream(url) {
         }
     } else {
         const durationMs = (info.basic_info?.duration ?? 0) * 1000;
-        const audioOutput = new PassThrough();
+        const fileName = `audiofile_${info.basic_info?.id ?? ''}_${Date.now()}`;
+        writeFileSync(fileName, '');
+        const fileWrite = createWriteStream(fileName);
+        const fileRead = createReadStream(fileName);
 
         const formats = [...(info.streaming_data?.formats ?? []), ...(info.streaming_data?.adaptive_formats ?? [])];
         const hasOpus = formats.some((v) => v.mime_type.includes('opus'));
@@ -296,8 +301,8 @@ async function createYTStream(url) {
 
                 if (!isVideo && mediaChunks.length) {
                     for (const chunk of mediaChunks) {
-                        if (!audioOutput.destroyed && !audioOutput.writableEnded) {
-                            audioOutput.write(chunk);
+                        if (!fileWrite.destroyed && !fileWrite.writableEnded) {
+                            fileWrite.write(chunk);
                         }
                     }
                 }
@@ -305,12 +310,13 @@ async function createYTStream(url) {
         });
 
         serverAbrStream.on('error', (err) => {
-            audioOutput.emit('error', err);
+            fileRead.emit('error', err);
         });
 
-        audioOutput.on('close', () => {
+        fileRead.on('close', () => {
             serverAbrStream.totalDurationMs = 0; // abr stream 요청 멈추기
-            audioOutput.end();
+            fileWrite.end();
+            unlinkSync(fileName);
         });
 
         (async () => {
@@ -322,10 +328,12 @@ async function createYTStream(url) {
                     enabledTrackTypesBitfield: 1 // 0 = BOTH, 1 = AUDIO (video-only is no longer supported by YouTube)
                 }
             });
-            audioOutput.end();
+            fileWrite.end();
         })();
 
-        return { stream: audioOutput, type: hasOpus ? 'webm/opus' : 'arbitrary' };
+        await setTimeout(1000);
+
+        return { stream: fileRead, type: hasOpus ? 'webm/opus' : 'arbitrary' };
     }
 }
 
