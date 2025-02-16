@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ApplicationCommandOptionType } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ApplicationCommandOptionType, MessageFlags } from 'discord.js';
 
 export const type = '기타';
 export const commandData = {
@@ -46,7 +46,7 @@ export async function commandExecute(interaction) {
                 switch (itr.customId) {
                     case 'join':
                         if (gameUser.some((v) => itr.user.id === v.id)) {
-                            await itr.reply({ content: '이미 참가하셨습니다.', ephemeral: true });
+                            await itr.reply({ content: '이미 참가하셨습니다.', flags: MessageFlags.Ephemeral });
                         } else {
                             gameUser.push(itr.member); // 참가자 리스트에 추가
                             await itr.update(
@@ -70,11 +70,14 @@ export async function commandExecute(interaction) {
                             } else {
                                 await itr.reply({
                                     content: '2명 이상의 참가자가 있어야 시작할 수 있습니다.',
-                                    ephemeral: true
+                                    flags: MessageFlags.Ephemeral
                                 });
                             }
                         } else {
-                            await itr.reply({ content: '게임에 참가한 사람만 시작할 수 있습니다.', ephemeral: true });
+                            await itr.reply({
+                                content: '게임에 참가한 사람만 시작할 수 있습니다.',
+                                flags: MessageFlags.Ephemeral
+                            });
                         }
                         break;
                     case 'exit':
@@ -82,7 +85,10 @@ export async function commandExecute(interaction) {
                             await itr.reply('게임을 종료합니다.');
                             startCollector.stop();
                         } else {
-                            await itr.reply({ content: '게임에 참여한 사람만 종료할 수 있습니다.', ephemeral: true });
+                            await itr.reply({
+                                content: '게임에 참여한 사람만 종료할 수 있습니다.',
+                                flags: MessageFlags.Ephemeral
+                            });
                         }
                         break;
                 }
