@@ -320,15 +320,19 @@ async function createYTStream(url) {
         });
 
         (async () => {
-            await serverAbrStream.init({
-                audioFormats: [selectedAudioFormat],
-                videoFormats: [],
-                clientAbrState: {
-                    playerTimeMs: 0,
-                    enabledTrackTypesBitfield: 1 // 0 = BOTH, 1 = AUDIO (video-only is no longer supported by YouTube)
-                }
-            });
-            fileWrite.end();
+            try {
+                await serverAbrStream.init({
+                    audioFormats: [selectedAudioFormat],
+                    videoFormats: [],
+                    clientAbrState: {
+                        playerTimeMs: 0,
+                        enabledTrackTypesBitfield: 1 // 0 = BOTH, 1 = AUDIO (video-only is no longer supported by YouTube)
+                    }
+                });
+                fileWrite.end();
+            } catch (err) {
+                fileRead.emit('error', err);
+            }
         })();
 
         await setTimeout(1000);
