@@ -536,7 +536,7 @@ export class MapleUser {
             }
         }
 
-        const job = data.eq(1).find('dl > dd').text().split(' / ')[1]; // 직업
+        const job = data.eq(1).find('dl > dd').text(); // 직업
         const lev = +data.eq(2).text().slice(3); // 레벨, 숫자값
         const exper = +data.eq(3).text().replace(/,/g, ''); // 경험치, 숫자값
         const popul = +data.eq(4).text().replace(/,/g, ''); // 인기도, 숫자값
@@ -571,7 +571,7 @@ export class MapleUser {
             }
         }
 
-        const job = data.eq(1).find('dl > dd').text().split(' / ')[1]; // 직업
+        const job = data.eq(1).find('dl > dd').text(); // 직업
         const lev = +data.eq(2).text().replace(/,/g, ''); // 유니온 레벨, 숫자값
         const stat = +data.eq(3).text().replace(/,/g, ''); // 유니온 전투력, 숫자값
         const coin = Math.floor(stat * 0.000000864); // 일일 코인 수급량, 숫자값
