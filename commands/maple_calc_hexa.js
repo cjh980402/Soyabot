@@ -3,7 +3,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 const hexaConstant = [
     {
         data: [
-            [0, 0],
+            [5, 100],
             [1, 30],
             [1, 35],
             [1, 40],
@@ -34,7 +34,7 @@ const hexaConstant = [
             [7, 250],
             [20, 500]
         ],
-        name: '스킬 코어(오리진)'
+        name: '스킬 코어'
     },
     {
         data: [
