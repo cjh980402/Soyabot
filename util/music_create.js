@@ -1,37 +1,18 @@
 import { fetch } from 'undici';
 import { Soundcloud } from 'soundcloud.ts';
-import { Innertube, Utils, Log } from 'youtubei.js';
+import { Innertube, Log } from 'youtubei.js';
 import { BG } from 'bgutils-js';
 import { JSDOM } from 'jsdom';
 import http from 'http';
 import destroyer from 'server-destroy';
 import { google } from 'googleapis';
-import { setTimeout as sleep } from 'node:timers/promises';
 import { exec } from '../admin/admin_function.js';
 import { sendAdmin } from '../admin/bot_message.js';
 import { PORT, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from '../soyabot_config.js';
 
 const redirect_uri = `http://localhost:${PORT}`;
 export const oauth2Client = new google.auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, redirect_uri);
-export const innertube = await Innertube.create({
-    enable_session_cache: false,
-    fetch: async (input, init = undefined) => {
-        let response = null;
-        let cloneResponse = null;
-        for (let i = 0; i < 3; i++) {
-            response = await fetch(input, init);
-            cloneResponse = response.clone();
-            if (cloneResponse.ok) {
-                return cloneResponse;
-            }
-            await sleep(1000);
-        }
-        throw new Utils.InnertubeError(`The server responded with a ${cloneResponse.status} status code`, {
-            error_type: 'FETCH_FAILED',
-            cloneResponse
-        });
-    }
-});
+export const innertube = await Innertube.create({ enable_session_cache: false });
 export const soundcloud = new Soundcloud();
 let refreshTimer = null;
 

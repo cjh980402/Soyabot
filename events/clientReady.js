@@ -2,7 +2,7 @@ import { sendAdmin } from '../admin/bot_message.js';
 import { startNotice, startUpdate, startTest, startTestPatch, startGuildWeek } from '../admin/maple_auto_notice.js';
 import { HOMEPAGE_NOTICE_CHANNEL_ID, CONTENTS_NOTICE_CHANNEL_ID } from '../soyabot_config.js';
 
-export const name = 'ready';
+export const name = 'clientReady';
 export function listener(client) {
     // 공지용 채널이 존재하는 클라이언트에서 공지 기능 활성화
     if (client.channels.cache.has(HOMEPAGE_NOTICE_CHANNEL_ID)) {
