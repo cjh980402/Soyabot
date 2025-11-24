@@ -16,7 +16,7 @@ export function startNotice(client, target) {
 
             const notice = [];
             for (let i = 0; i < data.length; i++) {
-                const title = data.eq(i).text().trim();
+                const title = data.eq(i).text().trim().replace(/\s+/g, ' ');
                 const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                 const number = +/\d+$/.exec(url);
                 const existing = client.db.get(
@@ -61,7 +61,7 @@ export function startUpdate(client, target) {
 
             const update = [];
             for (let i = 0; i < data.length; i++) {
-                const title = data.eq(i).text().trim();
+                const title = data.eq(i).text().trim().replace(/\s+/g, ' ');
                 const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                 const number = +/\d+$/.exec(url);
                 const existing = client.db.get(
@@ -106,7 +106,7 @@ export function startTest(client, target) {
 
             const test = [];
             for (let i = 0; i < data.length; i++) {
-                const title = data.eq(i).text().trim();
+                const title = data.eq(i).text().trim().replace(/\s+/g, ' ');
                 const url = `https://maplestory.nexon.com${data.eq(i).find('a').attr('href')}`;
                 const number = +/\d+$/.exec(url);
                 const existing = client.db.get(
