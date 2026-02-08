@@ -65,10 +65,15 @@ const symbolConstant = [
         default: 3980000,
         diff: -60000,
         name: '탈라하트'
+    },
+    {
+        default: 4880000,
+        diff: -60000,
+        name: '기어드락'
     }
 ];
 const arcaneCount = 6;
-const authenticCount = 7;
+const authenticCount = 8;
 const arcaneMaxLev = 20;
 const authenticMaxLev = 11;
 
